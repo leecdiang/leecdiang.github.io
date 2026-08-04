@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="SERIES · AI–INFRASTRUCTURE   智算互联：从算力堆叠到数据移动的底层博弈        AI 集群的核心矛盾正在从&quot;单芯片能算多快&quot;转向&quot;数据能否在正确的时间抵达正确的位置&quot;。     本系列从通信墙、可靠性重构到智算网卡芯片实现，逐层拆解 AI 基础设施中数据移动的底层博弈。           2026–07     ·     三篇连载">
+<meta property="og:type" content="website">
+<meta property="og:title" content="智算互联：从算力堆叠到数据移动的底层博弈">
+<meta property="og:url" content="https://leecdiang.github.io/series/ai-interconnect/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="SERIES · AI–INFRASTRUCTURE   智算互联：从算力堆叠到数据移动的底层博弈        AI 集群的核心矛盾正在从&quot;单芯片能算多快&quot;转向&quot;数据能否在正确的时间抵达正确的位置&quot;。     本系列从通信墙、可靠性重构到智算网卡芯片实现，逐层拆解 AI 基础设施中数据移动的底层博弈。           2026–07     ·     三篇连载">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-06-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T15:27:42.164Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="ic, tech, design, photography ">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/series/ai-interconnect/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"https://leecdiang.github.io/series/ai-interconnect/index.html","path":"series/ai-interconnect/index.html","title":"智算互联：从算力堆叠到数据移动的底层博弈"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>智算互联：从算力堆叠到数据移动的底层博弈 | Beyond the Clock
+</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">智算互联：从算力堆叠到数据移动的底层博弈
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/series/">SERIES</a></li>
+          <li>AI-INTERCONNECT</li>
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <!--
+  本页面是“智算互联”系列目录页，使用 layout: page，
+  不会出现在 Blog Archive 归档页中。
+-->
+<link rel="stylesheet" href="/css/series-page.css">
+<div class="series-hero">
+  <p class="series-hero-kicker">SERIES · AI–INFRASTRUCTURE</p>
+  <h1 class="series-hero-title">智算互联：从算力堆叠到数据移动的底层博弈</h1>
+  <p class="series-hero-desc">
+    AI 集群的核心矛盾正在从"单芯片能算多快"转向"数据能否在正确的时间抵达正确的位置"。
+    本系列从通信墙、可靠性重构到智算网卡芯片实现，逐层拆解 AI 基础设施中数据移动的底层博弈。
+  </p>
+  <div class="series-hero-meta">
+    <span>2026–07</span>
+    <span>·</span>
+    <span>三篇连载</span>
+  </div>
+</div>
+<div class="btc-cards" style="margin: 32px 0;">
+  <a href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/" class="btc-card">
+    <span class="btc-card-kicker">Part 1 · 上篇</span>
+    <h3 class="btc-card-title">通信墙</h3>
+    <p class="btc-card-desc">从 MFU、并行策略与集合通信出发，解释 AI 集群为什么会从计算密集型走向通信受限。</p>
+    <span class="btc-card-date">2026-06</span>
+  </a>
+  <a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="btc-card">
+    <span class="btc-card-kicker">Part 2 · 中篇</span>
+    <h3 class="btc-card-title">重构可靠性</h3>
+    <p class="btc-card-desc">拆解无损以太网的收益和代价，对比 TTPoE 与 Ultra Ethernet 如何重新分配可靠性。</p>
+    <span class="btc-card-date">2026-06</span>
+  </a>
+  <a href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" class="btc-card">
+    <span class="btc-card-kicker">Part 3 · 下篇</span>
+    <h3 class="btc-card-title">智算网卡芯片</h3>
+    <p class="btc-card-desc">从 PCIe、DMA、SerDes 到光互联，解析一张高速网卡如何真正成为 AI 集群互联端点。</p>
+    <span class="btc-card-date">2026-06</span>
+  </a>
+</div>
+<hr>
+<h2 id="系列背景">系列背景</h2>
+<p>随着 GPU 集群规模从数百张卡扩展到成千上万张，分布式训练的核心瓶颈已经不再是单芯片浮点算力，而是跨节点数据搬运的效率。集合通信、拥塞控制、网络拓扑、传输协议选择乃至 SerDes 与光互联——这些原本分属不同工程领域的子系统，正在共同决定一块 GPU 到底能发挥多大有效算力。</p>
+<p>本系列试图回答同一个问题：<strong>当计算能力持续增长时，下一代 AI 系统究竟应该如何重新设计数据移动路径，才能把昂贵的峰值算力真正转化为有效吞吐？</strong></p>
+<hr>
+<h2 id="文章目录">文章目录</h2>
+<h3 id="上篇：通信墙——为什么更多-GPU-不等于更高吞吐">上篇：通信墙——为什么更多 GPU 不等于更高吞吐</h3>
+<p><strong>摘要：</strong> 从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型走向通信受限，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。</p>
+<p><strong>核心话题：</strong></p>
+<ul>
+<li>MFU 与通信开销的实系数值关系</li>
+<li>DP / TP / PP / SP / EP 下的流量指纹差异</li>
+<li>All-Reduce 的长尾同步效应</li>
+<li>Scale-Up 拓扑（NVLink、UALink）与 Scale-Out 拓扑（RoCE、UET）的分化逻辑</li>
+</ul>
+<p><a href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/" class="series-btn">阅读上篇 →</a></p>
+<hr>
+<h3 id="中篇：重构可靠性——从强制无损到端网协同">中篇：重构可靠性——从强制无损到端网协同</h3>
+<p><strong>摘要：</strong> 从 RoCE、PFC、ECN 与 DCQCN 出发，拆解无损以太网的收益和代价，并对比 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。</p>
+<p><strong>核心话题：</strong></p>
+<ul>
+<li>PFC 的死锁、不公平与头端阻塞</li>
+<li>Fabric Loss vs. End-to-End Retransmission 的权衡</li>
+<li>TTPoE 的端到端重传方案</li>
+<li>Ultra Ethernet Transport 的包级多路径与选择性 ACK</li>
+<li>In-Network Computing 的角色分配</li>
+</ul>
+<p><a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="series-btn">阅读中篇 →</a></p>
+<hr>
+<h3 id="下篇：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">下篇：一颗智算网卡如何被造出来——高速接口、数据通路与光互联</h3>
+<p><strong>摘要：</strong> 从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G/224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。</p>
+<p><strong>核心话题：</strong></p>
+<ul>
+<li>PCIe Gen5 x16 / CXL 带宽瓶颈</li>
+<li>DMA Engine 与地址翻译的数据面设计</li>
+<li>片上 SRAM 建模与 NoC 互连</li>
+<li>112G / 224G SerDes 的实现挑战与功耗</li>
+<li>CPO / SiPh 对 Scale-Out 网络的重塑可能</li>
+</ul>
+<p><a href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" class="series-btn">阅读下篇 →</a></p>
+<hr>
+<div class="series-footer-note">
+  <p>三篇文章依次阅读效果最佳，但也支持单独阅读。每篇文章末尾提供了系列内导航。</p>
+  <p>标签：<code>AI-Infrastructure</code> · <code>Distributed-Training</code> · <code>GPU-Cluster</code> · <code>SmartNIC</code> · <code>RDMA</code></p>
+</div>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/series/">SERIES</a></li>
+          <li>AI-INTERCONNECT</li>
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>

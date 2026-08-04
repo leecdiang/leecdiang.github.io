@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我搭的不是 Agent,而是一套工作方式">
+<meta property="og:url" content="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg">
+<meta property="article:published_time" content="2026-06-11T05:33:00.000Z">
+<meta property="article:modified_time" content="2026-06-14T16:22:59.694Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="DeepSeek">
+<meta property="article:tag" content="OpenClaw">
+<meta property="article:tag" content="工作流">
+<meta property="article:tag" content="思考">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/","path":"2026/06/11/not-an-agent-but-a-workflow/","title":"我搭的不是 Agent,而是一套工作方式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>我搭的不是 Agent,而是一套工作方式 | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E4%B8%8D%E6%98%AF%E4%B8%80%E7%AF%87%E6%95%99%E7%A8%8B%E3%80%82"><span class="nav-text">这不是一篇教程。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%88%91%E4%B8%8D%E6%98%AF%E5%9C%A8%E6%90%AD%E4%B8%80%E4%B8%AA%E7%95%99%E5%AD%A6-Agent%EF%BC%8C%E8%80%8C%E6%98%AF%E5%9C%A8%E6%90%AD%E4%B8%80%E4%B8%AA%E4%B8%AA%E4%BA%BA%E5%B7%A5%E4%BD%9C%E5%8F%B0"><span class="nav-text">1. 我不是在搭一个留学 Agent，而是在搭一个个人工作台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%80%E4%B8%AA-Agent-%E4%B8%8D%E5%A4%9F-Main-Agent-%E4%B8%8E-Code-Lab-%E7%9A%84%E5%88%86%E5%B7%A5"><span class="nav-text">2. 为什么一个 Agent 不够:Main Agent 与 Code Lab 的分工</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%85%89%E6%9C%89%E8%AE%B0%E5%BF%86%E4%B8%8D%E5%A4%9F-%E4%BA%8B%E5%AE%9E%E6%BA%90%E3%80%81%E8%AF%81%E6%8D%AE%E9%93%BE%E5%92%8C%E5%AE%A1%E6%89%B9%E6%B5%81"><span class="nav-text">3. 为什么光有记忆不够: 事实源、证据链和审批流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%85%89%E6%9C%89-UI-%E4%B8%8D%E5%A4%9F-Obsidian-%E5%8F%AA%E6%98%AF%E8%A7%86%E5%9B%BE%EF%BC%8C%E4%B8%8D%E6%98%AF%E7%B3%BB%E7%BB%9F%E6%9C%AC%E4%BD%93"><span class="nav-text">4. 为什么光有 UI 不够:Obsidian 只是视图，不是系统本体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A8%A1%E5%9E%8B%E4%B8%8D%E5%A4%9F%E8%81%AA%E6%98%8E%E4%B9%9F%E8%83%BD%E7%94%A8-%E7%94%A8-validator%E3%80%81%E8%84%9A%E6%9C%AC%E5%92%8C%E6%B5%81%E7%A8%8B%E7%BA%A6%E6%9D%9F%E6%A8%A1%E5%9E%8B"><span class="nav-text">5. 为什么模型不够聪明也能用: 用 validator、脚本和流程约束模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%95%99%E5%AD%A6%E7%94%B3%E8%AF%B7%E5%8F%AA%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA%E8%A2%AB%E8%B7%91%E9%80%9A%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-text">6. 留学申请只是第一个被跑通的场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%8E%A5%E4%B8%8B%E6%9D%A5%E5%AE%83%E4%BC%9A%E6%9C%8D%E5%8A%A1%E5%B7%A5%E7%A8%8B%E3%80%81%E5%8D%9A%E5%AE%A2%E3%80%81%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1%E5%92%8C%E9%95%BF%E6%9C%9F%E5%AD%A6%E4%B9%A0"><span class="nav-text">7. 接下来它会服务工程、博客、毕业设计和长期学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%B0%BE-%E6%8A%8A-AI-%E6%94%BE%E5%9B%9E%E5%B7%A5%E4%BD%9C%E6%B5%81%E9%87%8C"><span class="nav-text">结尾: 把 AI 放回工作流里</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-text">TL;DR</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="我搭的不是 Agent,而是一套工作方式 | Beyond the Clock">
+      <meta itemprop="description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          我搭的不是 Agent,而是一套工作方式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p><strong>Abstract</strong><br>
+This post is not a tutorial on building an agent. It is a reflection on turning AI from a chat interface into a personal workflow system. Through the deployment of Main Agent, Code Lab, evidence tracking, approval queues, validators, and Obsidian dashboards, I gradually realized that the real value of an agent is not full automation, but structured collaboration. A useful agent does not replace human judgment; it participates in a workflow where facts are traceable, decisions are explicit, and failures can be detected.</p>
+</blockquote>
+<hr>
+<h2 id="这不是一篇教程。">这不是一篇教程。</h2>
+<p>我不想把这次部署包装成某种一键复刻的效率神话。如果只看最后的成品，它看起来很像一个&quot;AI 留学助手&quot; : 它会晨检，会查学校，会整理 deadline，会同步 Obsidian，还会把待审批事项写进 Mac 备忘录等等等。</p>
+<p>但这次部署真正让我开心的，是我第一次比较完整地把一个 AI 工具放进了自己的长期工作流。它更像一个被约束、拆分、审计、校验、可视化之后的工作台，而不是一个能检索的聊天窗口。</p>
+<p>回头看，这次我做的事情可以概括成一句话:</p>
+<blockquote>
+<p>我搭的不是 Agent，而是一套工作方式</p>
+</blockquote>
+<p>这套工作方式的核心是让 AI 参与我的长期任务: 它搜索、整理、生成候选项、提醒我、维护文件。但必须留下证据，接受校验，走审批流，也得承认失败——不能因为&quot;看起来完成了&quot;就被我信任。</p>
+<p>这篇文章就是这次部署的复盘。</p>
+<hr>
+<h2 id="1-我不是在搭一个留学-Agent，而是在搭一个个人工作台">1. 我不是在搭一个留学 Agent，而是在搭一个个人工作台</h2>
+<p>我确实有一个很具体的需求: 我正在准备未来的留学申请，需要管理学校列表、项目要求、APS、IELTS、GRE、推荐人、材料时间线、CV 和 SOP 等一堆东西。</p>
+<p>这类任务麻烦在它不是一次性问答。</p>
+<p>问&quot;某个学校的 GRE 要不要交&quot;，AI 很容易给出一个看起来有用的回答。但留学申请真正麻烦的地方在于这些答案会不断变化、互相关联，还会影响后续决策。</p>
+<p>deadline 可能变，语言要求可能和学院要求不一样，官方页面可能更新，APS 审核政策可能有新程序。你的背景也会随着实习、项目、成绩、竞赛而变化。这些信息最终要进入一个长期决策系统: 哪些学校是 Reach，哪些是 Target，哪些是 Safety; 哪些信息已经核验，哪些只是低置信度; 哪些需要马上行动，哪些只是以后再看。</p>
+<p>所以我慢慢意识到，除了尽早摆脱 Gemini 网页版等对话聊天助手，我需要一个能承载长期任务的个人工作台，而不是一个能回答留学问题的 Agent。选择转向 agent 的一大原因是最近被 Gemini 气的不行，觉得它的能力和效率满足不了我的需求。</p>
+<p>这个工作台后来长成了这样的结构:</p>
+<pre>
+<code class="mermaid">
+
+graph TD
+    A[Personal Workbench]
+
+    A --&gt; B[Agent Layer]
+    B --&gt; B1[Main Agent]
+    B1 --&gt; B1a[长期规划 &#x2F; 晨检 &#x2F; 审批]
+    B1 --&gt; B1b[策略 &#x2F; 资料库维护]
+    B --&gt; B2[Code Lab]
+    B2 --&gt; B2a[代码 &#x2F; 脚本 &#x2F; Validator]
+    B2 --&gt; B2b[Obsidian 生成逻辑]
+
+    A --&gt; C[Evidence Layer]
+    C --&gt; C1[source]
+    C --&gt; C2[run]
+    C --&gt; C3[claim]
+    C --&gt; C4[approval]
+
+    A --&gt; D[Control Layer]
+    D --&gt; D1[Validator]
+    D1 --&gt; D1a[检查格式 &#x2F; 语义]
+    D1 --&gt; D1b[生成文件健康状态]
+
+    A --&gt; E[View Layer]
+    E --&gt; E1[Obsidian &#x2F; 可视化看板]
+    E --&gt; E2[Mac 备忘录 &#x2F; 轻提醒副本]
+
+    A --&gt; F[Source of Truth]
+    F --&gt; F1[OpenClaw Workspace]
+    F1 --&gt; F1a[事实源 &#x2F; 正式记录]
+</code>
+</pre>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">System Structure</span><br><span class="line"></span><br><span class="line">Main Agent:长期规划、晨检、审批、策略、资料库维护</span><br><span class="line">Code Lab:代码项目、脚本、validator、Obsidian 生成逻辑</span><br><span class="line">Evidence Layer:source → run → claim → approval</span><br><span class="line">Validator:检查格式、语义和生成文件健康状态</span><br><span class="line">Obsidian:可视化看板</span><br><span class="line">Mac 备忘录:轻提醒副本</span><br><span class="line">OpenClaw workspace:事实源</span><br></pre></td></tr></table></figure>
+<p>留学只是第一个被跑通的场景。更大的目标是: 把 AI 放进我的工程、学习、毕业设计、博客、申请这些长期任务之间，让它成为一个稳定的工作流节点，而不是一个随时失忆、随时飘走的聊天框。</p>
+<hr>
+<h2 id="2-为什么一个-Agent-不够-Main-Agent-与-Code-Lab-的分工">2. 为什么一个 Agent 不够:Main Agent 与 Code Lab 的分工</h2>
+<p>为了在一开始确立正确的系统架构，我参考了两篇关于 single-agent 与 multi-agent 的论文，它们直接影响了我对这套系统的设计判断。</p>
+<blockquote>
+<p><strong>论文一:When Single-Agent with Skills Replace Multi-Agent Systems and When They Fail</strong><br>
+arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2601.04748">https://arxiv.org/abs/2601.04748</a></p>
+<p>这篇论文的核心是如果一个 multi-agent system 里的多个 agent 只是承担不同角色，并通过显式通信协作，那么这些角色可以被编译成一个 single-agent 内部可调用的多个 skills。论文的结论是: 在共享上下文、同一模型 backbone、任务流程可以序列化的情况下，single-agent with skills 往往可以用更低的 token、延迟和 API 调用成本，达到接近甚至相当的效果。但它也指出，skill library 不能无限扩张; 当 skills 数量过多，尤其是语义相似时，模型的 skill selection 会出现明显退化。论文中这个分界点大概在 20 个 skills，但具体分界点与不同 skill 易混淆程度和是否采用了正确的 skills  路由器有关。</p>
+</blockquote>
+<blockquote>
+<p><strong>论文二:Single-Agent LLMs Outperform Multi-Agent Systems on Multi-Hop Reasoning Under Equal Thinking Token Budgets</strong><br>
+arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.02460">https://arxiv.org/abs/2604.02460</a></p>
+<p>这篇论文的核心观点是: 很多 multi-agent 系统看起来更强，可能只是因为它用了更多 test-time compute。多个 agent 轮流发言、互相总结、互相修正，本质上消耗了更多 thinking tokens、更多上下文传递和更多中间推理。当把 reasoning-token budget 控制到相同水平时，single-agent 在多跳推理任务中经常可以匹配甚至超过 multi-agent。这说明，multi-agent 的优势不应被默认归因于&quot;架构更聪明&quot;，而要先排除计算预算、上下文组织和通信开销带来的影响。</p>
+</blockquote>
+<p>这两篇论文放在一起，给了我一个部署原则:<strong>不要因为多 agent 看起来很厉害，就把系统拆成很多 agent。</strong></p>
+<p>一开始我想的是：做一个留学 Agent、一个芯片 Agent、一个代码 Agent、一个博客 Agent。后面再按需部署更多。这种拆法按主题划分: 留学一类，数字 IC 一类，代码一类，博客一类。</p>
+<p>但真正开始设计后我发现，这样切得太碎。</p>
+<blockquote>
+<p>主题不是最重要的边界，<strong>职责才是</strong>。</p>
+</blockquote>
+<p>按主题拆的话，&quot;博客 Agent&quot;既要写作、改 Hexo 主题、还要管理 Git; “留学 Agent” 既要做长期规划、搜索资料、整理文档、甚至改本地文件; “芯片 Agent” 既要讲知识，又要参与毕业设计文档管理。每个 agent 都要参与太多杂事，边界反而更模糊。</p>
+<p>论文里关于 single-agent with skills 的观点解释了这个问题: 如果多个 agent 之间没有真正独立的状态、权限、工具链或决策目标，只是换几个角色说同一套话，那它们未必需要被拆开。很多时候让一个 agent 拥有少量边界清晰的 skills，比让一组 agent 互相转述上下文更合理。</p>
+<p>但另一方面，我也没有让一个 Agent 什么都做。</p>
+<p>因为在真实部署中，问题不只是推理能力，还有权限、风险和执行边界。一个负责长期规划和记忆的 agent，不应该同时拥有随手改代码、执行 shell、重写配置文件的能力。否则它一旦理解错上下文，就可能把策略判断和工程执行混在一起，造成很难追踪的副作用。</p>
+<p>所以我最后没有按照主题拆分，而是按照职责和风险拆分。系统收敛成两个常驻角色:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Main Agent = 长期规划 / 策略 / 资料库 / 记忆 / 决策支持</span><br><span class="line">Code Lab = 工程执行 / 脚本 / 测试 / 本地工具维护</span><br></pre></td></tr></table></figure>
+<p>Main Agent 是长期工作流中枢。它负责帮我理解目标、拆分路径、维护资料库、生成待办、管理审批。它可以处理留学规划、数字 IC 学习、毕业设计、实习项目分析、长期资料归档。它的价值在于&quot;想清楚&quot;和&quot;记下来&quot;。</p>
+<p>更准确地说，Main Agent 承担的是 <strong>规划层、解释层和记忆层</strong> 的工作。它应该帮我回答:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">这个目标应该怎么拆？</span><br><span class="line">哪些信息值得长期保存？</span><br><span class="line">哪些任务应该交给 Code Lab 执行？</span><br><span class="line">哪些决策需要我本人确认？</span><br><span class="line">哪些资料还只是草稿，不能写入正式记录？</span><br></pre></td></tr></table></figure>
+<p>但 Main Agent 不应该直接动工程。它不应该递归扫描代码仓库，不应该重写脚本，不应该随手改项目文件，也不应该把未经审批的信息写进正式资料库。它更像一个 PM、研究助理和长期笔记管理员的结合体。它可以提出方案、生成任务单、记录决策，但不应该越过边界直接执行危险操作。</p>
+<hr>
+<p>Code Lab 则是工程执行器。它负责 Apple-Health-Pro、Hexo 博客、Obsidian 同步脚本、validator、CSS、Git、测试和本地 shell。它可以改文件，可以跑命令，可以调试，可以修脚本。它的价值在于能够把明确的工程任务做完，并留下可验证的证据。</p>
+<p>Code Lab 应该回答的是另一组问题:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">当前 Git 状态是什么？</span><br><span class="line">测试是否通过？</span><br><span class="line">哪个脚本失败了？</span><br><span class="line">改了哪些文件？</span><br><span class="line">diff 是否最小？</span><br><span class="line">能否复现问题？</span><br><span class="line">是否需要回滚？</span><br></pre></td></tr></table></figure>
+<p>但 Code Lab 不应该替我做留学策略判断，也不应该把&quot;信息判断&quot;直接写成&quot;正式事实&quot;。它可以执行 Main Agent 派发的工程任务，也可以把执行结果反馈回来，但它不应该直接决定我的 APS 路线、学校优先级、申请策略或长期学习方向。</p>
+<p>这层分工听起来有点形式主义，但它其实非常关键。</p>
+<p>如果 Main Agent 同时负责策略判断和脚本维护，它会变成一个不受控的&quot;万能助手&quot;。它可能在晨检失败时顺手重写脚本，也可能在理解错上下文时污染正式文件。如果 Code Lab 也开始替我判断 APS 路线、学校优先级、申请策略，那代码执行和人生决策就混在一起了。</p>
+<p>从 agent 架构角度看，这里需要隔离的是权限和风险，而不是&quot;知识领域&quot;:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上下文隔离：长期规划和工程执行的上下文不要互相污染。</span><br><span class="line">权限隔离：能做策略判断的 agent，不必有本地执行权限。</span><br><span class="line">风险隔离：低风险的信息整理和高风险的文件修改，应该在不同边界里。</span><br></pre></td></tr></table></figure>
+<p>这也是我最后没继续拆出&quot;留学 Agent / 芯片 Agent / 博客 Agent&quot;的原因。留学、芯片、博客这些主题，完全可以作为 Main Agent 内部的长期 skill 或资料库; 代码修改、脚本调试、Git 操作、本地测试这些，交给 Code Lab。前者是认知和记忆问题，后者是工程和执行问题。</p>
+<p>最后我的结论是:</p>
+<blockquote>
+<p>一个 Agent 不够，是因为不同职责需要边界;<br>
+太多 Agent 也不好，因为过度拆分制造通信成本、上下文损耗和选择混乱。</p>
+<p>Agent 越强，越需要边界。<br>
+分工不是为了复杂，而是为了降低混乱。</p>
+</blockquote>
+<p>对我来说，Main Agent 和 Code Lab 的分工刚好卡在中间。Main Agent 负责长期记忆、策略判断和任务分解;Code Lab 负责本地工程、代码修改和测试验证。按权限、风险和职责隔离，而不是按主题分裂。</p>
+<hr>
+<h2 id="3-为什么光有记忆不够-事实源、证据链和审批流">3. 为什么光有记忆不够: 事实源、证据链和审批流</h2>
+<p>AI 的&quot;记忆&quot;很诱人——它似乎可以记住背景、偏好、项目、学校列表和长期目标。但在长期任务里，记忆不能当事实源。</p>
+<p>它能提供上下文，但不能直接作为依据。它记得我说过&quot;Purdue GRE 可能 optional&quot;，但不能因为记得，就把这条写进正式 tracker。事实必须有来源、有时间、有置信度、有核验日期、有变更记录。</p>
+<p>所以我们建立了一层 evidence layer，由四个 JSONL 文件构成:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source_registry.jsonl</span><br><span class="line">retrieval_runs.jsonl</span><br><span class="line">fact_claims.jsonl</span><br><span class="line">approval_queue.jsonl</span><br></pre></td></tr></table></figure>
+<p><code>source_registry.jsonl</code> 记录来源本身:URL、标题、来源类型、检索时间、置信度。一个来源是官方页面、论坛帖子、项目手册还是非正式总结，意义完全不同。</p>
+<p><code>retrieval_runs.jsonl</code> 记录每次查了什么:query 是什么，用了什么工具，目的是什么，结论是什么。这解决的是&quot;我到底有没有查过&quot;这个问题。</p>
+<p><code>fact_claims.jsonl</code> 记录具体事实声明。比如某个项目 GRE optional、某个项目 IELTS writing 要求、某个 deadline 是估算还是官方确认。它把&quot;资料&quot;拆成可追溯的 claim。</p>
+<p><code>approval_queue.jsonl</code> 记录这些信息是否需要我介入。确认某条信息无变化时用 <code>no_action_required</code>。需要我行动是 <code>pending</code>。信息不足是 <code>needs_more_research</code>。路线选择——比如 APS 走 TestAS 还是标准面谈——是 <code>decision_item</code>，必须等我明确选。</p>
+<hr>
+<p>第一次测试 Purdue GRE 政策时，Main Agent 口头说已经记录了 retrieval run、注册了 source、生成了 claim、写入了 approval queue。但 validator 一跑，四个 JSONL 文件全是空的。</p>
+<p>如果没有 evidence layer，我可能以为晨检成功了。实际上它只更新了 human-readable summary，没形成机器可读的审计记录。这就是为什么后来所有晨检必须写入 JSONL。</p>
+<p>还有一次，<code>approval_queue</code> 里本来要写&quot;核验无变化，无需审批&quot;，但 validator 不接受 <code>no_action_required</code>。Agent 为了让 validator PASS，改成了 <code>rejected</code>。</p>
+<p>技术上通过了，语义上错了。</p>
+<p>这说明 validator 不能只检查格式，还要保护语义。<code>rejected</code> 只能表示我明确拒绝，不能代替&quot;无需改动&quot;。否则以后复盘，系统会以为我拒绝过某个事实更新。</p>
+<p>于是我们补齐了 status 语义:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pending - 等待我审批</span><br><span class="line">approved - 我已批准,但尚未应用</span><br><span class="line">applied - 已写入正式 tracker / checklist / timeline</span><br><span class="line">rejected - 只有我明确拒绝时使用</span><br><span class="line">needs_more_research - 信息不足,不能写入正式 tracker</span><br><span class="line">no_action_required - 核验无变化,无需人工审批</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>AI 可以发现问题，但不能替我承担选择。<br>
+它可以生成 action item，但 decision item 必须留给我。<br>
+它可以干活，但必须留下证据。</p>
+</blockquote>
+<hr>
+<h2 id="4-为什么光有-UI-不够-Obsidian-只是视图，不是系统本体">4. 为什么光有 UI 不够:Obsidian 只是视图，不是系统本体</h2>
+<p>这次部署里，Obsidian 是很重要的一环。它让整个系统终于&quot;看得见&quot;。</p>
+<p>我最终有了这些页面:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Dashboard - Overview</span><br><span class="line">Dashboard - Timeline</span><br><span class="line">Dashboard - By Tier</span><br><span class="line">Dashboard - Pending Approval</span><br><span class="line">Board - Application Status</span><br><span class="line">Schools/</span><br></pre></td></tr></table></figure>
+<p><img data-src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg" alt=""></p>
+<p>Overview 是总控台，告诉我当前阶段、待审批、时间压力和下一步重点。Timeline 看 deadline 和时间顺序。By Tier 看选校梯度。Pending Approval 看待我确认的事项。Kanban 看申请流程状态:Research、Needs Verification、Shortlist、Preparing、Applying、Submitted、Archived。Schools 下面则是每个项目的单独页面。</p>
+<p>现在我的理解:</p>
+<ul>
+<li>Timeline 看时间压力</li>
+<li>Kanban 看流程状态</li>
+<li>By Tier 看选校结构</li>
+<li>Overview 看今天该做什么</li>
+<li>Pending Approval 看等待我决定的事</li>
+</ul>
+<p>别把所有信息塞进一个页面，也别幻想一个 Dashboard 解决所有问题。</p>
+<p>更重要的是，Obsidian 不是事实源。</p>
+<p>这点非常关键。Obsidian 再漂亮，也只是生成视图。Mac 备忘录再方便，也只是提醒副本。真正的事实源在 OpenClaw workspace 里，在 CSV、Markdown、JSONL、approval log、change log 里。</p>
+<p>这层分离很重要，因为 UI 很容易让人产生错觉。一个页面看起来很完整，不代表系统可靠。一个看板颜色很漂亮，不代表背后的数据经过核验。一个学校卡片里有 deadline，不代表这个 deadline 一定来自官方来源。</p>
+<p>所以我的原则变成:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OpenClaw workspace = 事实源</span><br><span class="line">Obsidian = 可视化看板 / 阅读副本</span><br><span class="line">Mac Notes = 轻提醒副本</span><br><span class="line">Excel/CSV = 结构化数据和快照</span><br></pre></td></tr></table></figure>
+<p>我可以在 Obsidian 里理解系统，但不应该绕过系统直接改事实。下一次同步时，这些手动修改也可能被覆盖。</p>
+<blockquote>
+<p>一个好看的 Dashboard 不等于一个可靠的系统。<br>
+Dashboard 只是仪表，事实源才是本体。</p>
+</blockquote>
+<hr>
+<h2 id="5-为什么模型不够聪明也能用-用-validator、脚本和流程约束模型">5. 为什么模型不够聪明也能用: 用 validator、脚本和流程约束模型</h2>
+<p>这次部署让我对模型能力有了更真实的感受。先对比下各家当前的 api 价格。</p>
+<p><img data-src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg" alt=""></p>
+<p>DeepSeek V4 Flash 便宜、快、上下文长、日常可用，但在复杂 agent 工作流里并不省心，经常要多改几次。没有多模态能力，所以识图、记忆检索、联网搜索等场景我接入了 Gemini 的 api，免费额度在这些场景基本用不完。</p>
+<p>对于 DeepSeek，尤其是当任务变成多步骤执行时，它会犯一些经典错误:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">口头说完成，但实际没写 JSONL</span><br><span class="line">工具报错后仍然汇报&quot;写入完成&quot;</span><br><span class="line">把 rejected 当成 no_action_required</span><br><span class="line">忘记脚本路径</span><br><span class="line">用 fragile exact oldText 替换文件，结果失败</span><br><span class="line">同步看板时写出 \n 或 \u000 这类转义污染</span><br></pre></td></tr></table></figure>
+<p>模型能力不够强，所以系统必须足够完善来包容这些不完美。</p>
+<p>以 <code>DAILY_BRIEF.md</code> 的更新逻辑为例：</p>
+<p>开始时，Main Agent 用精确文本替换更新每日简报:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edit(oldText=..., newText=...)</span><br></pre></td></tr></table></figure>
+<p>这个方式鲁棒性很弱：日期、空格、emoji、换行，有一点点不同就失败。实际也确实失败了——它以为文件里是 2026-06-11 的版本，真实文件还是 2026-06-09 的，oldText 匹配不上。更糟的是，工具已经报错，它还是口头说&quot;写入完成&quot;。</p>
+<p>后来我们把它改成 marker-based update:</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- DAILY<span class="emphasis">_BRIEF:BEGIN --&gt;</span></span><br><span class="line"><span class="emphasis">这里是最新晨检摘要</span></span><br><span class="line"><span class="emphasis">&lt;!-- DAILY_</span>BRIEF:END --&gt;</span><br></pre></td></tr></table></figure>
+<p>然后写了 <code>update_daily_brief.py</code>，以后只替换 marker 之间的内容。更新后必须读取前 80 行确认，确认成功后才能汇报完成。</p>
+<p>类似的防线还有 validator。它检查 JSONL 格式、字段是否完整、status 是否符合语义、Obsidian 生成文件是否有坏转义、Kanban 是否出现错误列、学校页面 frontmatter 是否包含必要字段。不是为了显得高级，而是防止 Agent 口头完成、实际失败。</p>
+<blockquote>
+<p>当模型不够可靠时，不要要求它&quot;更自觉&quot;。<br>
+要把它放进流程里，让它必须留下证据，必须通过校验，必须承认失败。</p>
+</blockquote>
+<hr>
+<h2 id="6-留学申请只是第一个被跑通的场景">6. 留学申请只是第一个被跑通的场景</h2>
+<p>虽然这次最完整跑通的是留学申请，但我不想把这套系统定义成&quot;留学 Agent&quot;。</p>
+<p>留学只是一个足够复杂、真实、容易出错的验证场景。有信息检索、官方来源、时间线、材料清单、个人决策、审批、可视化、长期维护。用它来测试这套工作流，很合适。</p>
+<p>最后我们把&quot;执行留学晨检&quot;固化成了一个 skill。它不再是一个模糊指令，而是一套明确的 11 步工作流:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">写入 retrieval_runs.jsonl</span><br><span class="line">写入 source_registry.jsonl</span><br><span class="line">写入 fact_claims.jsonl</span><br><span class="line">写入 approval_queue.jsonl</span><br><span class="line">用 update_daily_brief.py 更新 DAILY_BRIEF.md</span><br><span class="line">读取前 80 行确认</span><br><span class="line">更新 PENDING_APPROVAL.md</span><br><span class="line">跑 validator</span><br><span class="line">同步 Mac 备忘录</span><br><span class="line">同步 Obsidian</span><br><span class="line">汇报全部结果</span><br></pre></td></tr></table></figure>
+<p>而且我们明确规定:SCHOOL_LIST 只读不改，除非我专门审批通过。validator FAIL 必须修复，不能跳过。脚本路径固定，Main Agent 只调用，不重写。<code>rejected</code> 只能表示我明确拒绝，<code>no_action_required</code> 才表示核验无变化。</p>
+<p>这套流程后来跑通了几个真实测试:</p>
+<ul>
+<li>
+<p>Purdue GRE policy: 核验无变化，进入 <code>no_action_required</code>。</p>
+</li>
+<li>
+<p>Purdue IELTS 小分: 确认 W6.0 / S6.0 满足要求，写入 evidence。</p>
+</li>
+<li>
+<p>APS 审核: 生成了 action_item 和 decision_item。比如材料清单需要补充，TestAS 060 vs 标准面谈则需要我自己决策。</p>
+</li>
+</ul>
+<p>这证明系统能处理&quot;无变化的事实核验&quot;，也能处理&quot;需要行动&quot;和&quot;需要决策&quot;的事项。</p>
+<p>但它真正的意义不在于 Purdue，也不在于 APS。意义在于: 这套工作流可以迁移。</p>
+<p>它以后可以服务我的工程项目，可以服务毕业设计，可以服务数字 IC 学习路径，可以服务博客内容管理，也可以服务实习项目分析。留学申请只是第一块被跑通的样板间。</p>
+<hr>
+<h2 id="7-接下来它会服务工程、博客、毕业设计和长期学习">7. 接下来它会服务工程、博客、毕业设计和长期学习</h2>
+<p>现在系统基本成型，我反而应该少折腾、多使用。</p>
+<p>这也是这次部署最后一个重要结论。</p>
+<p>系统搭到一定程度后容易陷入另一种陷阱: 继续加功能，继续调 UI，想接飞书、Telegram、iMessage、日历插件、全自动监控、更多 Agent、更多 Dashboard。每个功能看起来都合理，但也会把精力从真正的工作上带走。</p>
+<p>现在我更愿意把这套系统看成一个阶段性可用的工作台。接下来它要服务具体产出。</p>
+<p>在工程上，Code Lab 会继续维护 Apple-Health-Pro、Hexo 博客和各种同步脚本。规则也很明确: 先 <code>git status</code>，不要递归扫描，每轮最多读几个文件、跑几条命令，小步修改，小步提交。Code Lab 是工程执行器，不是人生规划师。</p>
+<p>在留学上，Main Agent 会继续按 evidence-first workflow 执行晨检。它要关注 APS、推荐人、High priority 项目、IELTS/GRE/deadline 核验、CV_FACTS、SOP 主线等。但它不能越过审批流。</p>
+<p>在毕业设计和学习上，Main Agent 更适合做长期路径规划和资料整理。比如数字 IC 学习路线、实习项目理解、毕业设计拆解，这些应该变成长期资料库和阶段性决策，而不是一次性问答。</p>
+<p>在博客上，这套系统也会继续有用。Code Lab 可以维护 Hexo 和样式，Main Agent 可以帮我梳理文章结构、复盘经验、保存主题线索。但最终表达仍然是我的。</p>
+<p>我现在对这套系统的理想使用方式是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Main Agent：帮我想清楚、记下来、形成决策流</span><br><span class="line">Code Lab：帮我做出来、跑起来、修到稳定</span><br><span class="line">Obsidian：让我看见</span><br><span class="line">Evidence Layer：让一切有迹可循</span><br><span class="line">Validator：让错误尽早暴露</span><br></pre></td></tr></table></figure>
+<p>这不是什么&quot;全自动 AI 人生操作系统&quot;。它更像一套被我慢慢磨出来的个人工作方式。</p>
+<hr>
+<h2 id="结尾-把-AI-放回工作流里">结尾: 把 AI 放回工作流里</h2>
+<p>回头看，这次部署让我最开心的是：我终于把 AI 放回了工作流里，而不是只&quot;拥有了一个 Agent&quot;。</p>
+<p>以前我对 AI 工具的使用，更多是对话式的: 我问，它答; 我再问，它再答。这个模式很轻，很快，也很有用。但它不适合承载长期任务。长期任务需要状态，需要边界，需要历史，需要审计，需要可视化，需要失败处理，也需要人的决策位置。</p>
+<p>现在这套系统仍然不完美。模型会犯错，脚本可能出 bug，Obsidian 看板以后也许还会坏，Main Agent 也可能偶尔忘记规则。但不同的是，错误不再完全漂浮在聊天里——它们会被 validator 发现，被 approval queue 拦住，被 evidence layer 留痕，被 Code Lab 修复。</p>
+<p>我对 Agent 的理解也变得更具体了。</p>
+<p>Agent 是我能组织进流程的执行者，不是一个替我生活的东西或永远正确的答案机器。它很有用，但我得知道什么该交给它、什么必须留给我。</p>
+<blockquote>
+<p>让 AI 参与我的长期任务，但不让它越过边界;<br>
+让它替我处理重复劳动，但不替我承担判断;<br>
+让它生成信息，但必须留下证据;<br>
+让它执行流程，但必须接受校验。</p>
+</blockquote>
+<p>如果你的部署遇到什么问题，可以写邮件给我，我们一起解决。</p>
+<hr>
+<h2 id="TL-DR">TL;DR</h2>
+<p>I was building a workflow, not a single agent.</p>
+<p>The key: keep AI accountable rather than just autonomous.<br>
+Separate planning from execution, keep evidence trails, add approval gates, validate outputs, treat dashboards as views—not sources of truth.</p>
+<p>A useful agent is one that can safely participate in my long-term work, not one that does everything for me.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+<style>.post-body img { max-width: 100%; }</style>
+
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Digital-Anatomy/">
+    <span>More in Digital Anatomy</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/" title="我搭的不是 Agent,而是一套工作方式">https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/OpenClaw/" rel="tag"># OpenClaw</a>
+              <a href="/tags/Agent/" rel="tag"># Agent</a>
+              <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag"># 工作流</a>
+              <a href="/tags/%E6%80%9D%E8%80%83/" rel="tag"># 思考</a>
+              <a href="/tags/DeepSeek/" rel="tag"># DeepSeek</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>

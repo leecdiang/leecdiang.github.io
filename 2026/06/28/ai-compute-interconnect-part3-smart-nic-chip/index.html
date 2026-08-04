@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">
+<meta property="og:url" content="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-06-28T14:38:30.000Z">
+<meta property="article:modified_time" content="2026-08-04T15:27:42.165Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="CPO">
+<meta property="article:tag" content="Network-on-Chip">
+<meta property="article:tag" content="PCIe">
+<meta property="article:tag" content="RDMA">
+<meta property="article:tag" content="SerDes">
+<meta property="article:tag" content="SmartNIC">
+<meta property="article:tag" content="可编程网络">
+<meta property="article:tag" content="国产芯片">
+<meta property="article:tag" content="智能网卡">
+<meta property="article:tag" content="沐创">
+<meta property="article:tag" content="芯片设计">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","path":"2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","title":"智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联 | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%8E%E7%B3%BB%E7%BB%9F%E9%9C%80%E6%B1%82%E5%80%92%E6%8E%A8%E4%B8%80%E9%A2%97%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="nav-text">一、从系统需求倒推一颗智算网卡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-%E7%BD%91%E5%8D%A1%E4%B8%8D%E6%98%AF%E2%80%9C%E6%9B%B4%E5%BF%AB%E7%9A%84%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%A1%E2%80%9D"><span class="nav-text">1. AI 网卡不是“更快的以太网卡”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%BD%91%E5%8D%A1%E5%90%8C%E6%97%B6%E5%8C%85%E5%90%AB%E4%B8%89%E4%B8%AA%E5%B9%B3%E9%9D%A2"><span class="nav-text">2. 网卡同时包含三个平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%B8%E5%9E%8B%E6%95%B0%E6%8D%AE%E8%B7%AF%E5%BE%84"><span class="nav-text">3. 典型数据路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81PCIe%EF%BC%9A%E7%BD%91%E7%BB%9C%E7%AB%AF%E5%8F%A3%E8%83%8C%E5%90%8E%E7%9A%84%E4%B8%BB%E6%9C%BA%E4%BE%A7%E5%A4%A9%E8%8A%B1%E6%9D%BF"><span class="nav-text">二、PCIe：网络端口背后的主机侧天花板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-PCIe-%E6%98%AF%E4%B8%BB%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93%EF%BC%8C%E4%B8%8D%E6%98%AF%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3"><span class="nav-text">1. PCIe 是主数据通道，不是管理接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-PCIe-4-0-x16-%E4%B8%8E-200G-%E7%BA%A7%E7%BD%91%E5%8D%A1"><span class="nav-text">2. PCIe 4.0 x16 与 200G 级网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PCIe-5-0-x16-%E4%B8%8E-400G-%E7%BD%91%E5%8D%A1"><span class="nav-text">3. PCIe 5.0 x16 与 400G 网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-800G-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%86%8D%E6%AC%A1%E9%80%BC%E8%BF%91%E6%8E%A5%E5%8F%A3%E6%9E%81%E9%99%90"><span class="nav-text">4. 800G 为什么会再次逼近接口极限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81DMA-%E4%B8%8E%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%9A%E9%9B%B6%E6%8B%B7%E8%B4%9D%E5%B9%B6%E4%B8%8D%E7%AD%89%E4%BA%8E%E9%9B%B6%E5%B7%A5%E4%BD%9C"><span class="nav-text">三、DMA 与地址转换：零拷贝并不等于零工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RDMA-%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BB%8D%E7%84%B6%E5%BF%85%E9%A1%BB%E7%A7%BB%E5%8A%A8"><span class="nav-text">1. RDMA 的数据仍然必须移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E9%9A%90%E8%97%8F%E7%93%B6%E9%A2%88"><span class="nav-text">2. 地址转换可能成为隐藏瓶颈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%A7%E8%A7%84%E6%A8%A1%E9%98%9F%E5%88%97%E6%84%8F%E5%91%B3%E7%9D%80%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8"><span class="nav-text">3. 大规模队列意味着上下文分层存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81RDMA-Transport-Engine%EF%BC%9A%E6%9C%80%E5%A4%8D%E6%9D%82%E7%9A%84%E6%95%B0%E5%AD%97%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B9%8B%E4%B8%80"><span class="nav-text">四、RDMA Transport Engine：最复杂的数字状态机之一</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%AF%E9%9D%A0%E8%BF%9E%E6%8E%A5%E9%9C%80%E8%A6%81%E7%BB%B4%E6%8A%A4%E4%BB%80%E4%B9%88"><span class="nav-text">1. 可靠连接需要维护什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8C%85%E7%BA%A7%E5%A4%9A%E8%B7%AF%E5%BE%84%E4%BC%9A%E6%89%A9%E5%A4%A7%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4"><span class="nav-text">2. 包级多路径会扩大状态空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8D%8F%E8%AE%AE%E7%81%B5%E6%B4%BB%E6%80%A7%E9%A6%96%E5%85%88%E6%98%AF%E9%AA%8C%E8%AF%81%E9%97%AE%E9%A2%98"><span class="nav-text">3. 协议灵活性首先是验证问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Packet-Processing%EF%BC%9A%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%80%A7%E7%9A%84%E5%88%86%E7%95%8C"><span class="nav-text">五、Packet Processing：固定功能与可编程性的分界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E9%9D%A2%E9%80%9A%E5%B8%B8%E8%A6%81%E5%A4%84%E7%90%86%E4%BB%80%E4%B9%88"><span class="nav-text">1. 数据面通常要处理什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD-ASIC-%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="nav-text">2. 固定功能 ASIC 的优势与边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B5%8C%E5%85%A5%E5%BC%8F-CPU-%E9%80%82%E5%90%88%E6%8E%A7%E5%88%B6%E9%9D%A2%E4%B8%8E%E6%85%A2%E8%B7%AF%E5%BE%84"><span class="nav-text">3. 嵌入式 CPU 适合控制面与慢路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%B8%93%E7%94%A8%E5%BE%AE%E5%BC%95%E6%93%8E%E5%A1%AB%E8%A1%A5%E4%B8%AD%E9%97%B4%E5%9C%B0%E5%B8%A6"><span class="nav-text">4. 专用微引擎填补中间地带</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-CGRA-%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E2%80%9C%E5%8F%AF%E9%87%8D%E6%9E%84%E5%BC%95%E6%93%8E%E2%80%9D%E7%9A%84%E7%BB%9F%E7%A7%B0"><span class="nav-text">5. CGRA 不是所有“可重构引擎”的统称</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E7%89%87%E4%B8%8A%E4%BA%92%E8%81%94%EF%BC%9AAXI-%E4%B8%8D%E6%98%AF%E4%B8%80%E6%9D%A1%E6%97%A0%E9%99%90%E5%AE%BD%E7%9A%84%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF"><span class="nav-text">六、片上互联：AXI 不是一条无限宽的高速公路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AXI-%E6%98%AF%E6%8E%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE%EF%BC%8C%E4%B8%8D%E6%98%AF%E5%AE%8C%E6%95%B4-NoC"><span class="nav-text">1. AXI 是接口协议，不是完整 NoC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Tbps-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E6%9C%89%E5%A4%9A%E5%AE%BD"><span class="nav-text">2. 1 Tbps 数据通路有多宽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-On-chip-SRAM-%E6%98%AF%E9%9A%90%E5%BD%A2%E6%A0%B8%E5%BF%83"><span class="nav-text">3. On-chip SRAM 是隐形核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E4%B8%8E%E6%8E%A7%E5%88%B6%E9%80%9A%E8%B7%AF%E5%BF%85%E9%A1%BB%E9%9A%94%E7%A6%BB"><span class="nav-text">4. 数据通路与控制通路必须隔离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81112G-224G-SerDes-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%83%8F%E2%80%9C%E9%BB%91%E9%AD%94%E6%B3%95%E2%80%9D"><span class="nav-text">七、112G &#x2F; 224G SerDes 为什么像“黑魔法”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%9F%E7%8E%87%E6%8F%90%E5%8D%87%E4%B8%8D%E5%86%8D%E9%9D%A0%E7%AE%80%E5%8D%95%E6%8F%90%E9%AB%98%E6%97%B6%E9%92%9F"><span class="nav-text">1. 速率提升不再靠简单提高时钟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Tx-%E4%B8%8E-Rx-%E8%A6%81%E5%85%B1%E5%90%8C%E6%81%A2%E5%A4%8D%E7%9C%BC%E5%9B%BE"><span class="nav-text">2. Tx 与 Rx 要共同恢复眼图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Pre-FEC-BER-%E4%B8%8E-Post-FEC-BER"><span class="nav-text">3. Pre-FEC BER 与 Post-FEC BER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-224G-%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C112G-%E7%BF%BB%E5%80%8D%E2%80%9D"><span class="nav-text">4. 224G 不只是“112G 翻倍”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E8%87%AA%E7%A0%94%E8%BF%98%E6%98%AF%E9%87%87%E8%B4%AD%EF%BC%9A%E9%AB%98%E9%80%9F-IP-%E7%9A%84%E5%B7%A5%E7%A8%8B%E7%BB%8F%E6%B5%8E%E5%AD%A6"><span class="nav-text">八、自研还是采购：高速 IP 的工程经济学</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SerDes-%E6%98%AF%E5%B7%A5%E8%89%BA%E7%BB%91%E5%AE%9A%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%B3%BB%E7%BB%9F"><span class="nav-text">1. SerDes 是工艺绑定的模拟系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%80%E6%AC%A1%E6%88%90%E5%8A%9F%E6%B5%81%E7%89%87%E7%9A%84%E4%BB%B7%E5%80%BC%E6%9E%81%E9%AB%98"><span class="nav-text">2. 一次成功流片的价值极高</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%87%87%E8%B4%AD-IP-%E4%B8%8D%E7%AD%89%E4%BA%8E%E6%94%BE%E5%BC%83%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B"><span class="nav-text">3. 采购 IP 不等于放弃核心能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B7%AE%E5%BC%82%E5%8C%96%E9%80%9A%E5%B8%B8%E8%90%BD%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="nav-text">4. 差异化通常落在哪里</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%AE%89%E5%85%A8%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9A%84%E5%8E%9F%E7%94%9F%E8%83%BD%E5%8A%9B"><span class="nav-text">九、安全为什么可能成为智算网卡的原生能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-%E9%9B%86%E7%BE%A4%E4%B8%8D%E5%86%8D%E6%80%BB%E6%98%AF%E5%8D%95%E7%A7%9F%E6%88%B7%E5%B0%81%E9%97%AD%E6%9C%BA%E5%99%A8"><span class="nav-text">1. AI 集群不再总是单租户封闭机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Inline-Security-%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-text">2. Inline Security 的价值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%9C%9F%E6%AD%A3%E5%9B%B0%E9%9A%BE%E7%9A%84%E6%98%AF%E7%8A%B6%E6%80%81%E5%92%8C%E5%AF%86%E9%92%A5%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-text">3. 真正困难的是状态和密钥生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%89%E5%85%A8%E4%B9%9F%E4%BC%9A%E6%B6%88%E8%80%97-PPA-%E4%B8%8E%E9%AA%8C%E8%AF%81%E8%B5%84%E6%BA%90"><span class="nav-text">4. 安全也会消耗 PPA 与验证资源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E9%A9%B1%E5%8A%A8%E4%B8%8E%E8%BD%AF%E4%BB%B6%E6%A0%88%E4%B8%8D%E6%98%AF%E8%8A%AF%E7%89%87%E7%9A%84%E9%99%84%E4%BB%B6"><span class="nav-text">十、驱动与软件栈不是芯片的附件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A9%B1%E5%8A%A8%E5%86%B3%E5%AE%9A%E7%A1%AC%E4%BB%B6%E8%83%BD%E5%90%A6%E8%A2%AB%E7%A8%B3%E5%AE%9A%E4%BD%BF%E7%94%A8"><span class="nav-text">1. 驱动决定硬件能否被稳定使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Collective-Library-%E5%86%B3%E5%AE%9A%E5%AE%9E%E9%99%85%E6%B5%81%E9%87%8F%E5%BD%A2%E6%80%81"><span class="nav-text">2. Collective Library 决定实际流量形态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Firmware-%E6%98%AF%E7%A1%AC%E4%BB%B6%E4%B8%8E%E5%8D%8F%E8%AE%AE%E4%B9%8B%E9%97%B4%E7%9A%84%E9%95%BF%E6%9C%9F%E5%A5%91%E7%BA%A6"><span class="nav-text">3. Firmware 是硬件与协议之间的长期契约</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%94%9F%E6%80%81%E6%98%AF%E6%9C%80%E6%85%A2%E5%BD%A2%E6%88%90%E7%9A%84%E6%8A%A4%E5%9F%8E%E6%B2%B3"><span class="nav-text">4. 生态是最慢形成的护城河</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E4%BB%8E%E9%93%9C%E5%88%B0%E5%85%89%EF%BC%9ACPO-%E6%98%AF%E5%85%B3%E9%94%AE%E8%B7%AF%E7%BA%BF%EF%BC%8C%E4%BD%86%E4%B8%8D%E6%98%AF%E5%94%AF%E4%B8%80%E7%BB%88%E7%82%B9"><span class="nav-text">十一、从铜到光：CPO 是关键路线，但不是唯一终点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%AB%98%E9%80%9F%E7%94%B5%E4%BF%A1%E5%8F%B7%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B6%8A%E6%9D%A5%E8%B6%8A%E9%9A%BE%E8%B5%B0%E5%88%B0%E5%89%8D%E9%9D%A2%E6%9D%BF"><span class="nav-text">1. 高速电信号为什么越来越难走到前面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AB%98%E9%80%9F%E4%BA%92%E8%81%94%E6%98%AF%E4%B8%80%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%96%B9%E6%A1%88"><span class="nav-text">2. 高速互联是一组连续方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CPO-%E5%B7%B2%E7%BB%8F%E4%BB%8E%E6%A6%82%E5%BF%B5%E8%B5%B0%E5%90%91%E4%BA%A7%E5%93%81"><span class="nav-text">3. CPO 已经从概念走向产品</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CPO-%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="nav-text">4. CPO 的代价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%A6%82%E4%BD%95%E4%B8%A5%E8%82%83%E8%AF%84%E4%BB%B7%E4%B8%80%E5%BC%A0%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="nav-text">十二、如何严肃评价一张智算网卡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E9%9D%A2"><span class="nav-text">1. 基础数据面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RDMA"><span class="nav-text">2. RDMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AI-Collective"><span class="nav-text">3. AI Collective</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AB%AF%E7%BD%91%E5%8D%8F%E5%90%8C"><span class="nav-text">4. 端网协同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%AE%89%E5%85%A8%E4%B8%8E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="nav-text">5. 安全与虚拟化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%9B%BD%E4%BA%A7%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9C%9F%E6%AD%A3%E9%9D%A2%E5%AF%B9%E7%9A%84%E6%9C%BA%E4%BC%9A%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="nav-text">十三、国产智算网卡真正面对的机会与边界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9C%BA%E4%BC%9A%E4%B8%8D%E5%8F%AA%E6%9D%A5%E8%87%AA%E2%80%9C%E5%9B%BD%E4%BA%A7%E6%9B%BF%E4%BB%A3%E2%80%9D"><span class="nav-text">1. 机会不只来自“国产替代”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%AB%AF%E5%8F%A3%E9%80%9F%E7%8E%87%E5%BE%88%E5%BF%AB%E4%BC%9A%E5%95%86%E5%93%81%E5%8C%96"><span class="nav-text">2. 端口速率很快会商品化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Scale-out-%E4%B8%8E-Scale-up-%E4%B8%8D%E6%98%AF%E8%87%AA%E7%84%B6%E5%8D%87%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-text">3. Scale-out 与 Scale-up 不是自然升级关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BD%AF%E4%BB%B6%E7%BB%B4%E6%8A%A4%E5%91%A8%E6%9C%9F%E8%BF%9C%E9%95%BF%E4%BA%8E%E4%B8%80%E6%AC%A1%E6%B5%81%E7%89%87"><span class="nav-text">4. 软件维护周期远长于一次流片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E7%BD%91%E5%8D%A1%E8%AE%BE%E8%AE%A1%E5%B8%88%E6%AD%A3%E5%9C%A8%E5%8F%98%E6%88%90%E4%BA%92%E8%81%94%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88"><span class="nav-text">结语：网卡设计师正在变成互联系统架构师</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E8%AE%AE%E9%85%8D%E5%9B%BE"><span class="nav-text">建议配图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联 | Beyond the Clock">
+      <meta itemprop="description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G/224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p><strong>Abstract - Part 3</strong><br>
+A high-performance AI network interface card is far more than a fast Ethernet controller. This article traces the complete data path from PCIe, DMA, and RDMA transport to packet processing, on-chip memory, SerDes, FEC, firmware, and optical interconnects, revealing the architectural trade-offs behind building network silicon capable of sustaining hundreds of gigabits per second.</p>
+</blockquote>
+<hr>
+<div class="note info"><p>本文是「智算互联」系列下篇。<a href="/series/ai-interconnect/">查看系列目录 →</a></p>
+</div>
+<p>前两篇分别讨论了通信墙与可靠性范式的变化。但无论是 RoCE、包级多路径、选择性重传，还是端网协同，最终都必须落到芯片、板卡和软件栈上。</p>
+<p>“支持 400G”“支持 RoCEv2”“支持 GPUDirect RDMA”只是产品规格的最外层描述。真正决定一张智算网卡能否持续线速运行的，是一条横跨主机接口、地址转换、DMA、队列状态、传输协议、片上存储、以太网 PHY、驱动和 Collective 通信库的完整数据路径。</p>
+<p>这一篇不针对某一家厂商做产品拆解，而是回答三个更基础的问题：</p>
+<ol>
+<li>一颗高性能 RNIC / SmartNIC 内部到底有什么；</li>
+<li>PCIe、DMA、片上 NoC、112G / 224G SerDes 为什么会共同决定最终吞吐；</li>
+<li>一张“端口很快”的网卡，怎样才能真正成为 AI 集群中的高效互联端点。</li>
+</ol>
+<div class="note warning"><p>本文中的芯片框图均为基于公开标准与通用工程原理绘制的<strong>典型架构示意</strong>，不代表任何特定厂商产品的实际内部实现。</p>
+<p>文中涉及具体产品时，只用于说明公开可见的产业路线；厂商规格、工程推导与第三方实测会被明确区分。</p>
+</div>
+<h2 id="一、从系统需求倒推一颗智算网卡">一、从系统需求倒推一颗智算网卡</h2>
+<h3 id="1-AI-网卡不是“更快的以太网卡”">1. AI 网卡不是“更快的以太网卡”</h3>
+<p>传统网卡负责稳定收发报文，把部分协议处理从 CPU 卸载到硬件。智算网卡面对的约束更苛刻：</p>
+<ul>
+<li>GPU 或加速器持续产生大规模 DMA 流量；</li>
+<li>集合通信要求多个 Rank 在相近时间到达同步点；</li>
+<li>Tensor Parallel 和 Expert Parallel 对尾延迟高度敏感；</li>
+<li>一个丢包、慢流或异常队列可能拖慢整次 Collective；</li>
+<li>数万甚至更多 Queue Pair 带来庞大的连接状态；</li>
+<li>多租户环境还要求虚拟化、隔离与安全；</li>
+<li>驱动、Firmware、RDMA Core 和通信库必须共同工作。</li>
+</ul>
+<p>因此，智算网卡优化的目标不是峰值吞吐，而是：</p>
+<blockquote>
+<p>在有限的 PCIe、片上 SRAM、封装功耗和网络带宽下，让尽可能多的数据按时抵达正确的 GPU 内存，并把拥塞、丢包与软件开销对训练步骤的影响降到最低。</p>
+</blockquote>
+<h3 id="2-网卡同时包含三个平面">2. 网卡同时包含三个平面</h3>
+<p>可以把一颗高性能网卡拆成三个相互依赖的平面：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">平面</th>
+<th style="text-align:left">主要职责</th>
+<th style="text-align:left">典型模块</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">数据平面</td>
+<td style="text-align:left">线速搬运和处理报文</td>
+<td style="text-align:left">DMA、Parser、RDMA Engine、Scheduler、MAC、FEC</td>
+</tr>
+<tr>
+<td style="text-align:left">控制平面</td>
+<td style="text-align:left">初始化、配置与异常处理</td>
+<td style="text-align:left">嵌入式 CPU、Firmware、管理队列、Telemetry</td>
+</tr>
+<tr>
+<td style="text-align:left">管理与安全平面</td>
+<td style="text-align:left">生命周期、隔离和可信性</td>
+<td style="text-align:left">Secure Boot、密钥、SR-IOV、设备管理、升级</td>
+</tr>
+</tbody>
+</table>
+<p>最热的数据路径必须尽量硬化；复杂但低频的控制逻辑适合交给嵌入式处理器；需要随协议演进的部分，则可能使用可编程微引擎或受限的数据面指令集。</p>
+<h3 id="3-典型数据路径">3. 典型数据路径</h3>
+<pre>
+<code class="mermaid">
+
+flowchart LR
+    A[Host CPU &#x2F; GPU Memory] --&gt; B[PCIe Controller&lt;br&#x2F;&gt;ATS &#x2F; PASID &#x2F; SR-IOV]
+    B --&gt; C[DMA + Address Translation]
+    C --&gt; D[Queue &#x2F; RDMA Transport Engine]
+    D --&gt; E[Packet Processing&lt;br&#x2F;&gt;Parser &#x2F; Scheduler &#x2F; Security]
+    E --&gt; F[MAC &#x2F; PCS &#x2F; FEC]
+    F --&gt; G[SerDes &#x2F; PMA]
+    G --&gt; H[DAC &#x2F; AEC &#x2F; Optical Module]
+    I[Embedded CPU &#x2F; Firmware] -.control.-&gt; C
+    I -.control.-&gt; D
+    I -.control.-&gt; E
+    J[On-chip SRAM &#x2F; NoC] --- C
+    J --- D
+    J --- E
+</code>
+</pre>
+<p>这张图画得像顺序流水线，但真实芯片的数据路径不是直线。描述符、队列上下文、重传状态、地址映射与完成事件会在多个模块之间反复交互；任何一处带宽不足或状态访问失衡，都可能让 400G 端口无法转化成 400G 有效吞吐。</p>
+<h2 id="二、PCIe：网络端口背后的主机侧天花板">二、PCIe：网络端口背后的主机侧天花板</h2>
+<h3 id="1-PCIe-是主数据通道，不是管理接口">1. PCIe 是主数据通道，不是管理接口</h3>
+<p>PCIe Controller 通常负责：</p>
+<ul>
+<li>Link Training 与链路状态管理；</li>
+<li>Transaction Layer Packet（TLP）收发；</li>
+<li>BAR 与配置空间；</li>
+<li>MSI-X 中断；</li>
+<li>SR-IOV PF / VF；</li>
+<li>Advanced Error Reporting；</li>
+<li>ATS、PASID 等地址与进程隔离能力；</li>
+<li>与 DMA Engine 交互。</li>
+</ul>
+<p>当网卡连接 GPU 或主机内存时，大部分业务数据都要经过 PCIe。端口带宽能否被利用，不只取决于 PCIe 的标称速率，还取决于 Max Payload Size、Read Request、Completion、NUMA 路径、Root Complex、PCIe Switch 和内存控制器。</p>
+<h3 id="2-PCIe-4-0-x16-与-200G-级网卡">2. PCIe 4.0 x16 与 200G 级网卡</h3>
+<p>PCIe 4.0 每 Lane 为 16 GT/s，采用 128b/130b 编码。x16 单方向编码后的原始有效带宽约为 31.5 GB/s，即约 252 Gbit/s。</p>
+<p>对于网络端总带宽为 200 Gbit/s 的网卡，PCIe 4.0 x16 在数值上能够覆盖单方向线速，但实际余量还要扣除：</p>
+<ul>
+<li>TLP 与 Data Link Layer 开销；</li>
+<li>DMA 地址不连续；</li>
+<li>Doorbell、CQE 和元数据访问；</li>
+<li>小包造成的事务效率下降；</li>
+<li>IOMMU 与地址转换；</li>
+<li>多设备共享 Root Complex；</li>
+<li>Host Memory 或 GPU Memory 的实际服务能力。</li>
+</ul>
+<p>因此，“PCIe 带宽大于网络端口带宽”只是必要条件，不是线速保证。</p>
+<h3 id="3-PCIe-5-0-x16-与-400G-网卡">3. PCIe 5.0 x16 与 400G 网卡</h3>
+<p>PCIe 5.0 将速率提高到 32 GT/s。PCI-SIG 给出的 x16 单方向编码后原始有效带宽约为 504 Gbit/s。<a target="_blank" rel="noopener" href="https://pcisig.com/what-bit-rates-does-pcie-50-specification-support-and-how-does-it-compare-prior-pcie-generations">PCI-SIG：PCIe 5.0 带宽</a></p>
+<p>这使 PCIe 5.0 x16 成为 400G 网卡常见的主机接口组合。但 504 Gbit/s 与 400 Gbit/s 之间的差额不能直接视为完整设计余量，因为网络报文、PCIe 事务、地址转换和完成队列都会产生额外流量。</p>
+<p>PCIe 与以太网都是全双工链路，分析时也必须分别考察：</p>
+<ul>
+<li>Host-to-Network；</li>
+<li>Network-to-Host；</li>
+<li>双向同时满载；</li>
+<li>RDMA Read 与 RDMA Write 的非对称事务行为。</li>
+</ul>
+<h3 id="4-800G-为什么会再次逼近接口极限">4. 800G 为什么会再次逼近接口极限</h3>
+<p>800G 网络端已经超过 PCIe 5.0 x16 的单方向原始有效能力。下一代高端网卡可能采用：</p>
+<ul>
+<li>PCIe 6.0 x16；</li>
+<li>多个 PCIe Endpoint；</li>
+<li>多 Host 或多 Accelerator 直连；</li>
+<li>板载 PCIe Switch；</li>
+<li>更紧密的 Scale-up 或芯粒级接口。</li>
+</ul>
+<p>PCIe 6.0 采用 PAM4、FLIT、轻量 FEC 和 CRC，在 64 GT/s 下进一步翻倍带宽。<a target="_blank" rel="noopener" href="https://pcisig.com/pci-express-6.0-specification">PCI-SIG：PCI Express 6.0</a></p>
+<p>但接口升级会把困难从“带宽不够”转移到信号完整性、FEC、延迟、封装和系统验证上。</p>
+<h2 id="三、DMA-与地址转换：零拷贝并不等于零工作">三、DMA 与地址转换：零拷贝并不等于零工作</h2>
+<h3 id="1-RDMA-的数据仍然必须移动">1. RDMA 的数据仍然必须移动</h3>
+<p>RDMA 所谓“零拷贝”，主要指减少 CPU 介入和中间缓冲区复制。网卡仍然要完成：</p>
+<ul>
+<li>读取 Work Queue Entry（WQE）；</li>
+<li>查询 Memory Region；</li>
+<li>校验 Local Key / Remote Key；</li>
+<li>完成虚拟地址到物理地址转换；</li>
+<li>发起 PCIe Read / Write；</li>
+<li>处理 Scatter-Gather List；</li>
+<li>更新 Completion Queue Entry（CQE）；</li>
+<li>维护 Doorbell 与 Producer / Consumer Index。</li>
+</ul>
+<p>这些动作不会出现在“400G”三个字符中，却直接决定小消息延迟和大规模队列下的持续吞吐。</p>
+<h3 id="2-地址转换可能成为隐藏瓶颈">2. 地址转换可能成为隐藏瓶颈</h3>
+<p>在虚拟化或 GPU Direct 场景中，网卡需要理解进程、虚拟机与设备地址空间。常见机制包括：</p>
+<ul>
+<li>IOMMU；</li>
+<li>Address Translation Services（ATS）；</li>
+<li>Process Address Space ID（PASID）；</li>
+<li>Page Request Interface（PRI）；</li>
+<li>网卡内部 Translation Cache。</li>
+</ul>
+<p>如果 Translation Cache 命中率过低，或页粒度与访问模式不匹配，DMA 会被地址转换和 PCIe 往返拖慢。</p>
+<h3 id="3-大规模队列意味着上下文分层存储">3. 大规模队列意味着上下文分层存储</h3>
+<p>当 QP、CQ、Memory Region 和 Flow 数量达到数万甚至更多时，所有状态不可能同时驻留在最快的片上 SRAM。芯片通常需要建立类似缓存层级：</p>
+<pre>
+<code class="mermaid">
+
+flowchart LR
+    A[Hot Context&lt;br&#x2F;&gt;On-chip SRAM] --&gt; B[Warm Context&lt;br&#x2F;&gt;External Memory &#x2F; On-board DRAM]
+    B --&gt; C[Cold Context&lt;br&#x2F;&gt;Host Memory]
+    D[Queue &#x2F; Transport Engine] --&gt; A
+    A -.miss.-&gt; B
+    B -.miss.-&gt; C
+</code>
+</pre>
+<p>真正困难的不是“能否支持 100 万 QP”，而是：在目标业务的活跃集规模下，Context Cache Miss 是否会把尾延迟和 PCIe 流量推高。</p>
+<h2 id="四、RDMA-Transport-Engine：最复杂的数字状态机之一">四、RDMA Transport Engine：最复杂的数字状态机之一</h2>
+<h3 id="1-可靠连接需要维护什么">1. 可靠连接需要维护什么</h3>
+<p>以 Reliable Connection（RC）为例，Transport Engine 需要维护：</p>
+<ul>
+<li>Packet Sequence Number；</li>
+<li>ACK / NAK；</li>
+<li>Retransmission Timer；</li>
+<li>RDMA Read / Write / Send / Atomic 语义；</li>
+<li>Outstanding Request；</li>
+<li>QP 状态；</li>
+<li>Completion Ordering；</li>
+<li>Congestion Notification；</li>
+<li>Error Recovery。</li>
+</ul>
+<p>它既像网络协议处理器，又像远程内存访问控制器。错误不仅可能造成丢包，还可能破坏内存语义、完成顺序和应用可见状态。</p>
+<h3 id="2-包级多路径会扩大状态空间">2. 包级多路径会扩大状态空间</h3>
+<p>如果网卡支持 Packet Spraying、乱序接收与选择性重传，通常还需要：</p>
+<ul>
+<li>每包级路径选择；</li>
+<li>Out-of-order Tracking；</li>
+<li>Selective ACK / NACK；</li>
+<li>直接数据放置；</li>
+<li>Duplicate Suppression；</li>
+<li>更细粒度的重传 Buffer；</li>
+<li>更复杂的完成条件判断。</li>
+</ul>
+<p>这些能力可以提升多路径利用率，并减少单个丢包导致的大范围重传，但代价是更多 SRAM、更复杂的状态机以及更大的验证空间。</p>
+<h3 id="3-协议灵活性首先是验证问题">3. 协议灵活性首先是验证问题</h3>
+<p>网络芯片中的新 Transport 机制并不只需要“写出 RTL”。它还必须覆盖：</p>
+<ul>
+<li>包重复、乱序与丢失同时发生；</li>
+<li>ACK 或 Credit 本身丢失；</li>
+<li>QP Reset 与重传并发；</li>
+<li>链路故障与路径切换；</li>
+<li>多租户资源耗尽；</li>
+<li>Firmware 升级与状态迁移；</li>
+<li>交换机行为不完全符合预期。</li>
+</ul>
+<p>协议越灵活，Corner Case 越多。很多纸面上合理的算法，真正困难的部分是能否在硅片上以有限状态、有限 Buffer 和可验证的时序实现。</p>
+<h2 id="五、Packet-Processing：固定功能与可编程性的分界">五、Packet Processing：固定功能与可编程性的分界</h2>
+<h3 id="1-数据面通常要处理什么">1. 数据面通常要处理什么</h3>
+<p>报文处理模块可能包含：</p>
+<ul>
+<li>Parser；</li>
+<li>Flow Classification；</li>
+<li>RSS / Hash；</li>
+<li>ACL 与五元组过滤；</li>
+<li>VXLAN、Geneve 等隧道；</li>
+<li>Checksum、TSO / LRO；</li>
+<li>Queue Selection；</li>
+<li>QoS 与 Scheduler；</li>
+<li>Telemetry；</li>
+<li>IPsec / MACsec；</li>
+<li>厂商扩展 Header 与拥塞控制。</li>
+</ul>
+<p>最常用、最稳定、对延迟敏感的逻辑适合硬化；变化快或客户差异大的部分，则更适合放进微引擎或可编程处理器。</p>
+<h3 id="2-固定功能-ASIC-的优势与边界">2. 固定功能 ASIC 的优势与边界</h3>
+<p>固定功能逻辑通常具有最高的能效和最确定的延迟，适合：</p>
+<ul>
+<li>Ethernet MAC / PCS；</li>
+<li>CRC / Checksum；</li>
+<li>常见 Parser；</li>
+<li>DMA Fast Path；</li>
+<li>成熟 RDMA 操作；</li>
+<li>Queue Scheduler；</li>
+<li>AES、SM4 等密码流水线。</li>
+</ul>
+<p>缺点是协议一旦变化，硬件修改往往需要重新流片。</p>
+<h3 id="3-嵌入式-CPU-适合控制面与慢路径">3. 嵌入式 CPU 适合控制面与慢路径</h3>
+<p>RISC-V、Arm 或其他嵌入式核常用于：</p>
+<ul>
+<li>初始化硬件；</li>
+<li>管理 QP 与异常；</li>
+<li>运行 Firmware；</li>
+<li>处理 Control Packet；</li>
+<li>更新 Table；</li>
+<li>设备管理与 Telemetry；</li>
+<li>实现低频但复杂的协议逻辑。</li>
+</ul>
+<p>它们的价值不在于逐包处理全部 400G 流量。以 64B 最小包计算，400G Ethernet 的包率可达到数亿 PPS，通用核无法承担所有热路径。</p>
+<h3 id="4-专用微引擎填补中间地带">4. 专用微引擎填补中间地带</h3>
+<p>专用微引擎常具有：</p>
+<ul>
+<li>多线程隐藏访存延迟；</li>
+<li>受限但高效的指令集；</li>
+<li>本地 Scratchpad；</li>
+<li>硬件队列；</li>
+<li>与 Parser、DMA、Crypto 紧耦合。</li>
+</ul>
+<p>它适合处理可变协议、隧道、客户定制逻辑、Telemetry 和拥塞算法，在固定 ASIC 与通用 CPU 之间取得折中。</p>
+<h3 id="5-CGRA-不是所有“可重构引擎”的统称">5. CGRA 不是所有“可重构引擎”的统称</h3>
+<p>Coarse-Grained Reconfigurable Array（CGRA）通常由多个可编程处理单元与可配置互联构成，擅长映射规则数据流和算术计算图。</p>
+<p>只有公开了 Processing Element、互联结构、调度或映射模型，才能较有把握地判断某个模块是否属于 CGRA。厂商使用“可编程引擎”或“可重构微引擎”，并不自动意味着其内部采用 CGRA。</p>
+<h2 id="六、片上互联：AXI-不是一条无限宽的高速公路">六、片上互联：AXI 不是一条无限宽的高速公路</h2>
+<h3 id="1-AXI-是接口协议，不是完整-NoC">1. AXI 是接口协议，不是完整 NoC</h3>
+<p>AMBA AXI 定义事务与通道语义，适合连接 Master 与 Slave；大型网络 SoC 还需要片上网络（Network-on-Chip, NoC）、Crossbar、Arbiter、Bridge 和多组 SRAM Bank。</p>
+<p>直接比较“PCIe 和 AXI 谁更快”没有意义：</p>
+<ul>
+<li>PCIe 是芯片外部串行 I/O；</li>
+<li>AXI 是芯片内部事务接口；</li>
+<li>NoC 决定多个模块如何共享片上带宽；</li>
+<li>实际吞吐取决于位宽、频率、并发、路由和仲裁。</li>
+</ul>
+<h3 id="2-1-Tbps-数据通路有多宽">2. 1 Tbps 数据通路有多宽</h3>
+<p>一个 512-bit、1 GHz 的理想单向数据通路，原始带宽为：</p>
+<p>$$<br>
+512\ \mathrm{bit} \times 1\ \mathrm{GHz}=512\ \mathrm{Gbit/s}<br>
+$$</p>
+<p>要承载 1 Tbps，可以采用：</p>
+<ul>
+<li>1024-bit × 1 GHz；</li>
+<li>512-bit × 2 GHz；</li>
+<li>多条并行 256 / 512-bit Fabric；</li>
+<li>分片 Packet Pipeline；</li>
+<li>多 Bank SRAM 与多 DMA Channel。</li>
+</ul>
+<p>现实中还会损失在仲裁、空泡、Header、跨时钟域、Credit 和读写冲突中，因此设计目标必须显著高于端口速率的算术下限。</p>
+<h3 id="3-On-chip-SRAM-是隐形核心">3. On-chip SRAM 是隐形核心</h3>
+<p>高性能网卡需要 SRAM 存放：</p>
+<ul>
+<li>Packet Buffer；</li>
+<li>QP / CQ Context Cache；</li>
+<li>Flow Table；</li>
+<li>Retransmission State；</li>
+<li>Descriptor；</li>
+<li>Scheduler Queue；</li>
+<li>Security Association；</li>
+<li>Telemetry Counter。</li>
+</ul>
+<p>SRAM 面积大、静态功耗高，又往往要求多端口或多 Bank。Buffer 太小会增加丢包和外部访问；Buffer 太大则显著推高 Die Area、功耗与访问延迟。</p>
+<h3 id="4-数据通路与控制通路必须隔离">4. 数据通路与控制通路必须隔离</h3>
+<p>如果 Firmware、Telemetry 或异常处理可以长期占用与热路径相同的 NoC 和 SRAM 端口，就可能在最不应该抖动的时候制造抖动。</p>
+<p>因此，高性能设计通常会考虑：</p>
+<ul>
+<li>独立管理网络；</li>
+<li>数据面保留带宽；</li>
+<li>QoS 与优先级；</li>
+<li>分离的 SRAM Bank；</li>
+<li>控制面限速；</li>
+<li>故障风暴下的资源保护。</li>
+</ul>
+<h2 id="七、112G-224G-SerDes-为什么像“黑魔法”">七、112G / 224G SerDes 为什么像“黑魔法”</h2>
+<h3 id="1-速率提升不再靠简单提高时钟">1. 速率提升不再靠简单提高时钟</h3>
+<p>现代高速以太网广泛采用 PAM4（四电平脉冲幅度调制）。PAM4 每个 Symbol 携带 2 bit，因此能够在相近 Baud Rate 下提高数据率。</p>
+<p>代价是原本一个大眼图变成三个更小的眼图。相邻电平间距缩小，系统对以下因素更敏感：</p>
+<ul>
+<li>热噪声；</li>
+<li>串扰；</li>
+<li>电源噪声；</li>
+<li>抖动；</li>
+<li>封装损耗；</li>
+<li>PCB 插入损耗与反射；</li>
+<li>连接器；</li>
+<li>光电器件线性度。</li>
+</ul>
+<h3 id="2-Tx-与-Rx-要共同恢复眼图">2. Tx 与 Rx 要共同恢复眼图</h3>
+<p>发送端常使用 Feed-Forward Equalization（FFE）预加重，接收端可能使用：</p>
+<ul>
+<li>Continuous-Time Linear Equalizer（CTLE）；</li>
+<li>Variable Gain Amplifier；</li>
+<li>Decision Feedback Equalizer（DFE）；</li>
+<li>Clock and Data Recovery（CDR）；</li>
+<li>ADC / DSP 或模拟判决电路。</li>
+</ul>
+<p>均衡越强，功耗和复杂度越高；DFE 还可能产生误判传播。设计目标不是单点追求最高 SNR，而是在通道损耗、功耗、面积、抖动容限与误码率之间寻找可量产的平衡。</p>
+<h3 id="3-Pre-FEC-BER-与-Post-FEC-BER">3. Pre-FEC BER 与 Post-FEC BER</h3>
+<p>高速链路通常允许 FEC 前存在一定误码，再由 Forward Error Correction（FEC）把最终 BER 降到系统目标。</p>
+<p>$$<br>
+\text{Channel Loss / Noise}<br>
+\rightarrow \text{Equalization}<br>
+\rightarrow \text{Pre-FEC BER}<br>
+\rightarrow \text{FEC Coding Gain}<br>
+\rightarrow \text{Post-FEC BER}<br>
+$$</p>
+<p>因此，不能简单写成“SNR 决定是否开启 FEC”。在许多 112G / 224G PAM4 标准中，FEC 本身就是链路预算的一部分。</p>
+<p>FEC 延迟也不存在统一的“几百纳秒”，它取决于：</p>
+<ul>
+<li>码型与码长；</li>
+<li>Decoder 架构；</li>
+<li>并行度；</li>
+<li>Interleaving；</li>
+<li>时钟频率；</li>
+<li>PHY Pipeline。</li>
+</ul>
+<h3 id="4-224G-不只是“112G-翻倍”">4. 224G 不只是“112G 翻倍”</h3>
+<p>OIF 的 CEI-224G 工作覆盖 Very Short Reach、Medium Reach、Long Reach 和 Linear 等不同信道目标，面向 800G、1.6T 及更高容量系统。<a target="_blank" rel="noopener" href="https://www.oiforum.com/technical-work/hot-topics/common-electrical-i-o-cei-224g/">OIF：CEI-224G</a></p>
+<p>不同 Reach 对均衡、功耗、封装和信道材料的要求不同。一颗适用于封装附近短距离连接的 224G SerDes，不等于能够穿越长 PCB、连接器和铜缆完成更长距离传输。</p>
+<h2 id="八、自研还是采购：高速-IP-的工程经济学">八、自研还是采购：高速 IP 的工程经济学</h2>
+<h3 id="1-SerDes-是工艺绑定的模拟系统">1. SerDes 是工艺绑定的模拟系统</h3>
+<p>数字逻辑可以通过综合与布局布线迁移，但高速 SerDes 深度依赖：</p>
+<ul>
+<li>晶体管模型；</li>
+<li>PLL / CDR；</li>
+<li>I/O Device；</li>
+<li>Package Model；</li>
+<li>ESD；</li>
+<li>PVT Corner；</li>
+<li>模拟版图与寄生参数；</li>
+<li>测试芯片和实验室设备。</li>
+</ul>
+<p>从一个工艺节点迁移到另一个节点，远不是重新综合 RTL。</p>
+<h3 id="2-一次成功流片的价值极高">2. 一次成功流片的价值极高</h3>
+<p>数字逻辑问题有时可以通过 Firmware、旁路或后续版本修复；SerDes 如果在关键通道上达不到眼图和 BER，整颗芯片可能无法满足目标端口速率。</p>
+<p>成熟 IP 的价值通常包括：</p>
+<ul>
+<li>Silicon Proven 记录；</li>
+<li>标准 Compliance 经验；</li>
+<li>信道、封装和测试模型；</li>
+<li>缩短上市周期；</li>
+<li>降低首次流片失败风险。</li>
+</ul>
+<p>代价则是授权费、Royalty、供应商锁定、工艺绑定与定制受限。</p>
+<h3 id="3-采购-IP-不等于放弃核心能力">3. 采购 IP 不等于放弃核心能力</h3>
+<p>即使购买 SerDes、PCIe 或 DDR IP，芯片公司仍要完成：</p>
+<ul>
+<li>IP 评估与 PPA 验证；</li>
+<li>SoC 集成；</li>
+<li>Clock、Power 与 Reset；</li>
+<li>DFT；</li>
+<li>Package / Board SI；</li>
+<li>Firmware；</li>
+<li>Compliance；</li>
+<li>Yield 与量产测试。</li>
+</ul>
+<p>真正的决策不是“自研高尚、采购简单”，而是哪些模块决定产品差异化，哪些模块的失败风险又足以拖垮整个项目。</p>
+<h3 id="4-差异化通常落在哪里">4. 差异化通常落在哪里</h3>
+<p>对资源有限的网络芯片公司，产品差异常来自：</p>
+<ul>
+<li>RDMA Transport；</li>
+<li>Congestion Control；</li>
+<li>Packet Spraying 与乱序恢复；</li>
+<li>Queue / Context 管理；</li>
+<li>安全卸载；</li>
+<li>可编程数据面；</li>
+<li>驱动、Firmware 与生态适配。</li>
+</ul>
+<p>把有限的工程资源集中在这些系统级能力上，往往比重复实现所有成熟 PHY IP 更有价值。</p>
+<h2 id="九、安全为什么可能成为智算网卡的原生能力">九、安全为什么可能成为智算网卡的原生能力</h2>
+<h3 id="1-AI-集群不再总是单租户封闭机器">1. AI 集群不再总是单租户封闭机器</h3>
+<p>云端 GPU 集群可能同时承载不同客户与不同安全等级的任务。需要保护的数据包括：</p>
+<ul>
+<li>训练数据；</li>
+<li>模型参数；</li>
+<li>梯度；</li>
+<li>Checkpoint；</li>
+<li>推理请求；</li>
+<li>KV Cache；</li>
+<li>Agent 工具调用与中间状态。</li>
+</ul>
+<p>当数据跨越服务器、机架或数据中心边界，网络加密、设备身份和租户隔离会逐渐成为数据路径的一部分。</p>
+<h3 id="2-Inline-Security-的价值">2. Inline Security 的价值</h3>
+<p>如果加密完全由 CPU 或 GPU 软件完成，可能带来：</p>
+<ul>
+<li>额外内存访问；</li>
+<li>CPU 占用；</li>
+<li>GPU Kernel 干扰；</li>
+<li>更长关键路径；</li>
+<li>难以维持线速。</li>
+</ul>
+<p>网卡中的 Inline IPsec / MACsec 可以在报文数据路径中完成加解密和认证，尽量减少对 RDMA 与零拷贝路径的破坏。</p>
+<div class="note info"><p>国内厂商已经出现把高速网络、RDMA 与安全卸载结合的公开产品路线。例如，沐创公开的 N20 同时强调双 100G、RoCEv2、可编程处理与 Inline Security。这里仅把它视为一种产业路线样本，不讨论其未公开的内部架构。<a target="_blank" rel="noopener" href="https://mucse.com/about/detail.aspx?Id=280&amp;mtt=1">沐创 N20 公开信息</a></p>
+</div>
+<h3 id="3-真正困难的是状态和密钥生命周期">3. 真正困难的是状态和密钥生命周期</h3>
+<p>安全网卡不仅要计算 AES、SM4 或哈希，还要处理：</p>
+<ul>
+<li>Security Association 数量；</li>
+<li>Key Provisioning；</li>
+<li>Rekey；</li>
+<li>Anti-Replay Window；</li>
+<li>多租户密钥隔离；</li>
+<li>Secure Boot；</li>
+<li>Firmware 签名；</li>
+<li>Device Attestation；</li>
+<li>Debug Port 与生产测试安全。</li>
+</ul>
+<p>如果产品只说明“支持某算法”，却没有密钥生命周期、租户隔离与控制面设计，就不能完整说明其安全能力。</p>
+<h3 id="4-安全也会消耗-PPA-与验证资源">4. 安全也会消耗 PPA 与验证资源</h3>
+<p>安全模块占用面积、功耗、Buffer 和验证周期。对于追求极低时延的封闭训练 Fabric，用户可能并不需要所有安全功能。</p>
+<p>合理的产品设计可能需要回答：</p>
+<ul>
+<li>是否采用不同 SKU；</li>
+<li>安全模块关闭后能否完全旁路；</li>
+<li>Inline 加密对 RDMA 延迟与吞吐影响多大；</li>
+<li>能否接入云平台密钥管理和可信计算体系；</li>
+<li>安全能力是否真正对应用户威胁模型。</li>
+</ul>
+<h2 id="十、驱动与软件栈不是芯片的附件">十、驱动与软件栈不是芯片的附件</h2>
+<p>一张 RNIC 从应用到物理网络至少经过：</p>
+<pre>
+<code class="mermaid">
+
+flowchart TB
+    A[PyTorch &#x2F; Training Framework] --&gt; B[NCCL &#x2F; MPI &#x2F; Collective Library]
+    B --&gt; C[libfabric &#x2F; Verbs &#x2F; Communication Runtime]
+    C --&gt; D[Kernel Driver &#x2F; User-space Driver]
+    D --&gt; E[Firmware]
+    E --&gt; F[Queue + RDMA + DMA Hardware]
+    F --&gt; G[Ethernet Fabric]
+</code>
+</pre>
+<h3 id="1-驱动决定硬件能否被稳定使用">1. 驱动决定硬件能否被稳定使用</h3>
+<p>驱动需要处理：</p>
+<ul>
+<li>Device Initialization；</li>
+<li>Queue Allocation；</li>
+<li>Memory Registration；</li>
+<li>Interrupt 与 Polling；</li>
+<li>SR-IOV；</li>
+<li>Error Recovery；</li>
+<li>Firmware Upgrade；</li>
+<li>ethtool / devlink / RDMA Core；</li>
+<li>NUMA 与 CPU Affinity。</li>
+</ul>
+<p>这些工作不会提高峰值端口数字，却直接决定设备能否在真实服务器中长期运行。</p>
+<h3 id="2-Collective-Library-决定实际流量形态">2. Collective Library 决定实际流量形态</h3>
+<p>即使网卡支持 400G，如果通信库没有正确发现拓扑、GPU Direct 路径未启用，或 Collective Algorithm 选择不匹配，实际训练仍可能走 Host Staging 或低效路径。</p>
+<p>NCCL、MPI 或其他通信运行时会决定：</p>
+<ul>
+<li>Ring、Tree 或分层算法；</li>
+<li>通道数量；</li>
+<li>Chunk Size；</li>
+<li>GPU、NIC 与 NUMA 的绑定；</li>
+<li>多 Rail 使用方式；</li>
+<li>是否启用特定网络插件。</li>
+</ul>
+<h3 id="3-Firmware-是硬件与协议之间的长期契约">3. Firmware 是硬件与协议之间的长期契约</h3>
+<p>Firmware 负责初始化、错误恢复、配置与设备生命周期。新协议和新平台适配往往需要 Firmware 更新，而不是重新流片。</p>
+<p>这也意味着 Firmware 必须处理：</p>
+<ul>
+<li>版本兼容；</li>
+<li>安全更新；</li>
+<li>回滚；</li>
+<li>现场升级失败；</li>
+<li>日志与故障诊断；</li>
+<li>不同硬件 Revision。</li>
+</ul>
+<h3 id="4-生态是最慢形成的护城河">4. 生态是最慢形成的护城河</h3>
+<p>网络控制器的长期壁垒往往来自：</p>
+<ul>
+<li>多年驱动维护；</li>
+<li>大量服务器兼容性；</li>
+<li>BIOS / BMC / PXE / NC-SI；</li>
+<li>Linux Kernel Version；</li>
+<li>DPDK；</li>
+<li>RDMA Core；</li>
+<li>GPU Runtime；</li>
+<li>故障日志与现场支持。</li>
+</ul>
+<p>芯片可以在一次流片后出现，生态却需要通过长期部署逐渐积累。</p>
+<h2 id="十一、从铜到光：CPO-是关键路线，但不是唯一终点">十一、从铜到光：CPO 是关键路线，但不是唯一终点</h2>
+<h3 id="1-高速电信号为什么越来越难走到前面板">1. 高速电信号为什么越来越难走到前面板</h3>
+<p>交换 ASIC 或网络芯片与前面板光模块之间，需要高速 SerDes 穿越封装、PCB 和连接器。端口密度和 Lane 速率提升后：</p>
+<ul>
+<li>插入损耗增加；</li>
+<li>Retimer / DSP 功耗上升；</li>
+<li>PCB 材料更昂贵；</li>
+<li>前面板散热困难；</li>
+<li>信号完整性 Margin 缩小。</li>
+</ul>
+<p>Co-Packaged Optics（CPO）把光引擎放到交换 ASIC 附近，缩短高损耗电通道，再通过光纤离开封装。</p>
+<h3 id="2-高速互联是一组连续方案">2. 高速互联是一组连续方案</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方案</th>
+<th style="text-align:left">电通道长度</th>
+<th style="text-align:left">模块可维护性</th>
+<th style="text-align:left">功耗趋势</th>
+<th style="text-align:left">主要特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">DAC</td>
+<td style="text-align:left">较长铜缆</td>
+<td style="text-align:left">高</td>
+<td style="text-align:left">较低</td>
+<td style="text-align:left">距离短、成本低</td>
+</tr>
+<tr>
+<td style="text-align:left">AEC</td>
+<td style="text-align:left">铜缆 + 有源均衡</td>
+<td style="text-align:left">高</td>
+<td style="text-align:left">中</td>
+<td style="text-align:left">比 DAC 更长，包含有源器件</td>
+</tr>
+<tr>
+<td style="text-align:left">Retimed Pluggable Optics</td>
+<td style="text-align:left">ASIC 到前面板</td>
+<td style="text-align:left">很高</td>
+<td style="text-align:left">较高</td>
+<td style="text-align:left">生态成熟、易更换</td>
+</tr>
+<tr>
+<td style="text-align:left">LPO / LRO</td>
+<td style="text-align:left">缩减模块侧 DSP</td>
+<td style="text-align:left">高</td>
+<td style="text-align:left">较低</td>
+<td style="text-align:left">功耗下降，但链路预算更敏感</td>
+</tr>
+<tr>
+<td style="text-align:left">NPO</td>
+<td style="text-align:left">光引擎靠近 ASIC</td>
+<td style="text-align:left">中</td>
+<td style="text-align:left">较低</td>
+<td style="text-align:left">缩短电通道，保持部分模块化</td>
+</tr>
+<tr>
+<td style="text-align:left">CPO</td>
+<td style="text-align:left">光引擎与 ASIC 共封装</td>
+<td style="text-align:left">较低</td>
+<td style="text-align:left">最低潜力</td>
+<td style="text-align:left">高带宽密度，维护和良率复杂</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-CPO-已经从概念走向产品">3. CPO 已经从概念走向产品</h3>
+<p>Broadcom 已公开多代高容量 CPO 交换平台，强调系统功耗与带宽密度收益。<a target="_blank" rel="noopener" href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo">Broadcom：第三代 CPO</a></p>
+<p>NVIDIA 也公开了 Spectrum-X Ethernet Photonics，将硅光引擎放到交换 ASIC 封装附近。<a target="_blank" rel="noopener" href="https://www.nvidia.com/en-sg/networking/products/silicon-photonics/">NVIDIA Silicon Photonics Networking</a></p>
+<p>这些资料能够证明产业方向，但厂商给出的功耗和可靠性数字仍需要结合测试条件理解，不能直接视为跨平台 Benchmark。</p>
+<h3 id="4-CPO-的代价">4. CPO 的代价</h3>
+<ul>
+<li>光引擎与高功耗 ASIC 热耦合；</li>
+<li>封装良率与测试复杂；</li>
+<li>单个光引擎故障可能影响整机维修；</li>
+<li>外置激光源、光纤连接器和自动装配要求高；</li>
+<li>供应链从模块级转向封装级协作；</li>
+<li>现场更换不如可插拔模块简单。</li>
+</ul>
+<p>因此，更现实的判断是：</p>
+<blockquote>
+<p>CPO 会优先进入高容量交换芯片和极高带宽密度场景，并与可插拔光模块、LPO、LRO、AEC 和 NPO 长期共存。</p>
+</blockquote>
+<h2 id="十二、如何严肃评价一张智算网卡">十二、如何严肃评价一张智算网卡</h2>
+<p>判断一张网卡是否真正适合智算集群，不能只看“400G + RoCEv2”。至少需要以下证据。</p>
+<h3 id="1-基础数据面">1. 基础数据面</h3>
+<ul>
+<li>单端口与多端口同时吞吐；</li>
+<li>64B、128B、256B、1KB、4KB、1MB 消息性能；</li>
+<li>单向与双向吞吐；</li>
+<li>PCIe Read / Write Efficiency；</li>
+<li>功耗与每 Gbit/s 能效；</li>
+<li>不同 NUMA 与 PCIe Topology 下的性能。</li>
+</ul>
+<h3 id="2-RDMA">2. RDMA</h3>
+<ul>
+<li>最大 QP / CQ / MR 数量；</li>
+<li>活跃连接规模下的 Context Cache Miss；</li>
+<li>RDMA Read、Write、Send 延迟；</li>
+<li>RC 丢包恢复；</li>
+<li>Selective Retransmission；</li>
+<li>Out-of-order 深度；</li>
+<li>Memory Registration 开销；</li>
+<li>GPUDirect RDMA 的真实路径。</li>
+</ul>
+<h3 id="3-AI-Collective">3. AI Collective</h3>
+<ul>
+<li>NCCL Tests AllReduce / AllGather / ReduceScatter / All-to-All；</li>
+<li>8、16、64、256 节点扩展；</li>
+<li>Ring、Tree 与 Hierarchical Algorithm；</li>
+<li>多 Job 并发；</li>
+<li>MoE Incast；</li>
+<li>P50、P99、P999；</li>
+<li>故障后的恢复时间。</li>
+</ul>
+<h3 id="4-端网协同">4. 端网协同</h3>
+<ul>
+<li>配套交换机和 ECN 配置；</li>
+<li>Packet Spraying 的路径选择；</li>
+<li>Credit 或其他反馈机制；</li>
+<li>Telemetry；</li>
+<li>是否依赖私有扩展；</li>
+<li>与第三方交换机的兼容性；</li>
+<li>PFC 开启、关闭和混合场景。</li>
+</ul>
+<h3 id="5-安全与虚拟化">5. 安全与虚拟化</h3>
+<ul>
+<li>Inline IPsec / MACsec 吞吐和延迟；</li>
+<li>加密开启后的 RDMA 性能；</li>
+<li>VF 数量与隔离；</li>
+<li>密钥管理；</li>
+<li>Firmware 安全；</li>
+<li>恶意租户压力下的资源保护。</li>
+</ul>
+<div class="note primary"><p>最有说服力的材料不是再增加一页功能列表，而是公开可复现的测试条件：服务器、GPU、交换机、线缆、拓扑、驱动、Firmware、通信库版本、消息大小和完整命令。</p>
+</div>
+<h2 id="十三、国产智算网卡真正面对的机会与边界">十三、国产智算网卡真正面对的机会与边界</h2>
+<h3 id="1-机会不只来自“国产替代”">1. 机会不只来自“国产替代”</h3>
+<p>国内 CPU、GPU、服务器和云平台需要可控的高速网络接口、驱动与运维体系。但供应链窗口只能提供入场机会，无法代替性能、稳定性和生态。</p>
+<p>更长期的机会来自：</p>
+<ul>
+<li>国内异构计算平台需要深度适配；</li>
+<li>AI 网络协议仍在快速演进；</li>
+<li>安全、虚拟化与多租户需求具有本地差异；</li>
+<li>客户需要能够快速响应的 Firmware 和驱动团队；</li>
+<li>网络、存储和加速器之间仍存在大量系统优化空间。</li>
+</ul>
+<h3 id="2-端口速率很快会商品化">2. 端口速率很快会商品化</h3>
+<p>400G、800G 会逐渐成为产品入场券。真正难复制的能力是：</p>
+<ul>
+<li>大规模 RDMA 状态与故障恢复；</li>
+<li>Collective 下的尾延迟；</li>
+<li>交换机与端点协同；</li>
+<li>驱动和 Firmware 稳定性；</li>
+<li>多平台兼容；</li>
+<li>可复现的系统级性能。</li>
+</ul>
+<h3 id="3-Scale-out-与-Scale-up-不是自然升级关系">3. Scale-out 与 Scale-up 不是自然升级关系</h3>
+<p>拥有高速 Scale-out RNIC，并不意味着自然获得 Scale-up 互联能力。Scale-up 往往还需要：</p>
+<ul>
+<li>更低的端到端延迟；</li>
+<li>Load / Store / Atomic 等内存语义；</li>
+<li>加速器一致的软件模型；</li>
+<li>专用交换芯片；</li>
+<li>Fabric Manager；</li>
+<li>故障域和拓扑管理。</li>
+</ul>
+<p>两者可以共享 SerDes、封装、DMA 或部分协议能力，但系统目标和验证方法并不相同。</p>
+<h3 id="4-软件维护周期远长于一次流片">4. 软件维护周期远长于一次流片</h3>
+<p>Linux Kernel、DPDK、RDMA Core、GPU Runtime、服务器固件与云平台会持续变化。一颗网卡从 Tape-out 到成为稳定基础设施，中间往往隔着多年的软件维护、兼容性测试和现场故障处理。</p>
+<h2 id="结语：网卡设计师正在变成互联系统架构师">结语：网卡设计师正在变成互联系统架构师</h2>
+<p>一颗智算网卡同时面对三个世界：</p>
+<ul>
+<li>模拟与物理世界：SerDes、抖动、信道和 FEC；</li>
+<li>数字芯片世界：DMA、NoC、SRAM、队列、状态机和 PPA；</li>
+<li>分布式系统世界：Collective、拥塞、故障、软件栈和多租户。</li>
+</ul>
+<p>只懂其中一层，很难定义下一代互联。</p>
+<p>端口速率决定了一张网卡理论上能够搬运多少数据；Transport、片上存储与软件栈则决定这些带宽能否被稳定地交付给应用；交换网络和 Collective Runtime 最终决定它能否转化成训练吞吐。</p>
+<blockquote>
+<p>下一代互联架构的竞争，不再发生在单一 MAC、SerDes 或协议模块内部，而发生在工作负载、软件、传输语义、交换结构和物理信道之间。</p>
+</blockquote>
+<p>对于 IC 设计师而言，真正值得培养的能力也不只是把一个 RTL 模块写对，而是理解数据为什么移动、状态应该放在哪里，以及每一层的优化会把代价转移到哪一层。</p>
+<hr>
+<h2 id="建议配图">建议配图</h2>
+<p>全文以 Mermaid 自绘架构图为主，不需要加入具体厂商产品图。若希望增加一张视觉主图，建议自行绘制以下内容：</p>
+<ol>
+<li>
+<p><strong>智算网卡从 GPU 内存到光口的端到端数据路径</strong><br>
+文件名建议：<code>ai-nic-end-to-end-datapath.png</code></p>
+</li>
+<li>
+<p><strong>固定功能 ASIC、微引擎与嵌入式 CPU 的职责分层</strong><br>
+文件名建议：<code>ai-nic-programmability-layers.png</code></p>
+</li>
+<li>
+<p><strong>PCIe、片上 NoC、SerDes 三个带宽域的对应关系</strong><br>
+文件名建议：<code>ai-nic-bandwidth-domains.png</code></p>
+</li>
+</ol>
+<p>配图应明确标注“通用架构示意”，避免让读者误认为是任何特定芯片的内部框图。</p>
+<link rel="stylesheet" href="/css/series-page.css">
+<div class="series-nav series-nav--single">
+  <a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="series-nav__link">← 上一篇：重构可靠性</a>
+</div>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://pcisig.com/what-bit-rates-does-pcie-50-specification-support-and-how-does-it-compare-prior-pcie-generations">PCI-SIG：PCIe 5.0 Bit Rates and Bandwidth</a></li>
+<li><a target="_blank" rel="noopener" href="https://pcisig.com/pci-express-6.0-specification">PCI-SIG：PCI Express 6.0 Specification</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.oiforum.com/technical-work/hot-topics/common-electrical-i-o-cei-224g/">OIF：Common Electrical I/O CEI-224G</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/gpudirect-rdma/">NVIDIA：GPUDirect RDMA Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.kernel.org/infiniband/user_verbs.html">Linux Kernel：Userspace Verbs Access</a></li>
+<li><a target="_blank" rel="noopener" href="https://ualinkconsortium.org/blog/ualink-200g-1-0-specification-overview-802/">UALink 200G 1.0 Specification Overview</a></li>
+<li><a target="_blank" rel="noopener" href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo">Broadcom：Third-Generation Co-Packaged Optics</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.broadcom.com/topics/what-is-co-packaged-optics">Broadcom：What Is Co-Packaged Optics</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.nvidia.com/en-sg/networking/products/silicon-photonics/">NVIDIA：Silicon Photonics Networking</a></li>
+<li><a target="_blank" rel="noopener" href="https://mucse.com/about/detail.aspx?Id=280&amp;mtt=1">沐创 N20 公开产品信息</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon & Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" title="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E7%BD%91%E5%8D%A1/" rel="tag"># 智能网卡</a>
+              <a href="/tags/SmartNIC/" rel="tag"># SmartNIC</a>
+              <a href="/tags/SerDes/" rel="tag"># SerDes</a>
+              <a href="/tags/%E8%8A%AF%E7%89%87%E8%AE%BE%E8%AE%A1/" rel="tag"># 芯片设计</a>
+              <a href="/tags/%E6%B2%90%E5%88%9B/" rel="tag"># 沐创</a>
+              <a href="/tags/%E5%9B%BD%E4%BA%A7%E8%8A%AF%E7%89%87/" rel="tag"># 国产芯片</a>
+              <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E7%BD%91%E7%BB%9C/" rel="tag"># 可编程网络</a>
+              <a href="/tags/PCIe/" rel="tag"># PCIe</a>
+              <a href="/tags/Network-on-Chip/" rel="tag"># Network-on-Chip</a>
+              <a href="/tags/CPO/" rel="tag"># CPO</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>

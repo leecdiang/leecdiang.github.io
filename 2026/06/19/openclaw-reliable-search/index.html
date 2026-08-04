@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">
+<meta property="og:url" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
+<meta property="article:published_time" content="2026-06-18T16:05:00.000Z">
+<meta property="article:modified_time" content="2026-06-25T16:00:00.000Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="OpenClaw">
+<meta property="article:tag" content="可靠性">
+<meta property="article:tag" content="容错">
+<meta property="article:tag" content="工程实践">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/","path":"2026/06/19/openclaw-reliable-search/","title":"让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%90%9C%E7%B4%A2%E5%A4%B1%E8%B4%A5%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8A%B6%E6%80%81-%E8%80%8C%E6%98%AF%E4%B8%80%E7%BB%84%E5%AE%8C%E5%85%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%95%85%E9%9A%9C"><span class="nav-text">1. 搜索失败不是一个状态,而是一组完全不同的故障</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%8F%82%E6%95%B0%E9%94%99%E8%AF%AF%E3%80%81%E6%9C%8D%E5%8A%A1%E8%BF%87%E8%BD%BD%E3%80%81%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E5%92%8C%E7%A9%BA%E7%BB%93%E6%9E%9C%E4%B8%8D%E6%98%AF%E4%B8%80%E5%9B%9E%E4%BA%8B"><span class="nav-text">1.1 参数错误、服务过载、网络故障和空结果不是一回事</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E5%85%B3%E9%94%AE%E6%98%AF%E8%AE%A9%E5%A4%B1%E8%B4%A5%E5%86%B3%E5%AE%9A%E4%B8%8B%E4%B8%80%E6%AD%A5-%E4%B8%8D%E5%85%89%E6%98%AF%E9%81%BF%E5%85%8D%E5%AE%83"><span class="nav-text">1.2 可靠性的关键是让失败决定下一步,不光是避免它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%88%E5%9C%A8-OpenClaw-%E9%87%8C%E9%80%A0%E4%B8%80%E9%81%93-Agent-%E7%BB%95%E4%B8%8D%E8%BF%87%E5%8E%BB%E7%9A%84-Runtime-Gate"><span class="nav-text">2. 先在 OpenClaw 里造一道 Agent 绕不过去的 Runtime Gate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%85%88%E5%BB%BA%E7%AB%8B%E9%9A%94%E7%A6%BB%E7%9A%84-Test-Agent"><span class="nav-text">2.1 先建立隔离的 Test Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-OpenClaw-%E5%8E%9F%E5%9E%8B%E5%8F%AA%E6%B2%BB%E7%90%86%E8%B0%83%E7%94%A8-%E4%B8%8D%E9%87%8D%E5%86%99%E6%95%B4%E5%A5%97%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-text">2.2 OpenClaw 原型只治理调用,不重写整套基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8F%82%E6%95%B0%E6%B2%BB%E7%90%86-%E7%BB%9F%E4%B8%80%E8%AF%B7%E6%B1%82%E7%BB%8F%E8%BF%87-Provider-capability-check"><span class="nav-text">2.3 参数治理:统一请求经过 Provider capability check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E5%A4%B1%E8%B4%A5%E8%AF%AD%E4%B9%89%E3%80%81%E6%9C%89%E9%99%90%E9%87%8D%E8%AF%95%E5%92%8C%E5%81%9C%E6%AD%A2%E6%9D%A1%E4%BB%B6"><span class="nav-text">2.4 失败语义、有限重试和停止条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E6%9C%80%E9%9A%BE%E5%88%A4%E6%96%AD%E7%9A%84%E4%B8%8D%E6%98%AF%E5%A4%B1%E8%B4%A5-%E8%80%8C%E6%98%AF%E5%A4%B1%E8%B4%A5%E5%8F%91%E7%94%9F%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82"><span class="nav-text">2.5 最难判断的不是失败,而是失败发生在哪一层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E6%95%85%E9%9A%9C%E4%B8%8D%E4%BC%9A%E5%9B%A0%E4%B8%BA%E4%BB%A3%E7%A0%81%E6%AD%A3%E7%A1%AE%E8%80%8C%E6%B6%88%E5%A4%B1"><span class="nav-text">2.6 基础设施故障不会因为代码正确而消失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-JSONL-%E8%AE%A9%E6%90%9C%E7%B4%A2%E7%A6%BB%E5%BC%80%E4%B8%8D%E5%8F%AF%E8%BF%BD%E8%B8%AA%E7%9A%84%E5%AF%B9%E8%AF%9D"><span class="nav-text">2.7 JSONL:让搜索离开不可追踪的对话</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BB%8E-OpenClaw-%E6%8F%92%E4%BB%B6%E5%88%B0%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-text">3. 从 OpenClaw 插件到通用搜索运行时</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Provider-registry-%E6%98%BE%E5%BC%8F%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E8%83%BD%E5%8A%9B%E5%92%8C%E9%85%8D%E7%BD%AE%E9%97%A8"><span class="nav-text">3.1 Provider registry:显式优先级、能力和配置门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%B8%89%E7%A7%8D%E6%89%A7%E8%A1%8C%E7%AD%96%E7%95%A5-fallback%E3%80%81race%E3%80%81aggregate"><span class="nav-text">3.2 三种执行策略:fallback、race、aggregate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fallback"><span class="nav-text">fallback</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#race"><span class="nav-text">race</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aggregate"><span class="nav-text">aggregate</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%B6%85%E6%97%B6%E7%8E%B0%E5%9C%A8%E7%9C%9F%E7%9A%84%E4%BC%9A%E5%8F%96%E6%B6%88%E8%AF%B7%E6%B1%82"><span class="nav-text">3.3 超时现在真的会取消请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E7%BB%93%E6%9E%84%E5%8C%96-ProviderError-%E4%B8%8E-Circuit-Breaker"><span class="nav-text">3.4 结构化 ProviderError 与 Circuit Breaker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E7%BB%93%E6%9E%9C%E5%A5%91%E7%BA%A6%E4%B8%8E-AttemptRecord"><span class="nav-text">3.5 结果契约与 AttemptRecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E5%8F%91%E5%B8%83%E5%8C%85%E4%B8%8D%E5%8F%AA%E9%AA%8C%E8%AF%81%E6%BA%90%E7%A0%81-%E8%80%8C%E6%98%AF%E9%AA%8C%E8%AF%81%E7%9C%9F%E5%AE%9E%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84"><span class="nav-text">3.6 发布包不只验证源码,而是验证真实安装路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-v0-4-0-%E4%BB%8E-%E5%A4%9A%E4%B8%AA-Provider-%E8%B5%B0%E5%90%91-%E5%A4%9A%E4%B8%AA%E5%87%AD%E6%8D%AE%E3%80%81%E7%BB%9F%E4%B8%80-CLI-%E4%B8%8E-MCP"><span class="nav-text">4. v0.4.0:从&quot;多个 Provider&quot;走向&quot;多个凭据、统一 CLI 与 MCP&quot;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E4%B8%A4%E5%B1%82%E6%95%85%E9%9A%9C%E5%86%B3%E7%AD%96-credential-failover-%E4%B8%8E-provider-fallback"><span class="nav-text">4.1 两层故障决策:credential failover 与 provider fallback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%BE%AA%E7%8E%AF%E5%BC%8F-Setup-Wizard"><span class="nav-text">4.2 循环式 Setup Wizard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-CLI-%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-text">4.3 CLI 管理能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%88%90%E4%B8%BA%E4%B8%8D%E8%90%BD%E7%9B%98%E7%9A%84%E4%B8%B4%E6%97%B6%E8%B7%AF%E7%94%B1"><span class="nav-text">4.4 环境变量成为不落盘的临时路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E5%87%AD%E6%8D%AE%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%88%86%E7%A6%BB"><span class="nav-text">4.5 凭据与配置分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E4%B8%80%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%8E%A5%E5%85%A5%E5%A4%9A%E4%B8%AA-Agent-Host"><span class="nav-text">4.6 一个工具接入多个 Agent Host</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%BF%99%E5%A5%97%E7%B3%BB%E7%BB%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88-%E5%8F%88%E4%BB%8D%E7%84%B6%E6%B2%A1%E6%9C%89%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88"><span class="nav-text">5. 这套系统解决了什么,又仍然没有解决什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E4%B9%8B%E5%89%8D"><span class="nav-text">原型之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenClaw-Runtime-Gate"><span class="nav-text">OpenClaw Runtime Gate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E9%80%9A%E7%94%A8%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-text">当前通用运行时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9C%9F%E6%AD%A3%E5%AD%A6%E5%88%B0%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="nav-text">最后真正学到的东西</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-text">结语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search | Beyond the Clock">
+      <meta itemprop="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><img data-src="openclaw-reliable-search-20260619-115308.jpg" alt=""></p>
+<blockquote>
+<p><strong>Abstract</strong></p>
+<p>This article traces the evolution of a reliability layer for web search in AI agents. The work began as an attempt to stabilize OpenClaw’s Gemini-backed search, but quickly exposed deeper problems: provider-specific parameters, ambiguous failure states, uncontrolled retries, proxy failures, response-envelope mismatches, tool-policy bypasses, and missing execution records. I first built an OpenClaw runtime gate that governed search calls, classified failures, bounded retries, normalized responses, and wrote auditable JSONL records. The design was then generalized into <code>reliable-web-search</code>, a policy-driven multi-provider search runtime with provider priorities, structured errors, real request cancellation, circuit breaking, fallback/race/aggregate strategies, multi-credential routing, a unified CLI, and a stdio MCP server. The central lesson is simple: reliable agent systems are not defined by never failing, but by knowing precisely what failed, what evidence remains usable, what action is permitted next, and when execution must stop.</p>
+</blockquote>
+<blockquote>
+<p><strong>2026-06-26 更新</strong></p>
+<p>本文最初记录的是一个运行在 OpenClaw 内部的本地插件原型。随后,我将其中可复用的参数治理、搜索路由、错误语义、取消、熔断和诊断能力抽象为独立开源项目 <a target="_blank" rel="noopener" href="https://github.com/leecdiang/reliable-web-search"><code>reliable-web-search</code></a>,并发布到 npm。当前公开版本为 <code>v0.4.0</code>,已支持统一 CLI、stdio MCP、多 Provider、多凭据 profile、环境变量临时路由,以及 OpenClaw 等 Agent Host 的自动接入。文中的本地插件与当前 npm 包不是同一套代码:前者解释项目为什么出现,后者则是这套思路经过重构后的通用实现。</p>
+<p><a href="https://github.com/leecdiang/reliable-web-search/tree/main" target="_blank" class="glass-pill"><i class="fab fa-github"></i> leecdiang/reliable-web-search</a></p>
+</blockquote>
+<p>这次改造的起因很简单:OpenClaw 的联网搜索不稳定。</p>
+<p>最开始我把它当成普通配置问题–也许 API Key 没填对,也许本地代理偶尔掉线,也许重启一下 Gateway 就恢复了。结果排查下来发现,整条 Tool Calling 链路缺的是<strong>状态语义</strong>。</p>
+<p>搜索失败时,Agent 知道失败发生在哪一层吗?</p>
+<p>网络没连上、Provider 服务过载、配额耗尽、鉴权失败、响应解析错误和真正没有结果,最后可能都被压缩成一句&quot;搜索失败&quot;。Agent 也可能进一步把&quot;调用失败&quot;误解成&quot;网上没有相关资料&quot;。一次请求该重试几次?超时后底层请求还在消耗额度吗?多个 Provider 同时可用时,按什么顺序调用?哪个结果才算真正可用?整个过程能不能回溯?</p>
+<p>这些问题不断冒出来,任务也从&quot;修好搜索&quot;变成了:</p>
+<blockquote>
+<p>为 Agent 建立一个受控、可测试、可取消、可审计,并且能够正确失败的搜索运行时。</p>
+</blockquote>
+<p>下面是一条从故障排查、运行时治理到通用搜索基础设施的演化路径。</p>
+<hr>
+<h2 id="1-搜索失败不是一个状态-而是一组完全不同的故障">1. 搜索失败不是一个状态,而是一组完全不同的故障</h2>
+<p>OpenClaw 原本已经有 <code>web_search</code> 工具,通过 Gemini 获取联网结果。调用链看起来是这样的:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Agent</span><br><span class="line">→ web_search</span><br><span class="line">→ Gemini</span><br><span class="line">→ 搜索结果</span><br></pre></td></tr></table></figure>
+<p>这条链路藏了一个问题:Agent 看到的是工具调用结果,但故障到底发生在哪个层级,它不知道。</p>
+<p>排查时我遇到过这些状态:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">unsupported_language</span><br><span class="line">503 UNAVAILABLE / high demand</span><br><span class="line">429 rate limited</span><br><span class="line">fetch failed</span><br><span class="line">ECONNREFUSED</span><br><span class="line">no_results</span><br><span class="line">response_parse_failure</span><br><span class="line">401 authentication failure</span><br></pre></td></tr></table></figure>
+<p>它们不是同一类失败。</p>
+<h3 id="1-1-参数错误、服务过载、网络故障和空结果不是一回事">1.1 参数错误、服务过载、网络故障和空结果不是一回事</h3>
+<p>统一接口容易让人以为所有搜索 Provider 接受同一组参数。实际上 Gemini、Brave、Tavily、SearXNG 这些服务,在语言、国家、时间范围、结果数量和网页索引能力上各有差异。</p>
+<p>早期 OpenClaw 调用中,Gemini 不接受部分通用字段:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">language</span><br><span class="line">search_lang</span><br><span class="line">country</span><br><span class="line">ui_lang</span><br></pre></td></tr></table></figure>
+<p>Agent 按统一接口传这些字段,Provider 直接拒绝请求。问题不是网络,也不是&quot;没有结果&quot;,是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">调用参数</span><br><span class="line">≠</span><br><span class="line">Provider 能力</span><br></pre></td></tr></table></figure>
+<p>其他故障也要分开处理:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">状态</th>
+<th style="text-align:left">实际含义</th>
+<th style="text-align:left">合理动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>provider_overloaded</code></td>
+<td style="text-align:left">Provider 暂时过载</td>
+<td style="text-align:left">有限重试,或切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>rate_limited</code></td>
+<td style="text-align:left">触发速率或配额限制</td>
+<td style="text-align:left">尊重 <code>Retry-After</code>,或切换凭据/Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>transport_failure</code></td>
+<td style="text-align:left">DNS、代理、连接或网络路径失败</td>
+<td style="text-align:left">短重试,之后切换故障域</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>authentication_failure</code></td>
+<td style="text-align:left">Key 缺失、失效或权限不足</td>
+<td style="text-align:left">不原样重试;可换凭据</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>response_parse_failure</code></td>
+<td style="text-align:left">Provider 有响应,但适配器无法理解</td>
+<td style="text-align:left">记录兼容性错误并 fallback</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>no_results</code></td>
+<td style="text-align:left">Provider 成功响应,但没有可用结果</td>
+<td style="text-align:left">不原样重试;可换索引或 Provider</td>
+</tr>
+</tbody>
+</table>
+<p>只有两个条件都满足才算 <code>no_results</code>:Provider 成功响应,响应结构正确解析,且没有可用内容。</p>
+<p>请求没发出去、响应解析不了、Provider 确实返回空结果–这是三种状态。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">不应原样重试同一个 Provider</span><br><span class="line">≠</span><br><span class="line">不应 fallback 到其他 Provider</span><br></pre></td></tr></table></figure>
+<p>某个 Provider 返回空结果,可能只是索引覆盖范围不同、查询理解方式不同或者服务类型不同。可靠搜索不能把&quot;当前 Provider 没找到&quot;解释成&quot;互联网中不存在&quot;。</p>
+<h3 id="1-2-可靠性的关键是让失败决定下一步-不光是避免它">1.2 可靠性的关键是让失败决定下一步,不光是避免它</h3>
+<p>需要回答的问题就那么几个:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">这次请求发出去了没有?</span><br><span class="line">发给了哪个 Provider?</span><br><span class="line">系统读懂响应了吗?</span><br><span class="line">错误值得重试吗?</span><br><span class="line">应该换凭据,还是换 Provider?</span><br><span class="line">超时后底层请求真的停了吗?</span><br><span class="line">当前结果能进入证据审查吗?</span><br><span class="line">什么时候必须停止?</span><br></pre></td></tr></table></figure>
+<p>这些没有稳定答案,Agent 就只能自己猜。</p>
+<p>可靠性设计的核心也变了:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;让搜索成功&quot;</span><br><span class="line">→</span><br><span class="line">&quot;让每一种失败都有明确的类型、边界和后续动作&quot;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="2-先在-OpenClaw-里造一道-Agent-绕不过去的-Runtime-Gate">2. 先在 OpenClaw 里造一道 Agent 绕不过去的 Runtime Gate</h2>
+<p>最直接的做法,是在 Prompt 或 Skill 中加规则:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">如果搜索失败,不要编造答案。</span><br><span class="line">遇到 503 时有限重试。</span><br><span class="line">网络错误不能解释成没有结果。</span><br></pre></td></tr></table></figure>
+<p>这些规则当然有用,但本质上仍然只是行为建议。</p>
+<p>模型可能遵守,也可能随着上下文增长、工具变多、任务变复杂,把规则搁在一边。更关键的是,Prompt 管不住 Agent 绕过新流程。如果 Runtime 同时暴露 <code>web_search</code> 和 <code>reliable_web_search</code>,Skill 写着&quot;优先用后者&quot;,模型仍然可能直接调用原始工具。</p>
+<p>所以关键不在继续扩写 Prompt,而是在工具层建立一道 Gate:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Agent</span><br><span class="line">→ 受控搜索入口</span><br><span class="line">→ 参数治理</span><br><span class="line">→ Provider 路由</span><br><span class="line">→ 错误分类</span><br><span class="line">→ 有限重试</span><br><span class="line">→ 结果标准化</span><br><span class="line">→ 状态判断</span><br><span class="line">→ 审计记录</span><br></pre></td></tr></table></figure>
+<p>同时在权限层封死原始入口:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web_search = denied</span><br></pre></td></tr></table></figure>
+<p>可靠性不能依赖模型&quot;记得遵守规则&quot;。应该让未经治理的路径根本不存在。</p>
+<h3 id="2-1-先建立隔离的-Test-Agent">2.1 先建立隔离的 Test Agent</h3>
+<p>我没有直接修改 Main Agent 或 Code Lab,而是单独建立了一个临时 <code>test</code> Agent,验证三件事:</p>
+<ol>
+<li>插件是否被 OpenClaw Runtime 正确加载;</li>
+<li>新工具是否真的可调用;</li>
+<li>被禁止的工具是否在 Runtime 层不可调用。</li>
+</ol>
+<p>当时的工具策略大致如下:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;test&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;profile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;full&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;allow&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;reliable_web_search&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;read&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;session_status&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;memory_get&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;memory_search&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deny&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;web_search&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>使用 <code>full</code> profile 是因为 OpenClaw 的处理顺序是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">profile</span><br><span class="line">→ allow</span><br><span class="line">→ deny</span><br></pre></td></tr></table></figure>
+<p>之前用 <code>minimal</code> 时，插件工具在 profile 阶段就被过滤掉，allowlist 无法把它加回来。最后采用：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">full profile</span><br><span class="line">→ 让插件工具进入候选集合</span><br><span class="line">→ allowlist 严格收窄</span><br><span class="line">→ deny 明确移除原始 web_search</span><br></pre></td></tr></table></figure>
+<p>最终 Runtime 中确认:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reliable_web_search = present</span><br><span class="line">web_search = absent</span><br><span class="line">write = absent</span><br><span class="line">apply_patch = absent</span><br></pre></td></tr></table></figure>
+<p>我还让 Agent 实际尝试调用 <code>write</code>。Runtime 返回&quot;工具未注册&quot;,而不是由 Agent 自己说&quot;我不会使用&quot;。</p>
+<p>这一步验证了一条很重要的原则:</p>
+<blockquote>
+<p>Tool Policy 必须是运行时能力边界,不是写在 Prompt 里的行为建议。</p>
+</blockquote>
+<h3 id="2-2-OpenClaw-原型只治理调用-不重写整套基础设施">2.2 OpenClaw 原型只治理调用,不重写整套基础设施</h3>
+<p>第一版插件注册了一个新的工具:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reliable_web_search</span><br></pre></td></tr></table></figure>
+<p>它没有重新实现 Gemini API,而是调用 OpenClaw 自己的搜索 Runtime:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">api.<span class="property">runtime</span>.<span class="property">webSearch</span>.<span class="title function_">search</span>(&#123;</span><br><span class="line">  <span class="attr">config</span>: api.<span class="property">config</span>,</span><br><span class="line">  args</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这样做是因为 OpenClaw 已经负责:</p>
+<ul>
+<li>API Key 管理;</li>
+<li>代理设置;</li>
+<li>Provider 适配;</li>
+<li>网络与安全约束;</li>
+<li>引用包装;</li>
+<li>Runtime 返回结构;</li>
+<li>基础日志。</li>
+</ul>
+<p>如果插件直接对 Gemini 发起 <code>fetch</code>,就等于绕过了现有的运行时管理能力。这个 wrapper 只负责搜索调用的治理,而不是复制一套搜索基础设施。</p>
+<p>原型被拆成几个部分:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">src/index.ts</span><br><span class="line">    插件入口、调用流程和路由</span><br><span class="line"></span><br><span class="line">src/pure.ts</span><br><span class="line">    参数清洗、响应标准化和错误分类</span><br><span class="line"></span><br><span class="line">src/retry.ts</span><br><span class="line">    重试计划、退避和 jitter</span><br><span class="line"></span><br><span class="line">src/search-run-log.ts</span><br><span class="line">    JSONL 审计记录</span><br><span class="line"></span><br><span class="line">src/index.test.ts</span><br><span class="line">    回归测试</span><br></pre></td></tr></table></figure>
+<p>标准输出被设计为:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;ok&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gemini&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;attempts&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;results&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;removed_parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retrieval_succeeded&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;usable_for_review&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这里刻意没有设计 <code>usable_for_claim</code>。</p>
+<p>因为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">retrieval_succeeded</span><br><span class="line">= 检索成功并得到可解析内容</span><br><span class="line"></span><br><span class="line">usable_for_review</span><br><span class="line">= 内容可以进入后续来源审查</span><br><span class="line"></span><br><span class="line">usable_for_claim</span><br><span class="line">= 不应由搜索层决定,而应由 Evidence Layer 判断</span><br></pre></td></tr></table></figure>
+<p>搜索层负责取回数据和描述状态,不替 Agent 宣布事实成立。</p>
+<h3 id="2-3-参数治理-统一请求经过-Provider-capability-check">2.3 参数治理:统一请求经过 Provider capability check</h3>
+<p>OpenClaw 原型中,调用前先经过:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">sanitizeSearchArgs</span>(provider, args)</span><br></pre></td></tr></table></figure>
+<p>输入:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ASIC design flow&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">10</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;country&quot;</span><span class="punctuation">:</span> <span class="string">&quot;US&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;language&quot;</span><span class="punctuation">:</span> <span class="string">&quot;zh&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>如果当前 Provider 不支持 <code>country</code> 和 <code>language</code>,发送前变成:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ASIC design flow&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">10</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>同时记录:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;removed_parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;country&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;language&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这不只是删字段,而是建立一条显式转换链:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用户意图</span><br><span class="line">→ 统一搜索请求</span><br><span class="line">→ Provider capability check</span><br><span class="line">→ Provider-specific request</span><br></pre></td></tr></table></figure>
+<p>这个思路后来保留到 <code>reliable-web-search</code>。每个 Provider 都有显式 <code>capabilities</code>,系统可以判断它属于完整网页搜索、AI Search 还是 Instant Answer,是否支持 freshness,以及最大结果数量。</p>
+<h3 id="2-4-失败语义、有限重试和停止条件">2.4 失败语义、有限重试和停止条件</h3>
+<p>原型阶段,我将错误归纳为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">provider_overloaded</span><br><span class="line">rate_limited</span><br><span class="line">transport_failure</span><br><span class="line">authentication_failure</span><br><span class="line">no_results</span><br><span class="line">response_parse_failure</span><br></pre></td></tr></table></figure>
+<p>随后明确区分两个经常被混在一起的动作:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">retry</span><br><span class="line">= 再次调用同一个 Provider</span><br><span class="line"></span><br><span class="line">fallback</span><br><span class="line">= 换一个 Provider 继续执行</span><br></pre></td></tr></table></figure>
+<p>合理策略大致如下:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">provider_overloaded</span><br><span class="line">→ 2s → 5s → 12s</span><br><span class="line">→ 有限尝试</span><br><span class="line"></span><br><span class="line">rate_limited</span><br><span class="line">→ 优先读取 Retry-After</span><br><span class="line">→ 否则最多短暂重试一次</span><br><span class="line"></span><br><span class="line">transport_failure</span><br><span class="line">→ 短等待</span><br><span class="line">→ 最多重试一次</span><br><span class="line"></span><br><span class="line">authentication_failure</span><br><span class="line">→ 不重试当前凭据</span><br><span class="line"></span><br><span class="line">no_results</span><br><span class="line">→ 不对同一 Provider 原样重试</span><br><span class="line">→ 可以换 Provider</span><br></pre></td></tr></table></figure>
+<p>期间还修复过一个 <code>attempts</code> 计算问题,最终明确:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">attempts</span><br><span class="line">= 包含首次调用在内的总调用次数</span><br><span class="line"></span><br><span class="line">retryIndex</span><br><span class="line">= 已完成的重试次数</span><br></pre></td></tr></table></figure>
+<p>真实网络失败时,结果类似:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;ok&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;transport_failure&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gemini&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;attempts&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;results&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;fetch failed&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retrieval_succeeded&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;usable_for_review&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>它表达的是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">首次调用失败</span><br><span class="line">→ 有限等待</span><br><span class="line">→ 重试一次</span><br><span class="line">→ 仍然失败</span><br><span class="line">→ 明确停止</span><br></pre></td></tr></table></figure>
+<p>可靠性不是死磕到成功,而是知道什么时候继续、什么时候切换、什么时候结束。</p>
+<h3 id="2-5-最难判断的不是失败-而是失败发生在哪一层">2.5 最难判断的不是失败,而是失败发生在哪一层</h3>
+<p>排查时最容易混淆的是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">网络失败</span><br><span class="line">Provider 返回空结果</span><br><span class="line">wrapper 解析失败</span><br></pre></td></tr></table></figure>
+<p>一开始 Gemini Runtime 返回:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gemini&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;citations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>wrapper 检查的却是:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rawRecord.<span class="property">content</span></span><br></pre></td></tr></table></figure>
+<p>真正内容在:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rawRecord.<span class="property">result</span>.<span class="property">content</span></span><br></pre></td></tr></table></figure>
+<p>一个包含正文的成功响应,被误判成 <code>no_results</code>。</p>
+<p>正确做法是先解开 Runtime envelope:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> rawData =</span><br><span class="line">  rawRecord &amp;&amp;</span><br><span class="line">  <span class="keyword">typeof</span> rawRecord === <span class="string">&quot;object&quot;</span> &amp;&amp;</span><br><span class="line">  <span class="string">&quot;result&quot;</span> <span class="keyword">in</span> rawRecord &amp;&amp;</span><br><span class="line">  <span class="keyword">typeof</span> rawRecord.<span class="property">result</span> === <span class="string">&quot;object&quot;</span></span><br><span class="line">    ? rawRecord.<span class="property">result</span></span><br><span class="line">    : rawRecord;</span><br></pre></td></tr></table></figure>
+<p>之后所有内容检测、引用读取和标准化都基于 <code>rawData</code>。</p>
+<p>教训:响应结构本身也是运行时契约。适配器看不懂响应,就该返回 parse failure,而不是解释成空结果。</p>
+<p>期间还出过一次事故–用宽泛正则清理调试代码时,顺手删掉了刚修好的 envelope 解包逻辑。之后我给自己加了一条规矩:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">不使用宽泛正则批量改源码;</span><br><span class="line">修复必须落在 src;</span><br><span class="line">每次修改后重新 build 并跑回归测试。</span><br></pre></td></tr></table></figure>
+<p>最终,真实调用链闭环为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Agent</span><br><span class="line">→ reliable_web_search</span><br><span class="line">→ OpenClaw Web Search Runtime</span><br><span class="line">→ Gemini</span><br><span class="line">→ Runtime envelope</span><br><span class="line">→ normalize</span><br><span class="line">→ Agent</span><br></pre></td></tr></table></figure>
+<h3 id="2-6-基础设施故障不会因为代码正确而消失">2.6 基础设施故障不会因为代码正确而消失</h3>
+<p>当时另一个反复出现的变量,是本地代理:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:17891</span><br></pre></td></tr></table></figure>
+<p>只要代理进程退出,Gateway 仍然尝试连接原端口,最终得到:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ECONNREFUSED</span><br><span class="line">fetch failed</span><br><span class="line">transport_failure</span><br></pre></td></tr></table></figure>
+<p>这解释了为什么同一套代码可能几分钟前成功、几分钟后又失败。</p>
+<p>最终确认的代理配置是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">代理模式:规则</span><br><span class="line">HTTP/SOCKS 端口:17891</span><br><span class="line"></span><br><span class="line">服务模式 TUN:关闭</span><br><span class="line">DNS 防污染:关闭</span><br><span class="line">局域网代理:关闭</span><br><span class="line"></span><br><span class="line">自启动:开启</span><br><span class="line">关闭时询问:关闭</span><br><span class="line">退出时最小化:开启</span><br></pre></td></tr></table></figure>
+<p>最需要区分的是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">关闭窗口</span><br><span class="line">≠</span><br><span class="line">退出代理进程</span><br></pre></td></tr></table></figure>
+<p><code>reliable_web_search</code> 可以正确识别代理故障,却不能自动恢复一个已经退出的代理服务。</p>
+<p>这也是可靠性工程的边界:软件可以描述基础设施失败、隔离影响并选择后续策略,但不能假装依赖永远可靠。</p>
+<h3 id="2-7-JSONL-让搜索离开不可追踪的对话">2.7 JSONL:让搜索离开不可追踪的对话</h3>
+<p>原型会把每次搜索追加到:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.openclaw/workspace/90_system/search/search_runs.jsonl</span><br></pre></td></tr></table></figure>
+<p>成功记录类似:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;search_run_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;SEARCH-2bb117-372755&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;latest OpenClaw version 2026&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gemini&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;attempts&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;error_code&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;latency_ms&quot;</span><span class="punctuation">:</span> <span class="number">7758</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result_count&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;removed_parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retrieval_succeeded&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;usable_for_review&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;started_at&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2026-06-18T13:42:26.336Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;finished_at&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2026-06-18T13:42:34.094Z&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>网络失败也会留下记录:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;OpenClaw official documentation&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gemini&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;attempts&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;transport_failure&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;error_code&quot;</span><span class="punctuation">:</span> <span class="string">&quot;fetch failed&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retrieval_succeeded&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;usable_for_review&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>过去 Agent 只丢一句&quot;搜索失败&quot;,想追问都不知道从哪里下手:调用了哪个 Provider?实际调用了几次?是代理问题、限流还是解析失败?哪些参数被删除?有没有获得可用内容?总耗时多少?</p>
+<p>有了结构化记录,这些问题都有答案。</p>
+<p>日志中刻意不保存 API Key、Authorization Header、完整 Provider 原始响应和完整搜索正文。</p>
+<p>不过 query 本身也可能包含姓名、文件路径、项目代号等敏感信息。正式部署时,日志系统仍应支持关闭 query 日志、对 query 脱敏、只保存 query hash、设置日志保留期限。</p>
+<p>可审计不意味着无限记录。观测能力同样要服从隐私边界。</p>
+<hr>
+<h2 id="3-从-OpenClaw-插件到通用搜索运行时">3. 从 OpenClaw 插件到通用搜索运行时</h2>
+<p>OpenClaw 原型已经解决了当时的问题,但它仍然和本地环境高度绑定:</p>
+<ul>
+<li>依赖 OpenClaw Runtime;</li>
+<li>Provider 路由写在插件内部;</li>
+<li>JSONL 路径固定在 workspace;</li>
+<li>错误类型和返回结构服务于特定 Agent;</li>
+<li>其他 Node.js 应用无法直接复用。</li>
+</ul>
+<p>真正值得抽取的问题其实是:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">如何选择 Provider?</span><br><span class="line">什么状态触发 retry?</span><br><span class="line">什么状态触发 fallback?</span><br><span class="line">超时后请求是否真的停止?</span><br><span class="line">多个 Provider 并发时如何结束?</span><br><span class="line">Provider 连续故障时如何隔离?</span><br><span class="line">如何判断结果是否满足最低质量门?</span><br><span class="line">如何记录每一次尝试?</span><br></pre></td></tr></table></figure>
+<p>于是这部分能力被抽象成独立项目:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reliable-web-search</span><br></pre></td></tr></table></figure>
+<p>它的定位不再是&quot;OpenClaw 搜索插件&quot;,而是应用与多个搜索 API 之间的策略运行时:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Application / Agent</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">reliable-web-search</span><br><span class="line">        │</span><br><span class="line">        ├─ Provider registry</span><br><span class="line">        ├─ Priority routing</span><br><span class="line">        ├─ Capability and configuration checks</span><br><span class="line">        ├─ Retry and fallback policy</span><br><span class="line">        ├─ Timeout cancellation</span><br><span class="line">        ├─ Circuit breaker</span><br><span class="line">        ├─ Result status and quality gate</span><br><span class="line">        └─ Attempt diagnostics</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">Search Providers</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-Provider-registry-显式优先级、能力和配置门">3.1 Provider registry:显式优先级、能力和配置门</h3>
+<p>第一版按注册顺序排列,结果有时让无需密钥但能力有限的 Provider 排到前面。</p>
+<p>现在每个 Provider 都具有:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">priority</span><br><span class="line">capabilities</span><br><span class="line"><span class="title function_">isConfigured</span>()</span><br></pre></td></tr></table></figure>
+<p>registry 只加入真实配置完成的 Provider,并按优先级路由。SearXNG 只有显式配置 Base URL 才算可用,不再默认向本机 <code>localhost</code> 发请求。</p>
+<p>如果用户写错 Provider 名称:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">providers</span>: [<span class="string">&quot;brvae&quot;</span>, <span class="string">&quot;tavily&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>系统会给出接近的拼写建议,而不是静默忽略。</p>
+<p>当前内置八个 Provider:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Provider</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">当前定位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Brave</td>
+<td style="text-align:left">完整网页搜索</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">Tavily</td>
+<td style="text-align:left">面向 LLM 的网页搜索</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">Bocha</td>
+<td style="text-align:left">完整网页搜索</td>
+<td style="text-align:left">Experimental</td>
+</tr>
+<tr>
+<td style="text-align:left">Metaso</td>
+<td style="text-align:left">AI Search</td>
+<td style="text-align:left">Experimental</td>
+</tr>
+<tr>
+<td style="text-align:left">Gemini</td>
+<td style="text-align:left">AI Grounding</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">SerpAPI</td>
+<td style="text-align:left">多搜索引擎适配</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">SearXNG</td>
+<td style="text-align:left">自托管聚合搜索</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">DuckDuckGo</td>
+<td style="text-align:left">Instant Answer</td>
+<td style="text-align:left">零配置兜底</td>
+</tr>
+</tbody>
+</table>
+<p>DuckDuckGo 使用 Instant Answer API,不是完整网页搜索,更适合百科式主题摘要,因此被放在低优先级兜底位置。</p>
+<h3 id="3-2-三种执行策略-fallback、race、aggregate">3.2 三种执行策略:fallback、race、aggregate</h3>
+<p>三种模式:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fallback</span><br><span class="line">race</span><br><span class="line">aggregate</span><br></pre></td></tr></table></figure>
+<h4 id="fallback"><code>fallback</code></h4>
+<p>按优先级顺序调用 Provider:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Provider A</span><br><span class="line">→ 失败或空结果</span><br><span class="line">→ Provider B</span><br><span class="line">→ 成功后停止</span><br></pre></td></tr></table></figure>
+<h4 id="race"><code>race</code></h4>
+<p>同时启动多个 Provider,第一个获得可用结果的请求成为 winner:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">A ───────────────</span><br><span class="line">B ───── success</span><br><span class="line">C ─────────</span><br><span class="line"></span><br><span class="line">B wins</span><br><span class="line">→ abort A</span><br><span class="line">→ abort C</span><br></pre></td></tr></table></figure>
+<p>这不是简单调用 <code>Promise.all()</code>。winner 一旦确认,其他 Provider 的独立 <code>AbortController</code> 会立即触发,避免落败请求继续占用连接和额度。</p>
+<h4 id="aggregate"><code>aggregate</code></h4>
+<p>并发调用多个 Provider,并汇总成功结果。当前版本已经完成统一执行和状态诊断,但复杂的 URL canonicalization、跨 Provider 去重、融合排序和域名多样性控制仍属于后续工作。</p>
+<h3 id="3-3-超时现在真的会取消请求">3.3 超时现在真的会取消请求</h3>
+<p>早期实现使用:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">race</span>([providerPromise, timeoutPromise])</span><br></pre></td></tr></table></figure>
+<p>这只会让上层停止等待,底层 <code>fetch</code> 仍可能继续运行。</p>
+<p>当前实现通过 <code>AbortController</code> 将 timeout 传入实际请求:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">达到超时</span><br><span class="line">→ signal.abort()</span><br><span class="line">→ Provider fetch 终止</span><br><span class="line">→ 记录 timeout</span><br><span class="line">→ 根据策略 retry 或 fallback</span><br></pre></td></tr></table></figure>
+<p>测试会直接验证 Provider 能观察到:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">signal.<span class="property">aborted</span> === <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>这解决了 Agent 系统里很隐蔽的一类成本问题:</p>
+<blockquote>
+<p>表面已经超时,后台请求还在继续消耗额度。</p>
+</blockquote>
+<h3 id="3-4-结构化-ProviderError-与-Circuit-Breaker">3.4 结构化 <code>ProviderError</code> 与 Circuit Breaker</h3>
+<p>Provider 不再只抛一个字符串,而是返回结构化错误:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">providerId</span><br><span class="line">error code</span><br><span class="line">HTTP status</span><br><span class="line">retryable</span><br><span class="line">shouldBreakerTrip</span><br><span class="line">Retry-After</span><br></pre></td></tr></table></figure>
+<p>系统据此区分:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">401 auth_failed</span><br><span class="line">429 rate_limited</span><br><span class="line">500 server_error</span><br><span class="line">timeout</span><br><span class="line">aborted</span><br><span class="line">no_results</span><br><span class="line">parse_error</span><br></pre></td></tr></table></figure>
+<p>并决定要不要重试、要不要 fallback、要不要切换凭据、要不要计入熔断器、是否需要等待、最终返回什么状态。</p>
+<p>鉴权错误不应该当成瞬态服务故障记入熔断器。网络错误、超时和 5xx 才真正反映 Provider 健康状态。</p>
+<p>熔断器有 closed、open、half-open 三种状态。失败达到阈值后:closed → open → 暂时跳过该 Provider → recovery timeout → half-open 试探 → 成功后 closed。</p>
+<p>当前实现验证了调用级配置能真正进入 breaker–比如 <code>failureThreshold = 1</code>、<code>recoveryTimeout = 100ms</code>–不只是类型定义里有。</p>
+<h3 id="3-5-结果契约与-AttemptRecord">3.5 结果契约与 AttemptRecord</h3>
+<p>最终返回值不只包含结果,还包含完整的执行元数据:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">ReliableSearchResult</span> &#123;</span><br><span class="line">  <span class="attr">results</span>: <span class="title class_">UnifiedSearchResult</span>[];</span><br><span class="line">  <span class="attr">provider</span>: <span class="built_in">string</span>;</span><br><span class="line">  <span class="attr">providerPath</span>: <span class="built_in">string</span>[];</span><br><span class="line">  <span class="attr">fallbackReason</span>?: <span class="built_in">string</span>;</span><br><span class="line">  <span class="attr">attempts</span>: <span class="title class_">AttemptRecord</span>[];</span><br><span class="line">  <span class="attr">elapsedMs</span>: <span class="built_in">number</span>;</span><br><span class="line">  <span class="attr">retrievalSucceeded</span>: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="attr">usableForReview</span>: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="attr">resultStatus</span>:</span><br><span class="line">    | <span class="string">&quot;success&quot;</span></span><br><span class="line">    | <span class="string">&quot;partial&quot;</span></span><br><span class="line">    | <span class="string">&quot;no_results&quot;</span></span><br><span class="line">    | <span class="string">&quot;failed&quot;</span></span><br><span class="line">    | <span class="string">&quot;aborted&quot;</span>;</span><br><span class="line">  <span class="attr">cacheHit</span>: <span class="built_in">boolean</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每次尝试都会记录:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Provider</span><br><span class="line">Route</span><br><span class="line">凭据 profile</span><br><span class="line">状态</span><br><span class="line">耗时</span><br><span class="line">错误分类</span><br><span class="line">HTTP 状态</span><br><span class="line">结果数量</span><br></pre></td></tr></table></figure>
+<p>例如:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;providerPath&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;tavily.default&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;attempts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;providerId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tavily&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;routeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tavily.default&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;credentialProfile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;default&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;resultCount&quot;</span><span class="punctuation">:</span> <span class="number">5</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;resultStatus&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retrievalSucceeded&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;usableForReview&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这样一次搜索不只告诉调用者&quot;最后谁成功了&quot;,还还原了整条执行路径。</p>
+<p>缓存命中也会明确返回:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">cacheHit</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>并保持和实时调用一致的主要字段,避免调用者因为结果来自缓存而拿到另一套残缺结构。</p>
+<h3 id="3-6-发布包不只验证源码-而是验证真实安装路径">3.6 发布包不只验证源码,而是验证真实安装路径</h3>
+<p>项目通过 <code>tsup</code> 同时输出:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ESM</span><br><span class="line">CommonJS</span><br><span class="line">TypeScript declarations</span><br></pre></td></tr></table></figure>
+<p>发布前不仅执行源码测试,还验证:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ESM import</span><br><span class="line">CJS require</span><br><span class="line">typecheck</span><br><span class="line">build</span><br><span class="line">npm pack</span><br><span class="line">packaged CLI</span><br><span class="line">MCP handshake</span><br></pre></td></tr></table></figure>
+<p>v0.4.0 发布前完成:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">196 tests</span><br><span class="line">8 packaged smoke tests</span><br><span class="line">0 failures</span><br></pre></td></tr></table></figure>
+<p>这些测试覆盖了真实行为：</p>
+<ul>
+<li>空结果会继续 fallback；</li>
+<li>timeout 会真正 abort；</li>
+<li>race winner 会取消 loser；</li>
+<li>attempts 顺序稳定；</li>
+<li>breaker 自定义配置真实生效；</li>
+<li>cache hit 返回完整结构；</li>
+<li>ESM/CJS 包可以真实加载；</li>
+<li>打包后的 CLI 和 MCP Server 可以启动；</li>
+<li>多凭据 route 能被 MCP 正确读取。</li>
+</ul>
+<hr>
+<h2 id="4-v0-4-0-从-多个-Provider-走向-多个凭据、统一-CLI-与-MCP">4. v0.4.0:从&quot;多个 Provider&quot;走向&quot;多个凭据、统一 CLI 与 MCP&quot;</h2>
+<p>到了 v0.4.0，问题从&quot;Provider A 挂了切换 Provider B&quot;变成了更贴近实际使用的场景：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">同一个 Provider 可能有多个合法凭据；</span><br><span class="line">多个 Agent Host 需要共享同一个搜索入口；</span><br><span class="line">用户不应该手工修改 JSON 才能配置；</span><br><span class="line">环境变量、文件凭据和无 Key Provider 应该共存。</span><br></pre></td></tr></table></figure>
+<p>因此,配置模型从:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Provider</span><br></pre></td></tr></table></figure>
+<p>升级为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Provider Definition</span><br><span class="line">→ Credential Profile</span><br><span class="line">→ Provider Route</span><br></pre></td></tr></table></figure>
+<p>例如:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tavily.default</span><br><span class="line">tavily.backup-2</span><br><span class="line">gemini.default</span><br><span class="line">duckduckgo</span><br></pre></td></tr></table></figure>
+<h3 id="4-1-两层故障决策-credential-failover-与-provider-fallback">4.1 两层故障决策:credential failover 与 provider fallback</h3>
+<p>v0.4.0 明确区分两层切换。</p>
+<p>第一层是同一 Provider 内的凭据切换:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tavily.default</span><br><span class="line">→ tavily.backup-2</span><br></pre></td></tr></table></figure>
+<p>第二层是 Provider 级 fallback:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tavily.*</span><br><span class="line">→ gemini.*</span><br><span class="line">→ duckduckgo</span><br></pre></td></tr></table></figure>
+<p>规则如下:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">错误类型</th>
+<th style="text-align:left">后续动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>rate_limited</code></td>
+<td style="text-align:left">尝试同 Provider 的下一个 credential</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>quota_exhausted</code></td>
+<td style="text-align:left">尝试同 Provider 的下一个 credential</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>authentication_failure</code></td>
+<td style="text-align:left">当前 credential 标记失败,尝试同 Provider 其他凭据</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>network_error</code></td>
+<td style="text-align:left">按 retry/breaker 处理后切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>timeout</code></td>
+<td style="text-align:left">按 retry/breaker 处理后切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>server_error</code></td>
+<td style="text-align:left">按 retry/breaker 处理后切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>provider_overloaded</code></td>
+<td style="text-align:left">按 retry/breaker 处理后切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>no_results</code></td>
+<td style="text-align:left">直接切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>unusable_results</code></td>
+<td style="text-align:left">直接切换 Provider</td>
+</tr>
+<tr>
+<td style="text-align:left">用户取消</td>
+<td style="text-align:left">立即停止</td>
+</tr>
+</tbody>
+</table>
+<p>这里有一个刻意的限制:</p>
+<blockquote>
+<p>默认实现 failover,不做 round-robin。</p>
+</blockquote>
+<p>多个凭据的目的是备用、合法的团队 workspace、Key rotation 和故障隔离,不是让系统无条件在不同账号之间轮询消耗额度。</p>
+<h3 id="4-2-循环式-Setup-Wizard">4.2 循环式 Setup Wizard</h3>
+<p>v0.3.0 的 <code>rws setup</code> 只能选择一个 Provider、输入一个 Key,然后结束。v0.4.0 改成循环式流程:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">添加 Provider</span><br><span class="line">→ 添加凭据</span><br><span class="line">→ 继续添加同 Provider 凭据</span><br><span class="line">→ 添加其他 Provider</span><br><span class="line">→ 查看和调整路由</span><br><span class="line">→ 完成配置</span><br><span class="line">→ 检测 Agent Host</span><br></pre></td></tr></table></figure>
+<p>使用方式:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --global reliable-web-search</span><br><span class="line">rws setup</span><br></pre></td></tr></table></figure>
+<p>在 macOS 或 Linux 上,如果系统全局目录无写权限,可以安装到用户目录:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install --global \</span><br><span class="line">  --prefix <span class="string">&quot;<span class="variable">$HOME</span>/.local&quot;</span> \</span><br><span class="line">  reliable-web-search</span><br></pre></td></tr></table></figure>
+<p>再把下面路径加入 <code>PATH</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;<span class="variable">$HOME</span>/.local/bin:<span class="variable">$PATH</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>不需要使用:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g</span><br></pre></td></tr></table></figure>
+<p>向导能够连续添加:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tavily.default</span><br><span class="line">tavily.backup-2</span><br><span class="line">gemini.default</span><br><span class="line">duckduckgo</span><br></pre></td></tr></table></figure>
+<p>并在最终确认路由后,检测 OpenClaw、Codex、Claude Code 或 Generic MCP 环境。</p>
+<h3 id="4-3-CLI-管理能力">4.3 CLI 管理能力</h3>
+<p>除了 setup,v0.4.0 还提供独立管理命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rws credentials list</span><br><span class="line">rws credentials add tavily --label backup</span><br><span class="line">rws credentials remove tavily.backup</span><br><span class="line">rws credentials <span class="built_in">enable</span> tavily.backup</span><br><span class="line">rws credentials <span class="built_in">disable</span> tavily.backup</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rws routes list</span><br><span class="line">rws routes move tavily.backup --before gemini.default</span><br><span class="line">rws routes <span class="built_in">enable</span> tavily.backup</span><br><span class="line">rws routes <span class="built_in">disable</span> tavily.backup</span><br></pre></td></tr></table></figure>
+<p>诊断命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rws doctor</span><br><span class="line">rws doctor --live</span><br><span class="line">rws doctor --live --all-credentials</span><br></pre></td></tr></table></figure>
+<p>其中:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">doctor</span><br><span class="line">= 检查配置、凭据引用、路由完整性和宿主环境</span><br><span class="line"></span><br><span class="line">doctor --live</span><br><span class="line">= 验证每个 Provider 的首选 credential</span><br><span class="line"></span><br><span class="line">doctor --live --all-credentials</span><br><span class="line">= 明确警告后逐个发起真实请求</span><br></pre></td></tr></table></figure>
+<p>最后一个命令会消耗每个凭据的真实额度,因此不应作为日常检查默认执行。</p>
+<h3 id="4-4-环境变量成为不落盘的临时路由">4.4 环境变量成为不落盘的临时路由</h3>
+<p>如果环境中存在:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> TAVILY_API_KEY=<span class="string">&quot;...&quot;</span></span><br></pre></td></tr></table></figure>
+<p>系统自动产生一个高优先级路由 <code>tavily.env</code>。它有这些特征:不写入 <code>config.json</code>,不写入 <code>credentials.json</code>,删除环境变量后自动消失,与本地相同 Key 去重,<code>routes list</code> 中标记为 <code>[env]</code>,不能通过 <code>credentials remove</code> 删除。</p>
+<p>CI、服务器和临时开发环境可以直接注入 Key,无需改写本地凭据文件。</p>
+<h3 id="4-5-凭据与配置分离">4.5 凭据与配置分离</h3>
+<p>v0.4.0 将数据分开保存:<code>config.json</code> 放 routes、优先级、启停状态等非敏感配置;<code>credentials.json</code> 放 credential profiles 和 API Key。</p>
+<p>安全约束包括:Unix 下 <code>credentials.json</code> 权限为 <code>0600</code>;API Key 不进入 Host MCP 配置、<code>AttemptRecord</code>、stdout、日志或诊断输出;setup 和 doctor 只显示 label 或掩码;v1 → v2 迁移会创建备份;损坏文件不会被自动覆盖。</p>
+<h3 id="4-6-一个工具接入多个-Agent-Host">4.6 一个工具接入多个 Agent Host</h3>
+<p>v0.3.0 开始,项目提供 stdio MCP Server:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rws mcp</span><br></pre></td></tr></table></figure>
+<p>Agent Host 只需要注册:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/path/to/rws&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;mcp&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>当前支持状态为:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Host</th>
+<th style="text-align:left">状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">OpenClaw</td>
+<td style="text-align:left">Verified</td>
+</tr>
+<tr>
+<td style="text-align:left">Generic MCP</td>
+<td style="text-align:left">Standard MCP</td>
+</tr>
+<tr>
+<td style="text-align:left">Codex</td>
+<td style="text-align:left">Beta</td>
+</tr>
+<tr>
+<td style="text-align:left">Claude Code</td>
+<td style="text-align:left">Beta</td>
+</tr>
+</tbody>
+</table>
+<p>对 Agent 来说,始终只看到一个搜索工具:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reliable_web_search</span><br></pre></td></tr></table></figure>
+<p>底下配置了多少 Provider、多少凭据、是否发生 fallback,Agent 不需要关心具体接入细节,只需要读取结构化结果。</p>
+<p>在 OpenClaw 实机验证中,新版 MCP 工具最终返回:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">providerPath: [&quot;tavily.default&quot;]</span><br><span class="line">routeId: tavily.default</span><br><span class="line">status: success</span><br><span class="line">credentialProfile: default</span><br></pre></td></tr></table></figure>
+<p>这也暴露过一个迁移问题:旧版 OpenClaw 本地插件仍然注册了同名工具,导致模型先调用旧 Gemini 路由,再调用新版 MCP。最终通过禁用旧 <code>0.1.0</code> 插件、保留 <code>rws mcp</code> 注册,才让 OpenClaw 只剩新版工具。</p>
+<p>这件事再次证明:</p>
+<blockquote>
+<p>工具发现、工具命名和运行时所有权,同样属于可靠性边界。</p>
+</blockquote>
+<hr>
+<h2 id="5-这套系统解决了什么-又仍然没有解决什么">5. 这套系统解决了什么,又仍然没有解决什么</h2>
+<p>从原型到 SDK,项目经历了三次明显变化。</p>
+<h3 id="原型之前">原型之前</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">搜索成功</span><br><span class="line">→ 返回结果</span><br><span class="line"></span><br><span class="line">搜索失败</span><br><span class="line">→ 原因不清楚</span><br><span class="line">→ Agent 自己推断</span><br><span class="line">→ 可能重试</span><br><span class="line">→ 可能直接回答</span><br></pre></td></tr></table></figure>
+<h3 id="OpenClaw-Runtime-Gate">OpenClaw Runtime Gate</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Agent</span><br><span class="line">→ 参数清洗</span><br><span class="line">→ Gemini / Tavily</span><br><span class="line">→ 错误分类</span><br><span class="line">→ 有限重试与 fallback</span><br><span class="line">→ 标准化输出</span><br><span class="line">→ JSONL</span><br><span class="line">→ Evidence Review</span><br></pre></td></tr></table></figure>
+<h3 id="当前通用运行时">当前通用运行时</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Application / Agent</span><br><span class="line">→ Provider detection and priority</span><br><span class="line">→ Credential-aware routes</span><br><span class="line">→ Abortable timeout</span><br><span class="line">→ Retry / credential failover / provider fallback</span><br><span class="line">→ Race / aggregate</span><br><span class="line">→ Circuit breaker</span><br><span class="line">→ Result quality gate</span><br><span class="line">→ Stable attempt diagnostics</span><br><span class="line">→ CLI / MCP / SDK</span><br></pre></td></tr></table></figure>
+<p>可以将这次演化总结为:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">第一阶段</th>
+<th style="text-align:left">当前阶段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">搜索工具 wrapper</td>
+<td style="text-align:left">搜索可靠性运行时</td>
+</tr>
+<tr>
+<td style="text-align:left">单一 OpenClaw 环境</td>
+<td style="text-align:left">通用 Node.js SDK + CLI + MCP</td>
+</tr>
+<tr>
+<td style="text-align:left">Gemini 为主、Tavily 兜底</td>
+<td style="text-align:left">八个 Provider 的统一 registry</td>
+</tr>
+<tr>
+<td style="text-align:left">单 Provider 单 Key</td>
+<td style="text-align:left">多 Provider、多 credential profile</td>
+</tr>
+<tr>
+<td style="text-align:left">普通错误分类</td>
+<td style="text-align:left">结构化 <code>ProviderError</code></td>
+</tr>
+<tr>
+<td style="text-align:left">上层 timeout</td>
+<td style="text-align:left">底层真实取消</td>
+</tr>
+<tr>
+<td style="text-align:left">简单 fallback</td>
+<td style="text-align:left">fallback / race / aggregate</td>
+</tr>
+<tr>
+<td style="text-align:left">JSONL 本地审计</td>
+<td style="text-align:left">标准化 <code>AttemptRecord[]</code></td>
+</tr>
+<tr>
+<td style="text-align:left">工具权限治理</td>
+<td style="text-align:left">Provider、凭据与 Host 三层治理</td>
+</tr>
+<tr>
+<td style="text-align:left">能搜索吗</td>
+<td style="text-align:left">是否值得继续、切换或停止</td>
+</tr>
+</tbody>
+</table>
+<p>它仍然没有解决所有搜索问题。</p>
+<p>当前版本还没有跨 Provider URL canonicalization、复杂重复结果融合、相关性重排序、域名多样性控制、round-robin 或健康权重、完整用量统计与成本预算、云端凭据管理、Web UI、通用 telemetry hooks。</p>
+<p>这些能力都有价值,但不需要一次性全部实现。更合理的顺序是发布、实际使用、观察真实故障、根据数据决定下一步。</p>
+<p>出现重复链接再做融合。多个 Agent 互相污染再引入更强实例隔离。费用失控再加预算治理。真实用户确实需要 GUI 再考虑 Web UI。</p>
+<p>可靠系统不等于功能最多的系统,而是承诺过的行为都能被测试证明。</p>
+<h3 id="最后真正学到的东西">最后真正学到的东西</h3>
+<p>最消耗精力的不是写代码,是判断问题出在哪一层:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">代码错误?</span><br><span class="line">配置错误?</span><br><span class="line">Provider API 变化?</span><br><span class="line">Runtime 没有加载新构建?</span><br><span class="line">本地代理退出?</span><br><span class="line">请求被限流?</span><br><span class="line">响应 envelope 改变?</span><br><span class="line">旧插件和新 MCP 同时存在?</span><br><span class="line">旧日志和新日志混在一起?</span><br></pre></td></tr></table></figure>
+<p>有几次看起来像&quot;刚修好又坏了&quot;。</p>
+<p>一次是旧的 <code>transport_failure</code> 和新成功记录同时出现在 <code>tail</code> 里。一次是 wrapper 检查错了对象层级。一次是关代理窗口时顺手退出了后台进程。还有一次,新版 MCP 已经正常工作,但旧 OpenClaw 插件仍在抢占同名工具。</p>
+<p>这些经历让我越来越确信:Agent 工程的核心不只是模型能不能完成任务,而是系统能不能准确描述自己当前的状态。</p>
+<p>一个可靠的 Agent 不能只有&quot;成功&quot;和&quot;失败&quot;两种答案。</p>
+<p>它至少应该知道这些:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">请求到底发出去了没有?</span><br><span class="line">发给了谁?</span><br><span class="line">使用了哪个 route 和 credential profile?</span><br><span class="line">响应结构是什么?</span><br><span class="line">系统是否读懂了响应?</span><br><span class="line">失败发生在哪一层?</span><br><span class="line">这个错误是否值得重试?</span><br><span class="line">要不要换凭据?</span><br><span class="line">要不要换 Provider?</span><br><span class="line">底层请求到底停了没有?</span><br><span class="line">当前结果能不能进入证据审查?</span><br><span class="line">整个过程是否留下了可追踪记录?</span><br></pre></td></tr></table></figure>
+<p>这些问题都有明确答案,Agent 才开始从一个聊天界面变成一个可被信任的系统。</p>
+<hr>
+<h2 id="结语">结语</h2>
+<p>开头只是想修好 OpenClaw 的联网搜索。</p>
+<p>过程中绕过了代理、Tool Policy、插件加载、Runtime envelope、Provider 参数、重试循环、fallback、日志路径、Agent 权限、CLI 安装、MCP 注册和旧工具冲突。后来又把这些抽象成 registry、结构化错误、真实取消、race、熔断器、多凭据路由、稳定诊断和统一 Host 接入,最终发布成独立的 <code>reliable-web-search</code>。</p>
+<p>回头看,真正建起来的不是&quot;永远不会失败的搜索工具&quot;:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一个 Agent 绕不过去的治理入口</span><br><span class="line">一套能准确描述故障的状态语义</span><br><span class="line">一个超时后不会偷跑资源的执行层</span><br><span class="line">一条能根据错误选择 retry、credential failover、provider fallback 或停止的路由</span><br><span class="line">一份能回溯每次 Provider 尝试的诊断记录</span><br><span class="line">一个可以通过 CLI、MCP 和 SDK 复用的统一接口</span><br></pre></td></tr></table></figure>
+<p>可靠性从来不是消灭失败。</p>
+<p>可靠性是让失败拥有明确的类型、边界、证据和后续动作;让系统知道自己没拿到什么,也知道什么时候不该继续假装成功。</p>
+<p>至少现在,某一个 Provider、某一把 Key,甚至某一条网络路径挂掉,都不再意味着整条搜索链路走到终点。</p>
+<hr>
+<p><a href="https://github.com/leecdiang/reliable-web-search/tree/main" target="_blank" class="glass-pill"><i class="fab fa-github"></i> leecdiang/reliable-web-search</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+<style>.post-body img { max-width: 80%; }</style>
+
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Digital-Anatomy/">
+    <span>More in Digital Anatomy</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/" title="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/OpenClaw/" rel="tag"># OpenClaw</a>
+              <a href="/tags/Agent/" rel="tag"># Agent</a>
+              <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+              <a href="/tags/%E5%8F%AF%E9%9D%A0%E6%80%A7/" rel="tag"># 可靠性</a>
+              <a href="/tags/%E5%AE%B9%E9%94%99/" rel="tag"># 容错</a>
+              <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" rel="tag"># 工程实践</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向">
+<meta property="og:url" content="https://leecdiang.github.io/2026/03/18/silicon-roadmap/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://leecdiang.github.io/2026/03/18/silicon-roadmap/silicon-roadmap-20260318.jpg">
+<meta property="og:image" content="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/03/18/silicon-roadmap/silicon-roadmap-20260318-2.jpg">
+<meta property="article:published_time" content="2026-03-18T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-04T06:49:52.789Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="ArrowLake">
+<meta property="article:tag" content="CPU">
+<meta property="article:tag" content="IBOT">
+<meta property="article:tag" content="Intel">
+<meta property="article:tag" content="Silicon">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leecdiang.github.io/2026/03/18/silicon-roadmap/silicon-roadmap-20260318.jpg">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/2026/03/18/silicon-roadmap/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/03/18/silicon-roadmap/","path":"2026/03/18/silicon-roadmap/","title":"从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向 | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Arrow-Lake-%E7%9A%84%E2%80%9C%E4%BA%8C%E6%AC%A1%E8%BF%9B%E5%8C%96%E2%80%9D"><span class="nav-text">Arrow Lake 的“二次进化”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIBOT%EF%BC%9F"><span class="nav-text">什么是IBOT？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8-1%EF%BC%9A%E7%BC%96%E8%AF%91%E5%99%A8%E4%BC%98%E5%8C%96%E4%B8%8E-Intel-iBot-%E6%8A%80%E6%9C%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AF%B9%E6%AF%94"><span class="nav-text">表 1：编译器优化与 Intel iBot 技术的深度对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IBOT-%E7%9A%84%E6%A0%B8%E5%BF%83%E8%BF%90%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-text">IBOT 的核心运作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D2D-%E6%8F%90%E9%A2%91%E6%98%AF-IBOT-%E7%9A%84%E5%85%88%E5%86%B3%E6%9D%A1%E4%BB%B6"><span class="nav-text">D2D 提频是 IBOT 的先决条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E9%A2%84%E6%9C%9F-IPC%E7%9A%84%E7%BA%AF%E7%B2%B9%E6%8F%90%E5%8D%87"><span class="nav-text">性能预期: IPC的纯粹提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E8%A1%A8%E7%8E%B0%EF%BC%9A"><span class="nav-text">游戏表现：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%93%E4%B8%9A%E8%B4%9F%E8%BD%BD%EF%BC%9A"><span class="nav-text">专业负载：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9AIntel-%E7%9A%84%E2%80%9C%E8%BD%AF%E7%A1%AC%E5%8D%8F%E5%90%8C%E2%80%9D%E8%BF%9B%E5%8C%96%E8%AE%BA"><span class="nav-text">总结：Intel 的“软硬协同”进化论</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/03/18/silicon-roadmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向 | Beyond the Clock">
+      <meta itemprop="description" content="本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Arrow-Lake-的“二次进化”">Arrow Lake 的“二次进化”</h2>
+<p>intel 发布了Arrow Lake Refresh 的<a target="_blank" rel="noopener" href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/"><strong>Core Ultra 200S PLUS CPUs</strong></a>，核心架构不变，频率微调，通过优化总线连接在 D2D 频率上提升了最多 900 MHz， 同时内存频率支持到 DDR5-7200，除此之外，Intel 在这代 CPU 上搭载了新的二进制优化工具，也就是<strong>Intel Binary Optimisation Tool （IBOT)。</strong></p>
+<p>IBOT旨在优化新 CPU 架构的应用，提高负载 IPC。本文将聚焦这一技术展开讨论。<br>
+<img data-src="silicon-roadmap-20260318.jpg" alt=""></p>
+<hr>
+<h2 id="什么是IBOT？">什么是IBOT？</h2>
+<p>在高性能计算的发展历程中，半导体行业长期通过微缩制程与增加物理核心来获取性能增长。但物理极限的逼近以及异构架构复杂性的提升使得单纯堆料难以应对现代复杂工作负载。同时，AI 浪潮下的能源危机和 AI 终端的个人普及使企业开始重视能效比，在这个大背景下，计算终端<strong>软硬件协同设计</strong>变得尤为重要。</p>
+<p><strong>IBOT</strong>正是这种软硬件协同理念下的产物。简单来说，它是一个动态二进制优化层。</p>
+<p>与传统的编译器优化是在程序运行前完成不同，IBOT 运行在系统底层，它实时监控应用程序的指令流，识别出那些执行效率低下的代码段，并针对 <strong>Arrow Lake</strong> 的微架构特性进行动态重写。</p>
+<h3 id="表-1：编译器优化与-Intel-iBot-技术的深度对比">表 1：编译器优化与 Intel iBot 技术的深度对比</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">编译器优化</th>
+<th style="text-align:left">iBot 底层优化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>作用对象</strong></td>
+<td style="text-align:left">源代码（C++/C# ）</td>
+<td style="text-align:left">编译后的二进制文件（.exe / .dll）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>获取信息</strong></td>
+<td style="text-align:left">静态语法树、数据流分析</td>
+<td style="text-align:left">实际运行时的分析数据 (Profiling Data)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>针对性</strong></td>
+<td style="text-align:left">针对指令集架构（如 x86-64）</td>
+<td style="text-align:left">针对<strong>特定微架构</strong>（如流水线深度解码宽度等）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>典型手段</strong></td>
+<td style="text-align:left">循环展开、函数内联、寄存器分配</td>
+<td style="text-align:left">代码块重排、去除无效指令、优化指令对齐</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>灵活性</strong></td>
+<td style="text-align:left">开发者控制，发布后即固定</td>
+<td style="text-align:left">用户侧控制，可针对新发布的 CPU 进行二次优化</td>
+</tr>
+</tbody>
+</table>
+<p>这种技术的核心目的并非单纯提高频率，而是通过<strong>减少指令周期的浪费（Stalls）</strong>，让 CPU 在每个周期中都能完成更多的实质性工作。</p>
+<hr>
+<h2 id="IBOT-的核心运作机制">IBOT 的核心运作机制</h2>
+<p>为了实现 IPC 的提升，IBOT 主要在以下三个环节发挥作用：</p>
+<ol>
+<li>
+<p><strong>Profiling</strong>： 利用 CPU 内部集成的性能监控单元（PMU），IBOT 能够精准捕捉程序运行时的瓶颈：是分支预测失败？还是频繁的Cache Miss？它能识别出哪些代码导致了架构内部的交通拥堵。</p>
+</li>
+<li>
+<p><strong>Dynamic Transformation</strong>： 一旦锁定目标，IBOT 会在内存中对二进制指令进行调整。例如，将长串的低效指令序列替换为针对当前架构优化的专用指令集，或者重新排列数据读取顺序以匹配更快的总线带宽。</p>
+</li>
+<li>
+<p><strong>Contention Reduction</strong>： 在 Arrow Lake 的分 Tile 设计中，数据在不同逻辑单元间的往返往往产生延迟。IBOT 通过优化指令流，最大限度地减少了对架构资源的争用，确保核心始终处于高效负载的状态。</p>
+</li>
+</ol>
+<hr>
+<h2 id="D2D-提频是-IBOT-的先决条件">D2D 提频是 IBOT 的先决条件</h2>
+<p><strong>Core Ultra 200S</strong> 由于采用了类似 AMD 的 Cheplet 设计，通过 Foveros 3D 封装将不同的 Tiles 组合在一起：<strong>Compute Tile</strong>负责算力，而<strong>SoC Tile</strong>负责内存控制。这导致了CPU 核心每读取一次内存数据，指令都必须跨越计算模块与 SoC 模块之间的物理边界。</p>
+<p>这个边界的通信效率由 D2D 频率决定。由于 D2D 频率较低，数据在模块间传输的时间大幅拉跨整体延迟。因此初代 200S 的内存延迟普遍在 <strong>80ns-100ns</strong>，远高于上一代的 <strong>60ns</strong> 级别。</p>
+<p>同时在 Intel 的设计中，Compute Tile内部的 Ring Bus 频率与 D2D 互连频率往往存在同步或比例关系，因此当 D2D 频率被限制在较低水平时，为了保证数据传输的稳定性，计算模块内部的环形总线频率也会受到牵制，这直接导致了 L3 缓存的带宽和响应速度下降。</p>
+<p>这种环境下，运行任何实时指令优化工具都会产生不可忽视的开销：因为优化器本身也需要占用宝贵的互连带宽去监测和重写指令。</p>
+<p><strong>900 MHz 的 D2D 提频，本质上是 Intel 为 IBOT 预付的“性能税”：</strong></p>
+<ul>
+<li>
+<p><strong>释放带宽</strong>：得益于 D2D 频率的激增，模块间通信大大加速。这降低了基础延迟，也为 IBOT 腾出了足够的运行空间。现在，IBOT 在后台实时分析并重构二进制指令时，其产生的数据交换可以白嫖这部分多出来的带宽，而不会拖累正常的计算任务。</p>
+</li>
+<li>
+<p><strong>消除架构碰撞</strong>：IBOT 的核心任务是减少 Architectural Contention。在分 Tile 设计中，程序往往会因为不适应“跨片取数”而产生大量的指令气泡。IBOT 通过实时重写指令流，提前排列好数据的进出顺序，确保在高频 D2D 链路的配合下，数据能以最完美的节奏填满每一个 CPU 周期。</p>
+</li>
+</ul>
+<hr>
+<h2 id="性能预期-IPC的纯粹提升">性能预期: IPC的纯粹提升</h2>
+<p>在实际应用中，IBOT 的加入意味着：</p>
+<h3 id="游戏表现："><strong>游戏表现</strong>：</h3>
+<p><a target="_blank" rel="noopener" href="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg"><img data-src="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg" alt=""></a><br>
+对于那些针对旧架构编写、对单核效率敏感的老旧游戏，或是从 Switch/PS5 上移植来的非原生游戏，IBOT 可以通过实时优化指令流，显著改善 1% Low FPS。</p>
+<p>这几年，我们已经习惯了各种<strong>Frame Generation</strong>或是<strong>Upscaling</strong>技术。尽管 DLSS 或 FSR 能够带来震撼的平均帧数，但它们本质上是基于算法的视觉补偿，在技术力上对我没什么吸引力。</p>
+<p><strong>IBOT 的逻辑则完全不同</strong>：它不生成任何虚假的像素，也不跳过任何必要的计算步骤。</p>
+<p>它的核心价值在于解决“指令卡顿”。在异构架构中，很多移植游戏或旧作并不理解如何高效地在核心间分配任务，导致 CPU 频繁出现无效周期。IBOT 在二进制层面实时重排这些指令，确保每一个时钟周期都在处理有意义的代码。</p>
+<p>其结果是显而易见的：传统的帧生成技术往往无法根治掉帧，因为底层逻辑卡顿依然存在。而 IBOT 从指令源头消除了气泡，让帧生成时间变得丝滑平均。同时，与 AI 补帧带来的输入延迟不同，IBOT 是原生的计算提速，你获得的每一帧都是真实的物理帧。</p>
+<hr>
+<h3 id="专业负载：">专业负载：</h3>
+<p>在复杂的生产力工具中，IBOT 的核心价值在于平滑 P-Core 与 E-Core 切换时的执行抖动。</p>
+<ul>
+<li>
+<p><strong>优化上下文切换</strong>： 生产力任务如代码编译、大型工程文件加载常涉及频繁的核心迁移。由于 P/E 核微架构不同，切换时易引发流水线清空。IBOT 在二进制层面实时预对齐指令流，将这种切换开销降至最低。</p>
+</li>
+<li>
+<p><strong>填补跨 Tile 指令气泡</strong>： 针对 Arrow Lake 的分 tile 设计，IBOT 能识别并重排那些可能导致跨片取数延迟的指令。它通过预取和指令重排序，填补了由于 D2D 通信产生的指令气泡，让 CPU 在处理非线性生产力任务时，单位周期内的吞吐量更稳定。</p>
+</li>
+<li>
+<p><strong>老旧工具的“实时翻译”</strong>： 大量未针对异构架构优化的专业软件，在 IBOT 的干预下，可能以更契合当前 Tile 架构的逻辑运行。它本质上是让老软件在新芯片上跑出了原生优化的高效感。</p>
+</li>
+</ul>
+<hr>
+<h2 id="总结：Intel-的“软硬协同”进化论">总结：Intel 的“软硬协同”进化论</h2>
+<p><strong>Intel Binary Optimisation Tool (IBOT)</strong> 的出现，标志着半导体竞争进入了一个全新的维度。</p>
+<p>在摩尔定律放缓、异构架构日益复杂的今天，单纯堆砌晶体管和拉升频率已经难以满足玩家和专业用户的胃口。<strong>Core Ultra 200S PLUS</strong> 给出了一套新颖的组合拳：</p>
+<ol>
+<li>
+<p><strong>硬件层面</strong>：通过物理层面的 <strong>+900 MHz D2D 提频</strong>，Intel 终于化解了分离式 Tile 架构的延迟沉疴，为后续的优化留出了重要的带宽预算。</p>
+</li>
+<li>
+<p><strong>软件层面</strong>：<strong>IBOT</strong> 拒绝了当下流行的视觉补偿套路。它不跳过任何计算步骤，也不生成虚假的像素，而是通过二进制层面的动态重构，让每一行指令都能在最合适的时间、以最合适的顺序进入最合适的核心。</p>
+</li>
+</ol>
+<p>对于追求极致体感的玩家，这意味着实打实的 <strong>1% Low FPS</strong> 提升和零延迟的响应；对于专业创作者，这代表着在繁重的生产力洪流中，获得了前所未有的执行确定性。</p>
+<p><strong>当物理瓶颈被打破，真正的 IPC 潜力才被彻底释放。</strong></p>
+<p><img data-src="silicon-roadmap-20260318-2.jpg" alt=""></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon & Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://leecdiang.github.io/2026/03/18/silicon-roadmap/" title="从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向">https://leecdiang.github.io/2026/03/18/silicon-roadmap/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Silicon/" rel="tag"># Silicon</a>
+              <a href="/tags/Intel/" rel="tag"># Intel</a>
+              <a href="/tags/IBOT/" rel="tag"># IBOT</a>
+              <a href="/tags/CPU/" rel="tag"># CPU</a>
+              <a href="/tags/ArrowLake/" rel="tag"># ArrowLake</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>
