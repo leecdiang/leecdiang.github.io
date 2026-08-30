@@ -30,7 +30,7 @@
 <meta property="og:description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-08-30T04:54:00.000Z">
-<meta property="article:modified_time" content="2026-08-30T07:29:20.859Z">
+<meta property="article:modified_time" content="2026-08-30T14:53:05.552Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Swift">
 <meta property="article:tag" content="macOS">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E4%B8%80%E5%9D%97-Windows-%E8%A7%A6%E6%8E%A7%E6%9D%BF%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.</span> <span class="nav-text">从一块 Windows 触控板说起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E6%8A%8A%E8%BE%B9%E7%95%8C%E5%88%92%E6%B8%85%E6%A5%9A"><span class="nav-number">2.</span> <span class="nav-text">先把边界划清楚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E5%91%A8%E5%8D%81%E4%BA%94%E4%B8%AA%E7%89%88%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">两周十五个版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%81%E6%9C%89-API%E3%80%81%E8%B0%83%E5%8F%82%E4%B8%8E%E7%B3%BB%E7%BB%9F%E6%80%AA%E8%84%BE%E6%B0%94"><span class="nav-number">4.</span> <span class="nav-text">私有 API、调参与系统怪脾气</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88%E5%92%8C%E5%88%86%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text">技术栈和分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B0-1-7-3"><span class="nav-number">6.</span> <span class="nav-text">到 1.7.3</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E4%B8%80%E5%9D%97-Windows-%E8%A7%A6%E6%8E%A7%E6%9D%BF%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.</span> <span class="nav-text">从一块 Windows 触控板说起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E6%8A%8A%E8%BE%B9%E7%95%8C%E5%88%92%E6%B8%85%E6%A5%9A"><span class="nav-number">2.</span> <span class="nav-text">先把边界划清楚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E5%91%A8%E5%8D%81%E4%BA%94%E4%B8%AA%E7%89%88%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">两周十五个版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%81%E6%9C%89-API%E3%80%81%E8%B0%83%E5%8F%82%E4%B8%8E%E7%B3%BB%E7%BB%9F%E6%80%AA%E8%84%BE%E6%B0%94"><span class="nav-number">4.</span> <span class="nav-text">私有 API、调参与系统怪脾气</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B2%E8%AF%AF%E8%A7%A6%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BC%80%E5%85%B3"><span class="nav-number">4.1.</span> <span class="nav-text">防误触不是一个开关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88%E5%92%8C%E5%88%86%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text">技术栈和分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B0-1-7-3"><span class="nav-number">6.</span> <span class="nav-text">到 1.7.3</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -227,7 +227,7 @@
 <ul>
 <li>左边缘、右边缘各自独立指派：音量 / 亮度 / 关闭</li>
 <li>手势必须诞生在边缘：手指先落在触控板内部、再滑到边缘的，永不触发</li>
-<li>全程离线，无账号、无遥测、没有后端，唯一的网络请求是可选的 GitHub 更新检查</li>
+<li>无账号、无遥测、没有自建后端；更新功能只会从 GitHub Releases 托管的签名 appcast 检查新版本，默认自动检查，也可手动触发</li>
 <li>菜单栏常驻（<code>LSUIElement</code>），没有 Dock 图标，不打扰</li>
 </ul>
 <p>“手势必须诞生在边缘”是最重要的一条。如果只看手指最后有没有来到边缘，日常移动光标、拖文件、打字时手掌蹭到触控板，都可能误触。EdgeControl 需要记住一次接触从哪里开始、往哪边走、何时形成明确的纵向意图，再决定要不要接管。</p>
@@ -302,7 +302,7 @@
 </tr>
 <tr>
 <td style="text-align:left">1.3.0</td>
-<td style="text-align:left">实验性外接 Magic Trackpad 支持</td>
+<td style="text-align:left">加入外接 Magic Trackpad 的实验性选择与筛选路径（尚无外接真机验证）</td>
 </tr>
 <tr>
 <td style="text-align:left">1.3.1</td>
@@ -358,14 +358,51 @@
 <p>当前这套参数来自验证机上的实测轨迹：左侧入口条是 0.008，右侧是 0.015，候选阶段只能在距离边缘 3% 的走廊里移动，激活后放宽到 8%；450ms 内要完成至少 1.5% 的纵向移动，而且方向一致性要达到 0.80。右侧入口条刻意比左侧宽一点，是因为这台机器上右侧的有效边缘接触分布更靠外，放宽后能补回自然滑入的样本，又不会把候选阶段变成一条大面积的触发区。每个数字都不是“看起来舒服”就留下，而是要和正例、负例轨迹一起看。</p>
 <p>激活之后的映射反而简单一些：以手势开始时的音量或亮度为基准，叠加累计纵向位移、基础增益和速度倍率，最后钳制在 0 到 1。下半区模式也采用相对映射，因此从不同高度进入时不会突然跳值。让数值变化不难，确认用户有没有这个意图才难。</p>
 <p>这也是为什么我把“激活前”和“激活后”分成两套规则。激活前要尽量保守，宁可在 450ms 内没有形成明显的上下意图就结束；一旦进入 Active，用户需要的是连续、可预期的控制，8% 的活动走廊和固定在激活瞬间的速度倍率会让后续移动保持稳定。方向反转超过 0.5% 的死区时，本次手势取消，避免一次缓慢回拉把前面已经确认的方向悄悄改掉。</p>
+<h3 id="防误触不是一个开关">防误触不是一个开关</h3>
+<p>设置里的误触保护有 Light、Standard、Strong 三档。它们不去改 450ms 的判定期限、3% 的候选走廊、8% 的活动走廊、1.5% 的纵向意图和 0.80 的方向一致性；这些是所有档位共享的底线。三档只控制两件更贴近日常使用的事：刚按过键之后暂缓多长时间接管触控板，以及手指必须离边缘多近才算“从边缘出生”。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">档位</th>
+<th style="text-align:right">打字后的抑制窗口</th>
+<th style="text-align:right">左侧入口条</th>
+<th style="text-align:right">右侧入口条</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Strong</td>
+<td style="text-align:right">600ms</td>
+<td style="text-align:right">0.6%</td>
+<td style="text-align:right">1.2%</td>
+</tr>
+<tr>
+<td style="text-align:left">Standard</td>
+<td style="text-align:right">350ms</td>
+<td style="text-align:right">0.8%</td>
+<td style="text-align:right">1.5%</td>
+</tr>
+<tr>
+<td style="text-align:left">Light</td>
+<td style="text-align:right">200ms</td>
+<td style="text-align:right">1.0%</td>
+<td style="text-align:right">1.9%</td>
+</tr>
+</tbody>
+</table>
+<p>右侧一直比左侧宽，是验证机的触点分布使然，不是视觉上的对称要求。Strong 把入口收得最窄，Light 留出更多自然滑入的余地。它们调的是准入条件，已经激活的手势不会因为用户开始打字而在半途停掉；但如果手指还按着就改误触档位或下半区限制，程序会丢弃这次接触，等抬手后再重新开始。速度倍率和触觉强度则都在激活那一刻固定下来。</p>
+<p>“刚按过键”这件事没有靠监听键盘实现。程序只向 Quartz 查询距最近一次 key-down 过去了多久，不安装 event tap、不看按键值，更不会读输入内容。只要一次接触因为近期打字、从内部起手、走出候选走廊或出现多指而被拒绝，它就会一直保持拒绝，直到所有手指抬起；不能靠在边缘多停一会儿把同一根手指重新变成有效手势。多指如果发生在已经激活之后，当前会话同样立即取消。这个“拒绝锁定到抬手”的规则听起来有点死板，却是把手掌和普通滑动挡在外面的关键。</p>
 <p>macOS 自己也贡献了几处很具体的坑：</p>
 <ul>
 <li><code>LSUIElement</code> 应用没有常规主菜单，SwiftUI 的 Settings scene 无法正常唤起，最后改成手动托管 <code>NSWindow</code></li>
 <li>这台 Mac 上的 MT y 轴是上大下小，向上滑时 y 值增加；按常见直觉反转一次，音量方向反而会错</li>
-<li>原先设想的私有 MTActuator 在 macOS 26.5 上不存在，最终使用 AppKit 公共触觉后端，提供激活提示和分段刻度反馈</li>
+<li>原先设想的私有 MTActuator 在 macOS 26.5 上不存在。验证机最终使用 AppKit 公共触觉后端：激活时给一个提示，滑动过程中按刻度反馈；触觉后端不可用时，数值控制仍会继续，只是不提供振动</li>
 </ul>
 <p>外接显示器亮度则是另一类问题。它走 DDC/CI 的 VCP <code>0x10</code> 命令，1.6.1 修过一次回复字段偏移：只错一个字节，读出的最大亮度和当前亮度就可能差一个数量级。多显示器时，写入还必须复用成功返回初始值的那条连接，否则读的是一台，写的可能是另一台。不同显示器、转接器和扩展坞的实现差异太大，所以 DDC 到现在仍是实验功能，默认关闭。</p>
 <p>到了 1.7.x，问题已经从“能不能用”变成了“别出幺蛾子”。磨砂设置窗口曾经因为 SwiftUI 材质挂错层级而透底；连续更新 HUD 时，反复调整窗口会让颜色和明暗跳变；重复启动两个实例还可能争用触控板服务。1.7.3 最后把 HUD 展示复用、用户级 <code>flock</code> 单实例锁和音量输出设备会话固定补齐。音量手势开始后会固定当时的输出设备，如果设备中途消失，本次手势直接结束，不把旧设备算出的值写到新设备上。</p>
+<p>还有一批平时看不见、出问题时才会被想起的收尾逻辑。成功进入控制状态之后才会冻结指针；无论正常抬手、取消、控制后端报错、睡眠还是唤醒恢复，都会结束会话并恢复指针。设备选择也不是启动后就定死：设置里可以选自动、内置或外接 Magic Trackpad，并在连接或断开设备后手动 Rescan。这里的“外接”仍只是实验性选择路径，文章不把它写成已验证支持。</p>
+<p>蓝牙断开时，私有触控板回调可能不会留下最后一帧“所有手指已抬起”。因此程序会盯住回调静默时间，连续 750ms 没有新帧就收掉当前会话、取消尚未发出的强脉冲并重置手势状态；即使旧触点后来又来了一帧，也要等它真的抬手。睡眠唤醒则会主动刷新亮度后端、重启触控板输入。内置亮度始终优先；只有用户明确打开实验性的 DDC，才会把外接显示器当作候选后端。</p>
+<p>触觉也不是简单地“有或没有”。Light 每跨过 4% 给一次较疏的定位反馈，Standard 和 Strong 是 2%；边界回差 0.008 避免在同一刻度来回抖动，30ms 的限速避免快速滑动变成一串嗡鸣。Strong 用更有力的公共系统模式，并在 12ms 后补一记脉冲；手势结束或睡眠恢复时，这个尚未发出的第二下会被取消。触觉档位和速度一样，在一次手势开始时固定，设置窗口不会在半程改变手感。</p>
 <p>这些修复都没有改变手势的基本语义，处理的是“已经能工作之后，怎样少一点偶发状态”。HUD 复用解决的是连续更新时的窗口状态，单实例锁解决的是两个进程同时抢同一套触控板回调，音量会话固定则把一次手势的起点和目标设备绑在一起。它们看起来不像新功能，却决定了这个工具能不能一直放在菜单栏里而不让人担心下一次滑动会发生什么。</p>
 <h2 id="技术栈和分发">技术栈和分发</h2>
 <p>EdgeControl 的功能不多，但从触点到屏幕上的 HUD，中间还是分了几层：</p>
