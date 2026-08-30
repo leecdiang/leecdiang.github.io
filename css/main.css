@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #63e486;
+    background: #57adb8;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3676,6 +3676,139 @@ pre {
   .post-body table td,
   .post-body table th {
     border-color: var(--divider) !important;
+  }
+}
+.post-body .code-container:has(> .mermaid),
+.post-body pre:has(> .mermaid) {
+  margin: 28px 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.post-body .code-container > .mermaid,
+.post-body pre > .mermaid {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  text-align: center !important;
+  color: var(--text-primary) !important;
+  background: var(--surface-glass-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 28px -14px var(--shadow), inset 0 1px 0 var(--border) !important;
+  backdrop-filter: blur(18px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%) !important;
+}
+.post-body .mermaid svg {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
+}
+.post-body .mermaid .node rect,
+.post-body .mermaid .node polygon,
+.post-body .mermaid .node circle,
+.post-body .mermaid .node ellipse {
+  fill: var(--surface-card) !important;
+  stroke: var(--accent) !important;
+  stroke-width: 1px !important;
+}
+.post-body .mermaid .cluster rect {
+  fill: var(--surface-main) !important;
+  stroke: var(--border-subtle) !important;
+  stroke-width: 1px !important;
+  rx: 10px;
+  ry: 10px;
+}
+.post-body .mermaid .nodeLabel,
+.post-body .mermaid .nodeLabel p,
+.post-body .mermaid .cluster-label,
+.post-body .mermaid .cluster-label text,
+.post-body .mermaid .edgeLabel,
+.post-body .mermaid .edgeLabel p,
+.post-body .mermaid text {
+  color: var(--text-primary) !important;
+  fill: var(--text-primary) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
+}
+.post-body .mermaid .edgeLabel rect {
+  fill: var(--surface-soft) !important;
+  stroke: none !important;
+}
+.post-body .mermaid .flowchart-link {
+  stroke: var(--accent) !important;
+  stroke-width: 1.5px !important;
+}
+.post-body .mermaid .marker,
+.post-body .mermaid .marker path {
+  fill: var(--accent) !important;
+  stroke: var(--accent) !important;
+}
+.post-body .mermaid .label-container {
+  rx: 8px;
+  ry: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  .post-body .code-container > .mermaid,
+  .post-body pre > .mermaid {
+    background: linear-gradient(145deg, rgba(19,43,61,0.94), rgba(8,22,34,0.92)) !important;
+    border-color: rgba(190,222,243,0.3) !important;
+    box-shadow: 0 16px 34px -16px rgba(0,0,0,0.62), inset 0 1px 0 rgba(236,247,255,0.13) !important;
+  }
+  .post-body .mermaid .node rect,
+  .post-body .mermaid .node polygon,
+  .post-body .mermaid .node circle,
+  .post-body .mermaid .node ellipse {
+    fill: rgba(36,77,106,0.98) !important;
+    stroke: #abd9f5 !important;
+    stroke-width: 1.4px !important;
+  }
+  .post-body .mermaid .cluster rect {
+    fill: rgba(12,34,51,0.93) !important;
+    stroke: rgba(190,222,243,0.34) !important;
+    stroke-width: 1px !important;
+  }
+  .post-body .mermaid .nodeLabel,
+  .post-body .mermaid .nodeLabel p,
+  .post-body .mermaid .nodeLabel span,
+  .post-body .mermaid .cluster-label,
+  .post-body .mermaid .cluster-label text,
+  .post-body .mermaid .cluster-label span,
+  .post-body .mermaid .edgeLabel,
+  .post-body .mermaid .edgeLabel p,
+  .post-body .mermaid text {
+    color: #f2f7fb !important;
+    fill: #f2f7fb !important;
+    font-weight: 500 !important;
+  }
+  .post-body .mermaid .cluster-label,
+  .post-body .mermaid .cluster-label text,
+  .post-body .mermaid .cluster-label span {
+    color: #cfe4f0 !important;
+    fill: #cfe4f0 !important;
+    font-weight: 600 !important;
+  }
+  .post-body .mermaid .edgeLabel rect {
+    fill: rgba(22,45,62,0.92) !important;
+  }
+  .post-body .mermaid .flowchart-link {
+    stroke: #9acbf0 !important;
+    stroke-width: 1.75px !important;
+  }
+  .post-body .mermaid .marker,
+  .post-body .mermaid .marker path {
+    fill: #9acbf0 !important;
+    stroke: #9acbf0 !important;
   }
 }
 .post-body img {
