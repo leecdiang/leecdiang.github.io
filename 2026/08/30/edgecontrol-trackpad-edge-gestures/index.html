@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#92bbd7">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
   <meta name="yandex-verification" content="742c2c3e6536dd02">
 
@@ -30,7 +30,7 @@
 <meta property="og:description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-08-30T04:54:00.000Z">
-<meta property="article:modified_time" content="2026-08-30T14:53:05.552Z">
+<meta property="article:modified_time" content="2026-08-30T14:55:08.786Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Swift">
 <meta property="article:tag" content="macOS">
@@ -213,7 +213,7 @@
     
     
     <div class="post-body" itemprop="articleBody"><h2 id="从一块-Windows-触控板说起">从一块 Windows 触控板说起</h2>
-<p>小胡的小米 BookPro14，可以从触控板边缘滑入调节音量和亮度。第一次用我就爱上了：手指从机身滑上触控板，上滑音量变大，下滑变小，每到一个刻度还有一下清脆的振动。那个感觉很像 EDC 玩具，拧一下、拨一下，咔嗒一声，东西就真的变了。物理直觉拉满。</p>
+<p>小胡的小米 Book Pro14，可以从触控板边缘滑入调节音量和亮度。第一次用我就爱上了：手指从机身滑上触控板，上滑音量变大，下滑变小，每到一个刻度还有一下清脆的振动。那个感觉很像 EDC 玩具，拧一下、拨一下，咔嗒一声，东西就真的变了。物理直觉拉满。</p>
 <p>我的看法很直接：<strong>没有振动反馈的机器，没必要做这个功能。</strong> 音量变了，手指却什么都没收到，边缘手势也就只是少按了几次键；有了振动，它才更像在拨一个看不见的实体旋钮。</p>
 <p>我后来才意识到，自己想搬过来的其实不只是“从边缘调参数”这件事，而是一个完整的反馈闭环：手指进入边缘，数值开始变化，指尖收到一个小脉冲，然后继续决定要不要往下推。少掉中间那一下，功能很容易退化成另一种键盘快捷键。我不想先做一个只能把音量改掉的 demo，再把触觉当成装饰补上，所以从第一轮原型开始，触觉就和手势是否成立放在同一张验证清单里。</p>
 <p>回到自己的 MacBook Air，这个功能却不存在。我搜了一圈，找到的方案要么收费、要么闭源，要么塞进了太多我用不到的东西。免费、开源、轻量、离线，这几个条件放在一起，没找到合适的。</p>

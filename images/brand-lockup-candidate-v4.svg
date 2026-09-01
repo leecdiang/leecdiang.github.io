@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+  <path d="M132 48v132h30c39 0 65-26 65-66s-26-66-65-66h-30Z"
+        fill="none" stroke="#17212a" stroke-width="18"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="180" y="226" text-anchor="middle" fill="#17212a"
+        font-family="Helvetica Neue, Arial, sans-serif" font-size="13"
+        font-weight="500" letter-spacing="3.2">BEYOND THE CLOCK</text>
+</svg>
