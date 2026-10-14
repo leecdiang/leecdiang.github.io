@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #be71ff;
+    background: #ff25b6;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -5230,4 +5230,106 @@ h6,
 }
 .posts-collapse .post-title {
   font-size: 1.05em !important;
+}
+/* ASV paper formats: a desktop row that wraps on portrait screens. */
+.post-body .asv-paper-links {
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+.post-body .asv-paper-links > .glass-pill {
+  justify-content: center;
+  margin: 0 !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+@media (max-width: 480px) {
+  .post-body .asv-paper-links {
+    gap: 10px;
+  }
+  .post-body .asv-paper-links > .glass-pill {
+    flex: 1 1 120px;
+    white-space: normal !important;
+    text-align: center;
+  }
+}
+/* Compact ASV diagrams; preserve the existing theme palette. */
+.post-body .asv-diagram .mermaid svg {
+  width: 100% !important;
+  max-width: 451px !important;
+}
+.post-body .asv-diagram .mermaid {
+  padding: 12px !important;
+}
+.post-body .asv-diagram:nth-of-type(n) .mermaid svg {
+  height: auto !important;
+}
+.post-body .asv-diagram + p {
+  margin-top: 12px;
+}
+.post-body .asv-diagram .mermaid .nodeLabel,
+.post-body .asv-diagram .mermaid .nodeLabel p {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}
+.post-body .asv-diagram.asv-evidence .mermaid svg {
+  max-width: 276px !important;
+}
+.post-body .asv-paper-preview img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.post-block:has(.asv-paper-panel) .post-header {
+  margin-bottom: 36px;
+}
+/* ASV paper metadata panel. */
+.post-body .asv-paper-panel {
+  max-width: 720px;
+  margin: 24px auto 28px;
+  padding: 18px 20px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+}
+.post-body .asv-paper-panel .asv-paper-preview {
+  max-width: none;
+  margin: 16px 0;
+}
+.post-body .asv-paper-meta,
+.post-body .asv-paper-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.post-body .asv-paper-meta {
+  letter-spacing: 0.04em;
+}
+.post-body .asv-paper-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+.post-body .asv-paper-footer .glass-pill {
+  font-size: 13px;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .post-body .asv-paper-panel {
+    padding: 14px;
+  }
+  .post-body .asv-paper-meta {
+    font-size: 10px;
+  }
 }
