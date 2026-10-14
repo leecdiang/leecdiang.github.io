@@ -22,21 +22,21 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+    <meta name="description" content="Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Agent Step Value: When the evaluator changes the value of a step">
 <meta property="og:url" content="https://leecdiang.github.io/2026/10/14/agent-step-value/index.html">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+<meta property="og:description" content="Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/paper-title-abstract.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/paper-title.jpg">
 <meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/asv-mechanics.jpg">
 <meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/asv-pipeline.jpg">
 <meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/effect-anatomy.jpg">
 <meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/retrieval-decomposition.jpg">
 <meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/matched-bridge-results.jpg">
 <meta property="article:published_time" content="2026-10-14T07:26:00.000Z">
-<meta property="article:modified_time" content="2026-10-14T09:14:38.831Z">
+<meta property="article:modified_time" content="2026-10-14T09:54:39.473Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Agent Step Value">
 <meta property="article:tag" content="EMNLP 2026">
@@ -44,7 +44,7 @@
 <meta property="article:tag" content="LLM Agents">
 <meta property="article:tag" content="REALM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/paper-title-abstract.jpg">
+<meta name="twitter:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/paper-title.jpg">
 
 
 <link rel="canonical" href="https://leecdiang.github.io/2026/10/14/agent-step-value/">
@@ -199,7 +199,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="Agent Step Value: When the evaluator changes the value of a step | Beyond the Clock">
-      <meta itemprop="description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+      <meta itemprop="description" content="Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -212,15 +212,19 @@
   
 </div>
 
-            <div class="post-description">Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.</div>
+            <div class="post-description">Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>Our paper, <em>Agent Step Value: Auditing Evaluation-Channel Sensitivity in Black-Box Agent Traces</em>, has been accepted as a poster at the REALM Workshop at EMNLP 2026. Andrew Zhang and I contributed equally. <a class="glass-pill" href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Updated paper on arXiv</a></p>
-<div class="asv-paper-preview"><a href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><img data-src="/2026/10/14/agent-step-value/paper-title-abstract.jpg" alt="First page of the camera-ready paper, including the title, authors, abstract, and introduction."></a></div>
+    <div class="post-body" itemprop="articleBody"><div class="asv-contribution">Andrew Zhang and I contributed equally.</div>
+<div class="asv-paper-panel">
+<div class="asv-paper-meta"><span>RESEARCH PAPER</span><span>arXiv:2607.04419 · v5 · DOI 10.48550/arXiv.2607.04419</span></div>
+<div class="asv-paper-preview"><a href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><img data-src="/2026/10/14/agent-step-value/paper-title.jpg" alt="Agent Step Value: paper title, authors, and affiliations."></a></div>
+<div class="asv-paper-footer"><span>REALM Workshop · EMNLP 2026 · Poster</span><a class="glass-pill" href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><i class="fas fa-file-alt" aria-hidden="true"></i> Read on arXiv</a></div>
+</div>
 <p>The question behind the paper is fairly simple: if an evaluator says an agent step helped, will it still say that after we change how it sees the step?</p>
 <p>In our frozen PubMed question-answering traces, cross-channel gain signs disagreed on <strong>48.3%</strong> of comparisons. Repeating the scoring within the same channel produced <strong>0.3%</strong> disagreement. The steps had not changed. The measurement channel had.</p>
 <p>The practical concern is what happens when we reuse a step reward. A step labeled helpful under one scoring setup can become harmful under another, even when we replay exactly the same states. This post follows that measurement problem from a small example to the retrieval experiments and a source-restricted follow-up. The workshop recording is at the end.</p>
@@ -275,12 +279,12 @@ $$</p>
 <p>Comparing a before-state score from one evaluator with an after-state score from another sounds tempting. It mixes two changes: the agent’s state and the evaluation channel.</p>
 <p>The matched design scores both endpoints under both channels. The interaction is the difference between the two gains:</p>
 <p>$$<br>
-\Omega = G^{\rho_1} - G^{\rho_0}<br>
-= [F_{\rho_1}(x^+) - F_{\rho_1}(x^-)]</p>
-<ul>
-<li>[F_{\rho_0}(x^+) - F_{\rho_0}(x^-)].<br>
-$$</li>
-</ul>
+\begin{aligned}<br>
+\Omega &amp;= G^{\rho_1} - G^{\rho_0} \<br>
+&amp;= [F_{\rho_1}(x^+) - F_{\rho_1}(x^-)] \<br>
+&amp;\quad - [F_{\rho_0}(x^+) - F_{\rho_0}(x^-)].<br>
+\end{aligned}<br>
+$$</p>
 <p>A constant channel offset cancels inside each bracket. A nonzero interaction records a channel response that depends on the state. Without structural restrictions, dropping any of the four scores leaves this interaction unidentified.</p>
 <p>The presentation uses this illustrative example:</p>
 <table>
