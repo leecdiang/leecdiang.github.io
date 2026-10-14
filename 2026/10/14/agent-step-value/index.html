@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css?v=20260830-mermaid-safari-1">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agent Step Value: When the evaluator changes the value of a step">
+<meta property="og:url" content="https://leecdiang.github.io/2026/10/14/agent-step-value/index.html">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/asv-mechanics.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/asv-pipeline.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/effect-anatomy.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/retrieval-decomposition.jpg">
+<meta property="og:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/matched-bridge-results.jpg">
+<meta property="article:published_time" content="2026-10-14T07:26:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T07:58:36.756Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="Agent Step Value">
+<meta property="article:tag" content="EMNLP 2026">
+<meta property="article:tag" content="Evaluation">
+<meta property="article:tag" content="LLM Agents">
+<meta property="article:tag" content="REALM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leecdiang.github.io/2026/10/14/agent-step-value/asv-mechanics.jpg">
+
+
+<link rel="canonical" href="https://leecdiang.github.io/2026/10/14/agent-step-value/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/10/14/agent-step-value/","path":"2026/10/14/agent-step-value/","title":"Agent Step Value: When the evaluator changes the value of a step"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Agent Step Value: When the evaluator changes the value of a step | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"/js/third-party/mermaid.min.js"}}</script>
+  <script src="/js/third-party/mermaid.min.js" defer></script>
+  <script src="/js/third-party/tags/mermaid.js?v=20260830-mermaid-ui-5" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-a-step-reward-needs-a-channel-attached-to-it"><span class="nav-number">1.</span> <span class="nav-text">Why a step reward needs a channel attached to it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ASV-is-a-before-after-gain"><span class="nav-number">2.</span> <span class="nav-text">ASV is a before&#x2F;after gain</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-we-need-all-four-corners"><span class="nav-number">3.</span> <span class="nav-text">Why we need all four corners</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-same-steps-disagree-far-more-across-channels-than-on-retry"><span class="nav-number">4.</span> <span class="nav-text">The same steps disagree far more across channels than on retry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Retrieval-gives-us-a-closer-look"><span class="nav-number">5.</span> <span class="nav-text">Retrieval gives us a closer look</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-the-signs-survive-a-different-readout-or-evaluator"><span class="nav-number">6.</span> <span class="nav-text">Do the signs survive a different readout or evaluator?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-generated-view-can-inflate-the-starting-point"><span class="nav-number">7.</span> <span class="nav-text">A generated view can inflate the starting point</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-I-would-check-before-reusing-step-rewards"><span class="nav-number">8.</span> <span class="nav-text">What I would check before reusing step rewards</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paper-and-presentation"><span class="nav-number">9.</span> <span class="nav-text">Paper and presentation</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/10/14/agent-step-value/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Agent Step Value: When the evaluator changes the value of a step | Beyond the Clock">
+      <meta itemprop="description" content="Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Agent Step Value: When the evaluator changes the value of a step
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">Our REALM @ EMNLP 2026 poster studies why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Our paper, <em>Agent Step Value: Auditing Evaluation-Channel Sensitivity in Black-Box Agent Traces</em>, has been accepted as a poster at the REALM Workshop at EMNLP 2026. Andrew Zhang and I contributed equally. The <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2607.04419v5">updated paper is on arXiv</a>.</p>
+<p>The question behind the paper is fairly simple: if an evaluator says an agent step helped, will it still say that after we change how it sees the step?</p>
+<p>In our frozen PubMed question-answering traces, cross-channel gain signs disagreed on <strong>48.3%</strong> of comparisons. Repeating the scoring within the same channel produced <strong>0.3%</strong> disagreement. The steps had not changed. The measurement channel had.</p>
+<p>In the workshop presentation, I start with a small before/after example and then work through the retrieval experiments. I follow that order here, with the recording at the end.</p>
+<h2 id="Why-a-step-reward-needs-a-channel-attached-to-it">Why a step reward needs a channel attached to it</h2>
+<p>Agents leave traces: a plan, a search call, retrieved evidence, a draft, a revision. A final outcome tells us whether the whole run succeeded. A step reward tries to say something about an intermediate update.</p>
+<p>That reward can guide search, label training traces, or become a signal for policy optimization. Reusing it introduces a measurement problem. We may replace the judge, add a generated explanation, change the scoring prompt, or average several evaluator configurations. Before treating those scores as interchangeable, we need to know whether they agree on which direction the agent moved.</p>
+<p>We use <em>evaluation channel</em> for the full configuration that produces a score. It includes the prompt, the source rules, any added view, the readout, the evaluator stack, and presentation settings.</p>
+<p>An added view deserves particular attention. In our generated-view channel, an external model interprets the projected state and fixed candidate manifest before scoring. Its interpretation can describe support, contradiction, missing evidence, or ambiguity. We freeze that text and give it to the scorer alongside the state. The scorer itself does not generate the view.</p>
+<p>We compare three input arrangements:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Channel</th>
+<th style="text-align:left">What the scorer reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Direct</td>
+<td style="text-align:left">The projected state, without an added view</td>
+</tr>
+<tr>
+<td style="text-align:left">Quote</td>
+<td style="text-align:left">The state plus a deterministic excerpt of the state</td>
+</tr>
+<tr>
+<td style="text-align:left">Generated view</td>
+<td style="text-align:left">The state plus a frozen interpretation produced by an external generator</td>
+</tr>
+</tbody>
+</table>
+<p>The generated view may be useful as a representation. But it can also express apparent support that the retrieved evidence does not contain. Since the state remains in the scorer input, the view introduces no newly observed task variable. It changes how the existing material reaches the evaluator.</p>
+<h2 id="ASV-is-a-before-after-gain">ASV is a before/after gain</h2>
+<p>For a frozen transition, let $x^-$ be the state before the step and $x^+$ the state after it. Let $F_\rho(x)$ be the evaluator’s target margin under channel $\rho$. Agent Step Value (ASV) is</p>
+<p>$$<br>
+G^\rho = F_\rho(x^+) - F_\rho(x^-).<br>
+$$</p>
+<p>A positive gain means the evaluator assigns more support to the reviewed target after the step. A negative gain means it assigns less. This is evaluator-assigned movement on a frozen trace; it does not establish the step’s causal contribution to the actor’s success.</p>
+<p>In our implementation, each task has three concrete candidates and a <code>none-of-the-above</code> option. We turn the candidate energies into a target-versus-rest margin. With the induced target probability $q(g)$, the margin is</p>
+<p>$$<br>
+F = \log\frac{q(g)}{1-q(g)}.<br>
+$$</p>
+<p>For intuition, a margin gain of +0.16 multiplies target-versus-rest odds by about 1.17. The probability change depends on where those odds started. The binary readout uses independently elicited Yes/No energies followed by an induced normalization, so its scale needs separate treatment.</p>
+<img data-src="/2026/10/14/agent-step-value/asv-mechanics.jpg" class="" title="From frozen states to endpoint margins, within-channel gains, and their matched difference. Figure 4 of the paper.">
+<h2 id="Why-we-need-all-four-corners">Why we need all four corners</h2>
+<p>Comparing a before-state score from one evaluator with an after-state score from another sounds tempting. It mixes two changes: the agent’s state and the evaluation channel.</p>
+<p>The matched design scores both endpoints under both channels. The interaction is the difference between the two gains:</p>
+<p>$$<br>
+\Omega = G^{\rho_1} - G^{\rho_0}<br>
+= [F_{\rho_1}(x^+) - F_{\rho_1}(x^-)]</p>
+<ul>
+<li>[F_{\rho_0}(x^+) - F_{\rho_0}(x^-)].<br>
+$$</li>
+</ul>
+<p>A constant channel offset cancels inside each bracket. A nonzero interaction records a channel response that depends on the state. Without structural restrictions, dropping any of the four scores leaves this interaction unidentified.</p>
+<p>The presentation uses this illustrative example:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Evaluation channel</th>
+<th style="text-align:right">Before</th>
+<th style="text-align:right">After</th>
+<th style="text-align:right">ASV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Direct/reference</td>
+<td style="text-align:right">-0.2</td>
+<td style="text-align:right">+0.4</td>
+<td style="text-align:right">+0.6</td>
+</tr>
+<tr>
+<td style="text-align:left">Generated view</td>
+<td style="text-align:right">+0.5</td>
+<td style="text-align:right">+0.1</td>
+<td style="text-align:right">-0.4</td>
+</tr>
+</tbody>
+</table>
+<p>The direct channel calls the update helpful; the generated-view channel calls it harmful. Their interaction is -1.0. A diagonal comparison from direct-before (-0.2) to generated-after (+0.1) gives +0.3, which identifies neither within-channel gain nor their interaction.</p>
+<img data-src="/2026/10/14/agent-step-value/asv-pipeline.jpg" class="" title="The audit design: freeze the transition, replay both channels, complete the four-corner face, and check the observed readout&#x2F;evaluator configurations. Figure 1 of the paper.">
+<p>We emphasize gain signs because they survive positive affine recalibration within a channel. If we multiply a channel’s scores by a positive constant and add an offset, its gain retains its sign. Cross-channel interaction magnitudes generally do not have that invariance unless the scales are linked. Two channels can also have a nonzero interaction while both gains remain positive.</p>
+<h2 id="The-same-steps-disagree-far-more-across-channels-than-on-retry">The same steps disagree far more across channels than on retry</h2>
+<p>We froze 100 PubMed tasks from one actor workflow. Each task contributed 11 transitions, covering classification, planning, retrieval, drafting, audit, revision, and finalization: 1,100 transitions in total. We kept the states and candidate contracts fixed, and used four cyclic candidate layouts to balance option-label position.</p>
+<p>The first acquisition retained 1,004 transitions with complete scores across the required endpoints and layouts. The retry analysis used 975 transitions complete in both new scoring waves. The generated views stayed frozen during retry, so that comparison measures repeat scoring with the same acquired inputs.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Comparison on the retry cohort</th>
+<th style="text-align:right">Gain-sign disagreement</th>
+<th style="text-align:left">95% trajectory-bootstrap interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Across channels, averaged over four wave pairings</td>
+<td style="text-align:right">48.3%</td>
+<td style="text-align:left">[45.2%, 51.5%]</td>
+</tr>
+<tr>
+<td style="text-align:left">Same-channel retries</td>
+<td style="text-align:right">0.3%</td>
+<td style="text-align:left">[0.1%, 0.6%]</td>
+</tr>
+<tr>
+<td style="text-align:left">Paired excess</td>
+<td style="text-align:right">48.0 percentage points</td>
+<td style="text-align:left">[44.9, 51.3]</td>
+</tr>
+</tbody>
+</table>
+<p>These disagreements run in both directions. Among the 468 transitions whose disagreement orientation remained stable across all four cross-channel wave pairings, 218 were direct-positive/generated-negative, while 250 were direct-negative/generated-positive.</p>
+<p>That distinction matters. The result does not say that generated views make every step look worse, or that direct scoring always assigns the correct reward.</p>
+<img data-src="/2026/10/14/agent-step-value/effect-anatomy.jpg" class="" title="The distribution of gain pairs and interactions helps separate widespread sign disagreement from the direction of the cohort mean. Figure 5 of the paper.">
+<p>Under the first acquisition’s empirical target mixture, the direct mean gain was +0.163 [0.102, 0.218], and the generated-view mean was -0.160 [-0.244, -0.079]. Yet the interaction median was +0.014, and 496 of 1,004 interactions were negative. The negative mean interaction came from larger negative magnitudes, rather than an overwhelming majority of negative interactions.</p>
+<p>Changing the target weights changes the population summary. With equal weight on the four reviewed-target identities, the mean interaction remained negative at -0.213 [-0.343, -0.090], but the direct gain was +0.004 [-0.044, 0.057]. That weighting does not support a strict positive-to-negative mean reversal. The 48.3% versus 0.3% comparison is the main finding; the opposite cohort means need their weighting condition attached.</p>
+<h2 id="Retrieval-gives-us-a-closer-look">Retrieval gives us a closer look</h2>
+<p>The global audit establishes sensitivity. Retrieval offers a more focused place to ask where the negative component enters.</p>
+<p>We crossed the before and after states with the views generated at each endpoint. This gives a symmetric allocation of the retrieval change to the state coordinate and the view coordinate. On the 91 trajectories complete for that face, the state allocation was +0.224 [-0.029, 0.473], while the generated-view allocation was -0.915. The negative component sat in the view coordinate of this matched comparison.</p>
+<img data-src="/2026/10/14/agent-step-value/retrieval-decomposition.jpg" class="" title="The symmetric retrieval face separates state and generated-view allocations. Allocation uses 91 complete trajectories; comparisons requiring the direct path use 88. Figure 2 of the paper.">
+<p>We then held prompt structure fixed and changed only the view field. Under the shared template with neutral authority, the mean quote gain was +0.903 [0.443, 1.360], and the generated-view gain was -0.403 [-0.712, -0.104]. The generated-minus-quote interaction was -1.306 [-1.822, -0.797].</p>
+<p>Quote and empty views also differed. A deterministic excerpt is therefore not automatically equivalent to presenting the state alone. Still, the generated view added a further negative interaction within the same prompt structure, so the finding did not depend only on a direct-versus-buffered template difference.</p>
+<h2 id="Do-the-signs-survive-a-different-readout-or-evaluator">Do the signs survive a different readout or evaluator?</h2>
+<p>We tested a matched bridge with three observed configurations, each containing its own complete state-by-view comparison:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Configuration</th>
+<th style="text-align:left">Readout</th>
+<th style="text-align:left">Evaluator stack</th>
+<th style="text-align:left">Mean quote/generated gain signs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">A</td>
+<td style="text-align:left">Joint option-label probabilities</td>
+<td style="text-align:left">DeepSeek</td>
+<td style="text-align:left">Positive / negative</td>
+</tr>
+<tr>
+<td style="text-align:left">B</td>
+<td style="text-align:left">Candidate-wise Yes/No energies</td>
+<td style="text-align:left">DeepSeek</td>
+<td style="text-align:left">Positive / negative</td>
+</tr>
+<tr>
+<td style="text-align:left">C</td>
+<td style="text-align:left">Candidate-wise Yes/No energies</td>
+<td style="text-align:left">GPT-4o</td>
+<td style="text-align:left">Positive / negative</td>
+</tr>
+</tbody>
+</table>
+<p>All 100 trajectories were complete across four matched acquisition waves. Under the empirical target mixture, the mean quote gain was positive and the generated-view gain negative at every observed configuration, with each gain interval separated from zero.</p>
+<p>The three checks use native operational scales. The generated-minus-quote interactions were -1.305, -0.882, and -8.278 respectively, but those numbers should not be read as a ranking of effect strength across instruments. Joint and binary readouts implement different response functionals.</p>
+<p>We did not observe the joint-readout/GPT-4o configuration. The bridge checks direction at three vertices; it does not identify a full readout-by-stack interaction. Equal-target weighting also leaves the three-vertex sign conjunction unresolved.</p>
+<img data-src="/2026/10/14/agent-step-value/matched-bridge-results.jpg" class="" title="Panel A shows the three observed sign checks on separate native scales. Panel B shows the matched source-contract follow-up on artifact-bearing retrievals. Figure 3 of the paper.">
+<p>Quote-channel post-retrieval margins ranked stored task success better than generated-view margins in all three configurations. The paired AUC advantages were +0.169, +0.165, and +0.267. The quote AUC intervals include or touch 0.5, so this supports a relative ranking advantage over the generated view, rather than strong standalone prediction of success.</p>
+<h2 id="A-generated-view-can-inflate-the-starting-point">A generated view can inflate the starting point</h2>
+<p>The presentation’s mechanism is easiest to see in the subtraction itself: gain is after minus before. If generated text makes the evaluator unusually confident before evidence arrives, retrieval has a higher baseline to beat.</p>
+<p>We tested this explanation in a separate matched follow-up. Both generators had a 512-token cap. One used the baseline contract without an explicit source-only clause; the other began with a restriction to information explicitly present inside <code>&lt;EVIDENCE&gt;</code>, and required absent support or contradiction to be marked as missing.</p>
+<p>Before retrieval, none of the 100 states contained a retrieved artifact. A deterministic parser nevertheless detected support claims for at least one concrete candidate in 97 of the baseline generated views. Under the source-only contract, it detected none.</p>
+<p>For the 65 retrieval transitions that acquired an evidence artifact, the matched gains were:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">View</th>
+<th style="text-align:right">Mean gain</th>
+<th style="text-align:left">95% trajectory-bootstrap interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Baseline generated view, 512 tokens</td>
+<td style="text-align:right">-1.915</td>
+<td style="text-align:left">[-2.531, -1.322]</td>
+</tr>
+<tr>
+<td style="text-align:left">Source-only generated view, 512 tokens</td>
+<td style="text-align:right">+3.894</td>
+<td style="text-align:left">[2.706, 5.008]</td>
+</tr>
+<tr>
+<td style="text-align:left">Quote</td>
+<td style="text-align:right">+1.453</td>
+<td style="text-align:left">[0.793, 2.080]</td>
+</tr>
+</tbody>
+</table>
+<p>The paired source-only shift was +5.809 [4.729, 6.902]. In the 35 transitions that acquired no artifact, the shift was -0.340 [-0.987, 0.284], without a corresponding positive result. Across all 100 retrievals, source-only generation lowered the mean before margin more than the mean after margin. Together, these observations support the inflated-baseline explanation in this matched setting.</p>
+<p>The original replay used 128-token views, and we did not audit its support claims. The 512-token intervention supports a mechanism for the follow-up, but does not verify that mechanism for the original headline result. The source instruction also changes several admissible-source rules at once, and we did not independently validate the parser by manual annotation. The artifact cohorts follow retrieval outcomes rather than randomized assignment.</p>
+<p>Restoring positive gain is also weaker than making the channels equivalent. Source-only and quote gains still differed. The intervention repaired the observed mean direction on artifact-bearing retrievals, not the full response law.</p>
+<h2 id="What-I-would-check-before-reusing-step-rewards">What I would check before reusing step rewards</h2>
+<p>Before reusing step rewards, I would freeze the before and after states, score both endpoints under each channel, and inspect the gains before pooling them. Repeat scoring with the inputs fixed to measure retry instability. If the channel gap is much larger, use matched view or source-contract changes to investigate it.</p>
+<p>Averaging prompt variants can reduce variance. It also selects a mixture of channels. When their gains straddle zero, changing the mixture weights can change the reward’s sign. An average by itself does not establish agreement.</p>
+<p>Our buffered-scoring controls further show why interventions need matched comparisons. Own views differed from length-matched donor views by -4.080 [-5.060, -3.104], which is inconsistent with a simple length-only account. An evidence-primary instruction shifted gain positively by +2.272 in that control suite, yet its contrast was -0.243 in the separate matched cube. Those experiments used different templates, cohorts, and reference conditions; their authority effects estimate different quantities.</p>
+<p>The four-corner design extends beyond our candidate-margin implementation. A scalar judge or process-reward model can supply the endpoint response directly. Hold the transition fixed and compare both endpoints within each declared channel. Interpret signs within an instrument, and link scales before comparing magnitudes across instruments.</p>
+<p>This study covers 100 PubMed tasks, one actor workflow, and the observed configurations. It does not establish a universal disagreement rate, causal actor credit, or a general rule that generated interpretations are harmful. It gives us a way to ask whether an evaluator-derived reward keeps its direction when the measurement channel changes, and to test a localized repair when it does not.</p>
+<h2 id="Paper-and-presentation">Paper and presentation</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2607.04419v5">Paper on arXiv, current version v5</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2607.04419v5">Read the PDF</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2607.04419v5">Read the HTML version</a></li>
+</ul>
+<p>The recording below walks through the audit, the retrieval checks, and the source-only follow-up in about four and a half minutes. All five figures above come from the paper; the explanation follows the workshop slides.</p>
+<video controls preload="metadata" playsinline poster="/2026/10/14/agent-step-value/talk-poster.jpg" style="width:100%;height:auto;border-radius:12px;">
+  <source src="/2026/10/14/agent-step-value/asv-realm-2026-talk-web.mp4" type="video/mp4">
+  Your browser does not support embedded video. <a href="/2026/10/14/agent-step-value/asv-realm-2026-talk-web.mp4">Download the presentation recording.</a>
+</video>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/AI-Research/">
+    <span>More in AI Research</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://leecdiang.github.io/2026/10/14/agent-step-value/" title="Agent Step Value: When the evaluator changes the value of a step">https://leecdiang.github.io/2026/10/14/agent-step-value/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Agent-Step-Value/" rel="tag"># Agent Step Value</a>
+              <a href="/tags/LLM-Agents/" rel="tag"># LLM Agents</a>
+              <a href="/tags/Evaluation/" rel="tag"># Evaluation</a>
+              <a href="/tags/EMNLP-2026/" rel="tag"># EMNLP 2026</a>
+              <a href="/tags/REALM/" rel="tag"># REALM</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+</body>
+</html>
