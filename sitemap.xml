@@ -3,7 +3,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/10/14/agent-step-value/</loc>
+    <loc>https://leecdiang.com/2026/10/14/agent-step-value/</loc>
     
     <lastmod>2026-10-14</lastmod>
     
@@ -14,7 +14,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/08/30/edgecontrol-trackpad-edge-gestures/</loc>
+    <loc>https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/</loc>
     
     <lastmod>2026-08-30</lastmod>
     
@@ -29,7 +29,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
     
     <lastmod>2026-08-04</lastmod>
     
@@ -40,7 +40,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
     
     <lastmod>2026-08-04</lastmod>
     
@@ -51,20 +51,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
-    
-    <lastmod>2026-08-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.github.io/2026/08/03/silemetry-from-zero-to-one/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
     
     <lastmod>2026-08-04</lastmod>
     
@@ -76,6 +63,19 @@
   
   
   
+  <url>
+    <loc>https://leecdiang.com/2026/08/03/silemetry-from-zero-to-one/</loc>
+    
+    <lastmod>2026-08-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  
+  
   
   
   
@@ -83,7 +83,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/</loc>
+    <loc>https://leecdiang.com/2026/06/19/openclaw-reliable-search/</loc>
     
     <lastmod>2026-06-25</lastmod>
     
@@ -94,7 +94,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/11/not-an-agent-but-a-workflow/</loc>
+    <loc>https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/</loc>
     
     <lastmod>2026-06-14</lastmod>
     
@@ -107,7 +107,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/06/eight-thousand-miles/</loc>
+    <loc>https://leecdiang.com/2026/06/06/eight-thousand-miles/</loc>
     
     <lastmod>2026-06-12</lastmod>
     
@@ -118,7 +118,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/04/05/Apple-Health-Pro/</loc>
+    <loc>https://leecdiang.com/2026/04/05/Apple-Health-Pro/</loc>
     
     <lastmod>2026-06-12</lastmod>
     
@@ -129,7 +129,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2025/10/13/macbook-air-m4-ssd-upgrade/</loc>
+    <loc>https://leecdiang.com/2025/10/13/macbook-air-m4-ssd-upgrade/</loc>
     
     <lastmod>2026-06-12</lastmod>
     
@@ -140,7 +140,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/06/04/polaroid-636-northwest/</loc>
+    <loc>https://leecdiang.com/2026/06/04/polaroid-636-northwest/</loc>
     
     <lastmod>2026-06-12</lastmod>
     
@@ -153,7 +153,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2026/03/18/silicon-roadmap/</loc>
+    <loc>https://leecdiang.com/2026/03/18/silicon-roadmap/</loc>
     
     <lastmod>2026-06-04</lastmod>
     
@@ -164,7 +164,7 @@
   
   
   <url>
-    <loc>https://leecdiang.github.io/2025/10/01/hello-world/</loc>
+    <loc>https://leecdiang.com/2025/10/01/hello-world/</loc>
     
     <lastmod>2026-03-18</lastmod>
     
@@ -177,7 +177,7 @@
   
 
   <url>
-    <loc>https://leecdiang.github.io/</loc>
+    <loc>https://leecdiang.com/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>

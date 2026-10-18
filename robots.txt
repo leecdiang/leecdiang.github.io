@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://leecdiang.github.io/sitemap.xml
+Sitemap: https://leecdiang.com/sitemap.xml

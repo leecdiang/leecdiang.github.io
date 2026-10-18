@@ -20,12 +20,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐">
-<meta property="og:url" content="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/index.html">
+<meta property="og:url" content="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/index.html">
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。">
 <meta property="og:locale" content="en_US">
@@ -47,10 +47,10 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
+<link rel="canonical" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/","path":"2026/06/28/ai-compute-interconnect-part1-communication-wall/","title":"智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/","path":"2026/06/28/ai-compute-interconnect-part1-communication-wall/","title":"智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐 | Beyond the Clock</title>
@@ -185,7 +185,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -698,7 +698,7 @@ flowchart LR
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/" title="智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐">https://leecdiang.github.io/2026/06/28/ai-compute-interconnect-part1-communication-wall/</a>
+      <a href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/" title="智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐">https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</a>
   </li>
   <li class="post-copyright-license">
       <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

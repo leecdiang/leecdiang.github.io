@@ -20,16 +20,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">
-<meta property="og:url" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/index.html">
+<meta property="og:url" content="https://leecdiang.com/2026/06/19/openclaw-reliable-search/index.html">
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
+<meta property="og:image" content="https://leecdiang.com/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
 <meta property="article:published_time" content="2026-06-18T16:05:00.000Z">
 <meta property="article:modified_time" content="2026-06-25T16:00:00.000Z">
 <meta property="article:author" content="LEEcDiang">
@@ -40,13 +40,13 @@
 <meta property="article:tag" content="工程实践">
 <meta property="article:tag" content="架构">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
+<meta name="twitter:image" content="https://leecdiang.com/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg">
 
 
-<link rel="canonical" href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/">
+<link rel="canonical" href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/","path":"2026/06/19/openclaw-reliable-search/","title":"让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.com/2026/06/19/openclaw-reliable-search/","path":"2026/06/19/openclaw-reliable-search/","title":"让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search | Beyond the Clock</title>
@@ -181,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -825,7 +825,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/" title="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">https://leecdiang.github.io/2026/06/19/openclaw-reliable-search/</a>
+      <a href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/" title="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">https://leecdiang.com/2026/06/19/openclaw-reliable-search/</a>
   </li>
   <li class="post-copyright-license">
       <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
