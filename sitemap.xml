@@ -3,7 +3,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/</loc>
+    <loc>https://leecdiang.com/2026/04/05/Apple-Health-Pro/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -13,7 +13,25 @@
   
   
   
+  <url>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
+    
+    <lastmod>2026-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
+    
+    <lastmod>2026-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   
   
   
@@ -25,6 +43,21 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/</loc>
+    
+    <lastmod>2026-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  
   
   
   
@@ -106,40 +139,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/04/05/Apple-Health-Pro/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
