@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
@@ -25,12 +25,12 @@
     <meta name="description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上">
-<meta property="og:url" content="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/index.html">
+<meta property="og:url" content="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-08-30T04:54:00.000Z">
-<meta property="article:modified_time" content="2026-08-30T14:55:08.786Z">
+<meta property="article:modified_time" content="2026-10-18T05:13:11.139Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Swift">
 <meta property="article:tag" content="macOS">
@@ -43,7 +43,7 @@
 <link rel="canonical" href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/","path":"2026/08/30/edgecontrol-trackpad-edge-gestures/","title":"EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/","path":"2026/08/30/edgecontrol-trackpad-edge-gestures/","title":"EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上 | Beyond the Clock</title>
@@ -94,7 +94,7 @@
     <div class="column">
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -112,7 +112,7 @@
   </div>
 
   <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
     </div>
   </div>
 </div>
@@ -135,10 +135,10 @@
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
-          Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -177,7 +177,7 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -491,14 +491,14 @@ flowchart TD
 <div class="post-copyright">
 <ul>
   <li class="post-copyright-author">
-      <strong>Post author:  </strong>LEEcDiang
+      <strong>本文作者: </strong>LEEcDiang
   </li>
   <li class="post-copyright-link">
-      <strong>Post link: </strong>
+      <strong>本文链接:</strong>
       <a href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/" title="EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上">https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/</a>
   </li>
   <li class="post-copyright-license">
-      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
   </li>
 </ul>
 </div>

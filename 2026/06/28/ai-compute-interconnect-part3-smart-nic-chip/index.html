@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
@@ -25,12 +25,12 @@
     <meta name="description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">
-<meta property="og:url" content="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/index.html">
+<meta property="og:url" content="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-28T14:38:30.000Z">
-<meta property="article:modified_time" content="2026-08-04T15:27:42.165Z">
+<meta property="article:modified_time" content="2026-10-18T05:13:11.138Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="CPO">
 <meta property="article:tag" content="Network-on-Chip">
@@ -49,7 +49,7 @@
 <link rel="canonical" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","path":"2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","title":"智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","path":"2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/","title":"智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联 | Beyond the Clock</title>
@@ -100,7 +100,7 @@
     <div class="column">
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -118,7 +118,7 @@
   </div>
 
   <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
     </div>
   </div>
 </div>
@@ -141,10 +141,10 @@
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
-          Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -183,7 +183,7 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -981,14 +981,14 @@ flowchart TB
 <div class="post-copyright">
 <ul>
   <li class="post-copyright-author">
-      <strong>Post author:  </strong>LEEcDiang
+      <strong>本文作者: </strong>LEEcDiang
   </li>
   <li class="post-copyright-link">
-      <strong>Post link: </strong>
+      <strong>本文链接:</strong>
       <a href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" title="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</a>
   </li>
   <li class="post-copyright-license">
-      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
   </li>
 </ul>
 </div>
