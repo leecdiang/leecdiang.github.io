@@ -83,6 +83,7 @@
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
+<link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
 
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -1206,6 +1207,91 @@
   window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
 })();
 </script>
+
+<!-- =========================================================
+     跳转丝滑：Speculation Rules 预渲染 + 跨文档视图过渡
+     2026-10-18
+     ========================================================= -->
+<script type="speculationrules">
+{
+  "prerender": [{
+    "where": {
+      "and": [
+        { "href_matches": "/*" },
+        { "not": { "selector_matches": "[target=_blank]" } },
+        { "not": { "selector_matches": "[rel~=external]" } },
+        { "not": { "selector_matches": "[download]" } }
+      ]
+    },
+    "eagerness": "moderate"
+  }]
+}
+</script>
+<style>
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.28, 0.11, 0.32, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation: none; }
+  }
+</style>
+<script>
+(function () {
+  // 已经在用 Speculation Rules 的浏览器跳过这套 fallback
+  if (window.HTMLScriptElement && HTMLScriptElement.supports &&
+      HTMLScriptElement.supports('speculationrules')) return;
+
+  var seen = Object.create(null);
+  function prefetch(href) {
+    if (!href || seen[href]) return;
+    seen[href] = 1;
+    var l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = href;
+    l.as = 'document';
+    document.head.appendChild(l);
+  }
+  function maybe(e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var url;
+    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname) return;
+    prefetch(url.href);
+  }
+  document.addEventListener('pointerover', maybe, { passive: true });
+  document.addEventListener('touchstart', maybe, { passive: true });
+})();
+</script>
+
+
+<!-- 当前页菜单指示：NexT 模板没输出 menu-item-active，这里按 URL 补上 -->
+<script>
+(function () {
+  var norm = function (p) { return p.replace(/\/index\.html$/, '/').replace(/\/page\/\d+\/$/, '/'); };
+  var here = norm(location.pathname);
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.site-nav .menu-item > a[href]'),
+    function (a) {
+      var url;
+      try { url = new URL(a.getAttribute('href'), location.href); } catch (e) { return; }
+      if (url.origin !== location.origin) return;
+      var target = norm(url.pathname);
+      var match = target === here || (target !== '/' && here.indexOf(target) === 0);
+      if (match) {
+        a.classList.add('menu-item-active');
+        a.setAttribute('aria-current', 'page');
+      }
+    }
+  );
+})();
+</script>
+
 
 </body>
 </html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css?v=20261014-asv-glass-2">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":true,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="用三维等距图、芯片剖面与时序图，把 RTL 到 GDSII 的流程画得更直观。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EDA 可视化实验">
+<meta property="og:url" content="https://leecdiang.com/eda-viz/">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="用三维等距图、芯片剖面与时序图，把 RTL 到 GDSII 的流程画得更直观。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-18T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-10-18T14:53:48.633Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="ic, tech, design, photography ">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leecdiang.com/eda-viz/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"https://leecdiang.com/eda-viz/","path":"eda-viz/index.html","title":"EDA 可视化实验"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>EDA 可视化实验 | Beyond the Clock
+</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"/js/third-party/mermaid.min.js"}}</script>
+  <script src="/js/third-party/mermaid.min.js" defer></script>
+  <script src="/js/third-party/tags/mermaid.js?v=20260830-mermaid-ui-5" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+<link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">EDA 可视化实验
+</h1>
+
+<div class="post-meta-container">
+    <div class="post-description">用三维等距图、芯片剖面与时序图，把 RTL 到 GDSII 的流程画得更直观。</div>
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <div class="ev-wrap">
+<style>
+.ev-wrap{--ev-blue:#29648f;--ev-teal:#2f7f7a;--ev-amber:#8a6a3a;--ev-ink:#18212b;--ev-sub:#4d6072;--ev-line:rgba(70,102,126,.18);--ev-accent:#29648f;--ev-card:rgba(255,255,255,.66)}
+.ev-wrap .ev-hero{margin:0 0 2rem}
+.ev-wrap .ev-kicker{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ev-accent);margin-bottom:.35rem}
+.ev-wrap h2{border:0;margin:2rem 0 .7rem;padding:0;font-size:1.35rem}
+.ev-wrap .ev-lede{color:var(--ev-sub);font-size:.95rem;line-height:1.75;margin:.2rem 0 1rem}
+.ev-wrap .ev-card{background:var(--surface-card);border:1px solid var(--ev-line);border-radius:16px;padding:1rem;box-shadow:0 14px 34px -24px rgba(25,52,72,.45);margin:1rem 0 1.4rem}
+.ev-wrap svg{display:block;width:100%;height:auto;border-radius:10px}
+.ev-wrap .ev-note{color:var(--ev-sub);font-size:.8rem;line-height:1.7;margin:.55rem .2rem 0}
+.ev-wrap .hm{width:100%;border-collapse:separate;border-spacing:4px;font-size:.82rem}
+.ev-wrap .hm th{border:0;background:transparent;color:var(--ev-sub);font-weight:600;padding:.35rem .3rem;text-align:center;font-size:.74rem}
+.ev-wrap .hm th:first-child{text-align:left}
+.ev-wrap .hm td{border:0;padding:.55rem .4rem;text-align:center;border-radius:8px;color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+.ev-wrap .hm td:first-child{text-align:left;color:var(--ev-ink);background:rgba(255,255,255,.45);font-weight:500}
+.ev-wrap .hm .l0{background:#e6edf3;color:#7b8b99}.ev-wrap .hm .l1{background:#c9dbe8;color:#2b4a5e}.ev-wrap .hm .l2{background:#93b8d0;color:#123246}.ev-wrap .hm .l3{background:#5b8fae;color:#fff}.ev-wrap .hm .l4{background:#29648f;color:#fff}
+.ev-wrap .hm-legend{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;font-size:.72rem;color:var(--ev-sub);margin-top:.55rem}
+.ev-wrap .hm-legend i{width:1.5rem;height:.7rem;border-radius:4px;display:inline-block;margin-right:.25rem;vertical-align:middle}
+@media (prefers-color-scheme: dark){
+.ev-wrap{--ev-ink:#e6eef5;--ev-sub:#c6d2db;--ev-line:rgba(160,190,210,.18);--ev-card:rgba(15,29,42,.55);--ev-accent:#7fb3d5;--ev-blue:#7fb3d5;--ev-teal:#6fc3b8;--ev-amber:#d6b07a}
+.ev-wrap .qdot{stroke:rgba(255,255,255,.30);stroke-width:1}
+.ev-wrap .hm td:first-child{background:rgba(255,255,255,.06);color:#e6eef5}
+.ev-wrap .hm .l0{background:#223442;color:#9fb2c1}.ev-wrap .hm .l1{background:#2c4a5e;color:#cfe3f0}.ev-wrap .hm .l2{background:#3f6f8c;color:#fff}.ev-wrap .hm .l3{background:#5b8fae;color:#fff}.ev-wrap .hm .l4{background:#7fb3d5;color:#0d1b26}
+}
+.ev-wrap .tx-primary{fill:var(--text-primary)}
+.ev-wrap .tx-secondary{fill:var(--text-secondary)}
+.ev-wrap .ln-divider{stroke:var(--divider)}
+.ev-wrap .ln-secondary{stroke:var(--text-secondary)}
+.ev-wrap .ln-blue{stroke:var(--ev-blue)}
+.ev-wrap .ln-teal{stroke:var(--ev-teal)}
+.ev-wrap .ln-amber{stroke:var(--ev-amber)}
+.ev-wrap .fill-teal{fill:var(--ev-teal)}
+.ev-wrap .fill-amber{fill:var(--ev-amber)}
+</style>
+<div class="ev-hero">
+<div class="ev-kicker">Beyond the Clock · Visualization Lab</div>
+<h1 style="margin:.1rem 0 .5rem;">把 RTL 到 GDSII 画成立体的</h1>
+<p class="ev-lede">不是把图变复杂，而是让「阶段」「成熟度」「物理层次」这三个维度一眼可见。下面五种图都不依赖额外 JS，前三种是这次重点做的三维与时序方案。</p>
+</div>
+<h2>一、九阶段三维流水线</h2>
+<p class="ev-lede">每个阶段是一块有厚度的板，柱高代表公开证据下的成熟度，颜色区分前端、验证、后端与交付。蛇形走向让九步在手机上也读得完。</p>
+<div class="ev-card">
+<svg viewBox="0 0 1060 960" role="img" aria-label="RTL 到 GDSII 的九阶段三维流水线">
+<defs>
+<marker id="flowArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"/></marker>
+<linearGradient id="waferG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fc6d8"/><stop offset="1" stop-color="#4f829e"/></linearGradient>
+<clipPath id="waferClip"><ellipse cx="955" cy="845" rx="62" ry="23"/></clipPath>
+</defs>
+<text x="40" y="46" font-size="12" fill="#5d7f96" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">RTL → GDSII · NINE-STAGE PIPELINE</text>
+<text x="40" y="72" font-size="11" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">柱高 = 公开证据下的成熟度（1–4）；颜色 = 前端 / 验证 / 后端 / 交付</text>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+<ellipse cx="156" cy="312" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="40,214 260,214 236,190 16,190" fill="#7aa6c6"/>
+<polygon points="40,214 260,214 260,300 40,300" fill="#3f6f96"/>
+<polygon points="260,214 236,190 236,276 260,300" fill="#2b5578"/>
+<line x1="40" y1="214" x2="260" y2="214" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="62" cy="236" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="62" y="240" text-anchor="middle" font-size="10.5" fill="#fff">01</text>
+<text x="150" y="259" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">架构 / 规格</text>
+<text x="150" y="280" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">SystemC · 性能建模</text>
+<ellipse cx="446" cy="312" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="330,182 550,182 526,158 306,158" fill="#7aa6c6"/>
+<polygon points="330,182 550,182 550,300 330,300" fill="#3f6f96"/>
+<polygon points="550,182 526,158 526,276 550,300" fill="#2b5578"/>
+<line x1="330" y1="182" x2="550" y2="182" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="352" cy="204" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="352" y="208" text-anchor="middle" font-size="10.5" fill="#fff">02</text>
+<text x="440" y="227" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">RTL / HLS</text>
+<text x="440" y="248" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">Verilog · SystemVerilog</text>
+<ellipse cx="736" cy="312" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="620,198 840,198 816,174 596,174" fill="#7aa6c6"/>
+<polygon points="620,198 840,198 840,300 620,300" fill="#3f6f96"/>
+<polygon points="840,198 816,174 816,276 840,300" fill="#2b5578"/>
+<line x1="620" y1="198" x2="840" y2="198" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="642" cy="220" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="642" y="224" text-anchor="middle" font-size="10.5" fill="#fff">03</text>
+<text x="730" y="243" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">Lint / CDC</text>
+<text x="730" y="264" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">静态检查 · 结构规则</text>
+<ellipse cx="156" cy="582" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="40,452 260,452 236,428 16,428" fill="#78b7ae"/>
+<polygon points="40,452 260,452 260,570 40,570" class="fill-teal"/>
+<polygon points="260,452 236,428 236,546 260,570" fill="#1f5f5b"/>
+<line x1="40" y1="452" x2="260" y2="452" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="62" cy="474" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="62" y="478" text-anchor="middle" font-size="10.5" fill="#fff">04</text>
+<text x="150" y="497" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">仿真 / UVM</text>
+<text x="150" y="518" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">VCS · Xcelium · Questa</text>
+<ellipse cx="446" cy="582" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="330,468 550,468 526,444 306,444" fill="#78b7ae"/>
+<polygon points="330,468 550,468 550,570 330,570" class="fill-teal"/>
+<polygon points="550,468 526,444 526,546 550,570" fill="#1f5f5b"/>
+<line x1="330" y1="468" x2="550" y2="468" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="352" cy="490" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="352" y="494" text-anchor="middle" font-size="10.5" fill="#fff">05</text>
+<text x="440" y="513" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">Formal</text>
+<text x="440" y="534" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">属性证明 · 覆盖率</text>
+<ellipse cx="736" cy="582" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="620,468 840,468 816,444 596,444" fill="#d2ad72"/>
+<polygon points="620,468 840,468 840,570 620,570" fill="#9a7434"/>
+<polygon points="840,468 816,444 816,546 840,570" fill="#77551f"/>
+<line x1="620" y1="468" x2="840" y2="468" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="642" cy="490" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="642" y="494" text-anchor="middle" font-size="10.5" fill="#fff">06</text>
+<text x="730" y="513" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">综合 / DFT</text>
+<text x="730" y="534" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">DC · Genus · Tessent</text>
+<ellipse cx="156" cy="852" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="40,738 260,738 236,714 16,714" fill="#d2ad72"/>
+<polygon points="40,738 260,738 260,840 40,840" fill="#9a7434"/>
+<polygon points="260,738 236,714 236,816 260,840" fill="#77551f"/>
+<line x1="40" y1="738" x2="260" y2="738" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="62" cy="760" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="62" y="764" text-anchor="middle" font-size="10.5" fill="#fff">07</text>
+<text x="150" y="783" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">Floorplan / P&amp;R</text>
+<text x="150" y="804" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">Innovus · Aprisa · OpenROAD</text>
+<ellipse cx="446" cy="852" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="330,738 550,738 526,714 306,714" fill="#d2ad72"/>
+<polygon points="330,738 550,738 550,840 330,840" fill="#9a7434"/>
+<polygon points="550,738 526,714 526,816 550,840" fill="#77551f"/>
+<line x1="330" y1="738" x2="550" y2="738" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="352" cy="760" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="352" y="764" text-anchor="middle" font-size="10.5" fill="#fff">08</text>
+<text x="440" y="783" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">STA / 功耗</text>
+<text x="440" y="804" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">PrimeTime · Tempus</text>
+<ellipse cx="736" cy="852" rx="120" ry="20" fill="rgba(25,52,72,.10)"/>
+<polygon points="620,754 840,754 816,730 596,730" fill="#c59a9a"/>
+<polygon points="620,754 840,754 840,840 620,840" fill="#8a4a4a"/>
+<polygon points="840,754 816,730 816,816 840,840" fill="#6a3434"/>
+<line x1="620" y1="754" x2="840" y2="754" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/>
+<circle cx="642" cy="776" r="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/>
+<text x="642" y="780" text-anchor="middle" font-size="10.5" fill="#fff">09</text>
+<text x="730" y="799" text-anchor="middle" font-size="15" font-weight="600" fill="#fff">Tapeout / 硅后</text>
+<text x="730" y="820" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.78)">GDSII · ATE · Bring-up</text>
+<path d="M260,270 Q295,258 330,270" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M550,270 Q585,258 620,270" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M860,310 Q880,390 852,460" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M620,540 Q585,528 550,540" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M330,540 Q295,528 260,540" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M18,580 Q0,670 18,740" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M260,810 Q295,798 330,810" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M550,810 Q585,798 620,810" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<path d="M842,820 Q875,830 895,842" fill="none" class="ln-secondary" stroke-width="2" marker-end="url(#flowArrow)"/>
+<ellipse cx="955" cy="848" rx="62" ry="23" fill="url(#waferG)" stroke="#2f5d7c" stroke-width="1.5"/>
+<ellipse cx="955" cy="843" rx="62" ry="23" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
+<g clip-path="url(#waferClip)" opacity=".55" stroke="#24506b" stroke-width=".7">
+<path d="M893,843 H1017 M955,820 V866"/>
+<path d="M905,828 L1005,858 M905,858 L1005,828"/>
+<path d="M920,821 L990,865 M920,865 L990,821"/>
+</g>
+<text x="955" y="890" text-anchor="middle" font-size="11" fill="#2f5d7c" letter-spacing="1.5">GDSII</text>
+<text x="955" y="905" text-anchor="middle" font-size="9.5" class="tx-secondary">TAPEOUT</text>
+</g>
+</svg>
+<p class="ev-note">成熟度是作者基于公开资料的主观分级，不是厂商评分。高度只用于比较阶段之间的相对差异。</p>
+</div>
+<h2>二、芯片剖面：GDSII 到底交付了什么</h2>
+<p class="ev-lede">从硅衬底、晶体管层、M1–M6 到钝化层，用斜投影把「金属层」从抽象名词变成可数的层。虚线表示通孔与跨层连接。</p>
+<div class="ev-card">
+<svg viewBox="0 0 1000 720" role="img" aria-label="芯片金属层与标准单元的三维剖面">
+<p><text x="36" y="44" font-size="12" fill="#5d7f96" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">GDSII · CROSS-SECTION</text><br>
+<text x="36" y="70" font-size="11" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">从硅衬底到钝化层：一颗芯片实际交付的物理结构</text><br>
+<g opacity=".45" stroke="#7fa6bd" stroke-width="2" stroke-dasharray="4 6"><br>
+<line x1="350" y1="600" x2="350" y2="300"/><br>
+<line x1="455" y1="600" x2="455" y2="300"/><br>
+<line x1="560" y1="600" x2="560" y2="300"/><br>
+</g><br>
+<polygon points="200,600 660,600 730,570 270,570" fill="#8fa7b6"/><br>
+<rect x="200" y="600" width="460" height="42" fill="#5c7383"/><br>
+<polygon points="660,600 730,570 730,612 660,642" fill="#455c6c"/><br>
+<polygon points="200,552 660,552 730,522 270,522" fill="#c9b894"/><br>
+<rect x="200" y="552" width="460" height="16" fill="#93805c"/><br>
+<polygon points="660,552 730,522 730,538 660,568" fill="#756446"/><br>
+<polygon points="200,512 660,512 730,482 270,482" fill="#e0b57e"/><br>
+<rect x="200" y="512" width="460" height="14" fill="#b9854a"/><br>
+<polygon points="660,512 730,482 730,496 660,526" fill="#91652f"/><br>
+<polygon points="200,476 660,476 730,446 270,446" fill="#d8a769"/><br>
+<rect x="200" y="476" width="460" height="14" fill="#ad7a3e"/><br>
+<polygon points="660,476 730,446 730,460 660,490" fill="#855a27"/><br>
+<polygon points="200,440 660,440 730,410 270,410" fill="#cf995b"/><br>
+<rect x="200" y="440" width="460" height="14" fill="#a06c34"/><br>
+<polygon points="660,440 730,410 730,424 660,454" fill="#7a4e1f"/><br>
+<polygon points="200,404 660,404 730,374 270,374" fill="#c58a4d"/><br>
+<rect x="200" y="404" width="460" height="14" fill="#95612c"/><br>
+<polygon points="660,404 730,374 730,388 660,418" fill="#70451a"/><br>
+<polygon points="200,368 660,368 730,338 270,338" fill="#b97c40"/><br>
+<rect x="200" y="368" width="460" height="14" fill="#895725"/><br>
+<polygon points="660,368 730,338 730,352 660,382" fill="#663d15"/><br>
+<polygon points="200,332 660,332 730,302 270,302" fill="#a96c34"/><br>
+<rect x="200" y="332" width="460" height="14" fill="#7b4c1f"/><br>
+<polygon points="660,332 730,302 730,316 660,346" fill="#5a3512"/><br>
+<polygon points="200,296 660,296 730,266 270,266" fill="#bcd6e4"/><br>
+<rect x="200" y="296" width="460" height="10" fill="#8fb0c4"/><br>
+<polygon points="660,296 730,266 730,276 660,306" fill="#6e8fa3"/><br>
+<line x1="170" y1="332" x2="170" y2="526" class="ln-secondary" stroke-width="1" stroke-dasharray="3 4"/><br>
+<text x="156" y="430" font-size="10" fill="#5d7f96" text-anchor="middle" transform="rotate(-90 156 430)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">M1–M6 金属层</text><br>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif"><br>
+<rect x="760" y="615" width="10" height="10" rx="2" fill="#5c7383"/><text x="778" y="624" font-size="12" class="tx-primary">硅衬底</text><text x="778" y="639" font-size="9.5" class="tx-secondary">Silicon substrate</text><br>
+<rect x="760" y="555" width="10" height="10" rx="2" fill="#93805c"/><text x="778" y="564" font-size="12" class="tx-primary">晶体管层</text><text x="778" y="579" font-size="9.5" class="tx-secondary">Poly / FinFET</text><br>
+<rect x="760" y="514" width="10" height="10" rx="2" fill="#b9854a"/><text x="778" y="523" font-size="12" class="tx-primary">M1</text><text x="778" y="538" font-size="9.5" class="tx-secondary">局部互连</text><br>
+<rect x="760" y="478" width="10" height="10" rx="2" fill="#ad7a3e"/><text x="778" y="487" font-size="12" class="tx-primary">M2</text><br>
+<rect x="760" y="442" width="10" height="10" rx="2" fill="#a06c34"/><text x="778" y="451" font-size="12" class="tx-primary">M3</text><br>
+<rect x="760" y="406" width="10" height="10" rx="2" fill="#95612c"/><text x="778" y="415" font-size="12" class="tx-primary">M4</text><br>
+<rect x="760" y="370" width="10" height="10" rx="2" fill="#895725"/><text x="778" y="379" font-size="12" class="tx-primary">M5</text><br>
+<rect x="760" y="334" width="10" height="10" rx="2" fill="#7b4c1f"/><text x="778" y="343" font-size="12" class="tx-primary">M6</text><text x="778" y="358" font-size="9.5" class="tx-secondary">全局互连</text><br>
+<rect x="760" y="298" width="10" height="10" rx="2" fill="#8fb0c4"/><text x="778" y="307" font-size="12" class="tx-primary">钝化层</text><text x="778" y="322" font-size="9.5" class="tx-secondary">Passivation</text><br>
+</g><br>
+<text x="36" y="696" font-size="10" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">注：层数与厚度为示意，不对应具体工艺节点。</text><br>
+</svg></p>
+</div>
+<h2>三、valid / ready 握手时序</h2>
+<p class="ev-lede">数字 IC 的很多真实约束发生在时序里，而不是流程框里。这张图只讲一件事：valid 与 ready 同时为高，transfer 才发生。</p>
+<div class="ev-card">
+<svg viewBox="0 0 1000 470" role="img" aria-label="valid ready 握手时序图">
+<defs><marker id="tArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" class="fill-teal"/></marker></defs>
+<p><text x="30" y="36" font-size="12" fill="#5d7f96" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">VALID / READY HANDSHAKE</text><br>
+<g class="ln-divider" stroke-width="1"><br>
+<line x1="150" y1="70" x2="150" y2="410"/><line x1="230" y1="70" x2="230" y2="410"/><line x1="310" y1="70" x2="310" y2="410"/><line x1="390" y1="70" x2="390" y2="410"/><line x1="470" y1="70" x2="470" y2="410"/><line x1="550" y1="70" x2="550" y2="410"/><line x1="630" y1="70" x2="630" y2="410"/><line x1="710" y1="70" x2="710" y2="410"/><line x1="790" y1="70" x2="790" y2="410"/><line x1="870" y1="70" x2="870" y2="410"/><br>
+</g><br>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" class="tx-secondary"><br>
+<text x="30" y="99">clk</text><text x="30" y="174">valid</text><text x="30" y="249">ready</text><text x="30" y="344">data</text><br>
+</g><br>
+<path d="M150,95 L150,65 L190,65 L190,95 L230,95 L230,65 L270,65 L270,95 L310,95 L310,65 L350,65 L350,95 L390,95 L390,65 L430,65 L430,95 L470,95 L470,65 L510,65 L510,95 L550,95 L550,65 L590,65 L590,95 L630,95 L630,65 L670,65 L670,95 L710,95 L710,65 L750,65 L750,95 L790,95 L790,65 L830,65 L830,95 L870,95 L870,65 L910,65 L910,95 L930,95" fill="none" class="ln-blue" stroke-width="2"/><br>
+<path d="M150,190 L290,190 L290,150 L690,150 L690,190 L930,190" fill="none" class="ln-blue" stroke-width="2.5"/><br>
+<path d="M150,265 L450,265 L450,225 L610,225 L610,265 L930,265" fill="none" class="ln-teal" stroke-width="2.5"/><br>
+<path d="M150,360 L290,360 L290,320 L690,320 L690,360 L930,360" fill="none" class="ln-amber" stroke-width="2"/><br>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" class="fill-amber"><br>
+<text x="370" y="345">D0</text><text x="520" y="345">D1</text><text x="640" y="345">D2</text><br>
+</g><br>
+<rect x="450" y="140" width="160" height="130" fill="rgba(47,127,122,.10)" stroke="rgba(47,127,122,.45)" stroke-dasharray="4 4"/><br>
+<text x="530" y="132" text-anchor="middle" font-size="11" class="fill-teal" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">transfer</text><br>
+<line x1="290" y1="420" x2="450" y2="420" class="ln-teal" stroke-width="1.5" marker-end="url(#tArrow)"/><br>
+<text x="370" y="440" text-anchor="middle" font-size="10" class="fill-teal" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">valid 先到，ready 后到</text><br>
+<text x="30" y="440" font-size="10" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">只有 valid 与 ready 同时为高，transfer 才发生。</text><br>
+</svg></p>
+<p class="ev-note">数据块 D0–D2 与 transfer 窗口对齐；实际协议还要考虑反压、skid buffer 与跨时钟域。</p>
+</div>
+<h2>四、二维定位图（修复版）</h2>
+<p class="ev-lede">上一版这张图被 Markdown 的空行切成了段落，SVG 里出现 p 标签，所以整张图不显示。这一版把 SVG 压成连续块，并补了投影和象限底色。</p>
+<div class="ev-card">
+<svg class="qchart" viewBox="0 0 760 560" role="img" aria-label="EDA Agent 能力与 MCP 开放度二维定位图">
+<defs>
+<linearGradient id="q1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8e8f2"/><stop offset="1" stop-color="#eef6fa"/></linearGradient>
+<filter id="bs" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#193448" flood-opacity=".22"/></filter>
+</defs>
+<line x1="400" y1="30" x2="400" y2="500" class="ln-divider" stroke-dasharray="4 5"/>
+<line x1="70" y1="265" x2="730" y2="265" class="ln-divider" stroke-dasharray="4 5"/>
+<rect x="70" y="30" width="660" height="470" fill="none" class="ln-divider" rx="12"/>
+<rect x="400" y="30" width="330" height="235" class="tx-primary" opacity=".02"/>
+<rect x="70" y="265" width="330" height="235" class="tx-primary" opacity=".02"/>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" class="tx-secondary">
+<text x="88" y="56">能力强 · 接口封闭</text>
+<text x="712" y="56" text-anchor="end">能力强 · 接口开放</text>
+<text x="88" y="486">早期探索</text>
+<text x="712" y="486" text-anchor="end">接口开放 · 能力待验证</text>
+</g>
+<text x="400" y="540" font-size="14" class="tx-secondary" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">公开 MCP 接口开放度 →</text>
+<text x="26" y="265" font-size="14" class="tx-secondary" text-anchor="middle" transform="rotate(-90 26 265)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Agent 工程能力 →</text>
+<circle class="qdot" cx="545" cy="88" r="9" fill="#29648f" filter="url(#bs)"><title>Siemens Fuse：跨工具 MCP 编排，覆盖多产品线</title></circle>
+<text x="561" y="84" font-size="14" class="tx-primary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Siemens Fuse</text>
+<text x="561" y="100" font-size="11.5" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">跨工具编排 · 企业级</text>
+<circle class="qdot" cx="470" cy="175" r="8" fill="#29648f" filter="url(#bs)"><title>Synopsys Verdi Assistant：已确认可作为 MCP Server</title></circle>
+<text x="485" y="171" font-size="14" class="tx-primary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Synopsys Verdi</text>
+<text x="485" y="187" font-size="11.5" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">调试接口已开放</text>
+<circle class="qdot" cx="212" cy="74" r="9" fill="#a34a4a" filter="url(#bs)"><title>Cadence ChipStack：Agent 能力激进，公开 MCP 文档不透明</title></circle>
+<text x="228" y="70" font-size="14" class="tx-primary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Cadence ChipStack</text>
+<text x="228" y="86" font-size="11.5" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">能力强 · 接口不透明</text>
+<circle class="qdot" cx="640" cy="215" r="8" class="fill-teal" filter="url(#bs)"><title>AMD Ross：Vivado 官方 MCP，范围限于 FPGA/自适应 SoC</title></circle>
+<text x="655" y="211" font-size="14" class="tx-primary" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">AMD Ross</text>
+<text x="655" y="227" font-size="11.5" class="tx-secondary" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Vivado · FPGA 边界</text>
+<circle class="qdot" cx="600" cy="330" r="8" class="fill-teal" filter="url(#bs)"><title>OpenROAD-MCP：开源 ASIC 物理设计适配</title></circle>
+<text x="615" y="326" font-size="14" class="tx-primary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">OpenROAD-MCP</text>
+<text x="615" y="342" font-size="11.5" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">开源 · 物理设计</text>
+<circle class="qdot" cx="350" cy="400" r="7" fill="#b07a2a" filter="url(#bs)"><title>MCP4EDA：学术研究原型，跨工具闭环</title></circle>
+<text x="365" y="396" font-size="14" class="tx-primary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">MCP4EDA</text>
+<text x="365" y="412" font-size="11.5" class="tx-secondary" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">研究原型</text>
+</svg>
+<p class="ev-note">位置是作者基于公开资料的定性判断，不是厂商评分。</p>
+</div>
+<h2>五、成熟度热力图</h2>
+<p class="ev-lede">如果只想快速扫读，热力图仍然比三维图更高效。三维流水线负责建立直觉，热力图负责精确比较。</p>
+<div class="ev-card">
+<table class="hm">
+<thead><tr><th>工作阶段</th><th>AI 能力</th><th>公开 MCP</th><th>生产可信度</th><th>Agent 适配</th></tr></thead>
+<tbody>
+<tr><td>架构建模与规格</td><td class="l3">3</td><td class="l0">0</td><td class="l2">2</td><td class="l2">2</td></tr>
+<tr><td>RTL 开发</td><td class="l4">4</td><td class="l2">2</td><td class="l2">2</td><td class="l4">4</td></tr>
+<tr><td>CDC/RDC 与静态检查</td><td class="l3">3</td><td class="l1">1</td><td class="l3">3</td><td class="l3">3</td></tr>
+<tr><td>功能验证</td><td class="l4">4</td><td class="l3">3</td><td class="l3">3</td><td class="l4">4</td></tr>
+<tr><td>Formal 与覆盖率</td><td class="l3">3</td><td class="l1">1</td><td class="l3">3</td><td class="l2">2</td></tr>
+<tr><td>仿真加速与 Emulation</td><td class="l3">3</td><td class="l1">1</td><td class="l2">2</td><td class="l2">2</td></tr>
+<tr><td>综合与 PPA 优化</td><td class="l4">4</td><td class="l2">2</td><td class="l3">3</td><td class="l3">3</td></tr>
+<tr><td>物理实现与 ECO</td><td class="l3">3</td><td class="l3">3</td><td class="l2">2</td><td class="l3">3</td></tr>
+<tr><td>DFT 与物理签核</td><td class="l2">2</td><td class="l1">1</td><td class="l4">4</td><td class="l1">1</td></tr>
+<tr><td>硅后调试</td><td class="l2">2</td><td class="l2">2</td><td class="l2">2</td><td class="l2">2</td></tr>
+</tbody>
+</table>
+<div class="hm-legend"><span><i style="background:#e6edf3"></i>0 无</span><span><i style="background:#c9dbe8"></i>1 早期</span><span><i style="background:#93b8d0"></i>2 可用</span><span><i style="background:#5b8fae"></i>3 成熟</span><span><i style="background:#29648f"></i>4 生产级</span></div>
+<p class="ev-note">评分是作者基于公开证据的主观分级，不构成厂商能力评分。</p>
+</div>
+</div>
+
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture';
+    desc.appendChild(l2);
+
+    var l3 = document.createElement('div');
+    l3.className = 'desc-line3';
+    l3.textContent = 'Tools · Photography';
+    desc.appendChild(l3);
+
+    var l4 = document.createElement('div');
+    l4.className = 'desc-line4';
+    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
+    desc.appendChild(l4);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+<!-- =========================================================
+     跳转丝滑：Speculation Rules 预渲染 + 跨文档视图过渡
+     2026-10-18
+     ========================================================= -->
+<script type="speculationrules">
+{
+  "prerender": [{
+    "where": {
+      "and": [
+        { "href_matches": "/*" },
+        { "not": { "selector_matches": "[target=_blank]" } },
+        { "not": { "selector_matches": "[rel~=external]" } },
+        { "not": { "selector_matches": "[download]" } }
+      ]
+    },
+    "eagerness": "moderate"
+  }]
+}
+</script>
+<style>
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.28, 0.11, 0.32, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation: none; }
+  }
+</style>
+<script>
+(function () {
+  // 已经在用 Speculation Rules 的浏览器跳过这套 fallback
+  if (window.HTMLScriptElement && HTMLScriptElement.supports &&
+      HTMLScriptElement.supports('speculationrules')) return;
+
+  var seen = Object.create(null);
+  function prefetch(href) {
+    if (!href || seen[href]) return;
+    seen[href] = 1;
+    var l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = href;
+    l.as = 'document';
+    document.head.appendChild(l);
+  }
+  function maybe(e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var url;
+    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname) return;
+    prefetch(url.href);
+  }
+  document.addEventListener('pointerover', maybe, { passive: true });
+  document.addEventListener('touchstart', maybe, { passive: true });
+})();
+</script>
+
+
+<!-- 当前页菜单指示：NexT 模板没输出 menu-item-active，这里按 URL 补上 -->
+<script>
+(function () {
+  var norm = function (p) { return p.replace(/\/index\.html$/, '/').replace(/\/page\/\d+\/$/, '/'); };
+  var here = norm(location.pathname);
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.site-nav .menu-item > a[href]'),
+    function (a) {
+      var url;
+      try { url = new URL(a.getAttribute('href'), location.href); } catch (e) { return; }
+      if (url.origin !== location.origin) return;
+      var target = norm(url.pathname);
+      var match = target === here || (target !== '/' && here.indexOf(target) === 0);
+      if (match) {
+        a.classList.add('menu-item-active');
+        a.setAttribute('aria-current', 'page');
+      }
+    }
+  );
+})();
+</script>
+
+
+</body>
+</html>
