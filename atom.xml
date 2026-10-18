@@ -102,12 +102,12 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
+    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="分布式训练" scheme="https://leecdiang.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/"/>
     <category term="集合通信" scheme="https://leecdiang.com/tags/%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1/"/>
     <category term="网络拓扑" scheme="https://leecdiang.com/tags/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91/"/>
     <category term="MFU" scheme="https://leecdiang.com/tags/MFU/"/>
     <category term="AI集群" scheme="https://leecdiang.com/tags/AI%E9%9B%86%E7%BE%A4/"/>
-    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="AI-Infrastructure" scheme="https://leecdiang.com/tags/AI-Infrastructure/"/>
     <category term="Distributed-Training" scheme="https://leecdiang.com/tags/Distributed-Training/"/>
     <category term="GPU-Cluster" scheme="https://leecdiang.com/tags/GPU-Cluster/"/>
@@ -129,11 +129,11 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
-    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
-    <category term="RoCE" scheme="https://leecdiang.com/tags/RoCE/"/>
     <category term="RDMA" scheme="https://leecdiang.com/tags/RDMA/"/>
+    <category term="RoCE" scheme="https://leecdiang.com/tags/RoCE/"/>
     <category term="拥塞控制" scheme="https://leecdiang.com/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/"/>
     <category term="数据中心网络" scheme="https://leecdiang.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E7%BD%91%E7%BB%9C/"/>
+    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="PFC" scheme="https://leecdiang.com/tags/PFC/"/>
     <category term="ECN" scheme="https://leecdiang.com/tags/ECN/"/>
     <category term="Ultra-Ethernet" scheme="https://leecdiang.com/tags/Ultra-Ethernet/"/>
@@ -154,10 +154,10 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
-    <category term="RDMA" scheme="https://leecdiang.com/tags/RDMA/"/>
     <category term="智能网卡" scheme="https://leecdiang.com/tags/%E6%99%BA%E8%83%BD%E7%BD%91%E5%8D%A1/"/>
     <category term="SmartNIC" scheme="https://leecdiang.com/tags/SmartNIC/"/>
     <category term="SerDes" scheme="https://leecdiang.com/tags/SerDes/"/>
+    <category term="RDMA" scheme="https://leecdiang.com/tags/RDMA/"/>
     <category term="芯片设计" scheme="https://leecdiang.com/tags/%E8%8A%AF%E7%89%87%E8%AE%BE%E8%AE%A1/"/>
     <category term="沐创" scheme="https://leecdiang.com/tags/%E6%B2%90%E5%88%9B/"/>
     <category term="国产芯片" scheme="https://leecdiang.com/tags/%E5%9B%BD%E4%BA%A7%E8%8A%AF%E7%89%87/"/>
@@ -286,11 +286,11 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
-    <category term="Silicon" scheme="https://leecdiang.com/tags/Silicon/"/>
     <category term="Intel" scheme="https://leecdiang.com/tags/Intel/"/>
     <category term="IBOT" scheme="https://leecdiang.com/tags/IBOT/"/>
     <category term="CPU" scheme="https://leecdiang.com/tags/CPU/"/>
     <category term="ArrowLake" scheme="https://leecdiang.com/tags/ArrowLake/"/>
+    <category term="Silicon" scheme="https://leecdiang.com/tags/Silicon/"/>
     <content>
       <![CDATA[<h2 id="Arrow-Lake-的“二次进化”">Arrow Lake 的“二次进化”</h2><p>intel 发布了Arrow Lake Refresh 的<a href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/"><strong>Core Ultra 200S PLUS CPUs</strong></a>，核心架构不变，频率微调，通过优化总线连接在 D2D 频率上提升了最多 900 MHz， 同时内存频率支持到 DDR5-7200，除此之外，Intel 在这代 CPU 上搭载了新的二进制优化工具，也就是<strong>Intel Binary Optimisation Tool （IBOT)。</strong></p><p>IBOT旨在优化新 CPU 架构的应用，提高负载 IPC。本文将聚焦这一技术展开讨论。<br><img data-src="silicon-roadmap-20260318.png" alt=""></p><hr><h2 id="什么是IBOT？">什么是IBOT？</h2><p>在高性能计算的发展历程中，半导体行业长期通过微缩制程与增加物理核心来获取性能增长。但物理极限的逼近以及异构架构复杂性的提升使得单纯堆料难以应对现代复杂工作负载。同时，AI 浪潮下的能源危机和 AI 终端的个人普及使企业开始重视能效比，在这个大背景下，计算终端<strong>软硬件协同设计</strong>变得尤为重要。</p><p><strong>IBOT</strong>正是这种软硬件协同理念下的产物。简单来说，它是一个动态二进制优化层。</p><p>与传统的编译器优化是在程序运行前完成不同，IBOT 运行在系统底层，它实时监控应用程序的指令流，识别出那些执行效率低下的代码段，并针对 <strong>Arrow Lake</strong> 的微架构特性进行动态重写。</p><h3 id="表-1：编译器优化与-Intel-iBot-技术的深度对比">表 1：编译器优化与 Intel iBot 技术的深度对比</h3><table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">编译器优化</th><th style="text-align:left">iBot 底层优化</th></tr></thead><tbody><tr><td style="text-align:left"><strong>作用对象</strong></td><td style="text-align:left">源代码（C++/C# ）</td><td style="text-align:left">编译后的二进制文件（.exe / .dll）</td></tr><tr><td style="text-align:left"><strong>获取信息</strong></td><td style="text-align:left">静态语法树、数据流分析</td><td style="text-align:left">实际运行时的分析数据 (Profiling Data)</td></tr><tr><td style="text-align:left"><strong>针对性</strong></td><td style="text-align:left">针对指令集架构（如 x86-64）</td><td style="text-align:left">针对<strong>特定微架构</strong>（如流水线深度解码宽度等）</td></tr><tr><td style="text-align:left"><strong>典型手段</strong></td><td style="text-align:left">循环展开、函数内联、寄存器分配</td><td style="text-align:left">代码块重排、去除无效指令、优化指令对齐</td></tr><tr><td style="text-align:left"><strong>灵活性</strong></td><td style="text-align:left">开发者控制，发布后即固定</td><td style="text-align:left">用户侧控制，可针对新发布的 CPU 进行二次优化</td></tr></tbody></table><p>这种技术的核心目的并非单纯提高频率，而是通过<strong>减少指令周期的浪费（Stalls）</strong>，让 CPU 在每个周期中都能完成更多的实质性工作。</p><hr><h2 id="IBOT-的核心运作机制">IBOT 的核心运作机制</h2><p>为了实现 IPC 的提升，IBOT 主要在以下三个环节发挥作用：</p><ol><li><p><strong>Profiling</strong>： 利用 CPU 内部集成的性能监控单元（PMU），IBOT 能够精准捕捉程序运行时的瓶颈：是分支预测失败？还是频繁的Cache Miss？它能识别出哪些代码导致了架构内部的交通拥堵。</p></li><li><p><strong>Dynamic Transformation</strong>： 一旦锁定目标，IBOT 会在内存中对二进制指令进行调整。例如，将长串的低效指令序列替换为针对当前架构优化的专用指令集，或者重新排列数据读取顺序以匹配更快的总线带宽。</p></li><li><p><strong>Contention Reduction</strong>： 在 Arrow Lake 的分 Tile 设计中，数据在不同逻辑单元间的往返往往产生延迟。IBOT 通过优化指令流，最大限度地减少了对架构资源的争用，确保核心始终处于高效负载的状态。</p></li></ol><hr><h2 id="D2D-提频是-IBOT-的先决条件">D2D 提频是 IBOT 的先决条件</h2><p><strong>Core Ultra 200S</strong> 由于采用了类似 AMD 的 Cheplet 设计，通过 Foveros 3D 封装将不同的 Tiles 组合在一起：<strong>Compute Tile</strong>负责算力，而<strong>SoC Tile</strong>负责内存控制。这导致了CPU 核心每读取一次内存数据，指令都必须跨越计算模块与 SoC 模块之间的物理边界。</p><p>这个边界的通信效率由 D2D 频率决定。由于 D2D 频率较低，数据在模块间传输的时间大幅拉跨整体延迟。因此初代 200S 的内存延迟普遍在 <strong>80ns-100ns</strong>，远高于上一代的 <strong>60ns</strong> 级别。</p><p>同时在 Intel 的设计中，Compute Tile内部的 Ring Bus 频率与 D2D 互连频率往往存在同步或比例关系，因此当 D2D 频率被限制在较低水平时，为了保证数据传输的稳定性，计算模块内部的环形总线频率也会受到牵制，这直接导致了 L3 缓存的带宽和响应速度下降。</p><p>这种环境下，运行任何实时指令优化工具都会产生不可忽视的开销：因为优化器本身也需要占用宝贵的互连带宽去监测和重写指令。</p><p><strong>900 MHz 的 D2D 提频，本质上是 Intel 为 IBOT 预付的“性能税”：</strong></p><ul><li><p><strong>释放带宽</strong>：得益于 D2D 频率的激增，模块间通信大大加速。这降低了基础延迟，也为 IBOT 腾出了足够的运行空间。现在，IBOT 在后台实时分析并重构二进制指令时，其产生的数据交换可以白嫖这部分多出来的带宽，而不会拖累正常的计算任务。</p></li><li><p><strong>消除架构碰撞</strong>：IBOT 的核心任务是减少 Architectural Contention。在分 Tile 设计中，程序往往会因为不适应“跨片取数”而产生大量的指令气泡。IBOT 通过实时重写指令流，提前排列好数据的进出顺序，确保在高频 D2D 链路的配合下，数据能以最完美的节奏填满每一个 CPU 周期。</p></li></ul><hr><h2 id="性能预期-IPC的纯粹提升">性能预期: IPC的纯粹提升</h2><p>在实际应用中，IBOT 的加入意味着：</p><h3 id="游戏表现："><strong>游戏表现</strong>：</h3><p><a href="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg"><img data-src="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg" alt=""></a><br>对于那些针对旧架构编写、对单核效率敏感的老旧游戏，或是从 Switch/PS5 上移植来的非原生游戏，IBOT 可以通过实时优化指令流，显著改善 1% Low FPS。</p><p>这几年，我们已经习惯了各种<strong>Frame Generation</strong>或是<strong>Upscaling</strong>技术。尽管 DLSS 或 FSR 能够带来震撼的平均帧数，但它们本质上是基于算法的视觉补偿，在技术力上对我没什么吸引力。</p><p><strong>IBOT 的逻辑则完全不同</strong>：它不生成任何虚假的像素，也不跳过任何必要的计算步骤。</p><p>它的核心价值在于解决“指令卡顿”。在异构架构中，很多移植游戏或旧作并不理解如何高效地在核心间分配任务，导致 CPU 频繁出现无效周期。IBOT 在二进制层面实时重排这些指令，确保每一个时钟周期都在处理有意义的代码。</p><p>其结果是显而易见的：传统的帧生成技术往往无法根治掉帧，因为底层逻辑卡顿依然存在。而 IBOT 从指令源头消除了气泡，让帧生成时间变得丝滑平均。同时，与 AI 补帧带来的输入延迟不同，IBOT 是原生的计算提速，你获得的每一帧都是真实的物理帧。</p><hr><h3 id="专业负载：">专业负载：</h3><p>在复杂的生产力工具中，IBOT 的核心价值在于平滑 P-Core 与 E-Core 切换时的执行抖动。</p><ul><li><p><strong>优化上下文切换</strong>： 生产力任务如代码编译、大型工程文件加载常涉及频繁的核心迁移。由于 P/E 核微架构不同，切换时易引发流水线清空。IBOT 在二进制层面实时预对齐指令流，将这种切换开销降至最低。</p></li><li><p><strong>填补跨 Tile 指令气泡</strong>： 针对 Arrow Lake 的分 tile 设计，IBOT 能识别并重排那些可能导致跨片取数延迟的指令。它通过预取和指令重排序，填补了由于 D2D 通信产生的指令气泡，让 CPU 在处理非线性生产力任务时，单位周期内的吞吐量更稳定。</p></li><li><p><strong>老旧工具的“实时翻译”</strong>： 大量未针对异构架构优化的专业软件，在 IBOT 的干预下，可能以更契合当前 Tile 架构的逻辑运行。它本质上是让老软件在新芯片上跑出了原生优化的高效感。</p></li></ul><hr><h2 id="总结：Intel-的“软硬协同”进化论">总结：Intel 的“软硬协同”进化论</h2><p><strong>Intel Binary Optimisation Tool (IBOT)</strong> 的出现，标志着半导体竞争进入了一个全新的维度。</p><p>在摩尔定律放缓、异构架构日益复杂的今天，单纯堆砌晶体管和拉升频率已经难以满足玩家和专业用户的胃口。<strong>Core Ultra 200S PLUS</strong> 给出了一套新颖的组合拳：</p><ol><li><p><strong>硬件层面</strong>：通过物理层面的 <strong>+900 MHz D2D 提频</strong>，Intel 终于化解了分离式 Tile 架构的延迟沉疴，为后续的优化留出了重要的带宽预算。</p></li><li><p><strong>软件层面</strong>：<strong>IBOT</strong> 拒绝了当下流行的视觉补偿套路。它不跳过任何计算步骤，也不生成虚假的像素，而是通过二进制层面的动态重构，让每一行指令都能在最合适的时间、以最合适的顺序进入最合适的核心。</p></li></ol><p>对于追求极致体感的玩家，这意味着实打实的 <strong>1% Low FPS</strong> 提升和零延迟的响应；对于专业创作者，这代表着在繁重的生产力洪流中，获得了前所未有的执行确定性。</p><p><strong>当物理瓶颈被打破，真正的 IPC 潜力才被彻底释放。</strong></p><p><img data-src="silicon-roadmap-20260318-2.png" alt=""></p>]]>
     </content>
@@ -307,11 +307,11 @@
     </author>
     <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
     <category term="Apple" scheme="https://leecdiang.com/tags/Apple/"/>
+    <category term="Silicon" scheme="https://leecdiang.com/tags/Silicon/"/>
     <category term="MacBook" scheme="https://leecdiang.com/tags/MacBook/"/>
     <category term="硬盘扩容" scheme="https://leecdiang.com/tags/%E7%A1%AC%E7%9B%98%E6%89%A9%E5%AE%B9/"/>
     <category term="扩容" scheme="https://leecdiang.com/tags/%E6%89%A9%E5%AE%B9/"/>
     <category term="MacBookAir" scheme="https://leecdiang.com/tags/MacBookAir/"/>
-    <category term="Silicon" scheme="https://leecdiang.com/tags/Silicon/"/>
     <content>
       <![CDATA[<h2 id="前言">前言</h2><p>在购入这台macbook air m4的时候选择了15寸 + 24g RAM + 256g SSD的配置，国补+教育优惠叠加后的价格是8700左右，本以为256的存储用到过保再扩容绰绰有余，甚至也许可以外接硬盘一直用下去；但仅过了半年就容量告紧，遂决定扩容。</p><hr><h2 id="Part-1-选择第三方扩容？">Part 1: 选择第三方扩容？</h2><p>由于苹果的高昂存储价格，第三方扩容性价比高的多，但25年AI采购导致内存、存储芯片涨价严重，这次第三方扩容花费1300元.</p><p>这次选择在【万维创芯】这家工作室扩容，因为这是我在b站看到的唯一一家扩容后使用BGA专用基底填充胶水的商家；</p><p>Underfill底部填充胶的材料通常使用环氧树脂(Epoxy)，它利用毛细作用原理把Epoxy涂抹在晶片的边缘让其渗透到覆晶晶片或BGA的底部，然后加热予以固化(cured)，它填充封装和印刷电路板 (PCB) 之间的间隙，提供机械支撑和应力释放，以防止热膨胀和收缩损坏。 底部填充环氧树脂还可以通过降低寄生电感和电容来提高封装的电气性能。</p><img data-src="/2025/10/13/macbook-air-m4-ssd-upgrade/2.png" class="" title="BGA底部填充胶示意图"><p>在【万维创芯】的早期b站视频中可见，使用的并非Underfill胶水而是光固化UV胶，仅能为存储芯片四周封边，无法渗透进入焊盘，因此抗跌落和热膨胀性能差，这也是我之前未选择扩容的原因。</p><img data-src="/2025/10/13/macbook-air-m4-ssd-upgrade/3.png" class="" title="UV胶封边示意图"><hr><h2 id="Part-2-扩容过程记录">Part 2: 扩容过程记录</h2><ol><li><p><strong>数据备份</strong>：使用“时间机器”(Time Machine) 将整个系统完整备份到了我的移动硬盘上。（需要格式硬盘为APFS格式）</p></li><li><p><strong>拆机与操作</strong>：全程大概三小时，过程为拆下主板-热风枪吹下旧硬盘-清理焊盘-植中温锡-焊接新硬盘-测试-封胶-装机</p></li></ol><img data-src="/2025/10/13/macbook-air-m4-ssd-upgrade/4.png" class="" title="扩容操作过程"><ol start="3"><li><strong>数据恢复</strong>：扩容完成后，从“时间机器”备份中恢复数据。开机后，一切都和送修前一样，只是存储空间变成了 1TB。</li></ol><img data-src="/2025/10/13/macbook-air-m4-ssd-upgrade/5.png" class="" title="扩容后系统显示1TB容量"><hr><h2 id="Part-3-性能实测">Part 3: 性能实测</h2><p>扩容后，除了容量变大，硬盘的读写速度也是我非常关心的一点。我使用了 Blackmagic Disk Speed Test 这款软件，对扩容后的硬盘进行了测速。</p><img data-src="/2025/10/13/macbook-air-m4-ssd-upgrade/6.png" class="" title="Blackmagic 测速结果"><p>对比扩容前稍高，但算不上显著（扩容前在读写3000左右）</p><p>通常来说，大容量的 SSD 因为有更多的闪存通道，读写速度可能会比小容量的更快。</p><hr><h2 id="总结：值吗？">总结：值吗？</h2><p>我认为是值得的。</p><p>现在，我可以毫无顾忌地导入我的摄影原片、安装大型软件、创建虚拟机。</p><p>采用了正确的扩容工艺也让我更加放心地使用</p><p><strong>优点：</strong></p><ul><li><p><strong>性价比高</strong>：用远低于官方的价格，获得了四倍的存储空间。</p></li><li><p><strong>体验无缝</strong>：通过时间机器恢复后，系统和数据都和原来一样，没有任何不适感。</p></li><li><p><strong>性能提升</strong>：获得了更快的读写速度。</p></li></ul><p><strong>潜在风险：</strong></p><ul><li><strong>保修</strong>：影响官方保修，二手不好卖，可能存在的虚焊掉盘。</li></ul><p>如果你也像我一样，正在被 256GB 的存储空间所困扰，并且愿意承担一定的保修风险，那么正确的第三方扩容是一个值得考虑的选择。</p><p>希望我的这次经历能给你带来一些参考。</p>]]>
     </content>
