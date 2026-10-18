@@ -40,7 +40,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/</loc>
+    <loc>https://leecdiang.com/2026/06/04/polaroid-636-northwest/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -51,7 +51,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/04/polaroid-636-northwest/</loc>
+    <loc>https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -106,17 +106,6 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
     
     <lastmod>2026-10-18</lastmod>
@@ -129,6 +118,17 @@
   
   <url>
     <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
+    
+    <lastmod>2026-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
