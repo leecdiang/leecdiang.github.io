@@ -18,7 +18,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/03/18/silicon-roadmap/</loc>
+    <loc>https://leecdiang.com/2026/08/03/silemetry-from-zero-to-one/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -29,7 +29,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/08/03/silemetry-from-zero-to-one/</loc>
+    <loc>https://leecdiang.com/2026/03/18/silicon-roadmap/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -84,17 +84,6 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://leecdiang.com/2026/06/06/eight-thousand-miles/</loc>
     
     <lastmod>2026-10-18</lastmod>
@@ -106,7 +95,18 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
+    <loc>https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/</loc>
+    
+    <lastmod>2026-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -128,7 +128,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
     
     <lastmod>2026-10-18</lastmod>
     

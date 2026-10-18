@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #a10df5;
+    background: #ff2278;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3709,9 +3709,7 @@ pre {
 }
 .post-body .mermaid svg {
   display: block !important;
-  width: 100% !important;
   height: auto !important;
-  max-width: none !important;
   margin: 0 auto !important;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
 }
