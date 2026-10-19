@@ -1815,11 +1815,6 @@
   }
 
   function start3dLoop() {
-    if (REDUCED_MOTION) {
-      var cv0 = document.getElementById('btc-orrery-canvas');
-      if (cv0 && orrerySnap) drawOrrery3D(cv0, orrerySnap, true, orreryCam);
-      return;
-    }
     if (raf3d) return;
     function tick(t) {
       if (!state.open || state.view !== 'orrery') { raf3d = null; return; }
@@ -2196,6 +2191,7 @@
         modal.querySelector('.btc-orrery-stage').classList.toggle('is-orrery', state.view === 'orrery');
         modal.querySelector('.btc-orrery-body').classList.toggle('is-orrery', state.view === 'orrery');
         renderAll();
+        requestAnimationFrame(function () { if (state.open) renderAll(); });
         if (state.view === 'orrery') start3dLoop(); else stop3dLoop();
       });
     });
@@ -2236,7 +2232,7 @@
   function openModal() {
     ensureModal();
     state.open = true;
-    if (state.view === 'orrery' && !REDUCED_MOTION) { orreryCam.dist = 4.7; camIntroStart = performance.now(); }
+    if (state.view === 'orrery') { orreryCam.dist = 4.7; camIntroStart = performance.now(); }
     stopMiniLoop();
     els.modal.classList.add('is-open');
     document.documentElement.classList.add('btc-orrery-locked');

@@ -2306,3 +2306,34 @@ html.btc-orrery-locked body { overflow: hidden !important; }
 @media (max-width: 700px) {
   .btc-orrery-modal.visual-frame .btc-orrery-stage { margin: 8px; border-radius: 14px; }
 }
+
+/* mobile: two-row header so tabs never get pushed off-screen */
+@media (max-width: 640px) {
+  .btc-orrery-top { flex-wrap: wrap; gap: 8px; }
+  .btc-orrery-heading { flex: 1 1 100%; min-width: 0; }
+  .btc-orrery-menu { order: 1; }
+  .btc-orrery-seg { order: 2; }
+  .btc-orrery-close { order: 3; margin-left: auto; }
+  .btc-orrery-body { grid-template-rows: minmax(0, 1fr) minmax(0, 0.9fr); }
+  .btc-orrery-stage { min-height: 0; }
+  .btc-orrery-info { max-height: none; }
+  .btc-orrery-tablewrap { max-height: 24vh; }
+}
+
+/* final mobile layout guard: desktop two-column rule must not leak into phones */
+@media (max-width: 980px) {
+  .btc-orrery-body {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+  .btc-orrery-body.is-orrery {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .btc-orrery-stage {
+    min-height: 0 !important;
+  }
+  .btc-orrery-info {
+    max-height: none !important;
+  }
+}
