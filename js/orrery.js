@@ -2050,7 +2050,6 @@
     + '      <div class="btc-orrery-menu-pop" hidden>'
     + '        <div class="btc-orrery-menu-row"><span data-i18n="language">语言</span><div class="btc-orrery-lang" id="btc-orrery-lang" role="group" aria-label="Language"><button type="button" data-lang="zh" class="is-active">中</button><button type="button" data-lang="en">EN</button></div></div>'
     + '        <div class="btc-orrery-menu-row"><span data-i18n="orbitScale">轨道比例</span><label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed" data-i18n="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true" data-i18n="trueScale">真实</span></label></div>'
-    + '        <div class="btc-orrery-menu-row"><span data-i18n="visual">视觉</span><div class="btc-orrery-visual2" id="btc-orrery-visual2"><button type="button" data-visual="frame" class="is-active" data-i18n="frame">画框</button><button type="button" data-visual="dusk" data-i18n="dusk">半深</button><button type="button" data-visual="deep" data-i18n="deep">深色</button></div></div>'
     + '      </div>'
     + '    </div>'
     + '    <div class="btc-orrery-seg" role="tablist" aria-label="视图">'
@@ -2168,14 +2167,6 @@
     if (menuBtn && menuPop) {
       menuBtn.addEventListener('click', function (e) { e.stopPropagation(); menuPop.hidden = !menuPop.hidden; });
       modal.addEventListener('click', function (e) { if (!menu.contains(e.target)) menuPop.hidden = true; });
-    }
-
-    var visualBox = modal.querySelector('#btc-orrery-visual2');
-    if (visualBox) {
-      visualBox.addEventListener('click', function (e) {
-        var b = e.target.closest('button');
-        if (b) setVisual(b.getAttribute('data-visual'));
-      });
     }
 
     var langBox = modal.querySelector('#btc-orrery-lang');
