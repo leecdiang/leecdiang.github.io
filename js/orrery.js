@@ -2204,22 +2204,43 @@
     });
 
     var slider = modal.querySelector('#btc-orrery-slider');
-    slider.addEventListener('input', function () {
-      state.offset = parseFloat(slider.value);
-      state.live = Math.abs(state.offset) < 0.001;
-      var live = modal.querySelector('#btc-orrery-live');
-      if (live) live.classList.toggle('is-live', state.live);
-      renderAll();
-    });
-
     var liveBtn = modal.querySelector('#btc-orrery-live');
-    liveBtn.addEventListener('click', function () {
+
+    function pulseLive() {
+      if (!liveBtn) return;
+      liveBtn.classList.remove('is-snapping');
+      void liveBtn.offsetWidth;
+      liveBtn.classList.add('is-snapping');
+      setTimeout(function () { liveBtn.classList.remove('is-snapping'); }, 430);
+    }
+
+    function setLive(play) {
       state.offset = 0;
       state.live = true;
       slider.value = '0';
-      liveBtn.classList.add('is-live');
+      if (liveBtn) liveBtn.classList.add('is-live');
+      if (play) pulseLive();
+      renderAll();
+    }
+
+    slider.addEventListener('input', function () {
+      var v = parseFloat(slider.value);
+      if (Math.abs(v) <= 0.30) {
+        setLive(false);
+        pulseLive();
+        return;
+      }
+      state.offset = v;
+      state.live = false;
+      if (liveBtn) liveBtn.classList.remove('is-live');
       renderAll();
     });
+
+    slider.addEventListener('change', function () {
+      if (Math.abs(parseFloat(slider.value)) <= 0.45) setLive(true);
+    });
+
+    liveBtn.addEventListener('click', function () { setLive(true); });
 
     if (window.ResizeObserver) {
       var ro = new ResizeObserver(function () {

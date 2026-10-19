@@ -2337,3 +2337,20 @@ html.btc-orrery-locked body { overflow: hidden !important; }
     max-height: none !important;
   }
 }
+
+/* live snap: visible detent at 0 and a tactile pulse */
+#btc-orrery-slider {
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(120, 183, 232, 0.62) calc(50% - 1px), rgba(120, 183, 232, 0.62) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(90deg, rgba(41, 100, 143, 0.14), rgba(41, 100, 143, 0.42), rgba(41, 100, 143, 0.14)) !important;
+}
+
+@keyframes btc-live-snap {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.14); box-shadow: 0 0 0 4px rgba(111, 191, 160, 0.16); }
+  100% { transform: scale(1); }
+}
+
+#btc-orrery-live.is-snapping {
+  animation: btc-live-snap 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
