@@ -142,6 +142,31 @@
     };
   }
 
+  function geoOfApparent(el, earth, date) {
+    var g = geoOf(el, earth, date);
+    for (var i = 0; i < 2; i++) {
+      var dt = g.dist * 499.004784 / 86400;
+      var pDate = new Date(date.getTime() - dt * 86400000);
+      var p = helio(el, pDate);
+      var dx = p.x - earth.x, dy = p.y - earth.y, dz = p.z - earth.z;
+      g = {
+        lon: norm360(Math.atan2(dy, dx) / DEG),
+        lat: Math.atan2(dz, Math.hypot(dx, dy)) / DEG,
+        dist: Math.sqrt(dx * dx + dy * dy + dz * dz)
+      };
+    }
+    return g;
+  }
+
+  function apparentLon(lon, lat, sunLon, T) {
+    var Ls = (280.4665 + 36000.7698 * T) * DEG;
+    var Lm = (218.3165 + 481267.8813 * T) * DEG;
+    var Om = (125.04452 - 1934.136261 * T) * DEG;
+    var dPsi = (-17.20 * Math.sin(Om) - 1.32 * Math.sin(2 * Ls) - 0.23 * Math.sin(2 * Lm) + 0.21 * Math.sin(2 * Om)) / 3600;
+    var aberr = -(20.4955 / 3600) * Math.cos((lon - sunLon) * DEG) / Math.max(0.1, Math.cos(lat * DEG));
+    return norm360(lon + dPsi + aberr);
+  }
+
   function sunGeo(earth) {
     return {
       lon: norm360(Math.atan2(-earth.y, -earth.x) / DEG),
@@ -153,11 +178,30 @@
   function moonGeo(date) {
     var d = julian(date) - 2451545.0;
     var Lp = 218.316 + 13.176396 * d;
-    var M = 134.963 + 13.064993 * d;
-    var F = 93.272 + 13.229350 * d;
-    var lon = Lp + 6.289 * Math.sin(M * DEG);
-    var lat = 5.128 * Math.sin(F * DEG);
-    var distKm = 385001 - 20905 * Math.cos(M * DEG);
+    var D = 297.8502 + 12.190749 * d;
+    var M = 357.5291 + 0.98560028 * d;
+    var Mp = 134.9634 + 13.064993 * d;
+    var F = 93.2721 + 13.229350 * d;
+    var sin = function (x) { return Math.sin(x * DEG); };
+    var cos = function (x) { return Math.cos(x * DEG); };
+    var lon = Lp
+      + 6.289 * sin(Mp) + 1.274 * sin(2 * D - Mp) + 0.658 * sin(2 * D)
+      + 0.214 * sin(2 * Mp) - 0.186 * sin(M) - 0.114 * sin(2 * F)
+      + 0.059 * sin(2 * D - 2 * Mp) + 0.057 * sin(2 * D - M - Mp)
+      + 0.053 * sin(2 * D + Mp) + 0.046 * sin(2 * D - M)
+      + 0.041 * sin(Mp - M) - 0.035 * sin(D) - 0.031 * sin(Mp + M)
+      - 0.015 * sin(2 * F - 2 * D) + 0.011 * sin(Mp - 4 * D);
+    var lat = 5.128 * sin(F)
+      + 0.280 * sin(Mp + F) + 0.277 * sin(Mp - F) + 0.173 * sin(2 * D - F)
+      + 0.055 * sin(2 * D + F - Mp) + 0.046 * sin(2 * D - F - Mp)
+      + 0.033 * sin(2 * D + F) + 0.017 * sin(2 * Mp + F);
+    var distKm = 385000.56
+      - 20905.355 * cos(Mp) - 3699.111 * cos(2 * D - Mp) - 2955.968 * cos(2 * D)
+      - 569.925 * cos(2 * Mp) + 48.888 * cos(M) - 3.149 * cos(2 * F)
+      + 246.158 * cos(2 * D - 2 * Mp) - 152.138 * cos(2 * D - M - Mp)
+      - 170.733 * cos(2 * D + Mp) - 204.586 * cos(2 * D - M)
+      - 129.620 * cos(Mp - M) + 108.743 * cos(D) + 104.755 * cos(Mp + M)
+      + 10.321 * cos(2 * F - 2 * D) + 79.661 * cos(Mp - 2 * D);
     return { lon: norm360(lon), lat: lat, dist: distKm / AU_KM, distKm: distKm };
   }
 
@@ -200,6 +244,10 @@
   function shortSign(lon) {
     var s = signInfo(lon);
     return (state.lang === 'en' ? ZODIAC[s.i].en.slice(0, 3) : ZODIAC[s.i].cn) + ' ' + s.d + '°';
+  }
+
+  function formatDist(dist) {
+    return dist < 0.01 ? dist.toFixed(5) : dist.toFixed(3);
   }
 
   function lightTime(dist) {
@@ -262,7 +310,7 @@
       compressed: '压缩', trueScale: '真实', live: '实时', now: '此刻',
       hint: '拖动旋转 · 滚轮缩放 · 双击复位', term: '节气', phase: '月相', age: '月龄',
       body: '天体', position: '黄道位置', distanceStatus: '距离 · 状态',
-      note: 'JPL 近似根数（1800–2050）· 低精度月球 · 几何黄经（未做光行时/章动）。二十八宿为文化映射；轨道默认压缩，可切换真实比例。',
+      note: 'JPL 近似根数（1800–2050）· 开普勒方程 · 光行时/章动/光行差 · 月球主要周期项。二十八宿为文化映射；轨道默认压缩，可切换真实比例。',
       open3d: '打开 3D ↗', liveSky: 'LIVE · 天象', openEntry: '打开全屏 3D ↗',
       entryTitle: '实时天象仪', entryDesc: '太阳系 3D · 二十八宿 · 七政 · 黄道相位',
       sun: '太阳', moon: '月亮', earth: '地球', geocentric: '地心', here: '博主在这里',
@@ -273,7 +321,7 @@
       compressed: 'Compressed', trueScale: 'True', live: 'Live', now: 'Now',
       hint: 'Drag to rotate · Scroll to zoom · Double-click to reset', term: 'Solar term', phase: 'Moon phase', age: 'Moon age',
       body: 'Body', position: 'Ecliptic', distanceStatus: 'Distance · Status',
-      note: 'JPL approximate elements (1800–2050) · low-precision Moon · geometric longitude (no light-time/nutation). 28 mansions are a cultural mapping; orbits compressed by default.',
+      note: 'JPL approximate elements (1800–2050) · Kepler solver · light-time, nutation, aberration · lunar periodic terms. 28 mansions are a cultural mapping; orbits compressed by default.',
       open3d: 'Open 3D ↗', liveSky: 'LIVE · SKY', openEntry: 'Open full 3D ↗',
       entryTitle: 'Live Orrery', entryDesc: 'Solar system 3D · 28 mansions · Seven governors · Zodiac',
       sun: 'Sun', moon: 'Moon', earth: 'Earth', geocentric: 'Geocentric', here: "I'M HERE",
@@ -289,8 +337,6 @@
   try {
     var savedLang = localStorage.getItem('btc-orrery-lang');
     if (savedLang === 'en' || savedLang === 'zh') state.lang = savedLang;
-    var savedVisual = localStorage.getItem('btc-orrery-visual2');
-    if (savedVisual === 'frame' || savedVisual === 'dusk' || savedVisual === 'deep') state.visual = savedVisual;
   } catch (e) {}
 
   var els = {};
@@ -303,28 +349,42 @@
   function snapshot() {
     var date = currentDate();
     var earth = helio(EL.earth, date);
-    var sun = sunGeo(earth);
-    var moon = moonGeo(date);
+    var T = century(date);
+    var sunG = sunGeo(earth);
+    var sunLon = apparentLon(sunG.lon, 0, sunG.lon, T);
+    var sun = { lon: sunLon, lat: 0, dist: sunG.dist };
+    var moonG = moonGeo(date);
+    var moonLon = apparentLon(moonG.lon, moonG.lat, sunLon, T);
+    var moon = { lon: moonLon, lat: moonG.lat, dist: moonG.dist, distKm: moonG.distKm };
 
     var planets = PLANETS.map(function (p) {
-      var g = geoOf(p.el, earth, date);
-      var before = geoOf(p.el, earth, new Date(date.getTime() - 43200000));
-      var after = geoOf(p.el, earth, new Date(date.getTime() + 43200000));
-      var speed = norm180(after.lon - before.lon);
+      var g = geoOfApparent(p.el, earth, date);
+      var lon = apparentLon(g.lon, g.lat, sunLon, T);
+
+      var bDate = new Date(date.getTime() - 43200000);
+      var aDate = new Date(date.getTime() + 43200000);
+      var bEarth = helio(EL.earth, bDate);
+      var aEarth = helio(EL.earth, aDate);
+      var bG = geoOfApparent(p.el, bEarth, bDate);
+      var aG = geoOfApparent(p.el, aEarth, aDate);
+      var bLon = apparentLon(bG.lon, bG.lat, sunGeo(bEarth).lon, century(bDate));
+      var aLon = apparentLon(aG.lon, aG.lat, sunGeo(aEarth).lon, century(aDate));
+
+      var speed = norm180(aLon - bLon);
       var status = Math.abs(speed) < 0.02 ? '留' : (speed < 0 ? '逆行' : '顺行');
       return {
         key: p.key, cn: p.cn, west: p.west, glyph: p.glyph, color: p.color, size: p.size,
-        cnName: p.cnName, lon: g.lon, lat: g.lat, dist: g.dist, speed: speed, status: status,
+        cnName: p.cnName, lon: lon, lat: g.lat, dist: g.dist, speed: speed, status: status,
         helio: helio(p.el, date), a: p.el[0]
       };
     });
 
     return {
       date: date, earth: earth, sun: sun, moon: moon, planets: planets,
-      sunLon: sun.lon, moonLon: moon.lon,
-      phase: moonPhase(sun.lon, moon.lon),
-      term: termAt(sun.lon),
-      mansions: { sun: mansionAt(sun.lon, date), moon: mansionAt(moon.lon, date) }
+      sunLon: sunLon, moonLon: moonLon,
+      phase: moonPhase(sunLon, moonLon),
+      term: termAt(sunLon),
+      mansions: { sun: mansionAt(sunLon, date), moon: mansionAt(moonLon, date) }
     };
   }
 
@@ -349,7 +409,7 @@
   }
 
   function theme3D() {
-    var dark = isDark3D() || state.visual === 'deep';
+    var dark = isDark3D();
     return {
       dark: dark,
       bg0: dark ? 'rgba(24,50,74,0.62)' : 'rgba(80,135,165,0.90)',
@@ -437,7 +497,7 @@
 
     var cx = w / 2, cy = h / 2;
     var R = Math.min(w, h) / 2 - (detail ? 16 : 6);
-    var darkChart = isDark3D() || state.visual === 'dusk' || state.visual === 'deep';
+    var darkChart = isDark3D();
     var pal = palette();
     if (darkChart && !isDark3D()) {
       pal = { ink: '#e7f1f8', muted: '#a9c0d0', accent: '#8ec9ee', line: 'rgba(220,238,248,0.12)' };
@@ -627,19 +687,22 @@
 
     /* ---- 相位线 ---- */
     if (layers.west) {
+      var laneMap = { mercury: 2, venus: 0, mars: 1, jupiter: 2, saturn: 0, uranus: 1, neptune: 2 };
+      var ringLevels = [0.500, 0.560, 0.440];
       var bodies = [
-        { lon: snap.sunLon, name: '日' },
-        { lon: snap.moonLon, name: '月' }
-      ].concat(snap.planets.slice(0, 5).map(function (p) { return { lon: p.lon, name: p.cn }; }));
+        { lon: snap.sunLon, name: '日', lane: 0 },
+        { lon: snap.moonLon, name: '月', lane: 1 }
+      ].concat(snap.planets.slice(0, 5).map(function (p) {
+        return { lon: p.lon, name: p.cn, lane: laneMap[p.key] || 0 };
+      }));
 
       var aspectList = aspectsOf(bodies);
       for (var ai = 0; ai < aspectList.length; ai++) {
         var asp = aspectList[ai];
         if (asp.def.angle === 0) continue;
-        var r = R * 0.40;
-        var a1 = polar(cx, cy, r, asp.a.lon);
-        var a2 = polar(cx, cy, r, asp.b.lon);
-        ctx.strokeStyle = hexA(asp.def.color, A(0.20));
+        var a1 = polar(cx, cy, R * ringLevels[asp.a.lane], asp.a.lon);
+        var a2 = polar(cx, cy, R * ringLevels[asp.b.lane], asp.b.lon);
+        ctx.strokeStyle = hexA(asp.def.color, A(0.24));
         ctx.lineWidth = 0.8;
         ctx.beginPath();
         ctx.moveTo(a1[0], a1[1]);
@@ -649,7 +712,6 @@
     }
 
     /* ---- 行星落点 ---- */
-    var laneMap = { mercury: 2, venus: 0, mars: 1, jupiter: 2, saturn: 0, uranus: 1, neptune: 2 };
     var markers = [
       { lon: snap.sunLon, color: '#e8b44a', size: detail ? 5 : 3.6, glyph: '☉', label: L('sun'), lane: 0 },
       { lon: snap.moonLon, color: '#c9d3dd', size: detail ? 4.4 : 3.2, glyph: '☽', label: L('moon'), lane: 1 }
@@ -658,7 +720,6 @@
     }));
 
     var sorted = markers.slice().sort(function (a, b) { return a.lon - b.lon; });
-    var ringLevels = [0.500, 0.560, 0.440];
     var labelLevels = [0.610, 0.645, 0.575];
     var n = sorted.length;
 
@@ -1264,7 +1325,7 @@
     if (ly + lh > h - 8) ly = q.y - 42;
     var ax = q.x < lx ? lx : (q.x > lx + lw ? lx + lw : Math.max(lx, Math.min(lx + lw, q.x)));
     var ay = q.y < ly ? ly : (q.y > ly + lh ? ly + lh : ly + lh / 2);
-    var accent = theme.dark ? 'rgba(120,220,255,0.55)' : 'rgba(40,120,170,0.55)';
+    var accent = 'rgba(120,220,255,0.60)';
     ctx.strokeStyle = accent;
     ctx.lineWidth = 0.9;
     ctx.beginPath();
@@ -1287,8 +1348,8 @@
     ctx.arc(q.x, q.y, r + 7 + pulse * 3, 0, TAU);
     ctx.stroke();
     ctx.globalAlpha = 1;
-    ctx.fillStyle = theme.dark ? 'rgba(8,18,28,0.72)' : 'rgba(255,255,255,0.86)';
-    ctx.strokeStyle = theme.dark ? 'rgba(180,220,245,0.16)' : 'rgba(70,120,160,0.16)';
+    ctx.fillStyle = 'rgba(8,18,28,0.76)';
+    ctx.strokeStyle = 'rgba(180,220,245,0.18)';
     ctx.lineWidth = 0.7;
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(lx, ly, lw, lh, 8); else ctx.rect(lx, ly, lw, lh);
@@ -1853,18 +1914,9 @@
   function applyVisual() {
     var modal = document.getElementById('btc-orrery-modal');
     if (modal) {
-      modal.classList.remove('visual-frame', 'visual-dusk', 'visual-deep');
-      modal.classList.add('visual-' + state.visual);
+      modal.classList.remove('visual-dusk', 'visual-deep');
+      modal.classList.add('visual-frame');
     }
-    var box = document.getElementById('btc-orrery-visual2');
-    if (box) box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-visual') === state.visual); });
-  }
-
-  function setVisual(v) {
-    state.visual = (v === 'dusk' || v === 'deep') ? v : 'frame';
-    try { localStorage.setItem('btc-orrery-visual2', state.visual); } catch (e) {}
-    applyVisual();
-    renderAll();
   }
 
   function setLang(lang) {
@@ -1896,7 +1948,7 @@
     setText('btc-orrery-focus-name', state.lang === 'en' ? row.west : row.cn);
     var meta;
     if (row.lon != null && row.dist != null) {
-      meta = signInfo(row.lon).text + ' · ' + mansionAt(row.lon, snap.date).name + '宿 · ' + row.dist.toFixed(3) + ' AU · ' + lightTime(row.dist) + (row.status !== '—' ? ' · ' + statusLabel(row.status) : '');
+      meta = signInfo(row.lon).text + ' · ' + mansionAt(row.lon, snap.date).name + '宿 · ' + formatDist(row.dist) + ' AU · ' + lightTime(row.dist) + (row.status !== '—' ? ' · ' + statusLabel(row.status) : '');
     } else {
       meta = state.lang === 'en' ? "Heliocentric · 1.000 AU · I'M HERE" : '日心轨道 · 1.000 AU · 博主在这里';
     }
@@ -1937,7 +1989,7 @@
         html += '<div class="btc-orrery-row">'
           + '<div class="who"><span class="btc-orrery-dot" style="--dot:' + r.color + '"></span><b>' + primary + '</b><em>' + secondary + '</em></div>'
           + '<div class="where"><b>' + si.text + '</b><span>' + r.mansion.name + '宿 · ' + r.mansion.group + '</span></div>'
-          + '<div class="meta"><b>' + r.dist.toFixed(3) + ' AU</b><span>' + lightTime(r.dist) + ' · <i class="' + (r.status === '逆行' ? 'st-retro' : '') + '">' + statusText + '</i></span></div>'
+          + '<div class="meta"><b>' + formatDist(r.dist) + ' AU</b><span>' + lightTime(r.dist) + ' · <i class="' + (r.status === '逆行' ? 'st-retro' : '') + '">' + statusText + '</i></span></div>'
           + '</div>';
       }
       tbody.innerHTML = html;
