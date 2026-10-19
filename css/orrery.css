@@ -1574,8 +1574,8 @@ html.btc-orrery-locked body { overflow: hidden !important; }
 /* light 3D: luminous sci-fi */
 .btc-orrery-stage.is-orrery {
   background:
-    radial-gradient(60% 55% at 50% 42%, rgba(255, 255, 255, 0.92) 0%, rgba(190, 240, 255, 0.72) 28%, rgba(90, 190, 230, 0.38) 62%, rgba(20, 80, 120, 0.22) 100%),
-    linear-gradient(165deg, #effcff, #c8ecfb 48%, #8ccbe6);
+    radial-gradient(60% 55% at 50% 42%, rgba(232, 249, 255, 0.92) 0%, rgba(160, 220, 245, 0.75) 28%, rgba(60, 155, 200, 0.42) 62%, rgba(8, 55, 85, 0.32) 100%),
+    linear-gradient(165deg, #dff5ff, #a9d9ef 48%, #5d9fbe);
 }
 
 .btc-orrery-stage.is-orrery::before {
@@ -1777,4 +1777,532 @@ html.btc-orrery-locked body { overflow: hidden !important; }
     background: transparent !important;
     box-shadow: none !important;
   }
+}
+
+/* language switch */
+.btc-orrery-lang {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.30));
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btc-orrery-lang button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary, #4d6072);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btc-orrery-lang button.is-active {
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--accent, #29648f);
+  box-shadow: 0 2px 8px -2px rgba(25, 52, 72, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btc-orrery-lang {
+    background: rgba(225, 239, 248, 0.06);
+    border-color: rgba(225, 239, 248, 0.12);
+  }
+  .btc-orrery-lang button { color: rgba(210, 230, 245, 0.66); }
+  .btc-orrery-lang button.is-active {
+    background: rgba(225, 239, 248, 0.14);
+    color: #9acbf0;
+  }
+}
+
+@media (max-width: 640px) {
+  .btc-orrery-lang button { font-size: 8px; padding: 3px 5px; }
+}
+
+/* light theme: second-layer cards should sit behind, not be whiter than the outer glass */
+@media (prefers-color-scheme: light) {
+  .btc-card,
+  .btc-archive-card {
+    background: linear-gradient(
+      145deg,
+      rgba(244, 251, 255, 0.60),
+      rgba(226, 242, 251, 0.46)
+    ) !important;
+    border-color: rgba(80, 120, 150, 0.12) !important;
+    box-shadow:
+      0 1px 1px rgba(16, 35, 50, 0.02),
+      0 12px 30px -26px rgba(16, 35, 50, 0.16) !important;
+    -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+    backdrop-filter: blur(6px) saturate(120%) !important;
+  }
+
+  .btc-card:hover,
+  .btc-archive-card:hover {
+    background: linear-gradient(
+      145deg,
+      rgba(248, 253, 255, 0.74),
+      rgba(232, 246, 253, 0.58)
+    ) !important;
+    border-color: rgba(80, 120, 150, 0.18) !important;
+  }
+}
+
+/* make selected states unambiguous */
+#btc-orrery-lang button {
+  background: transparent !important;
+  color: var(--text-muted, #54697a) !important;
+  opacity: 1 !important;
+}
+
+#btc-orrery-lang button.is-active {
+  background: var(--accent, #29648f) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px -6px rgba(41, 100, 143, 0.55) !important;
+}
+
+.site-nav a.menu-item-active {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: var(--accent-strong, #2f6488) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(65, 132, 180, 0.28),
+    0 4px 14px -6px rgba(25, 52, 72, 0.25) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  #btc-orrery-lang button.is-active {
+    background: #7fb0d0 !important;
+    color: #0f1a24 !important;
+  }
+  .site-nav a.menu-item-active {
+    background: rgba(120, 183, 232, 0.22) !important;
+    color: #f2f6fa !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(160, 202, 234, 0.28),
+      0 6px 18px rgba(0, 0, 0, 0.18) !important;
+  }
+}
+
+/* soften the selected-state fills a little */
+.site-nav a.menu-item-active {
+  background: rgba(255, 255, 255, 0.70) !important;
+  color: var(--accent-strong, #2f6488) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(65, 132, 180, 0.22),
+    0 4px 14px -8px rgba(25, 52, 72, 0.18) !important;
+}
+
+#btc-orrery-lang button.is-active {
+  background: rgba(53, 106, 143, 0.38) !important;
+  color: var(--accent-strong, #2f6488) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(41, 100, 143, 0.22),
+    0 2px 8px -4px rgba(25, 52, 72, 0.18) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .site-nav a.menu-item-active {
+    background: rgba(120, 183, 232, 0.16) !important;
+    color: #eef4f8 !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(160, 202, 234, 0.20),
+      0 4px 14px -8px rgba(0, 0, 0, 0.18) !important;
+  }
+  #btc-orrery-lang button.is-active {
+    background: rgba(127, 176, 208, 0.28) !important;
+    color: #eaf2f8 !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(160, 202, 234, 0.22),
+      0 2px 8px -4px rgba(0, 0, 0, 0.18) !important;
+  }
+}
+
+/* selected states: more solid as requested */
+.site-nav a.menu-item-active {
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: var(--accent-strong, #2f6488) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(65, 132, 180, 0.24),
+    0 4px 14px -7px rgba(25, 52, 72, 0.22) !important;
+}
+
+#btc-orrery-lang button.is-active {
+  background: rgba(53, 106, 143, 0.62) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(41, 100, 143, 0.26),
+    0 3px 10px -5px rgba(25, 52, 72, 0.28) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .site-nav a.menu-item-active {
+    background: rgba(120, 183, 232, 0.24) !important;
+    color: #f2f6fa !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(160, 202, 234, 0.24),
+      0 5px 16px -8px rgba(0, 0, 0, 0.22) !important;
+  }
+  #btc-orrery-lang button.is-active {
+    background: rgba(127, 176, 208, 0.45) !important;
+    color: #0f1a24 !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(160, 202, 234, 0.24),
+      0 3px 10px -5px rgba(0, 0, 0, 0.22) !important;
+  }
+}
+
+/* compact settings menu */
+.btc-orrery-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.btc-orrery-menu-btn {
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.30));
+  background: rgba(255, 255, 255, 0.34);
+  color: var(--text-secondary, #4d6072);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btc-orrery-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.btc-orrery-menu-pop {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  z-index: 30;
+  min-width: 196px;
+  padding: 8px 11px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.30));
+  background: rgba(247, 252, 255, 0.88);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  backdrop-filter: blur(20px) saturate(170%);
+  box-shadow:
+    0 18px 40px -22px rgba(25, 52, 72, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.btc-orrery-menu-pop[hidden] { display: none !important; }
+
+.btc-orrery-menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 2px;
+}
+
+.btc-orrery-menu-row > span {
+  font-size: 9px;
+  color: var(--text-muted, #54697a);
+  white-space: nowrap;
+}
+
+.btc-orrery-menu-pop .btc-orrery-scale {
+  display: inline-flex !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btc-orrery-menu-btn {
+    background: rgba(225, 239, 248, 0.06);
+    border-color: rgba(225, 239, 248, 0.12);
+    color: rgba(210, 230, 245, 0.72);
+  }
+  .btc-orrery-menu-btn:hover { background: rgba(225, 239, 248, 0.14); }
+  .btc-orrery-menu-pop {
+    background: rgba(8, 18, 28, 0.90);
+    border-color: rgba(225, 239, 248, 0.12);
+    box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(225, 239, 248, 0.08);
+  }
+}
+
+/* the scale switch moved into the menu: drop its old absolute stage positioning */
+.btc-orrery-menu-pop .btc-orrery-scale {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: auto !important;
+  display: inline-flex !important;
+  padding: 3px 0 3px 6px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.btc-orrery-menu-pop .btc-orrery-scale-label {
+  font-size: 8px;
+}
+
+.btc-orrery-menu-pop .btc-orrery-scale-track {
+  width: 24px;
+  height: 13px;
+}
+
+.btc-orrery-menu-pop .btc-orrery-scale-track::after {
+  width: 9px;
+  height: 9px;
+}
+
+.btc-orrery-menu-pop .btc-orrery-scale input:checked + .btc-orrery-scale-track::after {
+  transform: translateX(11px);
+}
+
+.btc-orrery-menu-row {
+  min-height: 22px;
+}
+
+/* light 3D is now a twilight scene, not a white room */
+@media (prefers-color-scheme: light) {
+  .btc-orrery-stage.is-orrery {
+    background:
+      radial-gradient(60% 55% at 50% 42%, rgba(150, 210, 235, 0.55) 0%, rgba(75, 145, 180, 0.55) 30%, rgba(20, 70, 100, 0.65) 68%, rgba(4, 22, 36, 0.88) 100%),
+      linear-gradient(165deg, #9bcde2, #467f9d 48%, #10344a);
+  }
+
+  .btc-orrery-stage.is-orrery::before {
+    background:
+      radial-gradient(40% 60% at 18% 18%, rgba(110, 230, 255, 0.18), transparent 70%),
+      radial-gradient(45% 55% at 82% 82%, rgba(140, 150, 255, 0.12), transparent 70%);
+    mix-blend-mode: screen;
+  }
+
+  .btc-orrery-stage.is-orrery .btc-orrery-timebar {
+    background: rgba(8, 18, 28, 0.55);
+    border-color: rgba(180, 220, 245, 0.13);
+    box-shadow: 0 16px 46px -22px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .btc-orrery-stage.is-orrery .btc-orrery-timebar button {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(210, 230, 245, 0.66);
+  }
+
+  .btc-orrery-stage.is-orrery .btc-orrery-timebar button.is-live {
+    color: #8fe0bd;
+    background: rgba(111, 191, 160, 0.13);
+  }
+
+  .btc-orrery-stage.is-orrery #btc-orrery-offset { color: rgba(210, 230, 245, 0.58); }
+
+  .btc-orrery-stage.is-orrery #btc-orrery-slider {
+    background: linear-gradient(90deg, rgba(120, 183, 232, 0.10), rgba(120, 183, 232, 0.46), rgba(120, 183, 232, 0.10));
+  }
+
+  .btc-orrery-stage.is-orrery #btc-orrery-slider::-webkit-slider-thumb {
+    background: #e8f3fb;
+    border-color: rgba(180, 220, 245, 0.5);
+  }
+
+  .btc-orrery-stage.is-orrery .btc-orrery-focus {
+    background: rgba(8, 18, 28, 0.62);
+    border-color: rgba(180, 220, 245, 0.14);
+    box-shadow: 0 14px 36px -20px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(225, 239, 248, 0.08);
+  }
+
+  .btc-orrery-stage.is-orrery .btc-orrery-focus b { color: rgba(235, 245, 252, 0.92); }
+  .btc-orrery-stage.is-orrery .btc-orrery-focus span:last-child { color: rgba(190, 214, 230, 0.75); }
+}
+
+/* visual schemes */
+.btc-orrery-visual {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.30);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.30));
+}
+
+.btc-orrery-visual button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted, #54697a);
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.btc-orrery-visual button.is-active {
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--accent-strong, #2f6488);
+}
+
+/* framed viewport keeps the light shell but makes the dark stage intentional */
+.btc-orrery-modal.visual-frame .btc-orrery-stage {
+  margin: 14px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 18px 40px -26px rgba(0, 0, 0, 0.55);
+}
+
+/* dusk / deep shared surfaces */
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) {
+  --text-primary: #e8f1f7;
+  --text-secondary: #c2d3df;
+  --text-muted: #9db3c2;
+  --divider: rgba(220, 238, 248, 0.10);
+  --border-subtle: rgba(220, 238, 248, 0.12);
+  --border: rgba(220, 238, 248, 0.15);
+  --accent: #8ec9ee;
+  --accent-strong: #a8d7f2;
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-panel {
+  border-color: rgba(200, 230, 250, 0.16);
+  background: linear-gradient(160deg, rgba(38, 64, 84, 0.96), rgba(18, 38, 54, 0.97));
+  box-shadow:
+    0 40px 100px -40px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(225, 239, 248, 0.10);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-panel::before {
+  background:
+    radial-gradient(70% 50% at 12% 0%, rgba(120, 183, 232, 0.10), transparent 60%),
+    radial-gradient(50% 40% at 92% 100%, rgba(111, 191, 160, 0.05), transparent 65%);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-top {
+  border-bottom-color: rgba(220, 238, 248, 0.10);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-info {
+  background: linear-gradient(180deg, rgba(24, 46, 62, 0.94), rgba(16, 34, 48, 0.96));
+  border-left-color: rgba(220, 238, 248, 0.10);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-stage:not(.is-orrery) {
+  background: radial-gradient(ellipse at 50% 45%, #2d566f 0%, #1a3648 60%, #122736 100%);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-ledgerhead,
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-table th {
+  background: rgba(18, 38, 54, 0.92);
+  border-bottom-color: rgba(220, 238, 248, 0.10);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-table td {
+  border-bottom-color: rgba(220, 238, 248, 0.07);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-seg,
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-close,
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-menu-btn {
+  background: rgba(225, 239, 248, 0.07);
+  border-color: rgba(225, 239, 248, 0.12);
+  color: rgba(210, 230, 245, 0.72);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-seg button {
+  color: rgba(210, 230, 245, 0.62);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-seg button.is-active {
+  background: rgba(225, 239, 248, 0.16);
+  color: #b6ddf5;
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-menu-pop {
+  background: rgba(14, 30, 42, 0.96);
+  border-color: rgba(220, 238, 248, 0.12);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(225, 239, 248, 0.08);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-visual {
+  background: rgba(225, 239, 248, 0.06);
+  border-color: rgba(225, 239, 248, 0.12);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-visual button {
+  color: rgba(210, 230, 245, 0.60);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-visual button.is-active {
+  background: rgba(225, 239, 248, 0.16);
+  color: #eaf4fb;
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) #btc-orrery-lang {
+  background: rgba(225, 239, 248, 0.06);
+  border-color: rgba(225, 239, 248, 0.12);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) #btc-orrery-lang button {
+  color: rgba(210, 230, 245, 0.62);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) #btc-orrery-lang button.is-active {
+  background: rgba(127, 176, 208, 0.40);
+  color: #f2f8fc;
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-scale-label {
+  color: rgba(210, 230, 245, 0.58);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-scale-label.is-on {
+  color: #e6f3fb;
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-scale-track {
+  background: rgba(180, 220, 245, 0.18);
+}
+
+.btc-orrery-modal:is(.visual-dusk, .visual-deep) .btc-orrery-note {
+  color: rgba(170, 195, 212, 0.75);
+}
+
+/* deep is a darker, closer-to-dark-mode variant */
+.btc-orrery-modal.visual-deep {
+  --text-primary: #f2f6fa;
+  --text-secondary: #c6d2db;
+  --text-muted: #95a5b3;
+}
+
+.btc-orrery-modal.visual-deep .btc-orrery-panel {
+  background: linear-gradient(160deg, #0e1c28, #07121b);
+}
+
+.btc-orrery-modal.visual-deep .btc-orrery-info {
+  background: #08141e;
+}
+
+.btc-orrery-modal.visual-deep .btc-orrery-stage:not(.is-orrery) {
+  background: #07121b;
+}
+
+.btc-orrery-modal.visual-deep .btc-orrery-stage.is-orrery {
+  background: radial-gradient(ellipse at 50% 42%, #0d1c2a 0%, #07121b 58%, #03080d 100%);
+}
+
+@media (max-width: 700px) {
+  .btc-orrery-modal.visual-frame .btc-orrery-stage { margin: 8px; border-radius: 14px; }
 }

@@ -186,30 +186,34 @@
     return chosen;
   }
 
+  function zodiacName(i) { return state.lang === 'en' ? ZODIAC[i].en : ZODIAC[i].cn; }
+
   function signInfo(lon) {
     lon = norm360(lon);
     var i = Math.floor(lon / 30);
     var within = lon - i * 30;
     var d = Math.floor(within);
     var m = Math.floor((within - d) * 60);
-    return { i: i, d: d, m: m, text: ZODIAC[i].cn + ' ' + d + '°' + pad2(m) + '′' };
+    return { i: i, d: d, m: m, text: zodiacName(i) + ' ' + d + '°' + pad2(m) + '′' };
   }
 
   function shortSign(lon) {
     var s = signInfo(lon);
-    return ZODIAC[s.i].cn + ' ' + s.d + '°';
+    return (state.lang === 'en' ? ZODIAC[s.i].en.slice(0, 3) : ZODIAC[s.i].cn) + ' ' + s.d + '°';
   }
 
   function lightTime(dist) {
     var s = dist * 499.004784;
-    if (s < 60) return s.toFixed(1) + ' 秒';
-    if (s < 3600) return (s / 60).toFixed(1) + ' 分';
-    return (s / 3600).toFixed(1) + ' 时';
+    if (s < 60) return s.toFixed(1) + ' ' + L('sec');
+    if (s < 3600) return (s / 60).toFixed(1) + ' ' + L('min');
+    return (s / 3600).toFixed(1) + ' ' + L('hour');
   }
 
   function moonPhase(sunLon, moonLon) {
     var e = norm360(moonLon - sunLon);
-    var names = ['新月', '娥眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月'];
+    var names = state.lang === 'en'
+      ? ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent']
+      : ['新月', '娥眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月'];
     var idx = Math.floor(((e + 22.5) % 360) / 45);
     var illum = (1 - Math.cos(e * DEG)) / 2;
     return { name: names[idx], illum: illum, age: e / 360 * 29.53059, elong: e };
@@ -247,8 +251,47 @@
     offset: 0,
     live: true,
     trueScale: false,
+    lang: 'zh',
+    visual: 'frame',
     open: false
   };
+
+  var I18N = {
+    zh: {
+      orreryTab: '3D', chartTab: '天象盘', language: '语言', orbitScale: '轨道比例', visual: '视觉', frame: '画框', dusk: '半深', deep: '深色', layersCn: '中国传统', layersWest: '西方占星', layersSci: '现代科学',
+      compressed: '压缩', trueScale: '真实', live: '实时', now: '此刻',
+      hint: '拖动旋转 · 滚轮缩放 · 双击复位', term: '节气', phase: '月相', age: '月龄',
+      body: '天体', position: '黄道位置', distanceStatus: '距离 · 状态',
+      note: 'JPL 近似根数（1800–2050）· 低精度月球 · 几何黄经（未做光行时/章动）。二十八宿为文化映射；轨道默认压缩，可切换真实比例。',
+      open3d: '打开 3D ↗', liveSky: 'LIVE · 天象', openEntry: '打开全屏 3D ↗',
+      entryTitle: '实时天象仪', entryDesc: '太阳系 3D · 二十八宿 · 七政 · 黄道相位',
+      sun: '太阳', moon: '月亮', earth: '地球', geocentric: '地心', here: '博主在这里',
+      direct: '顺', retro: '逆行', station: '留', ageUnit: '天', sec: '秒', min: '分', hour: '时'
+    },
+    en: {
+      orreryTab: '3D', chartTab: 'Chart', language: 'Language', orbitScale: 'Orbit scale', visual: 'Look', frame: 'Framed', dusk: 'Dusk', deep: 'Deep', layersCn: 'Chinese', layersWest: 'Western', layersSci: 'Modern',
+      compressed: 'Compressed', trueScale: 'True', live: 'Live', now: 'Now',
+      hint: 'Drag to rotate · Scroll to zoom · Double-click to reset', term: 'Solar term', phase: 'Moon phase', age: 'Moon age',
+      body: 'Body', position: 'Ecliptic', distanceStatus: 'Distance · Status',
+      note: 'JPL approximate elements (1800–2050) · low-precision Moon · geometric longitude (no light-time/nutation). 28 mansions are a cultural mapping; orbits compressed by default.',
+      open3d: 'Open 3D ↗', liveSky: 'LIVE · SKY', openEntry: 'Open full 3D ↗',
+      entryTitle: 'Live Orrery', entryDesc: 'Solar system 3D · 28 mansions · Seven governors · Zodiac',
+      sun: 'Sun', moon: 'Moon', earth: 'Earth', geocentric: 'Geocentric', here: "I'M HERE",
+      direct: 'Direct', retro: 'Retrograde', station: 'Station', ageUnit: 'd', sec: 's', min: 'min', hour: 'h'
+    }
+  };
+
+  function L(k) {
+    var d = I18N[state.lang] || I18N.zh;
+    return d[k] !== undefined ? d[k] : (I18N.zh[k] !== undefined ? I18N.zh[k] : k);
+  }
+
+  try {
+    var savedLang = localStorage.getItem('btc-orrery-lang');
+    if (savedLang === 'en' || savedLang === 'zh') state.lang = savedLang;
+    var savedVisual = localStorage.getItem('btc-orrery-visual2');
+    if (savedVisual === 'frame' || savedVisual === 'dusk' || savedVisual === 'deep') state.visual = savedVisual;
+  } catch (e) {}
 
   var els = {};
   var lastMini = 0;
@@ -306,23 +349,23 @@
   }
 
   function theme3D() {
-    var dark = isDark3D();
+    var dark = isDark3D() || state.visual === 'deep';
     return {
       dark: dark,
-      bg0: dark ? 'rgba(24,50,74,0.62)' : 'rgba(240,252,255,0.82)',
-      bg1: dark ? 'rgba(9,21,34,0.42)' : 'rgba(110,205,240,0.32)',
-      bg2: dark ? 'rgba(3,8,14,0)' : 'rgba(15,70,105,0.20)',
-      star: dark ? '#dceaf5' : '#eaffff',
-      starAlpha: dark ? 1 : 0.90,
-      grid: dark ? 'rgba(142,196,232,0.075)' : 'rgba(40,170,225,0.22)',
-      gridLine: dark ? 'rgba(142,196,232,0.045)' : 'rgba(40,170,225,0.14)',
-      label: dark ? 'rgba(224,240,250,0.84)' : 'rgba(10,45,70,0.90)',
-      labelShadow: dark ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.9)',
-      sunLabel: dark ? 'rgba(255,228,170,0.9)' : 'rgba(160,90,15,0.95)',
-      vignette: dark ? 'rgba(0,0,0,0.34)' : 'rgba(10,60,90,0.28)',
-      belt: dark ? 'rgba(214,198,170,0.9)' : 'rgba(45,110,140,0.55)',
-      glow: dark ? 0.16 : 0.24,
-      rim: dark ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.55)'
+      bg0: dark ? 'rgba(24,50,74,0.62)' : 'rgba(80,135,165,0.90)',
+      bg1: dark ? 'rgba(9,21,34,0.42)' : 'rgba(30,75,105,0.60)',
+      bg2: dark ? 'rgba(3,8,14,0)' : 'rgba(5,28,45,0.45)',
+      star: dark ? '#dceaf5' : '#ffffff',
+      starAlpha: dark ? 1 : 1,
+      grid: dark ? 'rgba(142,196,232,0.075)' : 'rgba(130,215,255,0.18)',
+      gridLine: dark ? 'rgba(142,196,232,0.045)' : 'rgba(130,215,255,0.11)',
+      label: dark ? 'rgba(224,240,250,0.84)' : 'rgba(230,245,252,0.90)',
+      labelShadow: dark ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.72)',
+      sunLabel: dark ? 'rgba(255,228,170,0.9)' : 'rgba(255,228,170,0.92)',
+      vignette: dark ? 'rgba(0,0,0,0.34)' : 'rgba(2,18,32,0.42)',
+      belt: dark ? 'rgba(214,198,170,0.9)' : 'rgba(180,200,215,0.55)',
+      glow: dark ? 0.16 : 0.22,
+      rim: dark ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.24)'
     };
   }
 
@@ -394,8 +437,12 @@
 
     var cx = w / 2, cy = h / 2;
     var R = Math.min(w, h) / 2 - (detail ? 16 : 6);
+    var darkChart = isDark3D() || state.visual === 'dusk' || state.visual === 'deep';
     var pal = palette();
-    var lightChart = !isDark3D();
+    if (darkChart && !isDark3D()) {
+      pal = { ink: '#e7f1f8', muted: '#a9c0d0', accent: '#8ec9ee', line: 'rgba(220,238,248,0.12)' };
+    }
+    var lightChart = !darkChart;
     function A(v) { return Math.min(1, v * (lightChart ? 1.6 : 1)); }
     var layers = state.layers;
 
@@ -513,7 +560,7 @@
           var nc = polar(cx, cy, R * 0.823, l0 + 15);
           setFont(ctx, Math.max(6.5, R * 0.022), '500');
           ctx.fillStyle = hexA(hexToHex(pal.muted), A(0.75));
-          ctx.fillText(ZODIAC[zi].cn, nc[0], nc[1]);
+          ctx.fillText(zodiacName(zi), nc[0], nc[1]);
         }
       }
       if (detail && layers.sci) {
@@ -604,10 +651,10 @@
     /* ---- 行星落点 ---- */
     var laneMap = { mercury: 2, venus: 0, mars: 1, jupiter: 2, saturn: 0, uranus: 1, neptune: 2 };
     var markers = [
-      { lon: snap.sunLon, color: '#e8b44a', size: detail ? 5 : 3.6, glyph: '☉', label: '太阳', lane: 0 },
-      { lon: snap.moonLon, color: '#c9d3dd', size: detail ? 4.4 : 3.2, glyph: '☽', label: '月亮', lane: 1 }
+      { lon: snap.sunLon, color: '#e8b44a', size: detail ? 5 : 3.6, glyph: '☉', label: L('sun'), lane: 0 },
+      { lon: snap.moonLon, color: '#c9d3dd', size: detail ? 4.4 : 3.2, glyph: '☽', label: L('moon'), lane: 1 }
     ].concat(snap.planets.map(function (p) {
-      return { lon: p.lon, color: p.color, size: detail ? 3.4 : 2.4, glyph: p.glyph, label: p.cn, lane: laneMap[p.key] || 0 };
+      return { lon: p.lon, color: p.color, size: detail ? 3.4 : 2.4, glyph: p.glyph, label: state.lang === 'en' ? p.west : p.cn, lane: laneMap[p.key] || 0 };
     }));
 
     var sorted = markers.slice().sort(function (a, b) { return a.lon - b.lon; });
@@ -663,7 +710,7 @@
     if (detail) {
       setFont(ctx, Math.max(7.5, R * 0.024), '500');
       ctx.fillStyle = hexA(hexToHex(pal.muted), A(0.8));
-      ctx.fillText('地心', cx, cy + 22);
+      ctx.fillText(L('geocentric'), cx, cy + 22);
     }
   }
 
@@ -859,7 +906,7 @@
     ctx.closePath();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    var oc = theme.dark ? color : shadeHex(color, -0.28);
+    var oc = theme.dark ? color : shadeHex(color, 0.12);
     var glowC = theme.dark ? oc : '#6fe4ff';
     ctx.strokeStyle = colorA(glowC, detail ? 0.20 : 0.24);
     ctx.lineWidth = detail ? 2.8 : 2.3;
@@ -1174,23 +1221,242 @@
 
   function drawMeteors(ctx, w, h, theme) {
     var t = Date.now() / 1000;
-    for (var i = 0; i < 2; i++) {
-      var phase = (t + i * 6.5) % 13;
-      if (phase < 0.9) {
-        var p = phase / 0.9;
-        var x = w * (0.15 + 0.65 * ((i * 0.41 + p * 0.05) % 1));
-        var y = h * (0.08 + 0.30 * p);
-        var g = ctx.createLinearGradient(x, y, x - 42, y - 20);
+    var cycle = 10.5;
+    for (var i = 0; i < 3; i++) {
+      var phase = (t + i * 3.5) % cycle;
+      if (phase < 1.25) {
+        var p = phase / 1.25;
+        var x0 = w * (0.82 - i * 0.12), y0 = h * (0.06 + i * 0.06);
+        var x1 = w * (0.26 - i * 0.04), y1 = h * (0.38 + i * 0.10);
+        var hx = x0 + (x1 - x0) * p;
+        var hy = y0 + (y1 - y0) * p;
+        var tailP = Math.max(0, p - 0.38);
+        var tx = x0 + (x1 - x0) * tailP;
+        var ty = y0 + (y1 - y0) * tailP;
+        var g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, theme.dark ? 'rgba(180,240,255,0)' : 'rgba(70,160,200,0)');
-        g.addColorStop(1, theme.dark ? 'rgba(180,240,255,0.28)' : 'rgba(70,160,200,0.20)');
+        g.addColorStop(0.75, theme.dark ? 'rgba(180,240,255,0.35)' : 'rgba(70,160,200,0.24)');
+        g.addColorStop(1, theme.dark ? 'rgba(225,250,255,0.80)' : 'rgba(95,180,220,0.55)');
         ctx.strokeStyle = g;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x - 42, y - 20);
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(hx, hy);
         ctx.stroke();
+        ctx.fillStyle = theme.dark ? 'rgba(235,252,255,0.85)' : 'rgba(90,175,215,0.65)';
+        ctx.beginPath();
+        ctx.arc(hx, hy, 1.3, 0, TAU);
+        ctx.fill();
       }
     }
+  }
+
+  function drawHereCallout(ctx, q, r, theme, w, h) {
+    var text = L('here');
+    setFont(ctx, 8.5, '600');
+    var tw = ctx.measureText(text).width;
+    var padX = 8, lh = 20, lw = tw + padX * 2;
+    var lx = q.x + 20, ly = q.y - 42;
+    if (lx + lw > w - 8) lx = q.x - 20 - lw;
+    if (lx < 8) lx = 8;
+    if (ly < 8) ly = q.y + 22;
+    if (ly + lh > h - 8) ly = q.y - 42;
+    var ax = q.x < lx ? lx : (q.x > lx + lw ? lx + lw : Math.max(lx, Math.min(lx + lw, q.x)));
+    var ay = q.y < ly ? ly : (q.y > ly + lh ? ly + lh : ly + lh / 2);
+    var accent = theme.dark ? 'rgba(120,220,255,0.55)' : 'rgba(40,120,170,0.55)';
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(q.x, q.y);
+    ctx.stroke();
+    var ang = Math.atan2(q.y - ay, q.x - ax), ah = 5;
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(q.x, q.y);
+    ctx.lineTo(q.x - Math.cos(ang - 0.5) * ah, q.y - Math.sin(ang - 0.5) * ah);
+    ctx.lineTo(q.x - Math.cos(ang + 0.5) * ah, q.y - Math.sin(ang + 0.5) * ah);
+    ctx.closePath();
+    ctx.fill();
+    var pulse = 0.5 + 0.5 * Math.sin(Date.now() / 700);
+    ctx.globalAlpha = 0.20 + 0.20 * pulse;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(q.x, q.y, r + 7 + pulse * 3, 0, TAU);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = theme.dark ? 'rgba(8,18,28,0.72)' : 'rgba(255,255,255,0.86)';
+    ctx.strokeStyle = theme.dark ? 'rgba(180,220,245,0.16)' : 'rgba(70,120,160,0.16)';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(lx, ly, lw, lh, 8); else ctx.rect(lx, ly, lw, lh);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = theme.label;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, lx + lw / 2, ly + lh / 2);
+  }
+
+  var MILKY_STARS = null;
+
+  function milkyStars() {
+    if (MILKY_STARS) return MILKY_STARS;
+    var seed = 20261019, out = [];
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    var clusters = [-0.64, -0.20, 0.26, 0.70];
+    for (var c = 0; c < clusters.length; c++) {
+      var n = 70 + Math.floor(rnd() * 35);
+      for (var i = 0; i < n; i++) {
+        out.push({
+          s: clusters[c] + (rnd() - 0.5) * 0.30,
+          t: (rnd() + rnd() + rnd() - 1.5) / 1.5,
+          size: 0.35 + Math.pow(rnd(), 3) * 1.15,
+          a: 0.12 + rnd() * 0.55,
+          warm: rnd()
+        });
+      }
+    }
+    for (var b = 0; b < 110; b++) {
+      out.push({
+        s: rnd() * 2 - 1,
+        t: (rnd() + rnd() + rnd() - 1.5) / 1.5 * 1.25,
+        size: 0.28 + rnd() * 0.55,
+        a: 0.08 + rnd() * 0.22,
+        warm: rnd()
+      });
+    }
+    for (var k = 0; k < 16; k++) {
+      out.push({
+        s: rnd() * 2 - 1,
+        t: (rnd() + rnd() + rnd() - 1.5) / 1.5 * 0.5,
+        size: 1.35 + rnd() * 0.85,
+        a: 0.55 + rnd() * 0.30,
+        warm: rnd()
+      });
+    }
+    for (var z = 0; z < out.length; z++) {
+      out[z].phase = rnd() * TAU;
+      out[z].speed = 0.6 + rnd() * 1.5;
+    }
+    MILKY_STARS = out;
+    return out;
+  }
+
+  var MILKY_FIELD = null;
+
+  function milkyField() {
+    if (MILKY_FIELD) return MILKY_FIELD;
+    var seed = 7719, out = [];
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    for (var i = 0; i < 150; i++) {
+      out.push({
+        x: rnd(),
+        y: rnd(),
+        size: 0.30 + rnd() * 0.70,
+        a: 0.05 + rnd() * 0.20,
+        phase: rnd() * TAU,
+        speed: 0.6 + rnd() * 1.4,
+        warm: rnd()
+      });
+    }
+    MILKY_FIELD = out;
+    return out;
+  }
+
+  function drawMilkyWay(ctx, w, h, theme, detail) {
+    var stars = milkyStars();
+    var field = milkyField();
+    var now = Date.now() / 1000;
+    var count = detail ? stars.length : Math.min(stars.length, 180);
+    var step = stars.length / count;
+    var ang = -0.52;
+    var span = Math.max(w, h) * 0.82;
+    var width = Math.min(w, h) * 0.24;
+    for (var fi = 0; fi < field.length; fi++) {
+      var fs = field[fi];
+      var ftw = 0.70 + 0.30 * Math.sin(now * fs.speed + fs.phase);
+      var fa = fs.a * ftw * (detail ? 1 : 0.7);
+      var fsize = fs.size * (detail ? 1 : 0.75);
+      if (theme.dark) {
+        ctx.fillStyle = fs.warm > 0.84 ? 'rgba(255,235,210,' + fa + ')' : 'rgba(220,240,255,' + fa + ')';
+      } else {
+        ctx.globalAlpha = fa * 0.9;
+        ctx.fillStyle = 'rgba(50,105,145,1)';
+        ctx.beginPath();
+        ctx.arc(fs.x * w, fs.y * h, fsize + 1.0, 0, TAU);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(255,255,255,' + (fa * 0.9) + ')';
+      }
+      ctx.beginPath();
+      ctx.arc(fs.x * w, fs.y * h, fsize, 0, TAU);
+      ctx.fill();
+    }
+
+    ctx.save();
+    ctx.translate(w * 0.5, h * 0.5);
+    ctx.rotate(ang);
+
+    var haze = ctx.createLinearGradient(0, -width * 2.1, 0, width * 2.1);
+    haze.addColorStop(0, 'rgba(0,0,0,0)');
+    haze.addColorStop(0.46, theme.dark ? 'rgba(190,220,255,0.035)' : 'rgba(120,180,215,0.055)');
+    haze.addColorStop(0.5, theme.dark ? 'rgba(220,240,255,0.060)' : 'rgba(150,205,235,0.080)');
+    haze.addColorStop(0.54, theme.dark ? 'rgba(190,220,255,0.035)' : 'rgba(120,180,215,0.055)');
+    haze.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = haze;
+    ctx.fillRect(-span, -width * 2.1, span * 2, width * 4.2);
+
+    var core = ctx.createRadialGradient(0, 0, 0, 0, 0, width * 1.9);
+    core.addColorStop(0, theme.dark ? 'rgba(215,235,255,0.045)' : 'rgba(120,180,215,0.050)');
+    core.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(0, 0, width * 1.9, 0, TAU);
+    ctx.fill();
+
+    for (var i = 0; i < count; i++) {
+      var st = stars[Math.floor(i * step)];
+      var x = st.s * span;
+      var y = st.t * width;
+      var tw = 0.70 + 0.30 * Math.sin(now * st.speed + st.phase);
+      var size = st.size * (detail ? (theme.dark ? 1 : 1.12) : 0.75);
+      var a = st.a * (detail ? 1 : 0.8) * tw;
+      if (theme.dark) {
+        ctx.fillStyle = st.warm > 0.82
+          ? 'rgba(255,232,205,' + a + ')'
+          : 'rgba(225,242,255,' + a + ')';
+      } else {
+        ctx.globalAlpha = a * 0.10;
+        ctx.fillStyle = 'rgba(90,150,190,1)';
+        ctx.beginPath();
+        ctx.arc(x, y, size + 1.4, 0, TAU);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = st.warm > 0.82
+          ? 'rgba(255,252,245,' + (a * 0.95) + ')'
+          : 'rgba(245,253,255,' + (a * 0.92) + ')';
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, TAU);
+      ctx.fill();
+      if (detail && st.size > 1.5) {
+        ctx.globalAlpha = 0.16;
+        ctx.strokeStyle = theme.dark ? 'rgba(230,245,255,0.8)' : 'rgba(110,170,210,0.65)';
+        ctx.lineWidth = 0.55;
+        ctx.beginPath();
+        ctx.moveTo(x - 2.6, y);
+        ctx.lineTo(x + 2.6, y);
+        ctx.moveTo(x, y - 2.6);
+        ctx.lineTo(x, y + 2.6);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
   function drawOrrery3D(canvas, snap, detail, cam) {
@@ -1245,31 +1511,8 @@
       ctx.fillRect(0, 0, w, h);
     }
 
+    drawMilkyWay(ctx, w, h, theme, detail);
     if (detail) drawMeteors(ctx, w, h, theme);
-
-    var stars = starField();
-    for (var si = 0; si < stars.length; si++) {
-      var st = stars[si];
-      var sq = project3(st.p, c);
-      if (!sq) continue;
-      ctx.globalAlpha = st.a * theme.starAlpha;
-      ctx.fillStyle = theme.star;
-      ctx.beginPath();
-      ctx.arc(sq.x, sq.y, st.s, 0, TAU);
-      ctx.fill();
-      if (!theme.dark && st.s > 1.15) {
-        ctx.globalAlpha = 0.20;
-        ctx.strokeStyle = theme.star;
-        ctx.lineWidth = 0.7;
-        ctx.beginPath();
-        ctx.moveTo(sq.x - 3.2, sq.y);
-        ctx.lineTo(sq.x + 3.2, sq.y);
-        ctx.moveTo(sq.x, sq.y - 3.2);
-        ctx.lineTo(sq.x, sq.y + 3.2);
-        ctx.stroke();
-      }
-    }
-    ctx.globalAlpha = 1;
 
     drawEclipticGrid(ctx, c, detail, theme);
     if (ts && detail && !closeUp) drawAuRings(ctx, c, theme);
@@ -1288,7 +1531,7 @@
       }
       if (!src) continue;
       bodies.push({
-        key: body.key, cn: body.cn, color: body.color, size: body.size,
+        key: body.key, cn: body.cn, west: body.west, color: body.color, size: body.size,
         el: body.el, a: src.a, helio: src.helio
       });
     }
@@ -1338,7 +1581,7 @@
           ctx.shadowColor = theme.labelShadow;
           ctx.shadowBlur = 4;
           ctx.fillStyle = theme.sunLabel;
-          ctx.fillText('太阳', it.q.x, it.q.y + sunR + 12);
+          ctx.fillText(L('sun'), it.q.x, it.q.y + sunR + 12);
           ctx.shadowBlur = 0;
         }
         if (!theme.dark && detail) {
@@ -1366,7 +1609,7 @@
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }
-        if (detail && state.layers.sci && (!closeUp || selectedKey === it.body.key)) drawLabel3(ctx, it.q, it.body.cn, detail, theme, w, h);
+        if (detail && state.layers.sci && (!closeUp || selectedKey === it.body.key)) drawLabel3(ctx, it.q, state.lang === 'en' ? it.body.west : it.body.cn, detail, theme, w, h);
       }
     }
 
@@ -1401,7 +1644,15 @@
         ctx.lineWidth = 0.9;
         ctx.stroke();
       }
-      if (detail && (cam.dist < 2.2 || selectedKey === 'moon')) drawLabel3(ctx, mq, '月球', detail, theme, w, h);
+      if (detail && (cam.dist < 2.2 || selectedKey === 'moon')) drawLabel3(ctx, mq, L('moon'), detail, theme, w, h);
+    }
+
+    var earthHit = null;
+    for (var hi2 = 0; hi2 < hits.length; hi2++) {
+      if (hits[hi2].key === 'earth') { earthHit = hits[hi2]; break; }
+    }
+    if (detail && earthHit && (!closeUp || selectedKey === 'earth') && earthHit.q.x > 10 && earthHit.q.x < w - 10 && earthHit.q.y > 10 && earthHit.q.y < h - 10) {
+      drawHereCallout(ctx, earthHit.q, earthHit.r, theme, w, h);
     }
 
     orreryHits = hits;
@@ -1556,7 +1807,17 @@
   /* ---------------- 文案 ---------------- */
 
   function dateText(date) {
+    if (state.lang === 'en') {
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + date.toLocaleDateString('en-US', { weekday: 'long' });
+    }
     return date.getFullYear() + ' 年 ' + (date.getMonth() + 1) + ' 月 ' + date.getDate() + ' 日 · 星期' + WEEK[date.getDay()];
+  }
+
+  function statusLabel(s) {
+    if (s === '逆行') return L('retro');
+    if (s === '顺行') return L('direct');
+    if (s === '留') return L('station');
+    return s;
   }
 
   function clockText(date) {
@@ -1579,6 +1840,40 @@
     return snap.term[0];
   }
 
+  function applyLang() {
+    var d = I18N[state.lang] || I18N.zh;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (d[k] !== undefined) el.textContent = d[k];
+    });
+    var box = document.getElementById('btc-orrery-lang');
+    if (box) box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-lang') === state.lang); });
+  }
+
+  function applyVisual() {
+    var modal = document.getElementById('btc-orrery-modal');
+    if (modal) {
+      modal.classList.remove('visual-frame', 'visual-dusk', 'visual-deep');
+      modal.classList.add('visual-' + state.visual);
+    }
+    var box = document.getElementById('btc-orrery-visual2');
+    if (box) box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-visual') === state.visual); });
+  }
+
+  function setVisual(v) {
+    state.visual = (v === 'dusk' || v === 'deep') ? v : 'frame';
+    try { localStorage.setItem('btc-orrery-visual2', state.visual); } catch (e) {}
+    applyVisual();
+    renderAll();
+  }
+
+  function setLang(lang) {
+    state.lang = lang === 'en' ? 'en' : 'zh';
+    try { localStorage.setItem('btc-orrery-lang', state.lang); } catch (e) {}
+    applyLang();
+    renderAll();
+  }
+
   function setText(id, value) {
     var el = document.getElementById(id);
     if (el) el.textContent = value;
@@ -1589,21 +1884,21 @@
     if (!el) return;
     if (!key || !orrerySnap) { el.hidden = true; return; }
     var snap = orrerySnap, row = null;
-    if (key === 'sun') row = { cn: '太阳', lon: snap.sunLon, dist: snap.sun.dist, status: '—' };
-    else if (key === 'moon') row = { cn: '月亮', lon: snap.moonLon, dist: snap.moon.dist, status: '—' };
-    else if (key === 'earth') row = { cn: '地球', lon: null, dist: null, status: '—' };
+    if (key === 'sun') row = { cn: '太阳', west: 'Sun', lon: snap.sunLon, dist: snap.sun.dist, status: '—' };
+    else if (key === 'moon') row = { cn: '月亮', west: 'Moon', lon: snap.moonLon, dist: snap.moon.dist, status: '—' };
+    else if (key === 'earth') row = { cn: '地球', west: 'Earth', lon: null, dist: null, status: '—' };
     else {
       var p = snap.planets.find(function (x) { return x.key === key; });
-      if (p) row = { cn: p.cn, lon: p.lon, dist: p.dist, status: p.status };
+      if (p) row = { cn: p.cn, west: p.west, lon: p.lon, dist: p.dist, status: p.status };
     }
     if (!row) { el.hidden = true; return; }
     el.hidden = false;
-    setText('btc-orrery-focus-name', row.cn);
+    setText('btc-orrery-focus-name', state.lang === 'en' ? row.west : row.cn);
     var meta;
     if (row.lon != null && row.dist != null) {
-      meta = signInfo(row.lon).text + ' · ' + mansionAt(row.lon, snap.date).name + '宿 · ' + row.dist.toFixed(3) + ' AU · ' + lightTime(row.dist) + (row.status !== '—' ? ' · ' + row.status : '');
+      meta = signInfo(row.lon).text + ' · ' + mansionAt(row.lon, snap.date).name + '宿 · ' + row.dist.toFixed(3) + ' AU · ' + lightTime(row.dist) + (row.status !== '—' ? ' · ' + statusLabel(row.status) : '');
     } else {
-      meta = '日心轨道 · 1.000 AU · 你在这里';
+      meta = state.lang === 'en' ? "Heliocentric · 1.000 AU · I'M HERE" : '日心轨道 · 1.000 AU · 博主在这里';
     }
     setText('btc-orrery-focus-meta', meta);
   }
@@ -1612,9 +1907,10 @@
     setText('btc-orrery-date', dateText(snap.date));
     setText('btc-orrery-sub', clockText(snap.date) + ' · ' + snap.term[0] + ' · ' + snap.phase.name);
     setText('btc-orrery-term', snap.term[0]);
-    setText('btc-orrery-phase', snap.phase.name + ' · 照亮 ' + Math.round(snap.phase.illum * 100) + '%');
-    setText('btc-orrery-age', snap.phase.age.toFixed(1) + ' 天');
-    setText('btc-orrery-offset', state.live ? '此刻' : (state.offset > 0 ? '+' : '') + state.offset.toFixed(2) + ' 天');
+    var illumPct = Math.round(snap.phase.illum * 100);
+    setText('btc-orrery-phase', state.lang === 'en' ? snap.phase.name + ' · ' + illumPct + '% illuminated' : snap.phase.name + ' · 照亮 ' + illumPct + '%');
+    setText('btc-orrery-age', snap.phase.age.toFixed(1) + ' ' + L('ageUnit'));
+    setText('btc-orrery-offset', state.live ? L('now') : (state.offset > 0 ? '+' : '') + state.offset.toFixed(2) + (state.lang === 'en' ? ' d' : ' 天'));
 
     var tbody = document.getElementById('btc-orrery-tbody');
     if (tbody) {
@@ -1635,9 +1931,11 @@
       for (var i = 0; i < rows.length; i++) {
         var r = rows[i];
         var si = signInfo(r.lon);
-        var statusText = r.status === '逆行' ? '℞ 逆' : (r.status === '顺行' ? '顺' : r.status);
+        var statusText = r.status === '逆行' ? '℞ ' + L('retro') : statusLabel(r.status);
+        var primary = state.lang === 'en' ? r.west : r.cn;
+        var secondary = state.lang === 'en' ? r.cn : r.west;
         html += '<div class="btc-orrery-row">'
-          + '<div class="who"><span class="btc-orrery-dot" style="--dot:' + r.color + '"></span><b>' + r.cn + '</b><em>' + r.west + '</em></div>'
+          + '<div class="who"><span class="btc-orrery-dot" style="--dot:' + r.color + '"></span><b>' + primary + '</b><em>' + secondary + '</em></div>'
           + '<div class="where"><b>' + si.text + '</b><span>' + r.mansion.name + '宿 · ' + r.mansion.group + '</span></div>'
           + '<div class="meta"><b>' + r.dist.toFixed(3) + ' AU</b><span>' + lightTime(r.dist) + ' · <i class="' + (r.status === '逆行' ? 'st-retro' : '') + '">' + statusText + '</i></span></div>'
           + '</div>';
@@ -1654,6 +1952,8 @@
   }
 
   function renderAll() {
+    applyLang();
+    applyVisual();
     var snap = snapshot();
     if (document.getElementById('btc-orrery-mini')) renderSidebar(snap);
     if (state.open) renderPanel(snap);
@@ -1668,10 +1968,10 @@
     + '<div class="btc-orrery-entry-visual"><canvas id="btc-orrery-mini"></canvas></div>'
     + '<div class="btc-orrery-entry-copy">'
     + '  <span class="btc-orrery-kicker"><i></i>LIVE · 天象</span>'
-    + '  <h2>实时天象仪 <em>ORRERY</em></h2>'
-    + '  <p>太阳系 3D · 二十八宿 · 七政 · 黄道相位</p>'
+    + '  <h2><span data-i18n="entryTitle">实时天象仪</span> <em>ORRERY</em></h2>'
+    + '  <p data-i18n="entryDesc">太阳系 3D · 二十八宿 · 七政 · 黄道相位</p>'
     + '  <div class="btc-orrery-entry-meta"><span id="btc-orrery-sun">☉ —</span><span id="btc-orrery-moon">☽ —</span></div>'
-    + '  <span class="btc-orrery-entry-cta">打开全屏 3D <b>↗</b></span>'
+    + '  <span class="btc-orrery-entry-cta" data-i18n="openEntry">打开全屏 3D ↗</span>'
     + '  <span class="btc-orrery-clock btc-orrery-entry-clock" id="btc-orrery-clock">--:--</span>'
     + '</div>';
 
@@ -1683,7 +1983,7 @@
     + '</div>'
     + '<div class="btc-orrery-card-foot">'
     + '  <span class="btc-orrery-caption"><span id="btc-orrery-sun">☉ —</span><span id="btc-orrery-moon">☽ —</span></span>'
-    + '  <b>打开 3D ↗</b>'
+    + '  <b data-i18n="open3d">打开 3D ↗</b>'
     + '</div>';
 
   var MODAL_HTML = ''
@@ -1693,25 +1993,31 @@
     + '      <span class="btc-orrery-sunmark"></span>'
     + '      <div><h2>天象仪 <em>ORRERY</em></h2><p id="btc-orrery-sub">实时 3D 轨道 · 二十八宿 · 七政</p></div>'
     + '    </div>'
+    + '    <div class="btc-orrery-menu" id="btc-orrery-menu">'
+    + '      <button type="button" class="btc-orrery-menu-btn" aria-label="Settings">⋯</button>'
+    + '      <div class="btc-orrery-menu-pop" hidden>'
+    + '        <div class="btc-orrery-menu-row"><span data-i18n="language">语言</span><div class="btc-orrery-lang" id="btc-orrery-lang" role="group" aria-label="Language"><button type="button" data-lang="zh" class="is-active">中</button><button type="button" data-lang="en">EN</button></div></div>'
+    + '        <div class="btc-orrery-menu-row"><span data-i18n="orbitScale">轨道比例</span><label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed" data-i18n="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true" data-i18n="trueScale">真实</span></label></div>'
+    + '        <div class="btc-orrery-menu-row"><span data-i18n="visual">视觉</span><div class="btc-orrery-visual2" id="btc-orrery-visual2"><button type="button" data-visual="frame" class="is-active" data-i18n="frame">画框</button><button type="button" data-visual="dusk" data-i18n="dusk">半深</button><button type="button" data-visual="deep" data-i18n="deep">深色</button></div></div>'
+    + '      </div>'
+    + '    </div>'
     + '    <div class="btc-orrery-seg" role="tablist" aria-label="视图">'
-    + '      <button type="button" data-view="orrery" class="is-active">太阳系 3D</button>'
-    + '      <button type="button" data-view="chart">天象盘</button>'
+    + '      <button type="button" data-view="orrery" class="is-active" data-i18n="orreryTab">3D</button>'
+    + '      <button type="button" data-view="chart" data-i18n="chartTab">天象盘</button>'
     + '    </div>'
     + '    <button type="button" class="btc-orrery-close" aria-label="关闭">×</button>'
     + '  </header>'
     + '  <div class="btc-orrery-body is-orrery">'
     + '    <section class="btc-orrery-stage is-orrery">'
     + '      <canvas id="btc-orrery-canvas"></canvas>'
-    + '      <div class="btc-orrery-hint">拖动旋转 · 滚轮缩放 · 双击复位</div>'
-    + '      <label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true">真实</span></label>'
     + '      <div class="btc-orrery-focus" id="btc-orrery-focus" hidden><span class="btc-orrery-focus-kicker">SELECTED</span><b id="btc-orrery-focus-name">—</b><span id="btc-orrery-focus-meta">—</span></div>'
     + '      <div class="btc-orrery-layers">'
-    + '        <label><input type="checkbox" data-layer="cn" checked><span>中国传统</span></label>'
-    + '        <label><input type="checkbox" data-layer="west" checked><span>西方占星</span></label>'
-    + '        <label><input type="checkbox" data-layer="sci" checked><span>现代科学</span></label>'
+    + '        <label><input type="checkbox" data-layer="cn" checked><span data-i18n="layersCn">中国传统</span></label>'
+    + '        <label><input type="checkbox" data-layer="west" checked><span data-i18n="layersWest">西方占星</span></label>'
+    + '        <label><input type="checkbox" data-layer="sci" checked><span data-i18n="layersSci">现代科学</span></label>'
     + '      </div>'
     + '      <div class="btc-orrery-timebar">'
-    + '        <button type="button" id="btc-orrery-live" class="is-live"><i></i>实时</button>'
+    + '        <button type="button" id="btc-orrery-live" class="is-live"><i></i><span data-i18n="live">实时</span></button>'
     + '        <input id="btc-orrery-slider" type="range" min="-30" max="30" step="0.25" value="0" aria-label="时间偏移">'
     + '        <output id="btc-orrery-offset">此刻</output>'
     + '      </div>'
@@ -1719,15 +2025,15 @@
     + '    <aside class="btc-orrery-info">'
     + '      <div class="btc-orrery-now">'
     + '        <div class="btc-orrery-date" id="btc-orrery-date">—</div>'
-    + '        <div class="btc-orrery-nowrow"><span>节气</span><b id="btc-orrery-term">—</b></div>'
-    + '        <div class="btc-orrery-nowrow"><span>月相</span><b id="btc-orrery-phase">—</b></div>'
-    + '        <div class="btc-orrery-nowrow"><span>月龄</span><b id="btc-orrery-age">—</b></div>'
+    + '        <div class="btc-orrery-nowrow"><span data-i18n="term">节气</span><b id="btc-orrery-term">—</b></div>'
+    + '        <div class="btc-orrery-nowrow"><span data-i18n="phase">月相</span><b id="btc-orrery-phase">—</b></div>'
+    + '        <div class="btc-orrery-nowrow"><span data-i18n="age">月龄</span><b id="btc-orrery-age">—</b></div>'
     + '      </div>'
     + '      <div class="btc-orrery-tablewrap">'
-    + '        <div class="btc-orrery-ledgerhead"><span>天体</span><span>黄道位置</span><span>距离 · 状态</span></div>'
+    + '        <div class="btc-orrery-ledgerhead"><span data-i18n="body">天体</span><span data-i18n="position">黄道位置</span><span data-i18n="distanceStatus">距离 · 状态</span></div>'
     + '        <div class="btc-orrery-ledger" id="btc-orrery-tbody"></div>'
     + '      </div>'
-    + '      <p class="btc-orrery-note">JPL 近似根数（1800–2050）· 低精度月球 · 几何黄经（未做光行时/章动）。二十八宿为文化映射；轨道默认压缩，可切换真实比例。</p>'
+    + '      <p class="btc-orrery-note" data-i18n="note">JPL 近似根数（1800–2050）· 低精度月球 · 几何黄经（未做光行时/章动）。二十八宿为文化映射；轨道默认压缩，可切换真实比例。</p>'
     + '    </aside>'
     + '  </div>'
     + '</div>';
@@ -1803,6 +2109,30 @@
       if (e.target === modal) closeModal();
     });
     modal.querySelector('.btc-orrery-close').addEventListener('click', closeModal);
+
+    var menu = modal.querySelector('#btc-orrery-menu');
+    var menuBtn = menu && menu.querySelector('.btc-orrery-menu-btn');
+    var menuPop = menu && menu.querySelector('.btc-orrery-menu-pop');
+    if (menuBtn && menuPop) {
+      menuBtn.addEventListener('click', function (e) { e.stopPropagation(); menuPop.hidden = !menuPop.hidden; });
+      modal.addEventListener('click', function (e) { if (!menu.contains(e.target)) menuPop.hidden = true; });
+    }
+
+    var visualBox = modal.querySelector('#btc-orrery-visual2');
+    if (visualBox) {
+      visualBox.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (b) setVisual(b.getAttribute('data-visual'));
+      });
+    }
+
+    var langBox = modal.querySelector('#btc-orrery-lang');
+    if (langBox) {
+      langBox.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (b) setLang(b.getAttribute('data-lang'));
+      });
+    }
 
     var scaleInput = modal.querySelector('#btc-orrery-scale-input');
     if (scaleInput) {
