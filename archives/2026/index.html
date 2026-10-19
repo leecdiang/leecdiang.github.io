@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+<meta name="theme-color" content="#eaf5fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.jpg?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
-  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
   <meta name="yandex-verification" content="742c2c3e6536dd02">
 
@@ -75,6 +75,7 @@
 
 
 <link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
+
 
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -479,20 +480,11 @@
 (function() {
   var desc = document.querySelector('.site-description');
   if (desc && !desc.querySelector('.desc-line2')) {
+    desc.textContent = 'A personal archive of digital IC, computer architecture, and AI infrastructure — plus tools, photography, and the occasional detour.';
     var l2 = document.createElement('div');
     l2.className = 'desc-line2';
-    l2.textContent = 'Digital IC · Architecture';
+    l2.textContent = 'Digital IC · Architecture · AI Infrastructure';
     desc.appendChild(l2);
-
-    var l3 = document.createElement('div');
-    l3.className = 'desc-line3';
-    l3.textContent = 'Tools · Photography';
-    desc.appendChild(l3);
-
-    var l4 = document.createElement('div');
-    l4.className = 'desc-line4';
-    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
-    desc.appendChild(l4);
   }
 })();
 </script>
@@ -883,6 +875,30 @@
 })();
 </script>
 
+
+<!-- Live Orrery -->
+<link rel="stylesheet" href="/css/orrery.css?v=20261019v">
+<script defer src="/js/orrery.js?v=20261019v"></script>
+
+<script>
+(function () {
+  var metas = Array.prototype.slice.call(document.querySelectorAll('meta[name="theme-color"]'));
+  if (!metas.length) { var made = document.createElement('meta'); made.name = 'theme-color'; document.head.appendChild(made); metas = [made]; }
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() {
+    for (var i = 0; i < metas.length; i++) {
+      var m = metas[i];
+      var media = m.getAttribute('media') || '';
+      var dark = media.indexOf('dark') >= 0;
+      var light = media.indexOf('light') >= 0;
+      m.setAttribute('content', dark ? '#121f2b' : (light ? '#eaf5fb' : (mq.matches ? '#121f2b' : '#eaf5fb')));
+    }
+  }
+  apply();
+  if (mq.addEventListener) mq.addEventListener('change', apply);
+  else if (mq.addListener) mq.addListener(apply);
+})();
+</script>
 
 </body>
 </html>

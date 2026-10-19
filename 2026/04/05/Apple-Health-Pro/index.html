@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+<meta name="theme-color" content="#eaf5fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.jpg?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
-  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
   <meta name="yandex-verification" content="742c2c3e6536dd02">
 
@@ -30,7 +30,7 @@
 <meta property="og:description" content="Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP&#x2F;XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260405-2.jpg">
-<meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260503.jpg">
+<meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260503.png">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260405-1.png">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260407.png">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260407-1.jpg">
@@ -91,6 +91,7 @@
 
 
 <link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
+
 
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -240,7 +241,7 @@
 <p><strong>2、过滤：</strong> 在 <code>IDENTIFIED SOURCES</code> 列表中勾选你信任的来源，剔除冗余的第三方 App 记录。</p>
 <p><strong>3、隐私和时间：</strong> 在 <code>Date range</code> 输入你期望的起止日期，同时选择是否隐藏设备名（这一步会将初始数据的设备名覆盖为 AppleHealthPro_device</p>
 <p><strong>4、执行：</strong> 点击 <code>EXECUTE EXPORT</code>。</p>
-<p><img data-src="Apple-Health-Pro-20260503.jpg" alt=""></p>
+<p><img data-src="Apple-Health-Pro-20260503.png" alt=""></p>
 <h4 id="第三步：让-AI-成为你的“数字私人医生”">第三步：让 AI 成为你的“数字私人医生”</h4>
 <p>导出的 CSV 已经过专业的维度归纳，**在最新的 v8.6.0 版本中，已全面升级为 15 大医疗与运动维度。**如下方表格所示，如果未提取到相关数据则不会生成对应文件。</p>
 <table>
@@ -463,20 +464,11 @@
 (function() {
   var desc = document.querySelector('.site-description');
   if (desc && !desc.querySelector('.desc-line2')) {
+    desc.textContent = 'A personal archive of digital IC, computer architecture, and AI infrastructure — plus tools, photography, and the occasional detour.';
     var l2 = document.createElement('div');
     l2.className = 'desc-line2';
-    l2.textContent = 'Digital IC · Architecture';
+    l2.textContent = 'Digital IC · Architecture · AI Infrastructure';
     desc.appendChild(l2);
-
-    var l3 = document.createElement('div');
-    l3.className = 'desc-line3';
-    l3.textContent = 'Tools · Photography';
-    desc.appendChild(l3);
-
-    var l4 = document.createElement('div');
-    l4.className = 'desc-line4';
-    l4.textContent = 'Personal archive across silicon, systems, and visual notes.';
-    desc.appendChild(l4);
   }
 })();
 </script>
@@ -867,6 +859,30 @@
 })();
 </script>
 
+
+<!-- Live Orrery -->
+<link rel="stylesheet" href="/css/orrery.css?v=20261019v">
+<script defer src="/js/orrery.js?v=20261019v"></script>
+
+<script>
+(function () {
+  var metas = Array.prototype.slice.call(document.querySelectorAll('meta[name="theme-color"]'));
+  if (!metas.length) { var made = document.createElement('meta'); made.name = 'theme-color'; document.head.appendChild(made); metas = [made]; }
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() {
+    for (var i = 0; i < metas.length; i++) {
+      var m = metas[i];
+      var media = m.getAttribute('media') || '';
+      var dark = media.indexOf('dark') >= 0;
+      var light = media.indexOf('light') >= 0;
+      m.setAttribute('content', dark ? '#121f2b' : (light ? '#eaf5fb' : (mq.matches ? '#121f2b' : '#eaf5fb')));
+    }
+  }
+  apply();
+  if (mq.addEventListener) mq.addEventListener('change', apply);
+  else if (mq.addListener) mq.addListener(apply);
+})();
+</script>
 
 </body>
 </html>
