@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.jpg?v=20260901-cat">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
   <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
@@ -30,7 +30,7 @@
 <meta property="og:description" content="从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-28T14:39:00.000Z">
-<meta property="article:modified_time" content="2026-10-18T05:13:11.138Z">
+<meta property="article:modified_time" content="2026-10-18T16:15:12.117Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="ECN">
 <meta property="article:tag" content="In-Network-Computing">
@@ -537,6 +537,20 @@ sequenceDiagram
 </tr>
 </tbody>
 </table>
+<div class="v-figure">
+<table class="v-matrix">
+<thead><tr><th>维度</th><th>RoCEv2</th><th>TTPoE</th><th>UET</th></tr></thead>
+<tbody>
+<tr><td>生态成熟度</td><td class="lv4">高</td><td class="lv1">有限</td><td class="lv2">建设中</td></tr>
+<tr><td>容损能力</td><td class="lv1">弱</td><td class="lv3">端点保证</td><td class="lv4">强</td></tr>
+<tr><td>多路径</td><td class="lv2">ECMP</td><td class="lv2">定制</td><td class="lv4">Packet Spraying</td></tr>
+<tr><td>乱序处理</td><td class="lv2">敏感</td><td class="lv3">自定义</td><td class="lv4">灵活排序</td></tr>
+<tr><td>拥塞控制</td><td class="lv3">PFC / ECN / DCQCN</td><td class="lv3">端点自治</td><td class="lv4">Sender CC + Credit</td></tr>
+<tr><td>通用性</td><td class="lv4">广泛</td><td class="lv1">特定</td><td class="lv3">多厂商</td></tr>
+</tbody>
+</table>
+<p class="v-caption">图 1：三种 Transport 的定性对比。lv0–lv4 是作者主观分级，不是性能测试。</p>
+</div>
 <p>这张表不是胜负表。RoCE 的部署基础和软件生态是实实在在的优势;TTPoE 展示了定制系统可以多激进;UET 则试图在开放性与 AI 原生能力之间找到新的平衡。</p>
 <h2 id="十、端点、交换机与-Fabric-Controller-的闭环">十、端点、交换机与 Fabric Controller 的闭环</h2>
 <p>下一代智算网络不能被写成&quot;NIC 进化成 Switch,再进化成 Controller&quot;。三者是并列的责任域。</p>
@@ -773,11 +787,11 @@ flowchart TB
 </div>
 
           <div class="post-tags">
-              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
-              <a href="/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/" rel="tag"># 智算网络</a>
               <a href="/tags/RoCE/" rel="tag"># RoCE</a>
+              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
               <a href="/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" rel="tag"># 拥塞控制</a>
               <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E7%BD%91%E7%BB%9C/" rel="tag"># 数据中心网络</a>
+              <a href="/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/" rel="tag"># 智算网络</a>
               <a href="/tags/PFC/" rel="tag"># PFC</a>
               <a href="/tags/ECN/" rel="tag"># ECN</a>
               <a href="/tags/Ultra-Ethernet/" rel="tag"># Ultra-Ethernet</a>

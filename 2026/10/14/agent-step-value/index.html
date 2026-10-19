@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#92bbd7" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.jpg?v=20260901-cat">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
   <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#92bbd7">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://leecdiang.com/2026/10/14/agent-step-value/retrieval-decomposition.jpg">
 <meta property="og:image" content="https://leecdiang.com/2026/10/14/agent-step-value/matched-bridge-results.jpg">
 <meta property="article:published_time" content="2026-10-14T07:26:00.000Z">
-<meta property="article:modified_time" content="2026-10-14T09:57:05.056Z">
+<meta property="article:modified_time" content="2026-10-18T16:22:04.207Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Agent Step Value">
 <meta property="article:tag" content="EMNLP 2026">
@@ -313,19 +313,10 @@ $$</p>
 </table>
 <p>The direct channel calls the update helpful; the generated-view channel calls it harmful. Their interaction is -1.0. A diagonal comparison from direct-before (-0.2) to generated-after (+0.1) gives +0.3, which identifies neither within-channel gain nor their interaction.</p>
 <div class="asv-diagram">
-<pre>
-<code class="mermaid">
-
-%%{init: {&quot;flowchart&quot;: {&quot;htmlLabels&quot;: false, &quot;nodeSpacing&quot;: 18, &quot;rankSpacing&quot;: 24}, &quot;themeVariables&quot;: {&quot;fontSize&quot;: &quot;14px&quot;}}}%%
-flowchart TD
-  S[&quot;Frozen states&quot;] --&gt;|score both endpoints| D[&quot;Direct: both endpoints&quot;]
-  S --&gt;|score both endpoints| V[&quot;View: both endpoints&quot;]
-  D --&gt;|after minus before| GD[&quot;Direct gain: +0.6&quot;]
-  V --&gt;|after minus before| GV[&quot;Generated-view gain: -0.4&quot;]
-  GD --&gt;|compare gains| O[&quot;Interaction &#x3D; -1.0&quot;]
-  GV --&gt;|compare gains| O
-</code>
-</pre>
+<div class="v-figure">
+<svg viewBox="0 0 760 400" role="img" aria-label="ASV gain chart"><defs><marker id="aA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#29648f"/></marker><marker id="aB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#a34a4a"/></marker></defs><text x="30" y="36" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">ASV · FOUR CORNERS</text><text x="30" y="58" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">同一通道内 before → after；两个 gain 的差是 interaction</text><line x1="120" y1="320" x2="700" y2="320" stroke="rgba(70,102,126,.25)"/><text x="700" y="340" text-anchor="end" font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">evaluator score</text><g font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif"><text x="120" y="340">-0.6</text><text x="330" y="340">0</text><text x="580" y="340">+0.6</text></g><text x="30" y="134" font-size="11" fill="#4d6072" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Direct</text><text x="30" y="254" font-size="11" fill="#4d6072" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Generated</text><line x1="285.71428571428567" y1="130" x2="534.2857142857142" y2="130" stroke="#29648f" stroke-width="2.5" marker-end="url(#aA)"/><circle cx="285.71428571428567" cy="130" r="4" fill="#29648f"/><circle cx="534.2857142857142" cy="130" r="4" fill="#29648f"/><text x="409.99999999999994" y="116" text-anchor="middle" font-size="11" fill="#29648f" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">gain +0.6</text><line x1="575.7142857142858" y1="250" x2="410" y2="250" stroke="#a34a4a" stroke-width="2.5" marker-end="url(#aB)"/><circle cx="575.7142857142858" cy="250" r="4" fill="#a34a4a"/><circle cx="410" cy="250" r="4" fill="#a34a4a"/><text x="492.8571428571429" y="276" text-anchor="middle" font-size="11" fill="#a34a4a" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">gain -0.4</text><path d="M690,150 L720,150 L720,230 L690,230" fill="none" stroke="#7b8b99" stroke-dasharray="3 3"/><text x="732" y="196" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">-1.0</text><text x="120" y="380" font-size="9.5" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">数值为论文中的 illustrative example，不是 cohort estimate。</text></svg>
+<p class="v-caption">图 1：四个分数的读法。两条 gain 都在各自通道内计算；它们的差是 interaction。</p>
+</div>
 </div>
 <p><em>Reading the four corners: each gain uses one channel throughout. The numbers are illustrative, not cohort estimates.</em></p>
 <img data-src="/2026/10/14/agent-step-value/asv-pipeline.jpg" class="" title="The audit design: freeze the transition, replay both channels, complete the four-corner face, and check the observed readout&#x2F;evaluator configurations. Figure 1 of the paper.">
