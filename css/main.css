@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #9f14ff;
+    background: #ff08ff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -4920,21 +4920,25 @@ body > hr,
 }
 /* --- 桌面端 --- (侧栏 fixed + JS 微滑动) */
 @media screen and (min-width: 992px) {
+  :root {
+    --btc-shell-max: 1240px;
+    --btc-side-w: clamp(260px, 20vw, 320px);
+  }
   .main {
     display: flex !important;
     align-items: stretch !important;
     justify-content: center !important;
-    width: 92% !important;
-    max-width: 1120px !important;
+    width: 94% !important;
+    max-width: var(--btc-shell-max) !important;
     margin: 20px auto !important;
     gap: 28px !important;
   }
   .column {
-    width: 260px !important;
+    width: var(--btc-side-w) !important;
     margin: 0 !important;
     padding: 0 !important;
     position: fixed !important;
-    left: calc((100vw - min(92vw, 1120px)) / 2 - 20px) !important;
+    left: calc((100vw - min(94vw, var(--btc-shell-max))) / 2 - 20px) !important;
     height: calc(100vh - 40px) !important;
     box-sizing: border-box !important;
     z-index: 100 !important;
@@ -5033,7 +5037,7 @@ body > hr,
     display: none !important;
   }
   .main-inner {
-    margin-left: calc(260px + 28px) !important;
+    margin-left: calc(var(--btc-side-w) + 28px) !important;
   }
   .main-inner,
   .content-wrap,

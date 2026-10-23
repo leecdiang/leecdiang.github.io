@@ -81,6 +81,9 @@
   ];
 
   var GROUP_COLOR = { 青龙: '#6fbfa0', 玄武: '#6f8fbf', 白虎: '#c9a96a', 朱雀: '#d97b6c' };
+  /* 浅色盘面用深色传统色；深色盘面用高亮传统色，保证 4.5:1 以上的文字对比 */
+  var GROUP_COLOR_LIGHT = { 青龙: '#1d6b53', 玄武: '#31567d', 白虎: '#7a5a1c', 朱雀: '#9c392d' };
+  var GROUP_COLOR_DARK = { 青龙: '#84e2bf', 玄武: '#9cc4ee', 白虎: '#edc77c', 朱雀: '#f39b87' };
 
   /* 二十四节气：太阳黄经 */
   var TERMS = [
@@ -346,16 +349,50 @@
     return new Date(Date.now() + state.offset * 86400000);
   }
 
+
+  /* 物理半径（km）与相位/视直径/视星等近似 */
+  var PLANET_RADII = {
+    mercury: 2439.7, venus: 6051.8, mars: 3389.5, jupiter: 69911,
+    saturn: 58232, uranus: 25362, neptune: 24622, earth: 6371,
+    moon: 1737.4, sun: 696340
+  };
+
+  function phaseAngleOf(h, earth) {
+    var r = Math.hypot(h.x, h.y, h.z) || 1;
+    var dx = earth.x - h.x, dy = earth.y - h.y, dz = earth.z - h.z;
+    var d = Math.hypot(dx, dy, dz) || 1;
+    var cosA = (-h.x * dx - h.y * dy - h.z * dz) / (r * d);
+    return Math.acos(Math.max(-1, Math.min(1, cosA)));
+  }
+
+  function planetMagnitude(key, r, d, aDeg) {
+    var base = 5 * Math.log10(Math.max(1e-6, r * d));
+    var m;
+    if (key === 'mercury') m = -0.42 + base + 0.0380 * aDeg - 0.000273 * aDeg * aDeg + 0.000002 * aDeg * aDeg * aDeg;
+    else if (key === 'venus') m = -4.40 + base + 0.0009 * aDeg + 0.000239 * aDeg * aDeg - 0.00000065 * aDeg * aDeg * aDeg;
+    else if (key === 'mars') m = -1.52 + base + 0.016 * aDeg;
+    else if (key === 'jupiter') m = -9.40 + base + 0.005 * aDeg;
+    else if (key === 'saturn') m = -8.88 + base + 0.044 * aDeg;
+    else if (key === 'uranus') m = -7.19 + base;
+    else if (key === 'neptune') m = -6.87 + base;
+    else m = null;
+    return m;
+  }
+
+  function angularDiameter(radiusKm, distAu) {
+    return 2 * Math.atan(radiusKm / Math.max(1, distAu * AU_KM)) / DEG * 3600;
+  }
+
   function snapshot() {
     var date = currentDate();
     var earth = helio(EL.earth, date);
     var T = century(date);
     var sunG = sunGeo(earth);
     var sunLon = apparentLon(sunG.lon, 0, sunG.lon, T);
-    var sun = { lon: sunLon, lat: 0, dist: sunG.dist };
+    var sun = { lon: sunLon, lat: 0, dist: sunG.dist, angDia: angularDiameter(PLANET_RADII.sun, sunG.dist) };
     var moonG = moonGeo(date);
     var moonLon = apparentLon(moonG.lon, moonG.lat, sunLon, T);
-    var moon = { lon: moonLon, lat: moonG.lat, dist: moonG.dist, distKm: moonG.distKm };
+    var moon = { lon: moonLon, lat: moonG.lat, dist: moonG.dist, distKm: moonG.distKm, angDia: angularDiameter(PLANET_RADII.moon, moonG.dist) };
 
     var planets = PLANETS.map(function (p) {
       var g = geoOfApparent(p.el, earth, date);
@@ -372,10 +409,16 @@
 
       var speed = norm180(aLon - bLon);
       var status = Math.abs(speed) < 0.02 ? '留' : (speed < 0 ? '逆行' : '顺行');
+      var hel = helio(p.el, date);
+      var alpha = phaseAngleOf(hel, earth);
       return {
         key: p.key, cn: p.cn, west: p.west, glyph: p.glyph, color: p.color, size: p.size,
         cnName: p.cnName, lon: lon, lat: g.lat, dist: g.dist, speed: speed, status: status,
-        helio: helio(p.el, date), a: p.el[0]
+        helio: hel, a: p.el[0],
+        illum: (1 + Math.cos(alpha)) / 2,
+        phaseAngle: alpha / DEG,
+        angDia: angularDiameter(PLANET_RADII[p.key], g.dist),
+        mag: planetMagnitude(p.key, Math.hypot(hel.x, hel.y, hel.z), g.dist, alpha / DEG)
       };
     });
 
@@ -480,6 +523,232 @@
     ctx.fill();
   }
 
+
+  /* ---------------- 真实星空层 ---------------- */
+
+  var SKY_CACHE = {};
+
+  function skyRadius(R, lat) {
+    return R * (0.862 + (lat || 0) * 0.0022);
+  }
+
+  function starColorGroups(dark) {
+    return dark ? [
+      { color: '#cfe0ff', alpha: 0.88, max: 0.30 },
+      { color: '#eef5fb', alpha: 0.80, max: 0.90 },
+      { color: '#ffd8ae', alpha: 0.82, max: 2.01 }
+    ] : [
+      { color: '#2f5872', alpha: 0.40, max: 0.30 },
+      { color: '#22455d', alpha: 0.38, max: 0.90 },
+      { color: '#5d4a3a', alpha: 0.36, max: 2.01 }
+    ];
+  }
+
+  function buildSkyPaths(R, dark) {
+    var key = Math.round(R) + '|' + (dark ? 'd' : 'l');
+    if (SKY_CACHE[key]) return SKY_CACHE[key];
+    var data = window.BTC_SKY;
+    if (!data || !data.stars || typeof Path2D === 'undefined') return null;
+
+    var groups = starColorGroups(dark).map(function (g) {
+      return { path: new Path2D(), color: g.color, alpha: g.alpha, max: g.max };
+    });
+    var magLimit = R < 240 ? 4.9 : 5.6;
+    for (var i = 0; i < data.stars.length; i++) {
+      var st = data.stars[i];
+      var lon = st[0], lat = st[1], mag = st[2], bv = st[3];
+      if (mag > magLimit) continue;
+      var x = Math.cos(Math.PI - lon * DEG) * skyRadius(R, lat);
+      var y = Math.sin(Math.PI - lon * DEG) * skyRadius(R, lat);
+      var rr = Math.max(0.35, 0.35 + (5.6 - mag) * 0.17);
+      var gi = 0;
+      if (bv > 0.90) gi = 2; else if (bv >= 0.30) gi = 1;
+      groups[gi].path.moveTo(x + rr, y);
+      groups[gi].path.arc(x, y, rr, 0, TAU);
+    }
+
+    var lines = new Path2D();
+    var borders = new Path2D();
+    function addSegs(path, segs) {
+      for (var s = 0; s < segs.length; s++) {
+        var seg = segs[s];
+        for (var j = 0; j < seg.length; j += 2) {
+          var x = Math.cos(Math.PI - seg[j] * DEG) * skyRadius(R, seg[j + 1]);
+          var y = Math.sin(Math.PI - seg[j] * DEG) * skyRadius(R, seg[j + 1]);
+          if (j === 0) path.moveTo(x, y); else path.lineTo(x, y);
+        }
+      }
+    }
+    var z;
+    for (z in data.borders) if (data.borders.hasOwnProperty(z)) addSegs(borders, data.borders[z]);
+    for (z in data.lines) if (data.lines.hasOwnProperty(z)) addSegs(lines, data.lines[z]);
+
+    var names = [];
+    for (z in data.names) if (data.names.hasOwnProperty(z)) {
+      var nm = data.names[z];
+      names.push({ lon: nm[0], lat: nm[1], cn: nm[2], west: nm[3] });
+    }
+
+    var cache = { groups: groups, lines: lines, borders: borders, names: names };
+    SKY_CACHE[key] = cache;
+    return cache;
+  }
+
+
+  /* ---------------- 银道面 / 科学读数 ---------------- */
+
+  var GAL_POLE_LON = 180.023, GAL_POLE_LAT = 29.811;
+  var GAL_CENTER_LON = 266.84, GAL_CENTER_LAT = -5.54;
+
+  function galacticLatAt(lon) {
+    var bp = GAL_POLE_LAT * DEG;
+    return Math.atan2(-Math.cos(bp) * Math.cos((lon - GAL_POLE_LON) * DEG), Math.sin(bp)) / DEG;
+  }
+
+  function drawGalacticBand(ctx, cx, cy, R, lightChart, prec) {
+    var aPts = [], bPts = [];
+    for (var l = 0; l <= 360; l += 2) {
+      var b = galacticLatAt(l);
+      aPts.push(polar(cx, cy, skyRadius(R, b + 7), l + prec));
+      bPts.push(polar(cx, cy, skyRadius(R, b - 7), l + prec));
+    }
+
+    ctx.beginPath();
+    for (var i = 0; i < aPts.length; i++) {
+      if (i === 0) ctx.moveTo(aPts[i][0], aPts[i][1]); else ctx.lineTo(aPts[i][0], aPts[i][1]);
+    }
+    for (var j = bPts.length - 1; j >= 0; j--) ctx.lineTo(bPts[j][0], bPts[j][1]);
+    ctx.closePath();
+    ctx.fillStyle = lightChart ? 'rgba(60,100,135,0.030)' : 'rgba(185,215,250,0.040)';
+    ctx.fill();
+
+    function stroke(width, alpha, dash) {
+      ctx.beginPath();
+      for (var k = 0; k < aPts.length; k++) {
+        var p = aPts[k], q = bPts[k];
+        var mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+        if (k === 0) ctx.moveTo(mx, my); else ctx.lineTo(mx, my);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = lightChart ? 'rgba(45,80,110,' + (alpha * 0.95) + ')' : 'rgba(195,220,255,' + alpha + ')';
+      ctx.lineWidth = width;
+      ctx.setLineDash(dash || []);
+      ctx.stroke();
+    }
+    stroke(7, lightChart ? 0.035 : 0.060);
+    stroke(0.9, lightChart ? 0.22 : 0.26, [2, 4]);
+    ctx.setLineDash([]);
+
+    var gp = polar(cx, cy, skyRadius(R, GAL_CENTER_LAT), GAL_CENTER_LON + prec);
+    ctx.fillStyle = lightChart ? 'rgba(45,80,110,0.55)' : 'rgba(210,232,255,0.65)';
+    ctx.beginPath();
+    ctx.moveTo(gp[0], gp[1] - 4.2);
+    ctx.lineTo(gp[0] + 1.1, gp[1] - 1.1);
+    ctx.lineTo(gp[0] + 4.2, gp[1]);
+    ctx.lineTo(gp[0] + 1.1, gp[1] + 1.1);
+    ctx.lineTo(gp[0], gp[1] + 4.2);
+    ctx.lineTo(gp[0] - 1.1, gp[1] + 1.1);
+    ctx.lineTo(gp[0] - 4.2, gp[1]);
+    ctx.lineTo(gp[0] - 1.1, gp[1] - 1.1);
+    ctx.closePath();
+    ctx.fill();
+
+    var lp = polar(cx, cy, skyRadius(R, GAL_CENTER_LAT) + R * 0.030, GAL_CENTER_LON + prec);
+    setFont(ctx, Math.max(6, R * 0.017), '600');
+    ctx.textAlign = 'center';
+    ctx.fillStyle = lightChart ? 'rgba(45,80,110,0.50)' : 'rgba(205,228,250,0.55)';
+    ctx.fillText(state.lang === 'en' ? 'Galactic center' : '银心', lp[0], lp[1]);
+  }
+
+  function fmtAngDia(arcsec) {
+    if (!isFinite(arcsec)) return '—';
+    return arcsec >= 60 ? (arcsec / 60).toFixed(1) + '′' : arcsec.toFixed(1) + '″';
+  }
+
+  function drawScienceReadout(ctx, snap, w, h, R, lightChart) {
+    if (R < 230) return;
+    var venus = null, jupiter = null;
+    for (var i = 0; i < snap.planets.length; i++) {
+      if (snap.planets[i].key === 'venus') venus = snap.planets[i];
+      if (snap.planets[i].key === 'jupiter') jupiter = snap.planets[i];
+    }
+    var moonPct = Math.round(snap.phase.illum * 100);
+    var vPct = venus ? Math.round(venus.illum * 100) : null;
+    var lines;
+    if (state.lang === 'en') {
+      lines = [
+        'Ang. dia.  Sun ' + fmtAngDia(snap.sun.angDia) + '   Moon ' + fmtAngDia(snap.moon.angDia),
+        'Illum.  Moon ' + moonPct + '%   Venus ' + vPct + '%',
+        'Mag.  Venus ' + (venus && venus.mag != null ? venus.mag.toFixed(1) : '—') +
+          '   Jupiter ' + (jupiter && jupiter.mag != null ? jupiter.mag.toFixed(1) : '—')
+      ];
+    } else {
+      lines = [
+        '视直径  太阳 ' + fmtAngDia(snap.sun.angDia) + '  月亮 ' + fmtAngDia(snap.moon.angDia),
+        '照亮  月亮 ' + moonPct + '%  金星 ' + vPct + '%',
+        '视星等  金星 ' + (venus && venus.mag != null ? venus.mag.toFixed(1) : '—') +
+          '  木星 ' + (jupiter && jupiter.mag != null ? jupiter.mag.toFixed(1) : '—')
+      ];
+    }
+    setFont(ctx, Math.max(6, R * 0.017), '400');
+    ctx.textAlign = 'right';
+    ctx.fillStyle = lightChart ? hexA(hexToHex(palette().muted), 0.62) : 'rgba(198,224,240,0.55)';
+    for (var k = 0; k < lines.length; k++) {
+      ctx.fillText(lines[k], w - 10, h - 11 - (lines.length - 1 - k) * 12);
+    }
+    ctx.textAlign = 'center';
+  }
+
+  function drawRealSky(ctx, cx, cy, R, pal, lightChart, prec, h) {
+    var cache = buildSkyPaths(R, !lightChart);
+    if (!cache) return;
+
+    drawGalacticBand(ctx, cx, cy, R, lightChart, prec);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-prec * DEG);
+
+    ctx.strokeStyle = lightChart ? hexA(hexToHex(pal.ink), 0.085) : 'rgba(196,222,240,0.10)';
+    ctx.lineWidth = 0.55;
+    ctx.stroke(cache.borders);
+
+    ctx.strokeStyle = lightChart ? hexA(hexToHex(pal.ink), 0.16) : 'rgba(206,230,246,0.20)';
+    ctx.lineWidth = 0.55;
+    ctx.stroke(cache.lines);
+
+    for (var g = 0; g < cache.groups.length; g++) {
+      var grp = cache.groups[g];
+      ctx.globalAlpha = grp.alpha;
+      ctx.fillStyle = grp.color;
+      ctx.fill(grp.path);
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    setFont(ctx, Math.max(6, R * 0.017), '500');
+    ctx.textAlign = 'center';
+    for (var i = 0; i < cache.names.length; i++) {
+      var nm = cache.names[i];
+      var np = polar(cx, cy, skyRadius(R, nm.lat) + R * 0.022, nm.lon + prec);
+      ctx.fillStyle = lightChart ? hexA(hexToHex(pal.muted), 0.42) : 'rgba(206,228,244,0.34)';
+      ctx.fillText(state.lang === 'en' ? nm.west : nm.cn, np[0], np[1]);
+    }
+
+    /* 图注 */
+    setFont(ctx, Math.max(6, R * 0.016), '400');
+    ctx.textAlign = 'left';
+    ctx.fillStyle = lightChart ? hexA(hexToHex(pal.muted), 0.62) : 'rgba(198,224,240,0.52)';
+    if (state.lang === 'en') {
+      ctx.fillText('Stars J2000 · precession +' + prec.toFixed(2) + '° · IAU constellation borders', 10, h - 22);
+      ctx.fillText('Ecliptic latitude compressed · 0° = vernal equinox · dashed = galactic plane', 10, h - 11);
+    } else {
+      ctx.fillText('恒星 J2000 · 岁差 +' + prec.toFixed(2) + '° · 星座为 IAU 实际边界', 10, h - 22);
+      ctx.fillText('黄纬径向压缩 · 0° 即春分点 · 虚线为银道面', 10, h - 11);
+    }
+    ctx.textAlign = 'center';
+  }
+
   /* ---------------- 黄道盘 ---------------- */
 
   function drawChart(canvas, snap, detail) {
@@ -535,23 +804,10 @@
       ctx.stroke();
     }
 
-    /* 背景星点 */
+    /* 真实星空：J2000 星表 + IAU 星座边界（现代科学层） */
+    var prec = 0.01397 * ((snap.date.getTime() - Date.UTC(2000, 0, 1, 12)) / 86400000 / 365.25);
     if (detail && layers.sci) {
-      var seed = 7;
-      for (var s = 0; s < 90; s++) {
-        seed = (seed * 9301 + 49297) % 233280;
-        var rr = (seed / 233280) * R;
-        seed = (seed * 9301 + 49297) % 233280;
-        var aa = (seed / 233280) * TAU;
-        var sx = cx + Math.cos(aa) * rr;
-        var sy = cy + Math.sin(aa) * rr;
-        ctx.globalAlpha = 0.10 + 0.18 * ((s % 5) / 5);
-        ctx.fillStyle = pal.ink;
-        ctx.beginPath();
-        ctx.arc(sx, sy, 0.7, 0, TAU);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
+      drawRealSky(ctx, cx, cy, R, pal, lightChart, prec, h);
     }
 
     /* ---- 二十四节气环 ---- */
@@ -576,8 +832,8 @@
 
         if (detail) {
           var pl = polar(cx, cy, R * 0.985, tl + 7.5);
-          setFont(ctx, Math.max(6.5, R * 0.024), '400');
-          ctx.fillStyle = hexA(hexToHex(pal.muted), A(0.85));
+          setFont(ctx, Math.max(7, R * 0.026), '600');
+          ctx.fillStyle = hexA(hexToHex(pal.ink), A(0.92));
           ctx.fillText(TERMS[t][0], pl[0], pl[1]);
         }
       }
@@ -618,8 +874,8 @@
 
         if (detail) {
           var nc = polar(cx, cy, R * 0.823, l0 + 15);
-          setFont(ctx, Math.max(6.5, R * 0.022), '500');
-          ctx.fillStyle = hexA(hexToHex(pal.muted), A(0.75));
+          setFont(ctx, Math.max(7, R * 0.024), '600');
+          ctx.fillStyle = hexA(hexToHex(pal.ink), A(0.82));
           ctx.fillText(zodiacName(zi), nc[0], nc[1]);
         }
       }
@@ -656,25 +912,25 @@
       for (var xi = 0; xi < XIU.length; xi++) {
         var width = XIU[xi].width * scale;
         var s0 = origin + acc, s1 = origin + acc + width;
-        var col = GROUP_COLOR[XIU[xi].group];
+        var col = (lightChart ? GROUP_COLOR_LIGHT : GROUP_COLOR_DARK)[XIU[xi].group] || GROUP_COLOR[XIU[xi].group];
 
         ctx.beginPath();
         ctx.arc(cx, cy, xIn, Math.PI - s0 * DEG, Math.PI - s1 * DEG, true);
         ctx.arc(cx, cy, xOut, Math.PI - s1 * DEG, Math.PI - s0 * DEG, false);
         ctx.closePath();
-        ctx.fillStyle = hexA(col, A(0.055));
+        ctx.fillStyle = hexA(col, A(0.075));
         ctx.fill();
 
         if (detail) {
           var xc = polar(cx, cy, (xIn + xOut) / 2, s0 + width / 2);
-          setFont(ctx, Math.max(7, R * 0.025), '500');
-          ctx.fillStyle = hexA(col, 0.95);
+          setFont(ctx, Math.max(8, R * 0.028), '700');
+          ctx.fillStyle = hexA(col, 1);
           ctx.fillText(XIU[xi].name, xc[0], xc[1]);
         }
 
         var xp1 = polar(cx, cy, xIn, s0);
         var xp2 = polar(cx, cy, xOut, s0);
-        ctx.strokeStyle = hexA(col, A(0.28));
+        ctx.strokeStyle = hexA(col, A(0.45));
         ctx.lineWidth = 0.7;
         ctx.beginPath();
         ctx.moveTo(xp1[0], xp1[1]);
@@ -713,10 +969,10 @@
 
     /* ---- 行星落点 ---- */
     var markers = [
-      { lon: snap.sunLon, color: '#e8b44a', size: detail ? 5 : 3.6, glyph: '☉', label: L('sun'), lane: 0 },
-      { lon: snap.moonLon, color: '#c9d3dd', size: detail ? 4.4 : 3.2, glyph: '☽', label: L('moon'), lane: 1 }
+      { lon: snap.sunLon, lat: 0, color: '#e8b44a', size: detail ? 5 : 3.6, glyph: '☉', label: L('sun'), lane: 0 },
+      { lon: snap.moonLon, lat: snap.moon.lat, color: '#c9d3dd', size: detail ? 4.4 : 3.2, glyph: '☽', label: L('moon'), lane: 1 }
     ].concat(snap.planets.map(function (p) {
-      return { lon: p.lon, color: p.color, size: detail ? 3.4 : 2.4, glyph: p.glyph, label: state.lang === 'en' ? p.west : p.cn, lane: laneMap[p.key] || 0 };
+      return { lon: p.lon, lat: p.lat, color: p.color, size: detail ? 3.4 : 2.4, glyph: p.glyph, label: state.lang === 'en' ? p.west : p.cn, lane: laneMap[p.key] || 0 };
     }));
 
     var sorted = markers.slice().sort(function (a, b) { return a.lon - b.lon; });
@@ -727,7 +983,17 @@
       var m = sorted[mi];
       var lv = m.lane;
       var mr = R * ringLevels[lv];
-      var mp = polar(cx, cy, mr, m.lon);
+      var latShift = (layers.sci && detail) ? (m.lat || 0) * R * 0.0045 : 0;
+      var mp = polar(cx, cy, mr + latShift, m.lon);
+      if (latShift) {
+        var basePt = polar(cx, cy, mr, m.lon);
+        ctx.strokeStyle = hexA(hexToHex(m.color), A(0.5));
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(basePt[0], basePt[1]);
+        ctx.lineTo(mp[0], mp[1]);
+        ctx.stroke();
+      }
       glowDot(ctx, mp[0], mp[1], m.size, m.color, detail);
 
       if (detail) {
@@ -772,6 +1038,7 @@
       setFont(ctx, Math.max(7.5, R * 0.024), '500');
       ctx.fillStyle = hexA(hexToHex(pal.muted), A(0.8));
       ctx.fillText(L('geocentric'), cx, cy + 22);
+      if (layers.sci) drawScienceReadout(ctx, snap, w, h, R, lightChart);
     }
   }
 
@@ -1520,6 +1787,118 @@
     ctx.globalAlpha = 1;
   }
 
+
+  /* ---------------- 3D 真实星空 / 银河 ---------------- */
+
+  var SKY3D_STARS = null;
+
+  function realSky3DStars() {
+    if (SKY3D_STARS) return SKY3D_STARS;
+    var data = window.BTC_SKY && window.BTC_SKY.stars3d;
+    if (!data) { SKY3D_STARS = []; return SKY3D_STARS; }
+    var R = 40, out = [];
+    for (var i = 0; i < data.length; i++) {
+      var st = data[i];
+      var lon = st[0] * DEG, lat = st[1] * DEG, cb = Math.cos(lat);
+      out.push({
+        p: [cb * Math.cos(lon) * R, Math.sin(lat) * R, cb * Math.sin(lon) * R],
+        mag: st[2], bv: st[3], phase: (i * 2.399963) % TAU
+      });
+    }
+    SKY3D_STARS = out;
+    return out;
+  }
+
+  function drawGalacticBand3D(ctx, c, w, h, theme, detail) {
+    var R = 39.2;
+    var pts = [];
+    for (var l = 0; l <= 360; l += 3) {
+      var b = galacticLatAt(l);
+      var bb = b * DEG, lon = l * DEG, cb = Math.cos(bb);
+      pts.push(project3([cb * Math.cos(lon) * R, Math.sin(bb) * R, cb * Math.sin(lon) * R], c));
+    }
+    function stroke(width, alpha) {
+      ctx.beginPath();
+      var started = false;
+      for (var i = 0; i < pts.length; i++) {
+        var q = pts[i];
+        if (!q) { started = false; continue; }
+        if (!started) { ctx.moveTo(q.x, q.y); started = true; } else ctx.lineTo(q.x, q.y);
+      }
+      ctx.strokeStyle = theme.dark
+        ? 'rgba(190,215,255,' + alpha + ')'
+        : 'rgba(215,235,255,' + (alpha * 0.9) + ')';
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+    }
+    stroke(26, detail ? 0.020 : 0.014);
+    stroke(11, detail ? 0.035 : 0.024);
+    stroke(2.2, detail ? 0.075 : 0.050);
+
+    var gcB = GAL_CENTER_LAT * DEG, gcL = GAL_CENTER_LON * DEG, gcBc = Math.cos(gcB);
+    var gc = project3([gcBc * Math.cos(gcL) * R, Math.sin(gcB) * R, gcBc * Math.sin(gcL) * R], c);
+    if (gc && gc.x > 0 && gc.x < w && gc.y > 0 && gc.y < h) {
+      ctx.fillStyle = theme.dark ? 'rgba(220,238,255,0.75)' : 'rgba(235,245,255,0.80)';
+      ctx.beginPath();
+      ctx.moveTo(gc.x, gc.y - 4);
+      ctx.lineTo(gc.x + 1, gc.y - 1);
+      ctx.lineTo(gc.x + 4, gc.y);
+      ctx.lineTo(gc.x + 1, gc.y + 1);
+      ctx.lineTo(gc.x, gc.y + 4);
+      ctx.lineTo(gc.x - 1, gc.y + 1);
+      ctx.lineTo(gc.x - 4, gc.y);
+      ctx.lineTo(gc.x - 1, gc.y - 1);
+      ctx.closePath();
+      ctx.fill();
+      if (detail) {
+        setFont(ctx, 7, '600');
+        ctx.textAlign = 'left';
+        ctx.fillStyle = theme.dark ? 'rgba(210,232,250,0.50)' : 'rgba(235,245,255,0.55)';
+        ctx.fillText(state.lang === 'en' ? 'Galactic center' : '银心', gc.x + 7, gc.y + 3);
+        ctx.textAlign = 'center';
+      }
+    }
+  }
+
+  function drawRealSky3D(ctx, c, w, h, theme, detail) {
+    var data = window.BTC_SKY && window.BTC_SKY.stars3d;
+    if (!data || !data.length) return false;
+    drawGalacticBand3D(ctx, c, w, h, theme, detail);
+
+    var stars = realSky3DStars();
+    var maxMag = detail ? 6.0 : 4.6;
+    var now = Date.now() / 1000;
+    for (var i = 0; i < stars.length; i++) {
+      var st = stars[i];
+      if (st.mag > maxMag) continue;
+      var q = project3(st.p, c);
+      if (!q || q.x < -3 || q.x > w + 3 || q.y < -3 || q.y > h + 3) continue;
+      var tw = 0.82 + 0.18 * Math.sin(now * 1.1 + st.phase);
+      var size = 0.42 + (6.0 - st.mag) * 0.20;
+      var alpha = Math.min(1, (0.24 + (6.0 - st.mag) * 0.105) * tw * (detail ? 1 : 0.72));
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = st.bv > 0.9
+        ? (theme.dark ? 'rgba(255,226,198,1)' : 'rgba(255,236,214,1)')
+        : (st.bv < 0.3 ? 'rgba(206,226,255,1)' : 'rgba(240,247,255,1)');
+      ctx.beginPath();
+      ctx.arc(q.x, q.y, size, 0, TAU);
+      ctx.fill();
+      if (detail && st.mag < 1.6) {
+        ctx.globalAlpha = alpha * 0.45;
+        ctx.strokeStyle = 'rgba(235,246,255,0.9)';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(q.x - 2.8, q.y); ctx.lineTo(q.x + 2.8, q.y);
+        ctx.moveTo(q.x, q.y - 2.8); ctx.lineTo(q.x, q.y + 2.8);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+    return true;
+  }
+
   function drawOrrery3D(canvas, snap, detail, cam) {
     var rect = canvas.getBoundingClientRect();
     var w = rect.width, h = rect.height;
@@ -1572,7 +1951,7 @@
       ctx.fillRect(0, 0, w, h);
     }
 
-    drawMilkyWay(ctx, w, h, theme, detail);
+    if (!drawRealSky3D(ctx, c, w, h, theme, detail)) drawMilkyWay(ctx, w, h, theme, detail);
     if (detail) drawMeteors(ctx, w, h, theme);
 
     drawEclipticGrid(ctx, c, detail, theme);
@@ -2023,15 +2402,8 @@
     + '</div>';
 
   var CARD_HTML = ''
-    + '<div class="btc-orrery-mini">'
-    + '  <canvas id="btc-orrery-mini"></canvas>'
-    + '  <span class="btc-orrery-live"><i></i>LIVE</span>'
-    + '  <span class="btc-orrery-clock" id="btc-orrery-clock">--:--</span>'
-    + '</div>'
-    + '<div class="btc-orrery-card-foot">'
-    + '  <span class="btc-orrery-caption"><span id="btc-orrery-sun">☉ —</span><span id="btc-orrery-moon">☽ —</span></span>'
-    + '  <b data-i18n="open3d">打开 3D ↗</b>'
-    + '</div>';
+    + '<span class="btc-orrery-chip-dot"></span>'
+    + '<span class="btc-orrery-chip-label">ORRERY</span>';
 
   var MODAL_HTML = ''
     + '<div class="btc-orrery-panel" role="document">'
@@ -2122,7 +2494,8 @@
     entry.setAttribute('tabindex', '0');
     entry.setAttribute('aria-label', '打开全屏 3D 天象仪');
     entry.innerHTML = ENTRY_HTML;
-    grid.parentNode.insertBefore(entry, grid.nextSibling);
+    var anchor = document.querySelector('.btc-extinction') || grid;
+    anchor.parentNode.insertBefore(entry, anchor.nextSibling);
 
     entry.addEventListener('click', openModal);
     entry.addEventListener('keydown', function (e) {

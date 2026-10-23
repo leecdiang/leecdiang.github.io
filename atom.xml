@@ -102,12 +102,12 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
-    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="分布式训练" scheme="https://leecdiang.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/"/>
     <category term="集合通信" scheme="https://leecdiang.com/tags/%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1/"/>
     <category term="网络拓扑" scheme="https://leecdiang.com/tags/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91/"/>
     <category term="MFU" scheme="https://leecdiang.com/tags/MFU/"/>
     <category term="AI集群" scheme="https://leecdiang.com/tags/AI%E9%9B%86%E7%BE%A4/"/>
+    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="AI-Infrastructure" scheme="https://leecdiang.com/tags/AI-Infrastructure/"/>
     <category term="Distributed-Training" scheme="https://leecdiang.com/tags/Distributed-Training/"/>
     <category term="GPU-Cluster" scheme="https://leecdiang.com/tags/GPU-Cluster/"/>
@@ -129,11 +129,11 @@
       <name>LEEcDiang</name>
     </author>
     <category term="Silicon &amp; Circuits" scheme="https://leecdiang.com/categories/Silicon-Circuits/"/>
+    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="RoCE" scheme="https://leecdiang.com/tags/RoCE/"/>
     <category term="RDMA" scheme="https://leecdiang.com/tags/RDMA/"/>
     <category term="拥塞控制" scheme="https://leecdiang.com/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/"/>
     <category term="数据中心网络" scheme="https://leecdiang.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E7%BD%91%E7%BB%9C/"/>
-    <category term="智算网络" scheme="https://leecdiang.com/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/"/>
     <category term="PFC" scheme="https://leecdiang.com/tags/PFC/"/>
     <category term="ECN" scheme="https://leecdiang.com/tags/ECN/"/>
     <category term="Ultra-Ethernet" scheme="https://leecdiang.com/tags/Ultra-Ethernet/"/>
