@@ -1,0 +1,81 @@
+﻿id,title,url,evidence_use,accessed_utc_date
+S01,Apple — Capturing photos in RAW and Apple ProRAW formats,https://developer.apple.com/documentation/avfoundation/capturing-photos-in-raw-and-apple-proraw-formats,RAW与ProRAW入口,2026-11-01
+S02,Apple WWDC21 — Capture and process ProRAW images,https://developer.apple.com/videos/play/wwdc2021/10160/,ProRAW融合、线性化、压扩编码与渲染信息,2026-11-01
+S03,Adobe Nextcam — Introducing Project Indigo，2025-06-13,https://research.adobe.com/articles/indigo/indigo.html,计算管线与暗光官方样片,2026-11-01
+S04,Adobe — Project Indigo FAQ,https://helpx.adobe.com/project-indigo/get-started/faq.html,输出、模式、分辨率与帧数控制,2026-11-01
+S05,Project Indigo — App Store,https://apps.apple.com/us/app/project-indigo/id6742591546,产品身份、免费与兼容范围,2026-11-01
+S06,Adobe Nextcam — AI Playground，2026-07-20,https://research.adobe.com/articles/playground/playground.html,可选生成式编辑试验,2026-11-01
+S07,Google Research — Burst photography for high dynamic range and low-light imaging on mobile cameras，2016,https://research.google/pubs/burst-photography-for-high-dynamic-range-and-low-light-imaging-on-mobile-cameras/,HDR+原始论文,2026-11-01
+S08,Gloam 相机 — 中国区 App Store,https://apps.apple.com/cn/app/gloam-%E7%9B%B8%E6%9C%BA/id6753741715,相机风格、公开截图和内购,2026-11-01
+S09,Gloam — Privacy Policy,https://gloam-image.com/gloam-camera/privacy-policy?lang=en-US,本地数据类型、原片设计与导入边界,2026-11-01
+S10,Gloam — 用户协议,https://gloam-image.com/gloam-camera/terms-of-use?lang=zh-Hans,年度与终身授权类型,2026-11-01
+S11,Gloam Image 官方品牌站,https://gloam-image.com/,预设与作者色彩业务背景,2026-11-01
+S12,No Fusion — Introduction,https://www.nofusion.app/en/introduction.html,HEIF+定义、ProRAW与官方对照图,2026-11-01
+S13,No Fusion — Formats / Pipeline,https://www.nofusion.app/en/pipeline.html,HEIF、RAW、HEIF+、Negative Film各分支,2026-11-01
+S14,No Fusion — FAQ,https://www.nofusion.app/en/faq.html,预览与成片、机型能力边界,2026-11-01
+S15,No Fusion — LUT,https://www.nofusion.app/en/lut.html,外部LUT与Lightroom颜色桥接方法,2026-11-01
+S16,No Fusion — 中国区 App Store,https://apps.apple.com/cn/app/no-fusion-%E4%BC%98%E9%9B%85%E5%BC%BA%E5%A4%A7%E7%9A%84%E4%B8%93%E4%B8%9A%E7%9B%B8%E6%9C%BA/id6444706244,商品标签与版本信息,2026-11-01
+S17,Dazz Cam — 美国区 App Store,https://apps.apple.com/us/app/dazz-cam-vintage-camera/id1422471180,产品功能与Original管线截图,2026-11-01
+S18,Dazz 相机 — 中国区 App Store,https://apps.apple.com/cn/app/dazz%E7%9B%B8%E6%9C%BA-%E5%A4%8D%E5%8F%A4%E8%83%B6%E7%89%87%E5%92%8Cccd%E6%95%88%E6%9E%9C/id1422471180,永久购买与模糊订阅标签,2026-11-01
+S19,mood.camera — 官方首页,https://www.mood.camera/,ProRAW/JPEG路径、理念与美元价格,2026-11-01
+S20,mood.camera — FAQ,https://www.mood.camera/faq,RAW不保留、导入与具体胶卷参照边界,2026-11-01
+S21,mood.camera — Guide,https://www.mood.camera/guide,颜色、材质与影调控制,2026-11-01
+S22,mood.camera — v2,https://www.mood.camera/v2,亮度相关Bloom/Halation说明,2026-11-01
+S23,Lux — Introducing Process Zero for iPhone，2024,https://www.lux.camera/introducing-process-zero-for-iphone/,单帧Process Zero历史起点,2026-11-01
+S24,Lux — Inside Looks，2026-01-28,https://www.lux.camera/mark-iii-looks/,同一ProRAW的替代渲染与样片,2026-11-01
+S25,Lux — Halide Mark III，2026-05-27,https://www.lux.camera/halide-mark-iii/,Looks、Photo Lab与新RAW能力,2026-11-01
+S26,Halide Mark III — 美国区 App Store,https://apps.apple.com/us/app/halide-mark-iii-pro-camera/id885697368,当前功能与一次购买价格,2026-11-01
+S27,VSCO Capture — 官方产品页,https://www.vsco.co/capture,免费独立相机和实时预设,2026-11-01
+S28,VSCO — Using In-App Controls in VSCO Capture,https://support.vsco.co/en/articles/12698470-using-in-app-controls-in-vsco-capture,RAW/ProRAW、Bloom/Halation、保存方式,2026-11-01
+S29,VSCO — RAW and ProRAW FAQs,https://support.vsco.co/en/articles/12698497-vsco-raw-and-proraw-faqs,主App与平台RAW能力边界,2026-11-01
+S30,NOMO CAM — App Store,https://apps.apple.com/us/app/nomo-cam-point-and-shoot/id1362548649,随机媒介效果与导入,2026-11-01
+S31,FIMO — 官方网站及其 App Store 入口,https://fimo.app/,跨平台入口与复古胶卷产品定位,2026-11-01
+S32,Leica — Leica LUX,https://leica-camera.com/en-US/photography/leica-apps/leica-lux,计算镜头风格与RAW/ProRAW,2026-11-01
+S33,Chromagraph — 美国区 App Store,https://apps.apple.com/us/app/chromagraph/id6803329435,作者团队、RAW与当前下载价格,2026-11-01
+S34,Adobe Lightroom — Presets,https://helpx.adobe.com/lightroom/desktop/edit-photos/presets.html,开发参数、预设与现代局部能力,2026-11-01
+S35,Adobe Lightroom — Edit photos,https://helpx.adobe.com/lightroom/desktop/edit-photos/edit-photos.html,Profile与编辑管线,2026-11-01
+S36,Adobe — New Profiles in Lightroom and Camera Raw，2018-04-03,https://blog.adobe.com/en/publish/2018/04/03/april-lightroom-adobe-camera-raw-releases-new-profiles,增强Profile、LUT与Amount,2026-11-01
+S37,Adobe Photoshop — Export color lookup tables,https://helpx.adobe.com/photoshop/desktop/save-and-export/export-files-to-different-formats/export-color-lookup-tables.html,LUT交付与导出,2026-11-01
+S38,"Adobe Camera Raw — Glow, Vignette, Grain, and Dehaze effects",https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/tone-and-color/vignette-grain-effects-camera-raw.html,Glow三种Style及蒙版控制,2026-11-01
+S39,Adobe Camera Raw — What’s new,https://helpx.adobe.com/camera-raw/desktop/whats-new/whats-new.html,18.6于2026年8月的功能基线,2026-11-01
+S40,Dehancer — How we build film profiles,https://www.dehancer.com/learn/articles/how-we-build-film-profiles,实物胶片、光学放相与测量参考链,2026-11-01
+S41,Dehancer — Film Profiles,https://www.dehancer.com/learn/article/film-profiles,曝光采样与模型控制,2026-11-01
+S42,Dehancer — Recommended color settings,https://www.dehancer.com/learn/article/recommended-color-settings,当前支持色域与输入约定,2026-11-01
+S43,Dehancer — Recommended RAW development settings,https://www.dehancer.com/learn/article/recommended-raw-development-settings,RAW准备、位深与锐化处理,2026-11-01
+S44,Dehancer — Individual pricing,https://www.dehancer.com/pricing/individual,Photo年付及跨入口授权,2026-11-01
+S45,DxO — The science of film,https://www.dxo.com/en/technology/science-of-film,受控实拍、实验室、扫描与颗粒标定,2026-11-01
+S46,"DxO FilmPack — System requirements, installation, file formats",https://userguides.dxo.com/en/filmpack/system-requirements-installation-file-formats,独立程序、PhotoLab与Adobe插件输入区别,2026-11-01
+S47,DxO FilmPack 8 — 官方商店,https://shop.dxo.com/en/dxo-filmpack-8.html,永久许可价格,2026-11-01
+S48,RNI All Films 5 Pro for Adobe Lightroom,https://reallyniceimages.com/products/rni-all-films-5-pro-for-adobe-lightroom.html,Profile路线、Amount与价格,2026-11-01
+S49,Mastin Labs — Adventure Everyday,https://mastinlabs.com/products/adventure-everyday-lightroom,套装工作流与价格,2026-11-01
+S50,Cobalt Image — FAQ,https://www.cobalt-image.com/faq/,相机Base Pack、模拟Profile与宿主区别,2026-11-01
+S51,FilmConvert Nitrate — 官方产品页,https://www.filmconvert.com/nitrate,摄影机输入、Log、颗粒与许可,2026-11-01
+S52,Filmulator — 官方项目,https://filmulator.org/,显影过程启发的RAW影调处理,2026-11-01
+S53,Andrea Volpato — spektrafilm 主仓库,https://github.com/andreavolpato/spektrafilm,项目身份、范围、近似与参考实现,2026-11-01
+S54,spektrafilm — Runtime core README，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/README.md,线性RGB入口与外围职责,2026-11-01
+S55,spektrafilm — filming.py，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/runtime/stages/filming.py,曝光、光晕、对数域和显影,2026-11-01
+S56,spektrafilm — printing.py，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/runtime/stages/printing.py,染料透射、放大机与相纸,2026-11-01
+S57,spektrafilm — scanning.py，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/runtime/stages/scanning.py,理想化观看/扫描与颜色输出,2026-11-01
+S58,spektrafilm OFX — Technical notes,https://spektrafilm.114c.de/technical/,光谱重建、模型与实现边界,2026-11-01
+S59,spektrafilm OFX — 官方网站,https://spektrafilm.114c.de/,衍生实现、平台和免费beta,2026-11-01
+S60,ART — Spectral Film Simulation How-to,https://artraweditor.github.io/SpectralFilmSimHowto.html,通过外部3D LUT集成模型,2026-11-01
+S61,Andrea Volpato — Spectral film simulations from scratch，2025-02-09,https://discuss.pixls.us/t/spectral-film-simulations-from-scratch/48209,v0.1.0公开样片、输入条件与摄影署名,2026-11-01
+S62,spektrafilm — Kodak Portra 400 Profile，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/data/profiles/kodak_portra_400.json,v0.3.2模型光谱与密度数据,2026-11-01
+S63,spektrafilm — Kodak Portra Endura Profile，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/src/spektrafilm/data/profiles/kodak_portra_endura.json,v0.3.2相纸模型数据,2026-11-01
+S64,spektrafilm — Profile license，固定提交,https://github.com/andreavolpato/spektrafilm/blob/3bb2c2d2801ff68b92019cf1dbcbb133d60832bc/SPEKTRAFILM_LICENSE.txt,Profile与直接衍生资料CC BY-SA 4.0,2026-11-01
+S65,"Kodak Professional — PORTRA 400 Film, E-4050，2016",https://www.kodakprofessional.com/sites/default/files/wysiwyg/pro/resources/e4050_portra_400.pdf,厂家PGI表及观看条件,2026-11-01
+S66,MIT Vision Book — Color,https://visionbook.mit.edu/color.html,三通道颜色积分与同色异谱,2026-11-01
+S67,Fujifilm — X RAW Studio,https://www.fujifilm-x.com/en-us/products/software/x-raw-studio/,通过机内处理器进行RAW转换,2026-11-01
+S68,Negative Lab Pro — Guide: Basics,https://www.negativelabpro.com/guide/basics/,真实负片反相与扫描外观选择,2026-11-01
+S69,Newson et al. — Realistic Film Grain Rendering，IPOL，2017,https://www.ipol.im/pub/art/2017/192/,随机几何、分辨率独立颗粒模型,2026-11-01
+S70,ACES Documentation — Output Transforms,https://docs.acescentral.com/system-components/output-transforms/,场景参照、显示映射与输出编码,2026-11-01
+S71,Lesné et al. — Neural Film Grain Rendering，Computer Graphics Forum，2025,https://onlinelibrary.wiley.com/doi/10.1111/cgf.70076,学习得到的高效颗粒近似,2026-11-01
+S72,Adobe Community — Camera Raw v18.6 release and staff clarification，2026-08/09,https://community.adobe.com/announcements-561/camera-raw-v18-6-light-up-your-images-with-glow-create-transparent-cutouts-with-trim-and-view-photo-details-with-the-new-metadata-info-panel-1638849,Glow共享参数及Lightroom Classic边界,2026-11-01
+S73,Mastin Labs — Do I Need to Shoot Film to Use Mastin Labs Presets?,https://support.mastinlabs.com/faq/do-i-need-to-shoot-film-to-use-mastin-labs-presets,Frontier扫描与参照照片,2026-11-01
+S74,RawTherapee RawPedia — Film Simulation,https://rawpedia.pixls.us/film_simulation/,Hald CLUT及逐像素/空间能力边界,2026-11-01
+S75,darktable Manual — filmic rgb,https://darktable-org.github.io/dtdocs/en/module-reference/processing-modules/filmic-rgb/,场景到显示的影调变换与AgX等模块定位,2026-11-01
+S76,FilmConvert — Buy / Purchase,https://www.filmconvert.com/purchase,单宿主、Bundle与Halation add-on价格,2026-11-01
+S77,Apple lookup — Gloam，中国区,https://itunes.apple.com/lookup?id=6753741715&country=cn,版本、UTC更新时间、最低系统，随包保留JSON,2026-11-01
+S78,Apple lookup — No Fusion，中国区,https://itunes.apple.com/lookup?id=6444706244&country=cn,版本、UTC更新时间、最低系统，随包保留JSON,2026-11-01
+S79,Apple lookup — Dazz，中国区,https://itunes.apple.com/lookup?id=1422471180&country=cn,版本、UTC更新时间、最低系统，随包保留JSON,2026-11-01
+S80,Open Camera — 官方项目,https://opencamera.org.uk/,Android开放采集、Camera2/RAW与设备限制,2026-11-01

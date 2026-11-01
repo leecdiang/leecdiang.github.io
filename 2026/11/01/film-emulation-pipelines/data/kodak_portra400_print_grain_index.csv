@@ -1,0 +1,10 @@
+negative_format,print_size_inches,pgi_value,relation,magnification,source
+135_24x36mm,4 × 6,37,=,4.4,"Kodak E-4050 (2016), p.3"
+135_24x36mm,8 × 10,59,=,8.8,"Kodak E-4050 (2016), p.3"
+135_24x36mm,16 × 20,89,=,17.8,"Kodak E-4050 (2016), p.3"
+120_6x6cm,4 × 6,25,=,2.6,"Kodak E-4050 (2016), p.3"
+120_6x6cm,8 × 10,37,=,4.4,"Kodak E-4050 (2016), p.3"
+120_6x6cm,16 × 20,59,=,8.8,"Kodak E-4050 (2016), p.3"
+sheet_4x5inch,4 × 6,25,<,1.2,"Kodak E-4050 (2016), p.3"
+sheet_4x5inch,8 × 10,25,<,2,"Kodak E-4050 (2016), p.3"
+sheet_4x5inch,16 × 20,36,=,4,"Kodak E-4050 (2016), p.3"

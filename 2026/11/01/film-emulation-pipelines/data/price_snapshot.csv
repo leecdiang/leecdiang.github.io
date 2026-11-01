@@ -1,0 +1,22 @@
+﻿product,sku,price,currency,term,region_or_channel,certainty,source_ids,notes,observed_date
+Gloam,Pro annual,38,CNY,year,CN App Store,confirmed,S08;S10,,2026-11-01
+Gloam,Pro lifetime,58,CNY,one_time,CN App Store,terms_cross_check,S08;S10,Store short label cross-checked with official lifetime terms,2026-11-01
+Dazz,Pro,35,CNY,unspecified,CN App Store,term_unknown,S18,Do not assume annual,2026-11-01
+Dazz,Permanent purchase,88,CNY,one_time,CN App Store,confirmed,S18,,2026-11-01
+No Fusion,订阅高级版,58,CNY,unspecified,CN App Store,term_unknown,S16,Different public SKU labels; mappings not inferred,2026-11-01
+No Fusion,订阅高级版,38,CNY,unspecified,CN App Store,term_unknown,S16,,2026-11-01
+No Fusion,订阅专业版,8,CNY,unspecified,CN App Store,term_unknown,S16,,2026-11-01
+No Fusion,专业版,128,CNY,unspecified,CN App Store,term_unknown,S16,Do not infer lifetime from price,2026-11-01
+Project Indigo,Download,0,USD,free,US App Store,confirmed,S05,Feature availability differs by device/experiment,2026-11-01
+VSCO Capture,Download,0,USD,free,official,confirmed,S27,Separate from main VSCO subscriptions,2026-11-01
+mood.camera,Full access,14.99,USD,one_time,official,confirmed,S19,,2026-11-01
+mood.camera,Full access,1.99,USD,month,official,confirmed,S19,,2026-11-01
+Halide Mark III,One-time Purchase,69.99,USD,one_time,US App Store,confirmed,S26,Current listing; not historic launch price,2026-11-01
+Chromagraph,Download,12.99,USD,one_time,US App Store,confirmed,S33,,2026-11-01
+RNI All Films 5 Pro,Adobe edition,192,USD,one_time,official,confirmed,S48,Adobe host not included,2026-11-01
+Mastin Labs,Adventure Everyday,69,USD,one_time,official,sale_snapshot,S49,List price 99 USD,2026-11-01
+DxO FilmPack 8,Perpetual license,149.99,USD,one_time,official,confirmed,S47,Future upgrades may cost extra,2026-11-01
+Dehancer Photo,Annual plan,156,USD,year,official,confirmed,S44,"3 seats, 1 seat per app/host; 13 USD/month is annual-equivalent, not month-to-month price",2026-11-01
+FilmConvert Nitrate,One host,119,USD,one_time,official,sale_snapshot,S76,RRP 149; Halation excluded,2026-11-01
+FilmConvert Nitrate,All hosts bundle,179,USD,one_time,official,sale_snapshot,S76,RRP 225; Halation excluded,2026-11-01
+FilmConvert Nitrate,Halation add-on,59,USD,one_time,official,sale_snapshot,S76,RRP 75; requires Nitrate,2026-11-01

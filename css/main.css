@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #b82b4b;
+    background: #54e053;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -6324,4 +6324,14 @@ figure.highlight {
 .post-body h2[id^="附录-B"] ~ .table-container table {
   table-layout: fixed;
   width: 100%;
+}
+/* Film article: retain legible chart labels on narrow screens. */
+.post-body .film-chart {
+  overflow-x: auto;
+}
+.post-body .film-chart svg {
+  min-width: 620px;
+}
+.post-body .film-chart .v-caption {
+  text-align: left;
 }

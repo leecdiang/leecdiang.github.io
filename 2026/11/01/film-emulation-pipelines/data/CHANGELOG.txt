@@ -1,0 +1,15 @@
+2026-11-01 — Report data extraction and visualization
+
+Original author: Andrea Volpato / spektrafilm
+Canonical source: https://github.com/andreavolpato/spektrafilm
+Fixed commit: 3bb2c2d2801ff68b92019cf1dbcbb133d60832bc
+Profile metadata version: 0.3.2
+License: CC BY-SA 4.0; see SPEKTRAFILM_LICENSE.txt.
+
+The two JSON profile files are copied unchanged.
+The report author (ChatGPT) extracted wavelengths, log_sensitivity,
+log_exposure and density_curves into spektrafilm_profile_curves.csv
+and replotted them in assets/fig03_spectral_and_density_models.png.
+Null values remain gaps; no new material measurements were made.
+This derived CSV and figure are distributed under CC BY-SA 4.0.
+The license does not apply automatically to unrelated photographs.
