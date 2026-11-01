@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #ff08ff;
+    background: #c3ffff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -6274,4 +6274,46 @@ figure.highlight {
     background: rgba(24,40,54,0.86) !important;
     border-color: rgba(200,230,250,0.16) !important;
   }
+}
+/* ===== Academic citations and reference list ===== */
+.post-body sup.cite {
+  font-size: 0.66em;
+  line-height: 0;
+  vertical-align: super;
+  margin-left: 0.08em;
+  white-space: nowrap;
+}
+.post-body sup.cite a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.post-body sup.cite a:hover {
+  text-decoration: underline;
+}
+.post-body span.ref-anchor {
+  scroll-margin-top: 96px;
+}
+.post-body h2[id^="参考文献"] + ol {
+  padding-left: 1.55em;
+}
+.post-body h2[id^="参考文献"] + ol > li {
+  margin: 0.55em 0;
+  line-height: 1.75;
+  padding-left: 0.15em;
+}
+.post-body h2[id^="参考文献"] + ol > li::marker {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.post-body table {
+  font-variant-numeric: tabular-nums;
+}
+.post-body table td,
+.post-body table th {
+  overflow-wrap: anywhere;
+}
+.post-body h2[id^="附录-A"] ~ table {
+  table-layout: fixed;
+  width: 100%;
 }
