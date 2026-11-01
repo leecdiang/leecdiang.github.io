@@ -11,12 +11,12 @@
   <rights>All rights reserved 2026, LEEcDiang</rights>
   <subtitle>Tracing systems inside and beyond the clock.</subtitle>
   <title>Beyond the Clock</title>
-  <updated>2026-11-01T07:13:53.471Z</updated>
+  <updated>2026-11-01T11:18:10.958Z</updated>
   <entry>
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Engineering" scheme="https://leecdiang.com/categories/Engineering/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="摩托车" scheme="https://leecdiang.com/tags/%E6%91%A9%E6%89%98%E8%BD%A6/"/>
     <category term="发动机" scheme="https://leecdiang.com/tags/%E5%8F%91%E5%8A%A8%E6%9C%BA/"/>
     <category term="振动与噪声" scheme="https://leecdiang.com/tags/%E6%8C%AF%E5%8A%A8%E4%B8%8E%E5%99%AA%E5%A3%B0/"/>
@@ -29,7 +29,7 @@
     <published>2026-11-01T06:56:00.000Z</published>
     <summary>从道路振动实测、同车隔振实验和 650—700 cc 量产发动机参数出发，分析单缸、双缸、三缸与四缸的真实取舍，附数据口径、计算公式与可复算代码。</summary>
     <title>大单缸究竟输在哪里：用实测数据理解摩托车缸数、排量与长途舒适性</title>
-    <updated>2026-11-01T07:13:53.471Z</updated>
+    <updated>2026-11-01T11:18:10.958Z</updated>
   </entry>
   <entry>
     <author>
@@ -79,7 +79,7 @@
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="macOS" scheme="https://leecdiang.com/tags/macOS/"/>
     <category term="Swift" scheme="https://leecdiang.com/tags/Swift/"/>
     <category term="触控板" scheme="https://leecdiang.com/tags/%E8%A7%A6%E6%8E%A7%E6%9D%BF/"/>
@@ -93,13 +93,13 @@
     <published>2026-08-30T04:54:00.000Z</published>
     <summary>记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。</summary>
     <title>EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上</title>
-    <updated>2026-10-19T02:23:35.589Z</updated>
+    <updated>2026-11-01T11:18:10.957Z</updated>
   </entry>
   <entry>
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="macOS" scheme="https://leecdiang.com/tags/macOS/"/>
     <category term="SwiftUI" scheme="https://leecdiang.com/tags/SwiftUI/"/>
     <category term="Rust" scheme="https://leecdiang.com/tags/Rust/"/>
@@ -114,7 +114,7 @@
     <published>2026-08-03T06:30:00.000Z</published>
     <summary>从 7 月 28 日第一个 commit 到 8 月 3 日 v0.2.1 发布，Silemetry 的完整开发记录：动机、四语言混合架构、Apple Silicon 遥测、CPU/GPU 负载、数据可信度、八个真实 Bug，以及从本地构建到 GitHub Release 的工程化过程。</summary>
     <title>从散热测试想法到原生 macOS 应用：Silemetry 开发记录</title>
-    <updated>2026-10-18T16:01:27.970Z</updated>
+    <updated>2026-11-01T11:18:10.961Z</updated>
   </entry>
   <entry>
     <author>
@@ -198,7 +198,7 @@
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="OpenClaw" scheme="https://leecdiang.com/tags/OpenClaw/"/>
     <category term="Agent" scheme="https://leecdiang.com/tags/Agent/"/>
     <category term="架构" scheme="https://leecdiang.com/tags/%E6%9E%B6%E6%9E%84/"/>
@@ -219,7 +219,7 @@
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="AI" scheme="https://leecdiang.com/tags/AI/"/>
     <category term="OpenClaw" scheme="https://leecdiang.com/tags/OpenClaw/"/>
     <category term="Agent" scheme="https://leecdiang.com/tags/Agent/"/>
@@ -234,7 +234,7 @@
     <published>2026-06-11T05:33:00.000Z</published>
     <summary>关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。</summary>
     <title>我搭的不是 Agent,而是一套工作方式</title>
-    <updated>2026-10-19T02:23:35.581Z</updated>
+    <updated>2026-11-01T11:18:10.959Z</updated>
   </entry>
   <entry>
     <author>
@@ -280,7 +280,7 @@
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="AI" scheme="https://leecdiang.com/tags/AI/"/>
     <category term="Productivity" scheme="https://leecdiang.com/tags/Productivity/"/>
     <category term="数据处理" scheme="https://leecdiang.com/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/"/>
@@ -298,7 +298,7 @@
     <published>2026-04-05T12:00:00.000Z</published>
     <summary>Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP/XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。</summary>
     <title>打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式</title>
-    <updated>2026-10-18T16:02:59.785Z</updated>
+    <updated>2026-11-01T11:18:10.954Z</updated>
   </entry>
   <entry>
     <author>
@@ -324,7 +324,7 @@
     <author>
       <name>LEEcDiang</name>
     </author>
-    <category term="Digital Anatomy" scheme="https://leecdiang.com/categories/Digital-Anatomy/"/>
+    <category term="Everyday Anatomy" scheme="https://leecdiang.com/categories/Everyday-Anatomy/"/>
     <category term="Apple" scheme="https://leecdiang.com/tags/Apple/"/>
     <category term="MacBook" scheme="https://leecdiang.com/tags/MacBook/"/>
     <category term="硬盘扩容" scheme="https://leecdiang.com/tags/%E7%A1%AC%E7%9B%98%E6%89%A9%E5%AE%B9/"/>
@@ -339,7 +339,7 @@
     <published>2025-10-13T01:15:00.000Z</published>
     <summary>MacBook Air M4 15寸 扩容1tb记录以及建议</summary>
     <title>MacBook Air M4 15寸扩容记录</title>
-    <updated>2026-10-18T05:13:11.140Z</updated>
+    <updated>2026-11-01T11:18:10.958Z</updated>
   </entry>
   <entry>
     <author>
