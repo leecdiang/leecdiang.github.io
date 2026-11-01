@@ -1441,7 +1441,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #3ef741;
+    background: #b82b4b;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -6318,6 +6318,10 @@ figure.highlight {
   width: 100%;
 }
 .post-body h2[id^="附录-A"] ~ .table-container table {
+  table-layout: fixed;
+  width: 100%;
+}
+.post-body h2[id^="附录-B"] ~ .table-container table {
   table-layout: fixed;
   width: 100%;
 }
