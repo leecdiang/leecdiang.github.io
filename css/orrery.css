@@ -2620,3 +2620,62 @@ html.btc-orrery-locked body { overflow: hidden !important; }
 /* Fit the full bio without the old clipping or an oversized button gap. */
 .sidebar-panel.site-overview-wrap { gap: 6px; }
 .site-overview-wrap > .btc-orrery-card { margin-top: 8px !important; }
+
+/* Orrery controls stay in normal flow, outside the plotted coordinates. */
+.btc-orrery-modal .btc-orrery-stage { display:flex; flex-direction:column; gap:8px; padding:12px; box-sizing:border-box; }
+.btc-orrery-modal #btc-orrery-canvas { position:relative; inset:auto; flex:1 1 0; width:100%; height:0; min-height:0; order:3; }
+.btc-orrery-modal .btc-orrery-timebar { position:relative; inset:auto; transform:none; width:100%; max-width:none; box-sizing:border-box; margin:0; order:4; flex:none; min-height:42px; }
+.btc-orrery-modal .btc-orrery-layers { position:relative; inset:auto; order:1; flex:none; flex-wrap:wrap; }
+.btc-orrery-modal .btc-orrery-focus { top:16px; bottom:auto; left:20px; max-width:calc(100% - 40px); pointer-events:none; }
+.btc-orrery-modal button:focus-visible, .btc-orrery-modal input:focus-visible, .btc-orrery-modal select:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.btc-orrery-modal .btc-orrery-info { font-size:12px; }
+.btc-orrery-modal .btc-orrery-note { font-size:10px; line-height:1.6; }
+@media (max-width:640px) {
+ .btc-orrery-modal { padding:8px; }
+ .btc-orrery-modal .btc-orrery-panel { width:100%; height:auto; max-height:94vh; max-height:94svh; }
+ .btc-orrery-modal .btc-orrery-top { flex:none; padding:12px; }
+ .btc-orrery-modal .btc-orrery-body, .btc-orrery-modal .btc-orrery-body.is-orrery { display:flex; flex-direction:column; overflow-y:auto; min-height:0; }
+ .btc-orrery-modal .btc-orrery-stage { flex:none; padding:10px; margin:6px; }
+ .btc-orrery-modal #btc-orrery-canvas { flex:none; height:clamp(260px, 43svh, 370px); }
+ .btc-orrery-modal .btc-orrery-stage:not(.is-orrery) #btc-orrery-canvas { height:330px; }
+ .btc-orrery-modal .btc-orrery-layers label { min-height:32px; display:inline-flex; align-items:center; font-size:11px; }
+ .btc-orrery-modal .btc-orrery-close, .btc-orrery-modal .btc-orrery-menu-btn { width:40px; height:40px; }
+ .btc-orrery-modal .btc-orrery-seg button { min-height:38px; font-size:12px; }
+ .btc-orrery-modal .btc-orrery-info { flex:none; padding:14px; }
+ .btc-orrery-modal .btc-orrery-tablewrap { max-height:none; overflow:visible; }
+ .btc-orrery-modal .btc-orrery-focus { top:16px; }
+}
+.btc-orrery-modal .btc-orrery-stage.is-orrery .btc-orrery-layers { display:none !important; }
+@media (max-height:500px) and (max-width:980px) {
+ .btc-orrery-modal .btc-orrery-panel { height:94vh; }
+ .btc-orrery-modal .btc-orrery-body, .btc-orrery-modal .btc-orrery-body.is-orrery { display:flex; flex-direction:column; overflow-y:auto; }
+ .btc-orrery-modal .btc-orrery-stage { flex:none; }
+ .btc-orrery-modal #btc-orrery-canvas { flex:none; height:300px; }
+ .btc-orrery-modal .btc-orrery-info { flex:none; }
+}
+
+/* Light chart: a stable reading surface instead of stacked translucency. */
+@media (prefers-color-scheme: light) {
+ .btc-orrery-modal .btc-orrery-panel:has(.btc-orrery-stage:not(.is-orrery)) { background:#edf5fa; }
+ .btc-orrery-modal.visual-frame .btc-orrery-stage:not(.is-orrery) { background:#f7fbfe; border:1px solid #b8cddb; box-shadow:0 8px 24px -20px rgba(25,52,72,.25); }
+ .btc-orrery-modal .btc-orrery-info { background:#edf5fa; color:#223b4d; }
+ .btc-orrery-modal .btc-orrery-row .who b { font-size:12px; color:#1b3345; }
+ .btc-orrery-modal .btc-orrery-row .where b, .btc-orrery-modal .btc-orrery-row .meta b { font-size:11px; color:#29485e; }
+ .btc-orrery-modal .btc-orrery-row .who em, .btc-orrery-modal .btc-orrery-row .where span, .btc-orrery-modal .btc-orrery-row .meta span { font-size:10px; color:#40576a; opacity:1; line-height:1.4; }
+ .btc-orrery-modal .btc-orrery-ledgerhead { font-size:10px; color:#40576a; background:#e5eff6; }
+ .btc-orrery-modal .btc-orrery-row .meta .st-retro { color:#973849; }
+ .btc-orrery-modal .btc-orrery-stage:not(.is-orrery) .btc-orrery-timebar { background:#e5eff6 !important; border-color:#a7bfce; color:#29485e; }
+ .btc-orrery-modal .btc-orrery-stage:not(.is-orrery) .btc-orrery-timebar button { color:#245b4b !important; }
+}
+
+/* Multi-layer charts keep distinct rings and a readable scale inside the viewport. */
+.btc-orrery-viewport { position:relative; flex:1 1 0; order:3; min-width:0; min-height:0; width:100%; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.btc-orrery-modal .btc-orrery-viewport #btc-orrery-canvas { display:block; position:relative; inset:auto; max-width:none; flex:none; }
+.btc-orrery-viewport:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+@media (max-width:640px) {
+ .btc-orrery-viewport { flex:none; height:clamp(260px,43svh,370px); }
+ .btc-orrery-stage:not(.is-orrery) .btc-orrery-viewport { height:380px; }
+}
+@media (max-height:500px) and (max-width:980px) { .btc-orrery-viewport { flex:none; height:300px; } }
+
+.btc-orrery-stage:not(.is-orrery) #btc-orrery-canvas { touch-action:pan-x pan-y; cursor:default; }
