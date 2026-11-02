@@ -993,6 +993,25 @@
     var labelLevels = separated ? [0.42, 0.47, 0.37] : [0.610, 0.645, 0.575];
     var n = sorted.length;
     var chartLabelBoxes = [];
+    var separatedLabels = [];
+    if (separated) {
+      // Keep annotation columns inside the star ring, independently of celestial positions.
+      [-1, 1].forEach(function (side) {
+        var column = sorted.map(function (marker, index) {
+          var point = polar(cx, cy, R * labelLevels[marker.lane], marker.lon);
+          return { index: index, x: point[0], y: point[1] };
+        }).filter(function (point) { return (point.x < cx ? -1 : 1) === side; })
+          .sort(function (a, b) { return a.y - b.y; });
+        var top = cy - R * 0.39, bottom = cy + R * 0.39;
+        for (var j = 0; j < column.length; j++) {
+          column[j].y = Math.max(top, column[j].y, j ? column[j - 1].y + 22 : top);
+        }
+        for (var j = column.length - 1; j >= 0; j--) {
+          column[j].y = Math.min(bottom, column[j].y, j < column.length - 1 ? column[j + 1].y - 22 : bottom);
+          separatedLabels[column[j].index] = [cx + side * R * 0.40, column[j].y];
+        }
+      });
+    }
 
     for (var mi = 0; mi < n; mi++) {
       var m = sorted[mi];
@@ -1013,11 +1032,11 @@
       if (lightChart) { ctx.beginPath(); ctx.arc(mp[0], mp[1], m.size + 0.5, 0, TAU); ctx.strokeStyle = '#40576a'; ctx.lineWidth = 1; ctx.stroke(); }
 
       if (detail) {
-        var lp = polar(cx, cy, R * labelLevels[lv], m.lon);
+        var lp = separated ? separatedLabels[mi] : polar(cx, cy, R * labelLevels[lv], m.lon);
         setFont(ctx, Math.max(lightChart || separated ? 10 : 7, R * 0.023), '600');
         var tw = ctx.measureText(m.label).width;
         var labelHeight = lightChart || separated ? 18 : 14;
-        if (lightChart || separated) {
+        if (lightChart && !separated) {
           lp[0] = clampNum(lp[0], tw / 2 + 6, w - tw / 2 - 6);
           var baseY = lp[1];
           for (var attempt = 0; attempt < 16; attempt++) {
