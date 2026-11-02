@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.jpg?v=20260901-cat">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
   <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
   <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
@@ -163,83 +163,6 @@
     </div>
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/01/film-emulation-pipelines/reproduce/README/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="LEEcDiang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Beyond the Clock">
-      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Beyond the Clock">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/11/01/film-emulation-pipelines/reproduce/README/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1>图表复算说明</h1>
-<p>运行环境需要 Python 3、NumPy、Matplotlib；图中文字使用支持中文的字体。<br>
-请在完整资料包目录结构下运行，脚本会读取 <code>../data</code> 并写入 <code>../assets</code>。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 reproduce/make_figures.py --font /absolute/path/NotoSansCJKsc-Regular.otf</span><br></pre></td></tr></table></figure>
-<p>没有指定字体时，脚本使用 Matplotlib 默认字体，可能无法显示中文，因此建议明确指定 <code>--font</code>。字体文件不随包分发。</p>
-<p>六张图分别为：管线分类、Kodak PGI、spektrafilm材料曲线、理想多帧噪声、处理顺序、LUT存储。<br>
-其中三张是公式计算，一张是技术位置整理，两张来自明确标注的厂家/开放模型数据。<br>
-运行图表脚本不会下载或重新渲染任何产品照片，也不是应用性能测试。</p>
-<h2 id="数据口径">数据口径</h2>
-<ul>
-<li>SNR 为信号与噪声标准差之比，dB采用 <code>20 log10(SNR倍数)</code>；固定每帧曝光，不固定总时间。</li>
-<li>相关噪声示例假设任意两帧相关系数均为0.1；不是对某个产品的测量。</li>
-<li>PGI的<code>&lt;25</code>保留为范围值；PGI不是比例量表。</li>
-<li>材料曲线是项目处理后的Profile，非本报告实测；各材料标度独立。</li>
-<li>LUT内存是每节点3个float32的理论值，不含额外实现开销，不等于速度。</li>
-</ul>
-<p>来源编号对应正文和 <code>data/sources.csv</code>。Profile衍生图表遵循所附CC BY-SA 4.0许可和署名。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
@@ -853,6 +776,74 @@
 
 
 
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Beyond the Clock">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/19/openclaw-reliable-search/" class="post-title-link" itemprop="url">让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/19/openclaw-reliable-search/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/intro/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/intro/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1311,6 +1302,8 @@
   else if (mq.addListener) mq.addListener(apply);
 })();
 </script>
+
+<script defer src="/js/visual-diagrams.js"></script>
 
 </body>
 </html>

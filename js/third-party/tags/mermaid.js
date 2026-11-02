@@ -35,7 +35,11 @@ function applyMermaidColors() {
   };
 
   const setStyles = (selector, styles) => {
-    document.querySelectorAll(`.post-body .mermaid svg ${selector}`).forEach(element => {
+    // Scope every selector in the list: an unprefixed `text` also matches
+    // unrelated inline SVG and freezes its CSS-driven theme colors.
+    const scopedSelector = selector.split(',')
+      .map(part => `.post-body .mermaid svg ${part.trim()}`).join(', ');
+    document.querySelectorAll(scopedSelector).forEach(element => {
       Object.entries(styles).forEach(([property, value]) => {
         element.style.setProperty(property, value, 'important');
       });
@@ -141,3 +145,13 @@ document.addEventListener('page:loaded', async () => {
 // Safari restores pages from its back-forward cache without rerunning the
 // initial page hook. Reapply the colors to the restored SVG in that case.
 window.addEventListener('pageshow', applyMermaidColors);
+
+// Recolor the existing SVG without rebuilding diagram geometry or losing scroll.
+// Wait one frame so Safari's resolved CSS palette reflects the new appearance.
+const mermaidColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+const refreshMermaidTheme = () => requestAnimationFrame(applyMermaidColors);
+if (mermaidColorScheme.addEventListener) {
+  mermaidColorScheme.addEventListener('change', refreshMermaidTheme);
+} else {
+  mermaidColorScheme.addListener(refreshMermaidTheme);
+}

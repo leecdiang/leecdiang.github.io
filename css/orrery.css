@@ -1535,17 +1535,18 @@ html.btc-orrery-locked body { overflow: hidden !important; }
   }
 }
 
-/* ---------- compressed sidebar bio ---------- */
+/* ---------- content-sized sidebar bio ---------- */
 .site-description {
   line-height: 1.5 !important;
-  font-size: 11px !important;
-  max-height: 7.2em;
-  overflow: hidden;
+  font-size: 12px !important;
+  max-height: none;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .site-description .desc-line2 {
   margin-top: 5px !important;
-  font-size: 9.5px !important;
+  font-size: 10.5px !important;
   letter-spacing: 0.02em;
 }
 
@@ -2615,3 +2616,7 @@ html.btc-orrery-locked body { overflow: hidden !important; }
   .btc-extinction-kicker i { animation: none !important; }
 }
 
+
+/* Fit the full bio without the old clipping or an oversized button gap. */
+.sidebar-panel.site-overview-wrap { gap: 6px; }
+.site-overview-wrap > .btc-orrery-card { margin-top: 8px !important; }
