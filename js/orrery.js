@@ -1273,7 +1273,7 @@
       if (!q) { started = false; continue; }
       if (!started) { ctx.moveTo(q.x, q.y); started = true; } else ctx.lineTo(q.x, q.y);
     }
-    ctx.closePath();
+    // Orbit samples already close the loop; do not bridge clipped segments.
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     var oc = theme.dark ? color : shadeHex(color, 0.12);
@@ -2003,6 +2003,9 @@
     var theme = theme3D();
     var ts = !!state.trueScale;
     var closeUp = cam.dist < 2.0;
+    // Fade continuously as the camera approaches, retaining orbital context.
+    var orbitFade = clampNum((cam.dist - 1.15) / (2.58 - 1.15), 0, 1);
+    var orbitOpacity = detail ? 0.42 + 0.58 * orbitFade * orbitFade * (3 - 2 * orbitFade) : 1;
 
     var backdropKey = [w, h, dpr, theme.bg0, theme.bg1, theme.bg2].join('|');
     if (!canvas._orreryBackdrop || canvas._orreryBackdrop.key !== backdropKey) {
@@ -2037,12 +2040,14 @@
       });
     }
 
+    ctx.save();
+    ctx.globalAlpha *= orbitOpacity;
     for (var oi = 0; oi < bodies.length; oi++) {
-      if (closeUp) continue;
       var ob = bodies[oi];
       var pts = getOrbitPoints(ob, snap.date, detail, ts);
       drawOrbit3(ctx, c, pts, ob.color, detail, theme);
     }
+    ctx.restore();
 
     if (detail && state.layers.sci && !closeUp) drawBelt3(ctx, c, theme, ts);
     if (detail && !closeUp) {
@@ -2118,7 +2123,7 @@
     var moonOrbit = ts ? 0.010 : 0.030;
     var moonAng = snap.moonLon * DEG;
     var moonPos = [earthWorld[0] + Math.cos(moonAng) * moonOrbit, earthWorld[1], earthWorld[2] + Math.sin(moonAng) * moonOrbit];
-    if (!closeUp && selectedKey !== 'moon') {
+    ctx.save();
     ctx.beginPath();
     var moonStarted = false;
     for (var mi2 = 0; mi2 <= 48; mi2++) {
@@ -2127,13 +2132,11 @@
       if (!mq0) { moonStarted = false; continue; }
       if (!moonStarted) { ctx.moveTo(mq0.x, mq0.y); moonStarted = true; } else ctx.lineTo(mq0.x, mq0.y);
     }
-    ctx.closePath();
     ctx.strokeStyle = theme.grid;
-    ctx.globalAlpha = 0.6;
+    ctx.globalAlpha *= 0.6 * orbitOpacity;
     ctx.lineWidth = 0.5;
     ctx.stroke();
-    ctx.globalAlpha = 1;
-    }
+    ctx.restore();
     var mq = project3(moonPos, c);
     if (mq) {
       glowDot(ctx, mq.x, mq.y, detail ? (selectedKey === 'moon' ? 4.6 : 2.4) : 1.4, '#c9d3dd', detail);
