@@ -671,33 +671,6 @@ code.hljs {
   right: 4px;
   top: 8px;
 }
-.expand-btn {
-  bottom: 0;
-  color: var(--highlight-foreground);
-  cursor: pointer;
-  display: none;
-  left: 0;
-  right: 0;
-  position: absolute;
-  text-align: center;
-}
-.fold-cover {
-  background-image: linear-gradient(to top, var(--highlight-background) 0, rgba(0,0,0,0) 100%);
-  bottom: 0;
-  display: none;
-  height: 50px;
-  left: 0;
-  right: 0;
-  position: absolute;
-}
-.highlight-fold {
-  max-height: 500px;
-  overflow-y: hidden !important;
-}
-.highlight-fold .expand-btn,
-.highlight-fold .fold-cover {
-  display: block;
-}
 code,
 kbd,
 figure.highlight,
@@ -1441,7 +1414,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #ff167c;
+    background: #ffc457;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3443,6 +3416,17 @@ figure.highlight table td {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+/* Keep line numbers and code in one native scroll area. */
+.post-body figure.highlight .table-container {
+  max-height: min(500px, 60vh);
+  overflow: auto;
+}
+.post-body figure.highlight pre {
+  overflow: visible;
+}
+.post-body figure.highlight .copy-btn {
+  z-index: 3;
+}
 /* --- 行号区 --- */
 figure.highlight .gutter {
   position: relative;
@@ -3452,6 +3436,7 @@ figure.highlight .gutter {
   padding: 14px 0 !important;
   min-width: 40px !important;
   text-align: right !important;
+  vertical-align: top !important;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -3462,7 +3447,7 @@ figure.highlight .gutter pre {
   margin: 0 !important;
   border: none !important;
   border-radius: 0 !important;
-  font-size: 0.78em !important;
+  font-size: 0.84em !important;
   line-height: 1.75 !important;
   font-family: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace !important;
 }
