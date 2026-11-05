@@ -2480,15 +2480,13 @@
   function isLinksPage() { return /\/links\/?$/.test(location.pathname); }
 
   var ENTRY_HTML = ''
-    + '<div class="btc-orrery-entry-visual"><canvas id="btc-orrery-mini"></canvas></div>'
-    + '<div class="btc-orrery-entry-copy">'
-    + '  <span class="btc-orrery-kicker"><i></i>LIVE · 天象</span>'
-    + '  <h2><span data-i18n="entryTitle">实时天象仪</span> <em>ORRERY</em></h2>'
-    + '  <p data-i18n="entryDesc">太阳系 3D · 二十八宿 · 七政 · 黄道相位</p>'
-    + '  <div class="btc-orrery-entry-meta"><span id="btc-orrery-sun">☉ —</span><span id="btc-orrery-moon">☽ —</span></div>'
-    + '  <span class="btc-orrery-entry-cta" data-i18n="openEntry">打开全屏 3D ↗</span>'
-    + '  <span class="btc-orrery-clock btc-orrery-entry-clock" id="btc-orrery-clock">--:--</span>'
-    + '</div>';
+    + '<span class="btc-link-icon btc-link-icon--orrery" aria-hidden="true"><canvas id="btc-orrery-mini"></canvas></span>'
+    + '<span class="btc-link-copy">'
+    + '  <span class="btc-link-name"><span data-i18n="entryTitle">实时天象仪</span> <em>ORRERY</em></span>'
+    + '  <span class="btc-link-desc" data-i18n="entryDesc">太阳系 3D · 二十八宿 · 黄道相位</span>'
+    + '</span>'
+    + '<span class="btc-orrery-clock" id="btc-orrery-clock">--:--</span>'
+    + '<span class="btc-link-arrow" aria-hidden="true">↗</span>';
 
   var CARD_HTML = ''
     + '<span class="btc-orrery-chip-dot"></span>'
@@ -2577,14 +2575,15 @@
     if (!grid || !grid.parentNode) return false;
 
     var entry = document.createElement('div');
-    entry.className = 'btc-orrery-entry';
+    entry.className = 'btc-link-card btc-link-card--orrery btc-orrery-entry';
     entry.id = 'btc-orrery-links-entry';
     entry.setAttribute('role', 'button');
     entry.setAttribute('tabindex', '0');
     entry.setAttribute('aria-label', '打开全屏 3D 天象仪');
     entry.innerHTML = ENTRY_HTML;
-    var anchor = document.querySelector('.btc-extinction') || grid;
-    anchor.parentNode.insertBefore(entry, anchor.nextSibling);
+    var list = document.querySelector('.btc-link-stack');
+    if (!list) return false;
+    list.appendChild(entry);
 
     entry.addEventListener('click', openModal);
     entry.addEventListener('keydown', function (e) {

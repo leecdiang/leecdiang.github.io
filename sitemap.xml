@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   
+  
+  
   <url>
     <loc>https://leecdiang.com/2026/11/04/why-x86-is-a-mess/</loc>
     
@@ -104,8 +106,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  
   
   
   
@@ -235,7 +235,7 @@
 
   <url>
     <loc>https://leecdiang.com/</loc>
-    <lastmod>2026-11-03</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
