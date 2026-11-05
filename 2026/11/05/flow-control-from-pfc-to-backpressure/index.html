@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#eaf5fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
+  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
+  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
+  <meta name="yandex-verification" content="742c2c3e6536dd02">
+
+<link rel="stylesheet" href="/css/main.css?v=20261023-fluid-1">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="从有限缓冲区与反馈延迟出发，串起 PAUSE、PFC、ECN&#x2F;DCQCN、credit、ready&#x2F;valid、TCP 接收窗口与流量整形，理解每种机制控制什么、在哪里生效，以及为什么不能互相替代。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 PFC 到 ready&#x2F;valid：流控到底在控制什么？">
+<meta property="og:url" content="https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="从有限缓冲区与反馈延迟出发，串起 PAUSE、PFC、ECN&#x2F;DCQCN、credit、ready&#x2F;valid、TCP 接收窗口与流量整形，理解每种机制控制什么、在哪里生效，以及为什么不能互相替代。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-11-05T09:30:00.000Z">
+<meta property="article:modified_time" content="2026-11-05T10:34:53.666Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="FPGA">
+<meta property="article:tag" content="RDMA">
+<meta property="article:tag" content="以太网">
+<meta property="article:tag" content="网络流控">
+<meta property="article:tag" content="计算机体系结构">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/","path":"2026/11/05/flow-control-from-pfc-to-backpressure/","title":"从 PFC 到 ready/valid：流控到底在控制什么？"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从 PFC 到 ready/valid：流控到底在控制什么？ | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"/js/third-party/mermaid.min.js"}}</script>
+  <script src="/js/third-party/mermaid.min.js" defer></script>
+  <script src="/js/third-party/tags/mermaid.js?v=20260830-mermaid-ui-5" defer></script>
+
+
+
+
+
+  
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+<link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Beyond the Clock</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%85%88%E6%89%BE%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%8C%E5%86%8D%E9%97%AE%E8%B0%81%E8%AF%A5%E6%85%A2%E4%B8%8B%E6%9D%A5"><span class="nav-text">1. 先找缓冲区，再问谁该慢下来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-PAUSE-%E4%B8%8E-PFC%EF%BC%9A%E6%9A%82%E5%81%9C%E7%9B%B8%E9%82%BB%E9%93%BE%E8%B7%AF%EF%BC%8C%E7%B2%92%E5%BA%A6%E4%B8%8D%E5%90%8C"><span class="nav-text">2. PAUSE 与 PFC：暂停相邻链路，粒度不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%8C%89%E4%B8%8B%E6%9A%82%E5%81%9C%E4%BB%A5%E5%90%8E%EF%BC%8C%E6%95%B0%E6%8D%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E5%9C%A8%E8%BF%9B%E6%9D%A5"><span class="nav-text">3. 按下暂停以后，数据为什么还在进来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-PFC-%E4%BF%9D%E4%BD%8F%E4%BA%86%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%8C%E4%B9%9F%E5%8F%AF%E8%83%BD%E6%89%A9%E5%A4%A7%E6%8B%A5%E5%A1%9E"><span class="nav-text">4. PFC 保住了缓冲区，也可能扩大拥塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-ECN-%E4%B8%8E-DCQCN%EF%BC%9A%E8%AE%A9%E6%BA%90%E7%AB%AF%E6%8A%8A%E9%80%9F%E5%BA%A6%E9%99%8D%E4%B8%8B%E6%9D%A5"><span class="nav-text">5. ECN 与 DCQCN：让源端把速度降下来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E9%99%A4%E4%BA%86-ECN%EF%BC%8C%E8%BF%98%E8%83%BD%E8%A7%82%E5%AF%9F%E4%BB%80%E4%B9%88"><span class="nav-text">6. 除了 ECN，还能观察什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-Credit%EF%BC%9A%E5%8F%91%E9%80%81%E4%B9%8B%E5%89%8D%EF%BC%8C%E5%85%88%E5%8F%96%E5%BE%97%E7%A9%BA%E9%97%B4%E8%AE%B8%E5%8F%AF"><span class="nav-text">7. Credit：发送之前，先取得空间许可</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%9B%9E%E5%88%B0-RTL%EF%BC%9Aready-valid-%E6%98%AF%E6%9B%B4%E8%BF%91%E7%9A%84%E4%B8%80%E5%B1%82%E6%B5%81%E6%8E%A7"><span class="nav-text">8. 回到 RTL：ready&#x2F;valid 是更近的一层流控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%8E%A5%E6%94%B6%E8%B5%84%E6%BA%90%E4%B8%8D%E8%B6%B3%EF%BC%9ATCP-%E7%AA%97%E5%8F%A3%E4%B8%8E-RDMA-%E7%9A%84-RNR"><span class="nav-text">9. 接收资源不足：TCP 窗口与 RDMA 的 RNR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-Shaper-%E5%92%8C%E8%B0%83%E5%BA%A6%E5%99%A8%EF%BC%8C%E5%88%AB%E5%86%8D%E6%B7%B7%E6%88%90%E5%90%8C%E4%B8%80%E7%A7%8D%E6%B5%81%E6%8E%A7"><span class="nav-text">10. Shaper 和调度器，别再混成同一种流控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E6%8A%8A%E8%BF%99%E4%BA%9B%E6%9C%BA%E5%88%B6%E8%A3%85%E5%9B%9E%E5%90%8C%E4%B8%80%E5%BC%A0%E7%BD%91%E5%8D%A1"><span class="nav-text">11. 把这些机制装回同一张网卡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LEEcDiang</p>
+  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从 PFC 到 ready&#x2F;valid：流控到底在控制什么？ | Beyond the Clock">
+      <meta itemprop="description" content="从有限缓冲区与反馈延迟出发，串起 PAUSE、PFC、ECN&#x2F;DCQCN、credit、ready&#x2F;valid、TCP 接收窗口与流量整形，理解每种机制控制什么、在哪里生效，以及为什么不能互相替代。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从 PFC 到 ready/valid：流控到底在控制什么？
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">从有限缓冲区与反馈延迟出发，串起 PAUSE、PFC、ECN/DCQCN、credit、ready/valid、TCP 接收窗口与流量整形，理解每种机制控制什么、在哪里生效，以及为什么不能互相替代。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><div class="note primary"><p>看到 PFC、PAUSE，很容易把“流控”理解成 RDMA（远程直接内存访问）网卡里的某个功能开关。沿着一条报文路径走一遍，会发现交换机、PCIe、网卡内部流水线和接收端软件都可能要求发送方等一等。本文从缓冲区和反馈延迟讲起，区分暂停、调速、空间许可与整形额度。文中的速率与缓冲算例均为理论计算，不是特定产品的实测结果。</p>
+</div>
+<span id="more"></span>
+<h2 id="1-先找缓冲区，再问谁该慢下来">1. 先找缓冲区，再问谁该慢下来</h2>
+<p>假设两条 400 Gb/s 输入同时流向一条 400 Gb/s 输出。即使每一条链路都在正常工作，交换机仍然会以大约 400 Gb/s 的净速度积累数据。持续 10 μs，就是额外的 500,000 字节，约 488 KiB。这里暂时忽略链路开销，只计算输入与输出速率之差。</p>
+<p>缓冲区能接住突发，却不能消除持续的速率差。对一个尚未溢出的队列，可以先用一个简单的收支关系理解它：</p>
+
+<p><strong>队列增量 = 到达的数据量 − 成功送出的数据量。</strong></p>
+
+<p>定位这类积压，先问：<strong>哪块缓冲区在积压？谁有能力减少它的输入？反馈多久能生效？</strong> 控制的资源和距离不同，“让发送方慢下来”的办法也会不同。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="流控沿整条路径分布。控制范围不同：片内接口、相邻链路、端到端。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="流控沿整条路径分布。控制范围不同：片内接口、相邻链路、端到端。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>流控沿整条路径分布</title><desc>控制范围不同：片内接口、相邻链路、端到端。</desc><defs><marker id="fc-fig01_scope-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig01_scope-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig01_scope-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig01_scope-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig01_scope-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">流控沿整条路径分布</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">控制范围不同：片内接口、相邻链路、端到端。</text><rect x="30" y="110" width="125" height="140" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="92.5" y="144" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">主机 A</text><text x="92.5" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">内存 / 软件</text><rect x="200" y="110" width="135" height="140" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="267.5" y="144" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">NIC A</text><text x="267.5" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">DMA / 队列</text><text x="267.5" y="201" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">ready / valid</text><rect x="380" y="110" width="140" height="140" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="450" y="144" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">交换机</text><text x="450" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">共享缓冲</text><text x="450" y="201" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">调度 / 标记</text><rect x="565" y="110" width="135" height="140" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="632.5" y="144" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">NIC B</text><text x="632.5" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">DMA / 队列</text><text x="632.5" y="201" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">ready / valid</text><rect x="745" y="110" width="125" height="140" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="807.5" y="144" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">主机 B</text><text x="807.5" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">内存 / 软件</text><path d="M159 172L194 172" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-b)"/><path d="M339 172L374 172" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-b)"/><path d="M524 172L559 172" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-b)"/><path d="M704 172L739 172" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-b)"/><text x="177" y="277" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">PCIe</text><text x="177" y="301" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">credit</text><text x="723" y="277" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">PCIe</text><text x="723" y="301" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">credit</text><path d="M450 254V308H267V257" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-a)"/><text x="360" y="295" font-size="17" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">PFC / PAUSE</text><path d="M632 254V355H480V254" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-a)"/><text x="545" y="342" font-size="17" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">PFC / PAUSE</text><text x="450" y="391" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">链路级暂停：相邻设备之间，每一跳分别处理</text><path d="M808 439L92 439" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig01_scope-b)"/><text x="450" y="427" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">端到端：TCP 窗口 / RDMA 资源反馈 / 拥塞控制</text></svg></div><p class="v-caption">图 1｜沿报文路径寻找控制边界。PCIe credit、片内握手、以太网链路级暂停和端到端控制可以同时存在；箭头表示作用范围，不是完整协议栈。依据 <a href="#ref-1">[1]</a>、<a href="#ref-13">[13]</a>、<a href="#ref-15">[15]</a>、<a href="#ref-16">[16]</a> 绘制。</p></div>
+<p>按控制目标，可以先分成下面三类。</p>
+
+<div class="v-figure"><table class="v-matrix"><thead><tr><th>问题</th><th>控制依据</th><th>典型机制</th></tr></thead><tbody><tr><td>流量控制</td><td>接收资源还能承受多少</td><td>PAUSE / PFC、buffer credit、rwnd</td></tr><tr><td>拥塞控制</td><td>共享网络是否正在积压</td><td>DCQCN、DCTCP、TIMELY、HPCC</td></tr><tr><td>流量整形</td><td>本端设定的速率与突发预算</td><td>Token Bucket、发送 pacing</td></tr></tbody></table><p class="v-caption">表 1｜按主要控制目标分类。pacing 是发包节奏的执行手段，也可以接受拥塞控制器给出的目标速率；三个类别并非互斥的硬件分区。</p></div>
+
+<p>PAUSE、PFC 会因为队列积压而触发，但它们直接执行的是链路级暂停；ECN 标记的是拥塞，如何降速还要由端点算法决定；一个固定限速的 shaper 则不必知道网络是否拥塞。只看发送速率下降，分辨不出是哪一种机制在起作用。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-6">[6]</a></sup><sup class="cite"><a href="#ref-20">[20]</a></sup></p>
+<h2 id="2-PAUSE-与-PFC：暂停相邻链路，粒度不同">2. PAUSE 与 PFC：暂停相邻链路，粒度不同</h2>
+<p>先看最直接的办法。B 的接收缓冲区快装不下了，就向相邻的 A 发一条控制消息，要求 A 暂时不要再朝这个方向发送普通数据帧。</p>
+<p>传统以太网 PAUSE，也就是常说的 802.3x 流控，不区分这些数据属于哪个业务。PFC，Priority-based Flow Control，则把暂停粒度细化到最多 8 个优先级。这里的“8 个”是协议可表达的粒度，不等于每台设备都能同时启用 8 个无损队列。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="PAUSE 与 PFC：暂停粒度的差别。请求从 B 返回 A；影响的是 A → B 的相应数据发送。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="PAUSE 与 PFC：暂停粒度的差别。请求从 B 返回 A；影响的是 A → B 的相应数据发送。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>PAUSE 与 PFC：暂停粒度的差别</title><desc>请求从 B 返回 A；影响的是 A → B 的相应数据发送。</desc><defs><marker id="fc-fig02_pause_pfc-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig02_pause_pfc-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig02_pause_pfc-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig02_pause_pfc-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig02_pause_pfc-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">PAUSE 与 PFC：暂停粒度的差别</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">请求从 B 返回 A；影响的是 A → B 的相应数据发送。</text><text x="30" y="195" font-size="24" fill="var(--text-primary)" text-anchor="start" font-weight="650">PAUSE</text><rect x="170" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="206" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P0</text><text x="206" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="256" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="292" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P1</text><text x="292" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="342" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="378" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P2</text><text x="378" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="428" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="464" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P3</text><text x="464" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="514" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="550" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P4</text><text x="550" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="600" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="636" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P5</text><text x="636" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="686" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="722" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P6</text><text x="722" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="772" y="160" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="808" y="189" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P7</text><text x="808" y="219" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><text x="30" y="325" font-size="24" fill="var(--text-primary)" text-anchor="start" font-weight="650">PFC</text><rect x="170" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="206" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P0</text><text x="206" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="256" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="292" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P1</text><text x="292" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="342" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="378" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P2</text><text x="378" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="428" y="290" width="72" height="78" rx="12" fill="var(--chart-red)" stroke="var(--chart-red)" stroke-width="1.5" fill-opacity="0.09"/><text x="464" y="319" font-size="20" fill="var(--chart-red)" text-anchor="middle" font-weight="600">P3</text><text x="464" y="349" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">停</text><rect x="514" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="550" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P4</text><text x="550" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="600" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="636" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P5</text><text x="636" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="686" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="722" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P6</text><text x="722" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><rect x="772" y="290" width="72" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.09"/><text x="808" y="319" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">P7</text><text x="808" y="349" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">可发</text><text x="170" y="139" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="400">同一条输出链路上的 8 个优先级</text><text x="170" y="264" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="400">示例仅暂停 P3；其他优先级仍可发送</text><rect x="170" y="393" width="674" height="50" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="507" y="425" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">P3 可以包含多个 QP：它们会一起受暂停影响</text></svg></div><p class="v-caption">图 2｜同样是 B 要求 A 停发，PAUSE 不区分普通数据帧的优先级，PFC 可以只暂停指定优先级。示例选择 priority 3，没有赋予它固定业务含义；控制帧不画入这组业务条带。来源：<a href="#ref-1">[1]</a>、<a href="#ref-2">[2]</a>。</p></div>
+<p>“PFC 是 PAUSE 的升级版”这个理解还需要补上两个限定。</p>
+<p>第一，<strong>PFC 暂停的是链路上的优先级，不是单个 RDMA QP。</strong> QP 是 Queue Pair，即队列对；多个 QP 完全可能映射到同一优先级，并一起受到影响。优先级如何从报文分类映射到硬件队列，还取决于设备配置。</p>
+<p>第二，暂停有方向。B 发出的请求影响 A 向 B 的相应数据发送，不是把整个全双工端口断开，也不等于 B 向 A 的反向数据自动停下。暂停定时器到期，或收到相应的恢复指示后，发送可以继续。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<p>这些控制消息由相邻设备处理。NIC 与交换机之间可以运行，交换机与交换机之间也可以运行。普通以太网业务也可以使用这些机制。</p>
+<h2 id="3-按下暂停以后，数据为什么还在进来">3. 按下暂停以后，数据为什么还在进来</h2>
+<p>发送 PFC 的瞬间，链路不会立刻安静下来。请求需要被生成和传输，对端需要作出反应，已经在链路上或流水线里的数据还会继续到达。PFC 的阈值因此不能简单设在“缓冲区已经满了”的位置。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="暂停请求发出后，仍需接住在途数据。停止生效不是瞬时事件；headroom 保护的正是这段空窗。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" role="img" aria-label="暂停请求发出后，仍需接住在途数据。停止生效不是瞬时事件；headroom 保护的正是这段空窗。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>暂停请求发出后，仍需接住在途数据</title><desc>停止生效不是瞬时事件；headroom 保护的正是这段空窗。</desc><defs><marker id="fc-fig03_stop_delay-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig03_stop_delay-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig03_stop_delay-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig03_stop_delay-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig03_stop_delay-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">暂停请求发出后，仍需接住在途数据</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">停止生效不是瞬时事件；headroom 保护的正是这段空窗。</text><text x="185" y="120" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">发送端 A</text><text x="610" y="120" font-size="21" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">接收端 B</text><path d="M185 140L185 390" fill="none" stroke="var(--text-secondary)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-s)"/><path d="M610 140L610 390" fill="none" stroke="var(--text-secondary)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-s)"/><text x="65" y="175" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">时间</text><circle cx="610" cy="166" r="5" fill="var(--chart-red)"/><text x="633" y="172" font-size="19" fill="var(--chart-red)" text-anchor="start" font-weight="400">XOFF 触发</text><path d="M602 172L193 240" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-a)"/><text x="386" y="180" font-size="19" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">暂停请求向上游传递</text><text x="45" y="250" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">接收请求</text><text x="45" y="276" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">响应暂停</text><path d="M193 155L602 280" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-b)"/><path d="M193 190L602 315" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-b)"/><path d="M193 225L602 350" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig03_stop_delay-b)"/><text x="375" y="365" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">先前发出的数据仍在抵达</text><circle cx="610" cy="352" r="5" fill="var(--chart-red)"/><text x="633" y="359" font-size="19" fill="var(--chart-red)" text-anchor="start" font-weight="400">最后一批抵达</text><path d="M790 166L790 352" fill="none" stroke="var(--chart-red)" stroke-width="2"/><path d="M780 166L800 166" fill="none" stroke="var(--chart-red)" stroke-width="2"/><path d="M780 352L800 352" fill="none" stroke="var(--chart-red)" stroke-width="2"/><text x="806" y="264" font-size="19" fill="var(--chart-red)" text-anchor="start" font-weight="400">Tstop</text><text x="30" y="439" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="600">缓冲占用</text><rect x="160" y="418" width="630" height="54" rx="5" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><rect x="160" y="418" width="400" height="54" rx="4" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.14"/><rect x="560" y="418" width="230" height="54" rx="4" fill="var(--chart-amber)" stroke="var(--chart-amber)" stroke-width="1.5" fill-opacity="0.15"/><text x="360" y="452" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">已占用 / 常规缓冲</text><text x="675" y="452" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">headroom</text><path d="M430 409L430 481" fill="none" stroke="var(--chart-teal)" stroke-width="2"/><path d="M560 409L560 481" fill="none" stroke="var(--chart-red)" stroke-width="2"/><text x="430" y="510" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">XON</text><text x="560" y="510" font-size="18" fill="var(--chart-red)" text-anchor="middle" font-weight="400">XOFF</text><text x="790" y="510" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">容量边界</text><text x="450" y="550" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">阈值与分区仅为逻辑示意；不代表某款交换机的物理内存布局。</text></svg></div><p class="v-caption">图 3｜从触发 XOFF 到最后一批不可避免的数据抵达，存在非零的停止生效时间。接收端必须为这段时间预留 headroom。时序为示意，不按实际比例绘制。来源：<a href="#ref-3">[3]</a>。</p></div>
+<p>这块预留空间就是 <strong>headroom</strong>。在“单个输入以固定速率持续到达、接收端暂时完全不排空”的保守模型中：</p>
+
+<p><code>H ≥ R<sub>in</sub> × T<sub>stop</sub> + B<sub>margin</sub></code></p>
+
+<p>这里，H 是预留字节数；R<sub>in</sub> 是该缓冲区承受的输入字节速率；T<sub>stop</sub> 从触发暂停算到最后一批不可避免的数据抵达；B<sub>margin</sub> 为模型之外的实现裕量。若把整帧尾部和链路中在途数据的影响计入 T<sub>stop</sub>，就不要再用另一个“在途报文项”重复计算。</p>
+<p>400 Gb/s 换算成字节速率是 50 GB/s。假设 T<sub>stop</sub> 为 2 μs，仅速率与时间的乘积就是 <strong>100,000 B，约 97.7 KiB</strong>。这只是量纲清楚的算例，不是“400G 端口统一配置 100 KB headroom”的建议。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="反馈越慢，预留空间越大。理论计算：H = R × T；不排空，不含额外裕量。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 565" role="img" aria-label="反馈越慢，预留空间越大。理论计算：H = R × T；不排空，不含额外裕量。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>反馈越慢，预留空间越大</title><desc>理论计算：H = R × T；不排空，不含额外裕量。</desc><defs><marker id="fc-fig04_headroom_theory-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig04_headroom_theory-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig04_headroom_theory-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig04_headroom_theory-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig04_headroom_theory-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">反馈越慢，预留空间越大</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">理论计算：H = R × T；不排空，不含额外裕量。</text><path d="M90 455L710 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="73" y="461" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">0</text><path d="M90 372.5L710 372.5" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="73" y="378.5" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">100</text><path d="M90 290L710 290" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="73" y="296" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">200</text><path d="M90 207.5L710 207.5" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="73" y="213.5" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">300</text><path d="M90 125L710 125" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="73" y="131" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">400</text><path d="M90 125L90 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="90" y="483" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">0</text><path d="M245 125L245 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="245" y="483" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">1</text><path d="M400 125L400 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="400" y="483" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">2</text><path d="M555 125L555 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="555" y="483" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">3</text><path d="M710 125L710 455" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="710" y="483" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">4</text><path d="M90 125L90 455" fill="none" stroke="var(--text-secondary)" stroke-width="2"/><path d="M90 455L710 455" fill="none" stroke="var(--text-secondary)" stroke-width="2"/><text x="90" y="110" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="400">所需缓冲 / KiB</text><text x="400" y="522" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">停止生效时间 T / μs</text><path d="M90.0 455.0L710.0 414.716796875" fill="none" stroke="var(--chart-teal)" stroke-width="3" stroke-linejoin="round" stroke-dasharray="2 5"/><text x="735" y="420.717" font-size="19" fill="var(--chart-teal)" text-anchor="start" font-weight="400">100 Gb/s</text><path d="M90.0 455.0L710.0 374.43359375" fill="none" stroke="var(--chart-amber)" stroke-width="3" stroke-linejoin="round" stroke-dasharray="8 5"/><text x="735" y="380.434" font-size="19" fill="var(--chart-amber)" text-anchor="start" font-weight="400">200 Gb/s</text><path d="M90.0 455.0L710.0 293.8671875" fill="none" stroke="var(--chart-blue)" stroke-width="3" stroke-linejoin="round"/><text x="735" y="299.867" font-size="19" fill="var(--chart-blue)" text-anchor="start" font-weight="400">400 Gb/s</text><path d="M90.0 455.0L710.0 132.734375" fill="none" stroke="var(--chart-red)" stroke-width="3" stroke-linejoin="round" stroke-dasharray="12 4 2 4"/><text x="735" y="138.734" font-size="19" fill="var(--chart-red)" text-anchor="start" font-weight="400">800 Gb/s</text><circle cx="400" cy="374.434" r="6" fill="var(--chart-blue)"/><path d="M400.0 366.43359375V305.43359375H575.0" fill="none" stroke="var(--chart-blue)" stroke-width="1.5" stroke-linejoin="round"/><text x="410" y="292.434" font-size="19" fill="var(--chart-blue)" text-anchor="start" font-weight="600">2 μs → 97.7 KiB</text></svg></div><p class="v-caption">图 4｜理论缓冲需求 H = R × T。横纵轴均为线性刻度，GB 与 Gb 使用十进制，KiB = 1024 B；假设输入保持标称速率、暂停生效前没有排空，并且不含额外裕量。数据由随包脚本计算，非硬件测量。</p></div>
+<p>真实设备还要看缓冲区按什么粒度分配、流控消息如何排队，以及同一共享池是否同时承受多个输入。若确实在估算共享池的总增量，就应累计流入它的各条输入，扣除期间的排空；不能拿某一端口的线速代替所有输入。</p>
+<p>常见的 XOFF 与 XON 阈值也不相同：较高的 XOFF 触发暂停，降到较低的 XON 后再允许恢复，形成迟滞，避免占用量在一个阈值附近来回波动。具体阈值必须服从设备的缓冲架构。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<h2 id="4-PFC-保住了缓冲区，也可能扩大拥塞">4. PFC 保住了缓冲区，也可能扩大拥塞</h2>
+<p>考虑两条业务 A、B：它们经过同一条上游链路，使用同一优先级，但随后走向不同目的地。A 的目的方向拥塞，B 的目的方向空闲。一旦共享上游链路上的这个优先级被暂停，B 也要停。</p>
+<p>这就是 PFC 容易带来队头阻塞和无辜流受影响的原因：暂停的粒度比实际拥塞的流更粗。只把 QP 数量加大，或者把另一条业务的目的地换掉，都不保证能够绕开这条共享的暂停边界。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="同一优先级的业务，可能一起被按下暂停。A 的目的方向拥塞；B 的目的方向空闲，但共享上游暂停边界。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" role="img" aria-label="同一优先级的业务，可能一起被按下暂停。A 的目的方向拥塞；B 的目的方向空闲，但共享上游暂停边界。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>同一优先级的业务，可能一起被按下暂停</title><desc>A 的目的方向拥塞；B 的目的方向空闲，但共享上游暂停边界。</desc><defs><marker id="fc-fig05_hol-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig05_hol-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig05_hol-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig05_hol-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig05_hol-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">同一优先级的业务，可能一起被按下暂停</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">A 的目的方向拥塞；B 的目的方向空闲，但共享上游暂停边界。</text><rect x="30" y="143" width="170" height="155" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="115" y="177" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">上游发送者</text><text x="115" y="208" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">流 A → 目的 A</text><text x="115" y="234" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">流 B → 目的 B</text><text x="115" y="260" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">两者均用 P3</text><rect x="345" y="163" width="190" height="115" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="440" y="197" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">交换机</text><text x="440" y="228" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">按目的地转发</text><rect x="680" y="115" width="185" height="90" rx="12" fill="var(--surface-soft)" stroke="var(--chart-red)" stroke-width="1.5"/><text x="772.5" y="149" font-size="21" fill="var(--chart-red)" text-anchor="middle" font-weight="600">目的 A</text><text x="772.5" y="180" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">输出拥塞</text><rect x="680" y="270" width="185" height="90" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="772.5" y="304" font-size="21" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">目的 B</text><text x="772.5" y="335" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">输出空闲</text><path d="M205 201L338 201" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-b)"/><text x="270" y="187" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">共享 P3</text><path d="M338 252L205 252" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-a)"/><text x="270" y="283" font-size="18" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">PFC：停 P3</text><path d="M535 192H605V160H673" fill="none" stroke="var(--chart-red)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-r)"/><path d="M535 249H605V315H673" fill="none" stroke="var(--chart-teal)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-t)"/><text x="575" y="145" font-size="18" fill="var(--chart-red)" text-anchor="start" font-weight="400">流 A</text><text x="575" y="348" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">流 B 也被上游暂停</text><path d="M30 398L870 398" fill="none" stroke="var(--divider)" stroke-width="2"/><text x="30" y="434" font-size="21" fill="var(--text-primary)" text-anchor="start" font-weight="600">拥塞可能继续向上游传播</text><rect x="65" y="460" width="170" height="62" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="150" y="498" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">更上游</text><rect x="355" y="460" width="170" height="62" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="440" y="498" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">上游队列</text><rect x="645" y="460" width="170" height="62" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="730" y="498" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">拥塞处</text><path d="M640 490L530 490" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-a)"/><path d="M350 490L240 490" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig05_hol-a)"/><text x="450" y="552" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">队列各自积压，各自生成新的暂停请求；并非原帧被逐跳转发。</text></svg></div><p class="v-caption">图 5｜A、B 共享上游链路的 priority 3。A 所在方向拥塞后，该优先级被暂停，去往空闲方向的 B 也受影响。下方为背压继续向上游传播的示意；每一跳生成自己的流控消息，并不是把原 PFC 帧一路转发。参考 <a href="#ref-4">[4]</a>、<a href="#ref-5">[5]</a>。</p></div>
+<p>暂停还可能向上游传播：下游暂停，上游无法排空，自己的缓冲继续升高，于是再向更上游发出 PFC。拥塞影响的范围由此扩大。</p>
+<p>拥塞传播未必形成死锁；<strong>死锁需要形成循环等待等条件</strong>，例如几组缓冲区互相等待对方先释放资源。持续发送异常暂停消息造成的 PFC storm，也应与一般的短时背压区分开。把这几种现象统称为“PFC 导致卡死”，不利于定位问题。大规模部署论文分别讨论了这些故障模式和处理经验。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+<h3 id="论文导读：先看“暂停为什么伤及无辜”">论文导读：先看“暂停为什么伤及无辜”</h3>
+<p>Zhu 等人的 <strong>DCQCN 论文</strong>不必一上来就读算法公式。先看 §2.2 对 PFC 的讨论，以及文中的 victim-flow 场景：拥塞链路与受损流是否是同一条路径？暂停究竟把哪些发送者绑在了一起？再读 Guo 等人的 <strong>RDMA over Commodity Ethernet at Scale</strong>，重点看 §4.2 的死锁与 §4.3 的 PFC storm。前者解释机制为何会产生副作用，后者说明故障在部署中怎样暴露。两篇论文中的设备和性能数据均属于各自年代，不直接外推到今天的产品。</p>
+
+<p><a class="glass-pill" href="https://conferences.sigcomm.org/sigcomm/2015/pdf/papers/p523.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> DCQCN · SIGCOMM 2015</a> <a class="glass-pill" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/rdma_sigcomm2016.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> RDMA at Scale · SIGCOMM 2016</a></p>
+
+<h2 id="5-ECN-与-DCQCN：让源端把速度降下来">5. ECN 与 DCQCN：让源端把速度降下来</h2>
+<p>PFC 能阻止某条相邻链路继续灌入，却没有替各个源端安排一个长期可持续的发送速率。DCQCN（Data Center Quantized Congestion Notification）在 RoCEv2 中采用的控制路径是 <strong>ECN 标记 → 接收端反馈 → 发送端调速</strong>。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<p>ECN 是 Explicit Congestion Notification，显式拥塞通知。对具备 ECN 能力的 IP 流量，交换机可以按拥塞判定规则将报文标为 CE，Congestion Experienced。这里的 CE 传达“路径上出现了拥塞”，本身不规定发送方应该减速多少。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+<p>在 DCQCN 所描述的 RoCEv2 控制链路中，接收端收到被标记的报文后，向发送端反馈 CNP，即 Congestion Notification Packet。发送端再根据反馈更新发送速率，并在后续过程中探测恢复。接收端可以限制 CNP 的生成频率，因此不能把每个 CE 报文与一个 CNP 机械地一一对应。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="ECN → CNP → 源端调速。拥塞标记、反馈消息、控制算法，是三个不同环节。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" role="img" aria-label="ECN → CNP → 源端调速。拥塞标记、反馈消息、控制算法，是三个不同环节。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>ECN → CNP → 源端调速</title><desc>拥塞标记、反馈消息、控制算法，是三个不同环节。</desc><defs><marker id="fc-fig06_dcqcn-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig06_dcqcn-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig06_dcqcn-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig06_dcqcn-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig06_dcqcn-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">ECN → CNP → 源端调速</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">拥塞标记、反馈消息、控制算法，是三个不同环节。</text><text x="140" y="122" font-size="22" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">发送端 RP</text><text x="140" y="149" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">Reaction Point</text><path d="M140 167L140 495" fill="none" stroke="var(--divider)" stroke-width="2" stroke-dasharray="6 6"/><text x="450" y="122" font-size="22" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">交换机 CP</text><text x="450" y="149" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">Congestion Point</text><path d="M450 167L450 495" fill="none" stroke="var(--divider)" stroke-width="2" stroke-dasharray="6 6"/><text x="760" y="122" font-size="22" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">接收端 NP</text><text x="760" y="149" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">Notification Point</text><path d="M760 167L760 495" fill="none" stroke="var(--divider)" stroke-width="2" stroke-dasharray="6 6"/><path d="M148 207L442 238" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig06_dcqcn-b)"/><text x="290" y="199" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">① 发送 RoCEv2 数据</text><rect x="362" y="248" width="176" height="54" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="450" y="281" font-size="18" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">② 拥塞时标 CE</text><path d="M458 315L752 345" fill="none" stroke="var(--chart-teal)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig06_dcqcn-t)"/><text x="620" y="306" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">③ 带标记的数据继续前进</text><path d="M752 385L148 430" fill="none" stroke="var(--chart-red)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig06_dcqcn-r)"/><text x="445" y="384" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">④ 接收端返回 CNP（可限制反馈频率）</text><rect x="42" y="449" width="196" height="57" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="140" y="484" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">⑤ 更新发送速率</text><text x="450" y="547" font-size="17" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">PFC 不在这条端到端反馈链里；它可以作为独立的逐跳保护机制同时运行。</text></svg></div><p class="v-caption">图 6｜DCQCN 的控制闭环。交换机观察拥塞并标记，接收端生成反馈，发送端执行调速；控制逻辑分布在不同设备上。箭头时序为示意，不代表每个标记都产生一个 CNP。来源：<a href="#ref-4">[4]</a>、<a href="#ref-6">[6]</a>。</p></div>
+<p>“收到 CNP 就固定减半”不是 DCQCN 的准确概括。减速与恢复由算法状态决定；工程实现中的速率上下限、更新周期和状态粒度，也要看具体实现。最重要的区别是：PFC 直接控制一跳内的优先级能否发送，DCQCN 让源端根据拥塞反馈调整流的发送速率。</p>
+<p>因此，两者可以配合：先用拥塞控制减少积压，必要时再由 PFC 保护相应接收缓冲。但这个配合不会消除反馈时延，也不意味着任意突发都一定不丢包。</p>
+<p>还要小心“ECN 阈值一定低于 PFC 阈值”这句配置口诀。其意图是让拥塞反馈早于紧急暂停发挥作用；但交换机的 ECN 可能依据出口队列，PFC 可能依据入口优先级组及共享池。<strong>观察对象不同的两个数值，不能不看缓冲架构就直接比较大小。</strong> DCQCN 论文对交换机缓冲与阈值配置的讨论，正是为了处理这类问题。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<h3 id="论文导读：同样使用-ECN，为什么不等于同一种算法">论文导读：同样使用 ECN，为什么不等于同一种算法</h3>
+<p>继续读 <strong>DCQCN</strong> 的 §3，把发送端、交换机、接收端三个角色对照图 6，再看速率降低与恢复各由什么事件触发。作为对照，读 <strong>DCTCP</strong> 的 §3：它通过 ECN 反馈估计拥塞程度，调整的是 TCP 拥塞窗口。共享 ECN 这个信号，不代表二者具有相同的反馈编码、更新规则或执行接口。<sup class="cite"><a href="#ref-7">[7]</a></sup><sup class="cite"><a href="#ref-8">[8]</a></sup></p>
+
+<p><a class="glass-pill" href="https://conferences.sigcomm.org/sigcomm/2015/pdf/papers/p523.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> DCQCN · 源端速率控制</a> <a class="glass-pill" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2017/01/dctcp-sigcomm2010.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> DCTCP · TCP 窗口控制</a></p>
+
+<h2 id="6-除了-ECN，还能观察什么">6. 除了 ECN，还能观察什么</h2>
+<p>源端要减速，总得先知道网络正在发生什么。ECN 之外，还可以观察往返时延，或让报文携带沿途设备测得的负载信息。</p>
+<p>QCN，Quantized Congestion Notification，是二层以太网中的拥塞通知机制，由网络中的拥塞点向支持速率限制的源端反馈。它与 DCQCN 的名字相近，但不能把二者当成同一协议的两个拼法；作用域和通知路径都不同。<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+<p>TIMELY 选择 RTT，即往返时延，尤其关注时延变化。队列开始积压，报文往返往往会变慢；难点是测量精度，以及如何把排队变化与其他时延波动区分开。HPCC 则使用 INT，In-band Network Telemetry，带内网络遥测，让端点获得更具体的链路负载信息。更丰富的观测也要求网络设备与端点支持相应机制。<sup class="cite"><a href="#ref-10">[10]</a></sup><sup class="cite"><a href="#ref-11">[11]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="拥塞控制可以观察不同信号。比较观测路径与实现条件，不给算法排性能名次。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-label="拥塞控制可以观察不同信号。比较观测路径与实现条件，不给算法排性能名次。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>拥塞控制可以观察不同信号</title><desc>比较观测路径与实现条件，不给算法排性能名次。</desc><defs><marker id="fc-fig07_signals-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig07_signals-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig07_signals-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig07_signals-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig07_signals-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">拥塞控制可以观察不同信号</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">比较观测路径与实现条件，不给算法排性能名次。</text><text x="38" y="128" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="600">机制</text><text x="178" y="128" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="600">主要信号</text><text x="468" y="128" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="600">反馈到源端</text><text x="683" y="128" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="600">需要处理的条件</text><rect x="30" y="151" width="840" height="67" rx="9" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><text x="44" y="192" font-size="20" fill="var(--chart-blue)" text-anchor="start" font-weight="650">DCQCN</text><text x="178" y="192" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">ECN / CE 标记</text><text x="468" y="192" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">接收端 CNP</text><text x="683" y="192" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">标记与反馈时延</text><rect x="30" y="232" width="840" height="67" rx="9" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><text x="44" y="273" font-size="20" fill="var(--chart-amber)" text-anchor="start" font-weight="650">QCN</text><text x="178" y="273" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">二层拥塞通知</text><text x="468" y="273" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">拥塞点通知源端</text><text x="683" y="273" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">域内端点支持</text><rect x="30" y="313" width="840" height="67" rx="9" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><text x="44" y="354" font-size="20" fill="var(--chart-teal)" text-anchor="start" font-weight="650">TIMELY</text><text x="178" y="354" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">RTT 及其变化</text><text x="468" y="354" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">时延测量反馈</text><text x="683" y="354" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">测时精度与噪声</text><rect x="30" y="394" width="840" height="67" rx="9" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><text x="44" y="435" font-size="20" fill="var(--chart-red)" text-anchor="start" font-weight="650">HPCC</text><text x="178" y="435" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">带内遥测 INT</text><text x="468" y="435" font-size="19" fill="var(--text-primary)" text-anchor="start" font-weight="400">更细的负载信息</text><text x="683" y="435" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">设备与报文支持</text><text x="30" y="504" font-size="18" fill="var(--text-secondary)" text-anchor="start" font-weight="400">更丰富的信息不等于零延迟；采集、传输和执行控制仍然需要时间。</text></svg></div><p class="v-caption">图 7｜拥塞控制的观测信号与代价。表中的“代价”指该机制需要额外处理的条件，不是性能排名；QCN、TIMELY、HPCC 也不是可以直接互换的线缆协议。来源：<a href="#ref-4">[4]</a>、<a href="#ref-9">[9]</a>–<a href="#ref-11">[11]</a>。</p></div>
+<h3 id="论文导读：信号更丰富，控制一定更好吗">论文导读：信号更丰富，控制一定更好吗</h3>
+<p>读 <strong>TIMELY</strong>，先看它为什么使用 RTT 梯度，再看主机端算法如何与低延迟测量配合。其原始方案在主机端运行拥塞控制算法，并利用 NIC 提供的低延迟测量能力。读 <strong>HPCC</strong>，重点看遥测信息怎样变成发送速率，以及反馈回来之前网络又可能发生什么变化。不要只比较两篇摘要里的性能数字；它们采用的设备能力、工作负载和实验设置并不相同。</p>
+
+<p><a class="glass-pill" href="https://research.google/pubs/timely-rtt-based-congestion-control-for-the-datacenter/" target="_blank" rel="noopener"><i class="fas fa-file-alt" aria-hidden="true"></i> TIMELY · SIGCOMM 2015</a> <a class="glass-pill" href="https://liyuliang001.github.io/publications/hpcc.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> HPCC · SIGCOMM 2019</a></p>
+
+<h2 id="7-Credit：发送之前，先取得空间许可">7. Credit：发送之前，先取得空间许可</h2>
+<p>PAUSE/PFC 允许数据持续前进，等接收资源紧张时再要求停下。另一条思路是：发送者先确认自己持有接收端授予的空间额度，额度足够才允许发送。</p>
+<p>假设接收端有 8 个等大的缓冲槽，其中 5 个已经占用。在暂时没有在途数据、双方状态已经同步的简化时刻，发送端可以持有 3 个可用 credit。发送一份数据，消耗一个 credit；接收端释放槽位并把可用额度反馈回来，发送者才能再次使用它。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Credit：先承诺空间，再允许数据前进。教学模型：8 个等大槽位，5 个占用；初始无在途数据，账本已同步。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-label="Credit：先承诺空间，再允许数据前进。教学模型：8 个等大槽位，5 个占用；初始无在途数据，账本已同步。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>Credit：先承诺空间，再允许数据前进</title><desc>教学模型：8 个等大槽位，5 个占用；初始无在途数据，账本已同步。</desc><defs><marker id="fc-fig08_credit_ledger-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig08_credit_ledger-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig08_credit_ledger-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig08_credit_ledger-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig08_credit_ledger-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">Credit：先承诺空间，再允许数据前进</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">教学模型：8 个等大槽位，5 个占用；初始无在途数据，账本已同步。</text><rect x="30" y="140" width="230" height="130" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="145" y="174" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">发送端账本</text><text x="145" y="205" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">可用 credit = 3</text><text x="145" y="231" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">发送一个，扣减一个</text><text x="570" y="125" font-size="22" fill="var(--text-primary)" text-anchor="middle" font-weight="600">接收端：8 个槽位</text><rect x="350" y="148" width="52" height="78" rx="12" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.11"/><text x="376" y="181" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">1</text><text x="376" y="210" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">占</text><rect x="413" y="148" width="52" height="78" rx="12" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.11"/><text x="439" y="181" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">2</text><text x="439" y="210" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">占</text><rect x="476" y="148" width="52" height="78" rx="12" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.11"/><text x="502" y="181" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">3</text><text x="502" y="210" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">占</text><rect x="539" y="148" width="52" height="78" rx="12" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.11"/><text x="565" y="181" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">4</text><text x="565" y="210" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">占</text><rect x="602" y="148" width="52" height="78" rx="12" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.11"/><text x="628" y="181" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">5</text><text x="628" y="210" font-size="18" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">占</text><rect x="665" y="148" width="52" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.11"/><text x="691" y="181" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">6</text><text x="691" y="210" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">空</text><rect x="728" y="148" width="52" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.11"/><text x="754" y="181" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">7</text><text x="754" y="210" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">空</text><rect x="791" y="148" width="52" height="78" rx="12" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.11"/><text x="817" y="181" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">8</text><text x="817" y="210" font-size="18" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">空</text><path d="M268 254L842 254" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig08_credit_ledger-b)"/><text x="555" y="286" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">数据向右：消耗已经获得的许可</text><path d="M840 337L268 337" fill="none" stroke="var(--chart-teal)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig08_credit_ledger-t)"/><text x="555" y="371" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">额度向左：释放资源并反馈可用额度</text><rect x="30" y="414" width="840" height="67" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="450" y="442" font-size="18" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">已发出但未到达的数据，也必须占用已承诺的空间。</text><text x="450" y="468" font-size="18" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">反馈尚未到达时，“实际空闲”不等于“发送端可用 credit”。</text></svg></div><p class="v-caption">图 8｜以一个 credit 对应一个固定槽位的教学模型说明空间许可。真实协议可能按字节、块或不同报文类别计数，并通过累计计数更新额度；“返还 credit”不要求逐条发送确认。参考 <a href="#ref-12">[12]</a>、<a href="#ref-13">[13]</a>。</p></div>
+<p>实际记账要覆盖在途数据和已经承诺出去的空间，并处理反馈延迟。发送端“当前可用 credit”不一定等于接收端此刻实际空闲的槽位数：有些空间已经释放，但更新还没传回来；有些数据还在路上，空间却已经为它预留。</p>
+<p>InfiniBand 的数据虚拟通道使用链路级 credit 管理；PCIe 也有接收流控额度。例如 AMD 的传统 7 系列 PCIe IP 文档把 Posted、Non-Posted、Completion 各自拆成 Header 与 Data 两类，共六组 credit。这个例子说明额度可以按资源类别隔离，并不是在概括所有 PCIe 版本的全部流控细节。<sup class="cite"><a href="#ref-12">[12]</a></sup><sup class="cite"><a href="#ref-13">[13]</a></sup></p>
+<h3 id="有-credit-不等于一定跑满">有 credit 不等于一定跑满</h3>
+<p>假设一个简化通道总共有 B<sub>credit</sub> 字节的循环额度，从消耗到重新可用需要 T<sub>return</sub>，链路容量为 C。那么一个必要的吞吐上界是：</p>
+
+<p><code>R ≤ min(C, B<sub>credit</sub> / T<sub>return</sub>)</code></p>
+
+<p>这个上界尚未计入报文开销、仲裁冲突和其他瓶颈。即使下游并不满，发送端也可能因为额度更新尚未到达而停等。预留足够缓冲，不仅为了避免溢出，也可能是为了覆盖 credit 的往返时间。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="额度充足，才可能覆盖反馈往返。理论上界：R ≤ min(C, Bcredit / Treturn)；Bcredit = 128 KiB。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550" role="img" aria-label="额度充足，才可能覆盖反馈往返。理论上界：R ≤ min(C, Bcredit / Treturn)；Bcredit = 128 KiB。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>额度充足，才可能覆盖反馈往返</title><desc>理论上界：R ≤ min(C, Bcredit / Treturn)；Bcredit = 128 KiB。</desc><defs><marker id="fc-fig09_credit_window-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig09_credit_window-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig09_credit_window-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig09_credit_window-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig09_credit_window-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">额度充足，才可能覆盖反馈往返</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">理论上界：R ≤ min(C, Bcredit / Treturn)；Bcredit = 128 KiB。</text><path d="M90 445L790 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="72" y="451" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">0</text><path d="M90 376.111L790 376.111" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="72" y="382.111" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">100</text><path d="M90 307.222L790 307.222" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="72" y="313.222" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">200</text><path d="M90 238.333L790 238.333" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="72" y="244.333" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">300</text><path d="M90 169.444L790 169.444" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="72" y="175.444" font-size="18" fill="var(--text-secondary)" text-anchor="end" font-weight="400">400</text><path d="M90 135L90 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="90" y="473" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">0</text><path d="M265 135L265 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="265" y="473" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">2</text><path d="M440 135L440 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="440" y="473" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">4</text><path d="M615 135L615 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="615" y="473" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">6</text><path d="M790 135L790 445" fill="none" stroke="var(--divider)" stroke-width="1"/><text x="790" y="473" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">8</text><path d="M90 135L90 445" fill="none" stroke="var(--text-secondary)" stroke-width="2"/><path d="M90 445L790 445" fill="none" stroke="var(--text-secondary)" stroke-width="2"/><text x="90" y="112" font-size="19" fill="var(--text-secondary)" text-anchor="start" font-weight="400">发送速率上界 / Gb/s</text><text x="440" y="516" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">额度循环时间 Treturn / μs</text><path d="M90 169.444L790 169.444" fill="none" stroke="var(--chart-amber)" stroke-width="2" stroke-dasharray="9 5"/><text x="794" y="175.444" font-size="17" fill="var(--chart-amber)" text-anchor="start" font-weight="400">400G</text><path d="M94.375 169.444 L98.750 169.444 L103.125 169.444 L107.500 169.444 L111.875 169.444 L116.250 169.444 L120.625 169.444 L125.000 169.444 L129.375 169.444 L133.750 169.444 L138.125 169.444 L142.500 169.444 L146.875 169.444 L151.250 169.444 L155.625 169.444 L160.000 169.444 L164.375 169.444 L168.750 169.444 L173.125 169.444 L177.500 169.444 L181.875 169.444 L186.250 169.444 L190.625 169.444 L195.000 169.444 L199.375 169.444 L203.750 169.444 L208.125 169.444 L212.500 169.444 L216.875 169.444 L221.250 169.444 L225.625 169.444 L230.000 169.444 L234.375 169.444 L238.750 169.444 L243.125 169.444 L247.500 169.444 L251.875 169.444 L256.250 169.444 L260.625 169.444 L265.000 169.444 L269.375 169.444 L273.750 169.444 L278.125 169.444 L282.500 169.444 L286.875 169.444 L291.250 169.444 L295.625 169.444 L300.000 169.444 L304.375 169.444 L308.750 169.444 L313.125 169.444 L317.500 169.444 L321.875 172.414 L326.250 177.462 L330.625 182.326 L335.000 187.017 L339.375 191.543 L343.750 195.913 L348.125 200.135 L352.500 204.216 L356.875 208.163 L361.250 211.983 L365.625 215.682 L370.000 219.265 L374.375 222.738 L378.750 226.105 L383.125 229.372 L387.500 232.543 L391.875 235.623 L396.250 238.614 L400.625 241.520 L405.000 244.347 L409.375 247.095 L413.750 249.770 L418.125 252.373 L422.500 254.907 L426.875 257.376 L431.250 259.781 L435.625 262.126 L440.000 264.412 L444.375 266.641 L448.750 268.816 L453.125 270.939 L457.500 273.011 L461.875 275.035 L466.250 277.011 L470.625 278.942 L475.000 280.829 L479.375 282.674 L483.750 284.477 L488.125 286.241 L492.500 287.967 L496.875 289.655 L501.250 291.308 L505.625 292.926 L510.000 294.510 L514.375 296.061 L518.750 297.581 L523.125 299.070 L527.500 300.530 L531.875 301.960 L536.250 303.362 L540.625 304.737 L545.000 306.086 L549.375 307.409 L553.750 308.707 L558.125 309.981 L562.500 311.231 L566.875 312.458 L571.250 313.663 L575.625 314.846 L580.000 316.009 L584.375 317.150 L588.750 318.272 L593.125 319.374 L597.500 320.456 L601.875 321.521 L606.250 322.567 L610.625 323.596 L615.000 324.608 L619.375 325.603 L623.750 326.582 L628.125 327.544 L632.500 328.492 L636.875 329.424 L641.250 330.341 L645.625 331.244 L650.000 332.132 L654.375 333.007 L658.750 333.869 L663.125 334.717 L667.500 335.553 L671.875 336.376 L676.250 337.186 L680.625 337.985 L685.000 338.772 L689.375 339.547 L693.750 340.311 L698.125 341.064 L702.500 341.807 L706.875 342.539 L711.250 343.260 L715.625 343.972 L720.000 344.673 L724.375 345.365 L728.750 346.048 L733.125 346.721 L737.500 347.385 L741.875 348.040 L746.250 348.686 L750.625 349.324 L755.000 349.954 L759.375 350.575 L763.750 351.188 L768.125 351.793 L772.500 352.391 L776.875 352.981 L781.250 353.563 L785.625 354.138 L790.000 354.706" fill="none" stroke="var(--chart-blue)" stroke-width="3" stroke-linejoin="round"/><circle cx="265" cy="169.444" r="6" fill="var(--chart-blue)"/><text x="290" y="222.444" font-size="19" fill="var(--chart-blue)" text-anchor="start" font-weight="400">2 μs：仍受链路限速</text><circle cx="440" cy="264.412" r="6" fill="var(--chart-blue)"/><text x="470" y="241.412" font-size="19" fill="var(--chart-blue)" text-anchor="start" font-weight="400">4 μs：262.1 Gb/s</text></svg></div><p class="v-caption">图 9｜理论上界：固定 128 KiB 的循环额度，链路容量为 400 Gb/s。当额度循环时间为 4 μs 时，上界降到约 262.1 Gb/s；2 μs 时，额度本身允许约 524.3 Gb/s，但实际仍受 400 Gb/s 链路限制。线性坐标，非设备实测。</p></div>
+<h3 id="延伸阅读：credit-也可以跨越一跳">延伸阅读：credit 也可以跨越一跳</h3>
+<p>InfiniBand 与 PCIe 的官方资料适合先理解资源账本。随后可以读 <strong>ExpressPass</strong>：它研究如何把 credit 调度用于数据中心端到端拥塞控制。阅读重点是 credit 怎样通过网络、谁限制 credit 的流量，以及数据流如何被反向约束。它说明 credit 是一种可用于不同层次的控制思路，不是 InfiniBand 某一个字段的专属名字；也不要把 ExpressPass 当成 InfiniBand 链路流控的实现规范。<sup class="cite"><a href="#ref-14">[14]</a></sup></p>
+
+<p><a class="glass-pill" href="https://www.mellanox.com/pdf/whitepapers/IB_Intro_WP_190.pdf" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> InfiniBand · 架构资料</a> <a class="glass-pill" href="https://research.google/pubs/credit-scheduled-delay-bounded-congestion-control-for-datacenters/" target="_blank" rel="noopener"><i class="fas fa-file-alt" aria-hidden="true"></i> ExpressPass · SIGCOMM 2017</a></p>
+
+<h2 id="8-回到-RTL：ready-valid-是更近的一层流控">8. 回到 RTL：ready/valid 是更近的一层流控</h2>
+<p>把视角缩到芯片内部，流控就不再表现为网络报文，而可能只是一根 <code>ready</code> 信号。</p>
+<p>以 AXI-Stream 为例：发送方用 <code>TVALID</code> 表示当前数据有效，接收方用 <code>TREADY</code> 表示这一拍可以接收。只有在时钟上升沿二者同时为高，才完成一次传输。遇到 <code>TVALID=1</code>、<code>TREADY=0</code>，发送方必须保持有效数据和相关控制信息，等到握手成功；发送方也不能把“先等到 ready”作为提出 valid 的前提。<sup class="cite"><a href="#ref-15">[15]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="握手发生在同时为高的采样沿。每列为一个时钟上升沿看到的值；不是连续模拟波形。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="握手发生在同时为高的采样沿。每列为一个时钟上升沿看到的值；不是连续模拟波形。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>握手发生在同时为高的采样沿</title><desc>每列为一个时钟上升沿看到的值；不是连续模拟波形。</desc><defs><marker id="fc-fig10_ready_valid-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig10_ready_valid-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig10_ready_valid-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig10_ready_valid-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig10_ready_valid-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">握手发生在同时为高的采样沿</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">每列为一个时钟上升沿看到的值；不是连续模拟波形。</text><text x="272" y="146" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">沿 1</text><rect x="336" y="116" width="116" height="342" rx="12" fill="var(--chart-amber)" stroke="var(--chart-amber)" stroke-width="1.5" fill-opacity="0.07"/><text x="392" y="146" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">沿 2</text><rect x="456" y="116" width="116" height="342" rx="12" fill="var(--chart-amber)" stroke="var(--chart-amber)" stroke-width="1.5" fill-opacity="0.07"/><text x="512" y="146" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">沿 3</text><text x="632" y="146" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">沿 4</text><text x="752" y="146" font-size="20" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">沿 5</text><text x="38" y="206" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="600">TVALID</text><path d="M210 229L832 229" fill="none" stroke="var(--divider)" stroke-width="2"/><text x="272" y="206" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="392" y="206" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">1</text><text x="512" y="206" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">1</text><text x="632" y="206" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="752" y="206" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="38" y="279" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="600">TREADY</text><path d="M210 302L832 302" fill="none" stroke="var(--divider)" stroke-width="2"/><text x="272" y="279" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="392" y="279" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">0</text><text x="512" y="279" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">0</text><text x="632" y="279" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="752" y="279" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">1</text><text x="38" y="352" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="600">TDATA</text><path d="M210 375L832 375" fill="none" stroke="var(--divider)" stroke-width="2"/><text x="272" y="352" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">A</text><text x="392" y="352" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">B</text><text x="512" y="352" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">B</text><text x="632" y="352" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">B</text><text x="752" y="352" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">C</text><text x="38" y="425" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="600">实际传输</text><path d="M210 448L832 448" fill="none" stroke="var(--divider)" stroke-width="2"/><text x="272" y="425" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">A</text><text x="392" y="425" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">—</text><text x="512" y="425" font-size="24" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">—</text><text x="632" y="425" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">B</text><text x="752" y="425" font-size="24" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">C</text><path d="M345 463V477H681V463" fill="none" stroke="var(--chart-amber)" stroke-width="2" stroke-linejoin="round"/><text x="513" y="512" font-size="20" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">B 必须保持，直到沿 4 完成握手</text></svg></div><p class="v-caption">图 10｜每一列表示一个时钟上升沿看到的信号值。数据 B 在第 2、3 个采样沿没有被接收，必须保持到第 4 个采样沿握手；总共只传输 A、B、C 三拍。该图描述 AXI-Stream 的基本握手规则，不代表任意同名私有接口。来源：<a href="#ref-15">[15]</a>。</p></div>
+<p>下面是用于说明规则的 SystemVerilog 节选。断言中的 <code>tdata</code>、<code>tkeep</code>、<code>tlast</code> 是示例接口已声明的信号；真实设计还有其他有效负载边带时，也应一起检查。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Sampling and state updates use the rising edge of clk.</span><br><span class="line">wire fire = tvalid &amp;&amp; tready;</span><br><span class="line"></span><br><span class="line">// A stalled beat must remain valid and unchanged until acceptance.</span><br><span class="line">assert property (@(posedge clk) disable iff (!rst_n)</span><br><span class="line">    tvalid &amp;&amp; !tready |=&gt;</span><br><span class="line">        tvalid &amp;&amp; $stable(&#123;tdata, tkeep, tlast&#125;));</span><br></pre></td></tr></table></figure>
+<p>这条断言检查的是发送端的保持义务，并不能单独证明整个 FIFO 没有丢数据，也没有覆盖复位、跨时钟域或计数器实现。</p>
+<h3 id="片内背压怎样变成链路级流控">片内背压怎样变成链路级流控</h3>
+<p>接收 DMA 变慢，可能使内部 FIFO 积压；FIFO 的空间不足又可能通过 ready/valid 向前一级传播。但“拉低内部 <code>ready</code>”与“向链路对端发送 PFC”之间，必须有明确的缓冲监测、优先级映射和流控生成逻辑。这些逻辑决定了内部资源压力何时、以哪个优先级通知链路对端。</p>
+<p>物理链路已经到达的数据也不能因为某个内部模块拉低 <code>ready</code> 而凭空撤回。可停顿的内部接口可以等待；无法及时停下的外部输入则要由缓冲接住，或最终面临丢弃。设计 <code>almost_full</code> 阈值时，同样要为检测、流水和背压传播的延迟留出空间。这与 headroom 的问题结构相似，只是控制距离和数据单位变了。</p>
+<p><strong>AXI-Stream 规范 §2.2</strong> 给出了这组接口的直接约束。重点核对 source 和 destination 各自的义务，尤其是停止接收以后哪些信号必须保持稳定。</p>
+
+<p><a class="glass-pill" href="https://documentation-service.arm.com/static/64819f1516f0f201aa6b963c" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i> AMBA AXI-Stream · IHI 0051B</a></p>
+
+<h2 id="9-接收资源不足：TCP-窗口与-RDMA-的-RNR">9. 接收资源不足：TCP 窗口与 RDMA 的 RNR</h2>
+<p>到达终点以后，还有一类问题：网络能够送达，不代表接收端已经准备好相应的软件或传输资源。</p>
+<p>TCP 同时面对两个限制。接收窗口 <strong>rwnd</strong> 是接收端通告的接收空间约束；拥塞窗口 <strong>cwnd</strong> 是发送端维护的网络拥塞约束。为理解窗口大小的作用，可以把允许新增的在途字节近似写成：<sup class="cite"><a href="#ref-16">[16]</a></sup><sup class="cite"><a href="#ref-17">[17]</a></sup></p>
+
+<div class="table-container" tabindex="0" role="region" aria-label="TCP 发送窗口公式，可横向滚动"><p><code>新增可发送量 ≈ max(0, min(rwnd, cwnd) − FlightSize)</code></p></div>
+
+<p>FlightSize 表示已经发送、尚未被确认的数据量。这个简化式省略了重传恢复、窗口边缘与实际发包节奏等细节，但能说明：接收方空间很多，网络拥塞仍然可以限制发送；网络很空闲，接收方没有空间也不能无限灌入。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="接收端资源不足，也有不同的含义。TCP 的字节窗口，与 RC RDMA 的接收 WQE，不是同一个资源。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="接收端资源不足，也有不同的含义。TCP 的字节窗口，与 RC RDMA 的接收 WQE，不是同一个资源。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>接收端资源不足，也有不同的含义</title><desc>TCP 的字节窗口，与 RC RDMA 的接收 WQE，不是同一个资源。</desc><defs><marker id="fc-fig11_receiver_resources-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig11_receiver_resources-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig11_receiver_resources-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig11_receiver_resources-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig11_receiver_resources-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">接收端资源不足，也有不同的含义</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">TCP 的字节窗口，与 RC RDMA 的接收 WQE，不是同一个资源。</text><rect x="30" y="116" width="400" height="378" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><rect x="470" y="116" width="400" height="378" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="230" y="152" font-size="22" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">TCP：两道窗口约束</text><text x="55" y="197" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="400">rwnd</text><rect x="75" y="212" width="300" height="25" rx="3" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><rect x="75" y="212" width="75" height="25" rx="3" fill="var(--chart-blue)" stroke="var(--chart-blue)" stroke-width="1.5" fill-opacity="0.25"/><text x="390" y="232" font-size="17" fill="var(--chart-blue)" text-anchor="end" font-weight="400">64</text><text x="55" y="272" font-size="20" fill="var(--text-primary)" text-anchor="start" font-weight="400">cwnd</text><rect x="75" y="287" width="300" height="25" rx="3" fill="var(--surface-soft)" stroke="var(--divider)" stroke-width="1.5"/><rect x="75" y="287" width="300" height="25" rx="3" fill="var(--chart-teal)" stroke="var(--chart-teal)" stroke-width="1.5" fill-opacity="0.25"/><text x="390" y="307" font-size="17" fill="var(--chart-teal)" text-anchor="end" font-weight="400">256</text><text x="230" y="365" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">单位：KiB</text><text x="230" y="397" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">有效窗口 = min(64, 256) = 64</text><text x="230" y="429" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">已在途 48，新增余量 16</text><text x="670" y="152" font-size="22" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">RC RDMA：接收 WQE</text><rect x="510" y="180" width="320" height="82" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="670" y="214" font-size="21" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">SEND / WRITE with Immediate</text><path d="M670 270L670 305" fill="none" stroke="var(--chart-teal)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig11_receiver_resources-t)"/><rect x="535" y="311" width="270" height="62" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="670" y="349" font-size="18" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">没有可用 Receive WQE</text><path d="M670 381L670 410" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig11_receiver_resources-a)"/><text x="670" y="444" font-size="20" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">RNR NAK → 等待 / 重试</text><text x="670" y="477" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">并不代表交换网络拥塞</text></svg></div><p class="v-caption">图 11｜两类端到端接收约束。左侧为 TCP 简化窗口算例：rwnd = 64 KiB、cwnd = 256 KiB、FlightSize = 48 KiB，新增余量为 16 KiB。右侧为 RC RDMA 的接收 WQE 资源反馈，不是交换机队列告警。来源：<a href="#ref-16">[16]</a>–<a href="#ref-19">[19]</a>。</p></div>
+<p>RDMA 中对应的资源并不一定是同一种“接收字节缓冲”。例如在可靠连接 RC 传输下，SEND 或 RDMA WRITE with Immediate 需要接收端预先准备相应的 Receive WQE，Work Queue Element。没有可用接收 WQE 时，可能返回 <strong>RNR NAK</strong>，Receiver Not Ready Negative Acknowledgement，要求请求方按规则等待、重试。<sup class="cite"><a href="#ref-18">[18]</a></sup></p>
+<p>这里有个容易忽略的区别：WRITE with Immediate 的数据仍然写到指定远端地址，接收 WQE 服务于相关接收完成通知，并不是把数据改写进这份 WQE 指定的接收缓冲。普通 RDMA WRITE 和 RDMA READ 也不能一概套用“每次都需要接收方先 post receive”的说法。<sup class="cite"><a href="#ref-18">[18]</a></sup><sup class="cite"><a href="#ref-19">[19]</a></sup></p>
+<p>因此，RNR 是特定操作下的端点资源反馈，不能替代交换网络的拥塞控制。即使硬件操作成功完成，应用自己的环形队列是否还有空位，也可能要通过应用层 credit 另外协商。判断“接收方准备好了没有”，必须先说清楚准备的是链路缓冲、WQE，还是应用数据结构。</p>
+<h2 id="10-Shaper-和调度器，别再混成同一种流控">10. Shaper 和调度器，别再混成同一种流控</h2>
+<p>网卡或交换机里出现一个叫 <code>credit</code> 的寄存器，不足以证明它在做接收缓冲流控。先看额度由什么事件增加，会更可靠。</p>
+<p>在 token bucket，令牌桶，模型里，令牌按本地配置的速率随时间补充，发送消耗令牌。若桶容量为 B，补充速率为 r，那么对任意长度为 Δt 的区间，理想字节模型允许的发送量满足：<sup class="cite"><a href="#ref-20">[20]</a></sup></p>
+
+<p><code>发送字节数 ≤ B + r × Δt</code></p>
+
+<p>B 允许短时突发，r 约束较长时间尺度的平均发送量。它不意味着每一个极短时间片内的瞬时发送速率都必须小于 r；具体实现还要考虑整包发送与记账粒度。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="同样是额度，增加的原因不同。看计数器的更新规则，比看寄存器名字更有用。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 545" role="img" aria-label="同样是额度，增加的原因不同。看计数器的更新规则，比看寄存器名字更有用。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>同样是额度，增加的原因不同</title><desc>看计数器的更新规则，比看寄存器名字更有用。</desc><defs><marker id="fc-fig12_tokens-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig12_tokens-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig12_tokens-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig12_tokens-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig12_tokens-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">同样是额度，增加的原因不同</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">看计数器的更新规则，比看寄存器名字更有用。</text><rect x="30" y="122" width="390" height="150" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="225" y="156" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">Token Bucket</text><text x="225" y="187" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">随时间按速率 r 补充</text><text x="225" y="213" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">发送消耗预算；桶容量 B 允许突发</text><text x="225" y="239" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">不需要接收方先释放空间</text><rect x="480" y="122" width="390" height="150" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="675" y="156" font-size="21" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">接收 Buffer Credit</text><text x="675" y="187" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">接收方拥有并承诺空间</text><text x="675" y="213" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">发送消耗许可；释放后更新额度</text><text x="675" y="239" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">不能只靠本地定时器创造空间</text><text x="450" y="324" font-size="22" fill="var(--text-primary)" text-anchor="middle" font-weight="600">发送还要同时满足多种条件</text><rect x="30" y="356" width="185" height="105" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="122.5" y="390" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">队列调度</text><text x="122.5" y="421" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">当前选谁？</text><rect x="285" y="356" width="250" height="105" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="410" y="390" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">速率 / 额度资格</text><text x="410" y="421" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">现在允许发多少？</text><rect x="605" y="356" width="265" height="105" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="737.5" y="390" font-size="21" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">链路发送条件</text><text x="737.5" y="421" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">是否被 PFC 暂停？</text><path d="M222 408L277 408" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig12_tokens-b)"/><path d="M542 408L598 408" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig12_tokens-b)"/><text x="450" y="511" font-size="18" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">这些是逻辑条件；具体实现可以合并、重排或使用联合仲裁。</text></svg></div><p class="v-caption">图 12｜同样是计数器，“为什么增加”决定了含义。令牌桶按时间补充预算，接收 buffer credit 对应下游释放并重新授予的空间。下方表示调度、速率资格与暂停条件共同约束发送的概念关系，不规定固定的硬件排列顺序。参考 <a href="#ref-13">[13]</a>、<a href="#ref-20">[20]</a>。</p></div>
+<p>buffer credit 的物理含义不同：接收方必须确实拥有可以承诺的资源。仅仅“等了足够久”，不能凭空多发几个接收槽位的额度。</p>
+<p>还有一种容易造成名字误会的机制：以太网 AVB/TSN 的 <strong>Credit-Based Shaper</strong>。它的 credit 依据发送和空闲时的斜率调整，用于发送仲裁与带宽分配；不是 PCIe 或 InfiniBand 那种远端缓冲许可。区分两者，要看 credit 是按本地斜率更新，还是代表远端授予的接收空间。<sup class="cite"><a href="#ref-21">[21]</a></sup></p>
+<p>调度器则主要回答“在当前有资格发送的队列中选谁”。例如轮询或加权调度负责服务分配，shaper 负责速率资格，PFC 状态可能让某类队列暂时失去发送资格。拥塞控制器还可以动态修改发送速率目标。实际硬件往往把这些模块组合起来，但任何一个都不能只凭名字替代另外几个。<sup class="cite"><a href="#ref-20">[20]</a></sup></p>
+<h2 id="11-把这些机制装回同一张网卡">11. 把这些机制装回同一张网卡</h2>
+<p>把这些机制放回一张 NIC，可以看到几个不同的控制边界。发送路径要协调取数、队列选择、速率资格和链路状态；接收路径要接住外部流量，把数据送进主机，并监测自身的资源压力。两端之间还有传输与拥塞反馈。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="一张网卡，同时跨过多层控制边界。数据向前走；不同反馈在自己的作用范围内返回。（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" role="img" aria-label="一张网卡，同时跨过多层控制边界。数据向前走；不同反馈在自己的作用范围内返回。" font-family="system-ui, -apple-system, Segoe UI, Noto Sans CJK SC, sans-serif"><title>一张网卡，同时跨过多层控制边界</title><desc>数据向前走；不同反馈在自己的作用范围内返回。</desc><defs><marker id="fc-fig13_composition-b" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-blue)"/></marker><marker id="fc-fig13_composition-t" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-teal)"/></marker><marker id="fc-fig13_composition-a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-amber)"/></marker><marker id="fc-fig13_composition-r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--chart-red)"/></marker><marker id="fc-fig13_composition-s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--text-secondary)"/></marker></defs><text x="30" y="40" font-size="26" fill="var(--text-primary)" text-anchor="start" font-weight="650">一张网卡，同时跨过多层控制边界</text><text x="30" y="73" font-size="17" fill="var(--text-secondary)" text-anchor="start" font-weight="400">数据向前走；不同反馈在自己的作用范围内返回。</text><rect x="30" y="125" width="245" height="238" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="152.5" y="161" font-size="22" fill="var(--chart-blue)" text-anchor="middle" font-weight="600">发送端 NIC</text><text x="152.5" y="207" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">主机互连 / DMA</text><text x="152.5" y="243" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">发送队列与调度</text><text x="152.5" y="279" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">shaper / 速率控制</text><text x="152.5" y="315" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">MAC / PHY</text><rect x="345" y="125" width="210" height="238" rx="12" fill="var(--surface-soft)" stroke="var(--chart-amber)" stroke-width="1.5"/><text x="450" y="161" font-size="22" fill="var(--chart-amber)" text-anchor="middle" font-weight="600">交换网络</text><text x="450" y="207" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">分类与排队</text><text x="450" y="243" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">调度 / 缓冲监测</text><text x="450" y="279" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">ECN 标记</text><text x="450" y="315" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">链路级暂停</text><rect x="625" y="125" width="245" height="238" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="747.5" y="161" font-size="22" fill="var(--chart-teal)" text-anchor="middle" font-weight="600">接收端 NIC</text><text x="747.5" y="207" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">MAC / PHY</text><text x="747.5" y="243" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">接收缓冲与传输</text><text x="747.5" y="279" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">DMA / 主机互连</text><text x="747.5" y="315" font-size="19" fill="var(--text-secondary)" text-anchor="middle" font-weight="400">Receive WQE 状态</text><path d="M282 231L338 231" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig13_composition-b)"/><path d="M562 231L618 231" fill="none" stroke="var(--chart-blue)" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#fc-fig13_composition-b)"/><path d="M345 322H290V390H175V370" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#fc-fig13_composition-a)"/><path d="M625 322H580V390H450V370" fill="none" stroke="var(--chart-amber)" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#fc-fig13_composition-a)"/><text x="315" y="416" font-size="19" fill="var(--chart-amber)" text-anchor="middle" font-weight="400">PFC：相邻设备之间，按优先级暂停</text><path d="M748 471L153 471" fill="none" stroke="var(--chart-red)" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="8 5" marker-end="url(#fc-fig13_composition-r)"/><text x="450" y="458" font-size="19" fill="var(--chart-red)" text-anchor="middle" font-weight="400">CNP：端到端拥塞反馈 → 更新发送速率</text><rect x="30" y="512" width="395" height="95" rx="12" fill="var(--surface-soft)" stroke="var(--chart-blue)" stroke-width="1.5"/><text x="227" y="545" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">NIC 内部：ready/valid / credit</text><text x="227" y="577" font-size="19" fill="var(--chart-blue)" text-anchor="middle" font-weight="400">主机互连：PCIe credit</text><rect x="475" y="512" width="395" height="95" rx="12" fill="var(--surface-soft)" stroke="var(--chart-teal)" stroke-width="1.5"/><text x="672" y="545" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">接收资源：Receive WQE / 应用额度</text><text x="672" y="577" font-size="19" fill="var(--chart-teal)" text-anchor="middle" font-weight="400">反馈不等同于交换机拥塞</text></svg></div><p class="v-caption">图 13｜一个概念性的控制分层。实线表示主要数据方向，虚线表示不同作用范围的控制；片内背压与 PFC 的连接必须由实现明确建立。该图不是任何厂商网卡的模块框图，也不暗示所有网卡都实现全部机制。综合 <a href="#ref-1">[1]</a>、<a href="#ref-4">[4]</a>、<a href="#ref-13">[13]</a>、<a href="#ref-15">[15]</a>、<a href="#ref-18">[18]</a>、<a href="#ref-20">[20]</a> 绘制。</p></div>
+<p><strong>流控分布在端点软件、芯片内部接口、主机互连、以太网链路和交换网络中。</strong> 同一条数据路径会经过多个控制边界，RDMA NIC 只是其中的一部分。</p>
+<p>排查吞吐下降时，也应沿着这个分层检查，而不是看到速度变低就只盯着 PFC 计数。</p>
+
+<div class="v-figure"><table class="v-matrix"><thead><tr><th>观察到什么</th><th>优先追问</th><th>尚不能据此断言</th></tr></thead><tbody><tr><td>某优先级暂停时间增加</td><td>哪一跳、哪个池触发 XOFF？</td><td>所有业务都发生端到端拥塞</td></tr><tr><td>CNP 或 CE 标记增加</td><td>哪条路径积压，源端速率如何变化？</td><td>接收端没有 Receive WQE</td></tr><tr><td>credit 经常耗尽</td><td>下游未释放，还是更新还在路上？</td><td>链路物理带宽不够</td></tr><tr><td>内部 ready 长时间为低</td><td>从哪个模块开始无法排空？</td><td>外部 PFC 一定已经生效</td></tr><tr><td>RNR 重试增加</td><td>操作类型与接收 WQE 补充是否匹配？</td><td>交换机 buffer 溢出</td></tr><tr><td>吞吐稳定停在某个值</td><td>是否命中 shaper、窗口或处理上限？</td><td>一定是某种流控故障</td></tr></tbody></table><p class="v-caption">表 2｜诊断线索而非自动判定规则。计数器名称、统计窗口和可见粒度取决于实现；应结合队列占用与速率变化验证因果。</p></div>
+
+<h3 id="为什么-RoCE-与-InfiniBand-选择了不同组合">为什么 RoCE 与 InfiniBand 选择了不同组合</h3>
+<p>InfiniBand 把逐跳 credit 纳入自己的链路设计；RoCE 运行在以太网之上，PFC 为特定优先级提供链路级暂停，ECN/DCQCN 则是一条端到端拥塞控制路径。这些是不同体系下的组合选择，不是“所有 RDMA 天生只能用 PFC”。RDMA 也不等同于 RoCE：基于 TCP 的 iWARP 就属于另一条协议路线。<sup class="cite"><a href="#ref-12">[12]</a></sup><sup class="cite"><a href="#ref-4">[4]</a></sup><sup class="cite"><a href="#ref-23">[23]</a></sup></p>
+<p>链路级 credit 也不能替代全网拥塞控制：每一跳都不溢出，仍可能有长期排队、热点争抢和不公平。局部空间安全与端到端资源分配，是不同的问题。</p>
+<p><strong>IRN</strong> 论文进一步追问：改进 RDMA NIC 的丢包恢复和在途数据约束，能否降低对 PFC 的依赖？这是一条 NIC 与网络共同设计的研究路线。它支持的判断是“PFC 不是 RDMA 语义上的必要条件”，而不是“把任何现有 RoCE 网络的 PFC 直接关闭都没问题”。<sup class="cite"><a href="#ref-22">[22]</a></sup></p>
+<h3 id="论文导读：区分协议语义与实现选择">论文导读：区分协议语义与实现选择</h3>
+<p>读 <strong>Revisiting Network Support for RDMA</strong>，重点看 selective retransmission 如何减少丢包后的重复工作，以及基于带宽时延积的在途约束如何限制积压。然后回头检查自己的系统：这些前提真的具备了吗？研究设计证明了一条路线可行，不会自动给未修改的设备增加同样的能力。</p>
+
+<p><a class="glass-pill" href="https://arxiv.org/abs/1806.08159" target="_blank" rel="noopener"><i class="fas fa-file-alt" aria-hidden="true"></i> IRN · SIGCOMM 2018</a></p>
+
+<p>面对一种不熟悉的流控机制，先沿着图 1 找到它保护的资源，再看发送许可由谁发出、何时生效。缓冲不足、反馈太慢、速率目标过低和接收资源补充不及时，都可能表现为“发送停了”，处理办法却不相同。</p>
+<h2 id="参考资料">参考资料</h2>
+<p>以下资料按正文首次使用的主题组织。论文用于机制导读，官方文档用于协议与接口语义；链接核验日期为 2026-11-05。正文未引用论文中的性能数字作为当代设备跑分。</p>
+<p><span id="ref-1" class="ref-anchor"></span><br>
+<strong>[1] IEEE 802.1.</strong> <a target="_blank" rel="noopener" href="https://1.ieee802.org/dcb/802-1qbb/">802.1Qbb — Priority-based Flow Control</a>. 工作组项目说明，介绍按优先级的链路级流控。</p>
+<p><span id="ref-2" class="ref-anchor"></span><br>
+<strong>[2] AMD.</strong> <a target="_blank" rel="noopener" href="https://docs.amd.com/r/en-US/pg051-tri-mode-eth-mac/Priority-Based-Flow-Control-Frames">Priority-Based Flow Control Frames</a>. <em>Tri-Mode Ethernet MAC Product Guide</em>, PG051 v9.0，2024-12-11。帧格式与逐优先级暂停时间。</p>
+<p><span id="ref-3" class="ref-anchor"></span><br>
+<strong>[3] HPE Aruba Networking.</strong> <a target="_blank" rel="noopener" href="https://arubanetworking.hpe.com/techdocs/AOS-CX/10.16/HTML/qos_832x-93xx-100xx/Content/Chp_DCB/dcb-pfc.htm">Priority-based flow control</a>. <em>AOS-CX 10.16 Quality of Service Guide</em>. 用于解释方向、headroom 和缓冲阈值；其产品配置限制不泛化到所有设备。</p>
+<p><span id="ref-4" class="ref-anchor"></span><br>
+<strong>[4] Yibo Zhu et al.</strong> <a target="_blank" rel="noopener" href="https://conferences.sigcomm.org/sigcomm/2015/pdf/papers/p523.pdf">Congestion Control for Large-Scale RDMA Deployments</a>. SIGCOMM 2015. DOI: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/2785956.2787484">10.1145/2785956.2787484</a>. DCQCN 原始论文。</p>
+<p><span id="ref-5" class="ref-anchor"></span><br>
+<strong>[5] Chuanxiong Guo et al.</strong> <a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/rdma_sigcomm2016.pdf">RDMA over Commodity Ethernet at Scale</a>. SIGCOMM 2016. DOI: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/2934872.2934908">10.1145/2934872.2934908</a>.</p>
+<p><span id="ref-6" class="ref-anchor"></span><br>
+<strong>[6] K. Ramakrishnan, S. Floyd, D. Black.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc3168.html">RFC 3168: The Addition of Explicit Congestion Notification (ECN) to IP</a>. 2001。用于 ECN/CE 基础语义，不代替 RoCE 的反馈协议。</p>
+<p><span id="ref-7" class="ref-anchor"></span><br>
+<strong>[7] Mohammad Alizadeh et al.</strong> <a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2017/01/dctcp-sigcomm2010.pdf">Data Center TCP (DCTCP)</a>. SIGCOMM 2010。</p>
+<p><span id="ref-8" class="ref-anchor"></span><br>
+<strong>[8] S. Bensley et al.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc8257.html">RFC 8257: Data Center TCP (DCTCP): TCP Congestion Control for Data Centers</a>. 2017，Informational。</p>
+<p><span id="ref-9" class="ref-anchor"></span><br>
+<strong>[9] IEEE 802.1.</strong> <a target="_blank" rel="noopener" href="https://1.ieee802.org/dcb/802-1qau/">802.1Qau — Congestion Notification</a>. QCN 的作用域与源端速率限制。</p>
+<p><span id="ref-10" class="ref-anchor"></span><br>
+<strong>[10] Radhika Mittal et al.</strong> <a target="_blank" rel="noopener" href="https://research.google/pubs/timely-rtt-based-congestion-control-for-the-datacenter/">TIMELY: RTT-based Congestion Control for the Datacenter</a>. SIGCOMM 2015. DOI: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/2785956.2787510">10.1145/2785956.2787510</a>.</p>
+<p><span id="ref-11" class="ref-anchor"></span><br>
+<strong>[11] Yuliang Li et al.</strong> <a target="_blank" rel="noopener" href="https://liyuliang001.github.io/publications/hpcc.pdf">HPCC: High Precision Congestion Control</a>. SIGCOMM 2019. DOI: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3341302.3342085">10.1145/3341302.3342085</a>.</p>
+<p><span id="ref-12" class="ref-anchor"></span><br>
+<strong>[12] Mellanox Technologies.</strong> <a target="_blank" rel="noopener" href="https://www.mellanox.com/pdf/whitepapers/IB_Intro_WP_190.pdf">Introduction to InfiniBand</a>. Rev. 1.90。只引用链路和虚拟通道的基础流控原理，不引用旧代际速率或产品结论。</p>
+<p><span id="ref-13" class="ref-anchor"></span><br>
+<strong>[13] AMD.</strong> <a target="_blank" rel="noopener" href="https://docs.amd.com/r/en-US/pg054-7series-pcie/Flow-Control-Credit-Information">Flow Control Credit Information</a>. <em>7 Series FPGAs Integrated Block for PCI Express</em>, PG054 v3.3，2024-12-06。作为传统 PCIe IP 的六类 credit 示例。</p>
+<p><span id="ref-14" class="ref-anchor"></span><br>
+<strong>[14] Inho Cho, Keon Jang, Dongsu Han.</strong> <a target="_blank" rel="noopener" href="https://research.google/pubs/credit-scheduled-delay-bounded-congestion-control-for-datacenters/">Credit-Scheduled Delay-Bounded Congestion Control for Datacenters</a>. SIGCOMM 2017。ExpressPass。</p>
+<p><span id="ref-15" class="ref-anchor"></span><br>
+<strong>[15] Arm.</strong> <a target="_blank" rel="noopener" href="https://documentation-service.arm.com/static/64819f1516f0f201aa6b963c">AMBA AXI-Stream Protocol Specification</a>. IHI 0051B，2021，§2.2。握手与停顿时的信号保持要求。</p>
+<p><span id="ref-16" class="ref-anchor"></span><br>
+<strong>[16] W. Eddy, Ed.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9293.html">RFC 9293: Transmission Control Protocol (TCP)</a>. 2022。TCP 接收窗口与流量控制。</p>
+<p><span id="ref-17" class="ref-anchor"></span><br>
+<strong>[17] M. Allman, V. Paxson, E. Blanton.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc5681.html">RFC 5681: TCP Congestion Control</a>. 2009。cwnd、rwnd 与 FlightSize 的基础关系。</p>
+<p><span id="ref-18" class="ref-anchor"></span><br>
+<strong>[18] NVIDIA.</strong> <a target="_blank" rel="noopener" href="https://networking-docs.nvidia.com/doca/archive/3-5-0/rdma-aware-networks-programming-guide">RDMA-aware Networks Programming Guide</a>. DOCA 3.5.0 文档归档。操作语义、接收 WQE 与 RNR。</p>
+<p><span id="ref-19" class="ref-anchor"></span><br>
+<strong>[19] NVIDIA.</strong> <a target="_blank" rel="noopener" href="https://docs.nvidia.com/doca/archive/doca-v2.2.1/rdma-programming-guide/index.html">DOCA RDMA Programming Guide</a>. DOCA 2.2.1。用于核对 WRITE with Immediate 的数据与接收通知语义。</p>
+<p><span id="ref-20" class="ref-anchor"></span><br>
+<strong>[20] Y. Bernet et al.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc3290.html">RFC 3290: An Informal Management Model for Diffserv Routers</a>. 2002。调度、整形与令牌桶模型；该文为 Informational，不是某一硬件实现规范。</p>
+<p><span id="ref-21" class="ref-anchor"></span><br>
+<strong>[21] AMD.</strong> <a target="_blank" rel="noopener" href="https://docs.amd.com/r/en-US/pg051-tri-mode-eth-mac/Credit-Based-Traffic-Shaping-Algorithm">Credit-Based Traffic Shaping Algorithm</a>. PG051 v9.0，2024-12-11。AVB credit-based shaper 的斜率记账。</p>
+<p><span id="ref-22" class="ref-anchor"></span><br>
+<strong>[22] Radhika Mittal et al.</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.08159">Revisiting Network Support for RDMA</a>. SIGCOMM 2018. DOI: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3230543.3230557">10.1145/3230543.3230557</a>. IRN。</p>
+<p><span id="ref-23" class="ref-anchor"></span><br>
+<strong>[23] R. Recio et al.</strong> <a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc5040.html">RFC 5040: A Remote Direct Memory Access Protocol Specification</a>. 2007。iWARP/RDMAP 协议背景。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon & Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者: </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接:</strong>
+      <a href="https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/" title="从 PFC 到 ready&#x2F;valid：流控到底在控制什么？">https://leecdiang.com/2026/11/05/flow-control-from-pfc-to-backpressure/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" rel="tag"># 计算机体系结构</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E6%B5%81%E6%8E%A7/" rel="tag"># 网络流控</a>
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+              <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag"># 以太网</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script>
+(function() {
+  var desc = document.querySelector('.site-description');
+  if (desc && !desc.querySelector('.desc-line2')) {
+    desc.textContent = 'A personal archive of digital IC, computer architecture, and AI infrastructure — plus tools, photography, and the occasional detour.';
+    var l2 = document.createElement('div');
+    l2.className = 'desc-line2';
+    l2.textContent = 'Digital IC · Architecture · AI Infrastructure';
+    desc.appendChild(l2);
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var LONG_POST_HEIGHT = 24000;
+  var LONG_POST_AREA = 18000000;
+  var DESKTOP_QUERY = '(min-width: 992px)';
+
+  function isSafariBrowser() {
+    var ua = navigator.userAgent;
+    return /Safari/.test(ua) &&
+      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  }
+
+  function findVisiblePostBlock() {
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll('.post-block')
+    );
+
+    candidates = candidates.filter(function (element) {
+      var rect = element.getBoundingClientRect();
+      var style = getComputedStyle(element);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 100 &&
+        element.querySelector('.post-content')
+      );
+    });
+
+    candidates.sort(function (a, b) {
+      return b.scrollHeight - a.scrollHeight;
+    });
+
+    return candidates[0] || null;
+  }
+
+  function recordSafariGlassInit(ok, reason, details) {
+    window.__safariLongPostGlassLastInit = {
+      ok: ok,
+      reason: reason,
+      details: details || null,
+      time: Date.now(),
+      readyState: document.readyState
+    };
+    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
+    return ok;
+  }
+
+  var safariLongPostBootTimer = null;
+  var safariLongPostBootAttempt = 0;
+  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
+  var SAFARI_LONG_POST_RETRY_DELAY = 250;
+
+  function cleanupSafariLongPostGlass() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+    safariLongPostBootAttempt = 0;
+
+    var state = window.__safariLongPostGlassState;
+
+    if (!state) {
+      document
+        .querySelectorAll('.post-portal-sampler')
+        .forEach(function (node) { node.remove(); });
+
+      document.documentElement.classList.remove('is-safari-long-post');
+      delete window.__safariLongPostGlassLastInit;
+      delete window.__safariLongPostGlassBootTrace;
+      return;
+    }
+
+    window.removeEventListener('scroll', state.scheduleUpdate);
+    window.removeEventListener('resize', state.scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
+      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
+    }
+
+    if (state.resizeObserver) {
+      state.resizeObserver.disconnect();
+    }
+
+    if (state.sampler) {
+      state.sampler.remove();
+    }
+
+    document.documentElement.classList.remove('is-safari-long-post');
+    delete window.__safariLongPostGlassState;
+    delete window.__safariLongPostGlassLastInit;
+    delete window.__safariLongPostGlassBootTrace;
+  }
+
+  function initSafariLongPostGlass() {
+    // 已经成功初始化：只更新几何
+    if (
+      window.__safariLongPostGlassState &&
+      document.querySelector('body > .post-portal-sampler')
+    ) {
+      window.__safariLongPostGlassState.scheduleUpdate();
+      return recordSafariGlassInit(true, 'already-initialized');
+    }
+
+    if (!isSafariBrowser()) {
+      return recordSafariGlassInit(false, 'not-safari');
+    }
+
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
+    }
+
+    var postBlock = findVisiblePostBlock();
+    if (!postBlock) {
+      return recordSafariGlassInit(false, 'post-block-not-ready', {
+        totalPostBlocks: document.querySelectorAll('.post-block').length
+      });
+    }
+
+    var rect = postBlock.getBoundingClientRect();
+    var height = postBlock.scrollHeight;
+    var width = rect.width;
+    var area = height * width;
+
+    if (width <= 100 || height <= 0) {
+      return recordSafariGlassInit(false, 'invalid-geometry', {
+        width: width,
+        height: height,
+        area: area,
+        display: getComputedStyle(postBlock).display,
+        visibility: getComputedStyle(postBlock).visibility
+      });
+    }
+
+    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
+      return recordSafariGlassInit(false, 'below-threshold', {
+        width: width,
+        height: height,
+        area: area
+      });
+    }
+
+    var postContent = postBlock.querySelector('.post-content');
+    if (!postContent) {
+      return recordSafariGlassInit(false, 'post-content-not-ready');
+    }
+
+    document.documentElement.classList.add('is-safari-long-post');
+
+    var sampler = document.createElement('div');
+    sampler.className = 'post-portal-sampler';
+    sampler.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sampler);
+
+    var pseudoStyle = getComputedStyle(postBlock, '::before');
+    var radii = {
+      topLeft: pseudoStyle.borderTopLeftRadius,
+      topRight: pseudoStyle.borderTopRightRadius,
+      bottomRight: pseudoStyle.borderBottomRightRadius,
+      bottomLeft: pseudoStyle.borderBottomLeftRadius
+    };
+
+    var scheduled = false;
+
+    function updateSampler() {
+      scheduled = false;
+
+      if (!window.matchMedia(DESKTOP_QUERY).matches) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      var rect = postBlock.getBoundingClientRect();
+      var viewportTop = 0;
+      var viewportBottom = window.innerHeight;
+
+      var visibleTop = Math.max(rect.top, viewportTop);
+      var visibleBottom = Math.min(rect.bottom, viewportBottom);
+      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+      if (visibleHeight <= 0 || rect.width <= 0) {
+        sampler.style.visibility = 'hidden';
+        return;
+      }
+
+      sampler.style.visibility = 'visible';
+      sampler.style.left = rect.left + 'px';
+      sampler.style.top = visibleTop + 'px';
+      sampler.style.width = rect.width + 'px';
+      sampler.style.height = visibleHeight + 'px';
+
+      var articleTopVisible = rect.top >= viewportTop;
+      var articleBottomVisible = rect.bottom <= viewportBottom;
+
+      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
+      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
+      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
+      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
+    }
+
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(updateSampler);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleUpdate);
+      window.visualViewport.addEventListener('scroll', scheduleUpdate);
+    }
+
+    var resizeObserver = null;
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(postBlock);
+    }
+
+    window.__safariLongPostGlassState = {
+      sampler: sampler,
+      postBlock: postBlock,
+      scheduleUpdate: scheduleUpdate,
+      resizeObserver: resizeObserver
+    };
+
+    updateSampler();
+
+    return recordSafariGlassInit(true, 'initialized', {
+      width: width,
+      height: height,
+      area: area
+    });
+  }
+
+  function cancelSafariLongPostBoot() {
+    if (safariLongPostBootTimer !== null) {
+      clearTimeout(safariLongPostBootTimer);
+      safariLongPostBootTimer = null;
+    }
+  }
+
+  function bootSafariLongPostGlass() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt += 1;
+
+    requestAnimationFrame(function () {
+      var initialized = initSafariLongPostGlass();
+
+      window.__safariLongPostGlassBootTrace = {
+        attempt: safariLongPostBootAttempt,
+        initialized: initialized,
+        lastInit: window.__safariLongPostGlassLastInit,
+        time: Date.now()
+      };
+
+      if (initialized) {
+        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
+        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
+        return;
+      }
+
+      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
+    });
+  }
+
+  function restartSafariLongPostGlassBoot() {
+    cancelSafariLongPostBoot();
+    safariLongPostBootAttempt = 0;
+    bootSafariLongPostGlass();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
+  } else {
+    restartSafariLongPostGlassBoot();
+  }
+
+  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
+
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      restartSafariLongPostGlassBoot();
+    }
+  });
+
+  document.addEventListener('pjax:success', function () {
+    cleanupSafariLongPostGlass();
+    restartSafariLongPostGlassBoot();
+  });
+
+  window.__initSafariLongPostGlass = initSafariLongPostGlass;
+  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
+  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
+})();
+</script>
+
+<!-- =========================================================
+     跳转丝滑：Speculation Rules 预渲染 + 跨文档视图过渡
+     2026-10-18
+     ========================================================= -->
+<script type="speculationrules">
+{
+  "prerender": [{
+    "where": {
+      "and": [
+        { "href_matches": "/*" },
+        { "not": { "selector_matches": "[target=_blank]" } },
+        { "not": { "selector_matches": "[rel~=external]" } },
+        { "not": { "selector_matches": "[download]" } }
+      ]
+    },
+    "eagerness": "moderate"
+  }]
+}
+</script>
+<style>
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.28, 0.11, 0.32, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation: none; }
+  }
+</style>
+<script>
+(function () {
+  // 已经在用 Speculation Rules 的浏览器跳过这套 fallback
+  if (window.HTMLScriptElement && HTMLScriptElement.supports &&
+      HTMLScriptElement.supports('speculationrules')) return;
+
+  var seen = Object.create(null);
+  function prefetch(href) {
+    if (!href || seen[href]) return;
+    seen[href] = 1;
+    var l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = href;
+    l.as = 'document';
+    document.head.appendChild(l);
+  }
+  function maybe(e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var url;
+    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname) return;
+    prefetch(url.href);
+  }
+  document.addEventListener('pointerover', maybe, { passive: true });
+  document.addEventListener('touchstart', maybe, { passive: true });
+})();
+</script>
+
+
+<!-- 当前页菜单指示：NexT 模板没输出 menu-item-active，这里按 URL 补上 -->
+<script>
+(function () {
+  var norm = function (p) { return p.replace(/\/index\.html$/, '/').replace(/\/page\/\d+\/$/, '/'); };
+  var here = norm(location.pathname);
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.site-nav .menu-item > a[href]'),
+    function (a) {
+      var url;
+      try { url = new URL(a.getAttribute('href'), location.href); } catch (e) { return; }
+      if (url.origin !== location.origin) return;
+      var target = norm(url.pathname);
+      var match = target === here || (target !== '/' && here.indexOf(target) === 0);
+      if (match) {
+        a.classList.add('menu-item-active');
+        a.setAttribute('aria-current', 'page');
+      }
+    }
+  );
+})();
+</script>
+
+
+<!-- Live Orrery -->
+<link rel="stylesheet" href="/css/orrery.css?v=20261105links">
+<script defer src="/js/orrery-sky.js?v=20261023ui"></script>
+<script defer src="/js/orrery.js?v=20261105links"></script>
+
+<script>
+(function () {
+  var metas = Array.prototype.slice.call(document.querySelectorAll('meta[name="theme-color"]'));
+  if (!metas.length) { var made = document.createElement('meta'); made.name = 'theme-color'; document.head.appendChild(made); metas = [made]; }
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() {
+    for (var i = 0; i < metas.length; i++) {
+      var m = metas[i];
+      var media = m.getAttribute('media') || '';
+      var dark = media.indexOf('dark') >= 0;
+      var light = media.indexOf('light') >= 0;
+      m.setAttribute('content', dark ? '#121f2b' : (light ? '#eaf5fb' : (mq.matches ? '#121f2b' : '#eaf5fb')));
+    }
+  }
+  apply();
+  if (mq.addEventListener) mq.addEventListener('change', apply);
+  else if (mq.addListener) mq.addListener(apply);
+})();
+</script>
+
+<script defer src="/js/visual-diagrams.js"></script>
+
+</body>
+</html>

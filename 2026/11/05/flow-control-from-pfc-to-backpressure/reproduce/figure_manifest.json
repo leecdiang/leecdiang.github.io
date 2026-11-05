@@ -1,0 +1,80 @@
+[
+  {
+    "file": "fig01_scope.svg",
+    "title": "流控沿整条路径分布",
+    "viewBox": "0 0 900 480",
+    "type": "schematic"
+  },
+  {
+    "file": "fig02_pause_pfc.svg",
+    "title": "PAUSE 与 PFC：暂停粒度的差别",
+    "viewBox": "0 0 900 480",
+    "type": "schematic"
+  },
+  {
+    "file": "fig03_stop_delay.svg",
+    "title": "暂停请求发出后，仍需接住在途数据",
+    "viewBox": "0 0 900 580",
+    "type": "schematic"
+  },
+  {
+    "file": "fig04_headroom_theory.svg",
+    "title": "反馈越慢，预留空间越大",
+    "viewBox": "0 0 900 565",
+    "type": "theoretical"
+  },
+  {
+    "file": "fig05_hol.svg",
+    "title": "同一优先级的业务，可能一起被按下暂停",
+    "viewBox": "0 0 900 570",
+    "type": "schematic"
+  },
+  {
+    "file": "fig06_dcqcn.svg",
+    "title": "ECN → CNP → 源端调速",
+    "viewBox": "0 0 900 570",
+    "type": "schematic"
+  },
+  {
+    "file": "fig07_signals.svg",
+    "title": "拥塞控制可以观察不同信号",
+    "viewBox": "0 0 900 520",
+    "type": "schematic"
+  },
+  {
+    "file": "fig08_credit_ledger.svg",
+    "title": "Credit：先承诺空间，再允许数据前进",
+    "viewBox": "0 0 900 520",
+    "type": "schematic"
+  },
+  {
+    "file": "fig09_credit_window.svg",
+    "title": "额度充足，才可能覆盖反馈往返",
+    "viewBox": "0 0 900 550",
+    "type": "theoretical"
+  },
+  {
+    "file": "fig10_ready_valid.svg",
+    "title": "握手发生在同时为高的采样沿",
+    "viewBox": "0 0 900 540",
+    "type": "schematic"
+  },
+  {
+    "file": "fig11_receiver_resources.svg",
+    "title": "接收端资源不足，也有不同的含义",
+    "viewBox": "0 0 900 540",
+    "type": "schematic"
+  },
+  {
+    "file": "fig12_tokens.svg",
+    "title": "同样是额度，增加的原因不同",
+    "viewBox": "0 0 900 545",
+    "type": "schematic"
+  },
+  {
+    "file": "fig13_composition.svg",
+    "title": "一张网卡，同时跨过多层控制边界",
+    "viewBox": "0 0 900 650",
+    "type": "schematic"
+  }
+]
