@@ -1414,7 +1414,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #60ffcb;
+    background: #9054bd;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -4719,25 +4719,26 @@ body > hr,
 /* --- 友链 Editorial Link Cards --- */
 .links-header {
   text-align: left;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 }
 .links-title {
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2.4px;
   color: var(--accent);
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-weight: 600;
 }
 .links-subtitle {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.12rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  margin: 0 0 8px;
-  line-height: 1.25;
+  margin: 0 0 6px;
+  line-height: 1.2;
 }
 .links-intro {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
@@ -4745,29 +4746,33 @@ body > hr,
 .friend-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 0 0 32px;
+  gap: 12px;
+  margin: 0 0 20px;
 }
 .friend-card {
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  min-height: 200px;
-  border-radius: 18px;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  min-height: 112px;
+  border-radius: 16px;
   background: var(--surface-card);
-  backdrop-filter: saturate(120%) blur(28px);
-  -webkit-backdrop-filter: saturate(120%) blur(28px);
+  backdrop-filter: saturate(120%) blur(24px);
+  -webkit-backdrop-filter: saturate(120%) blur(24px);
   border: 1px solid var(--border);
-  box-shadow: 0 6px 24px -8px var(--shadow), inset 0 1px 0 0 var(--border);
+  box-shadow: 0 6px 22px -12px var(--shadow), inset 0 1px 0 0 var(--inner-highlight);
   text-decoration: none !important;
   color: inherit;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   position: relative;
 }
 .friend-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px -10px var(--shadow-strong), inset 0 1px 0 0 var(--border);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px -12px var(--shadow-strong), inset 0 1px 0 0 var(--inner-highlight);
+}
+.friend-card:active {
+  transform: scale(0.985);
 }
 @media (prefers-color-scheme: dark) {
   .friend-card {
@@ -4780,7 +4785,7 @@ body > hr,
   .friend-card:hover {
     background: linear-gradient(145deg, rgba(34,54,70,0.64), rgba(17,33,47,0.51)) !important;
     border-color: var(--border-strong) !important;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 14px 36px rgba(0,0,0,0.28), inset 0 1px 0 var(--inner-highlight) !important;
   }
 }
@@ -4788,49 +4793,50 @@ body > hr,
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .friend-emoji {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   line-height: 1;
 }
 .friend-arrow {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--accent);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
   line-height: 1;
 }
 .friend-card:hover .friend-arrow {
-  transform: translate(3px, -3px);
+  transform: translate(2px, -2px);
 }
 .friend-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0 0 6px;
+  font-size: 0.92rem;
+  font-weight: 650;
+  margin: 0 0 4px;
   color: var(--text-primary);
   line-height: 1.3;
+  letter-spacing: -0.005em;
 }
 .friend-description {
-  font-size: 0.85rem;
+  font-size: 0.76rem;
   color: var(--text-secondary);
-  margin: 0 0 10px;
-  line-height: 1.5;
+  margin: 0 0 8px;
+  line-height: 1.45;
 }
 .friend-domain {
   margin-top: auto;
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.75rem;
+  font-size: 0.63rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
   line-height: 1;
 }
 .links-footer {
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   opacity: 0.55;
-  margin: 0 0 40px;
+  margin: 0 0 20px;
   line-height: 1.5;
 }
 @media (max-width: 767px) {
@@ -4838,7 +4844,7 @@ body > hr,
     grid-template-columns: 1fr;
   }
   .friend-card {
-    min-height: 200px;
+    min-height: 100px;
   }
 }
 /* --- About Strip --- */
@@ -6330,4 +6336,141 @@ figure.highlight {
 }
 .post-body .film-chart {
   overflow-x: auto;
+}
+/* Archive index: compact year groups with full-row article links. */
+.btc-archive-index .post-content {
+  margin: 0;
+}
+.btc-archive-heading {
+  margin-bottom: 34px;
+}
+.btc-archive-heading h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 30px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+.btc-archive-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.btc-archive-year + .btc-archive-year {
+  margin-top: 36px;
+}
+.btc-archive-year h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.btc-archive-year h2 span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.btc-archive-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.btc-archive-list > li + li {
+  border-top: 1px solid rgba(65,102,126,0.24);
+}
+@media (prefers-color-scheme: dark) {
+  .btc-archive-list > li + li {
+    border-top-color: rgba(170,204,224,0.22);
+  }
+}
+.btc-archive-index .btc-archive-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 138px;
+  align-items: baseline;
+  column-gap: 20px;
+  min-height: 68px;
+  box-sizing: border-box;
+  padding: 20px 10px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text-primary) !important;
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+.btc-archive-row time {
+  grid-column: 1;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.btc-archive-title {
+  grid-column: 2;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.btc-archive-title i {
+  font-size: 11px;
+}
+.btc-archive-category {
+  grid-column: 3;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.btc-archive-index .btc-archive-row:hover {
+  background: var(--surface-soft);
+}
+.btc-archive-row:hover .btc-archive-title {
+  color: var(--accent-strong);
+}
+.btc-archive-index .btc-archive-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  background: var(--surface-soft);
+}
+@media (max-width: 767px) {
+  .btc-archive-heading {
+    margin-bottom: 28px;
+  }
+  .btc-archive-heading h1 {
+    font-size: 27px;
+  }
+  .btc-archive-year h2 {
+    font-size: 22px;
+  }
+  .btc-archive-index .btc-archive-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 5px 12px;
+    padding: 15px 4px;
+  }
+  .btc-archive-title {
+    grid-column: 1/-1;
+    grid-row: 1;
+  }
+  .btc-archive-row time {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .btc-archive-category {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btc-archive-index .btc-archive-row {
+    transition: none;
+  }
 }
