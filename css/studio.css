@@ -646,3 +646,9 @@ body .btc-orrery-modal :is(button,input,select):focus-visible{outline:2px solid 
 @media(prefers-reduced-motion:no-preference){.post-body .arch-map[data-map-active="roofline"] .am-gpu,.post-body .arch-map[data-map-active="roofline"] .am-matrix,.post-body .arch-map[data-map-active="roofline"] .am-mem,.post-body .arch-map[data-map-active="amdahl"] .am-cpu,.post-body .arch-map[data-map-active="cpi"] .am-cpu,.post-body .arch-map[data-map-active="bdp"] .am-mem,.post-body .arch-map[data-map-active="bdp"] .am-noc{stroke-dasharray:7 5;animation:am-flow 1.4s linear infinite}}
 @keyframes am-flow{to{stroke-dashoffset:-24}}
 @media(max-width:700px){.post-body .arch-controls--three{grid-template-columns:1fr}.post-body .arch-levels button{font-size:10px;padding:6px 8px}.post-body .arch-map-picker button{font-size:10px;padding:5px 9px}}
+
+/* V3 dark chip map contrast */
+:root[data-color=dark] .post-body .arch-map .am-die{fill:rgba(23,31,43,.62);stroke:rgba(178,195,216,.30)}
+:root[data-color=dark] .post-body .arch-map .am-block{fill:rgba(39,53,69,.88);stroke:rgba(145,189,233,.62);stroke-width:1.4}
+:root[data-color=dark] .post-body .arch-map .am-core{fill:rgba(145,189,233,.16);stroke:rgba(178,195,216,.38)}
+:root[data-color=dark] .post-body .arch-map .am-cache{fill:rgba(39,53,69,.94)}
