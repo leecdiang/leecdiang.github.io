@@ -2,8 +2,6 @@
   const picker = document.getElementById('color-mode');
   const mq = matchMedia('(prefers-color-scheme: dark)');
   let preference = 'system';
-  try { preference = localStorage.getItem('leecdiang-color') || 'system'; } catch {}
-  if (!['system','light','dark'].includes(preference)) preference='system';
 
   // Keep the existing orrery's media-query palette in sync with manual selection.
   const orreryMedia=[];
@@ -24,6 +22,7 @@
   function applyTheme() {
     const mode=preference==='system'?(mq.matches?'dark':'light'):preference;
     document.documentElement.dataset.color=mode;
+    document.documentElement.dataset.themePreference=preference;
     const label=window.StudioLanguage.t(mode==='dark'?'切换到浅色主题':'切换到深色主题');
     picker.setAttribute('aria-label',label);
     picker.title=label;
@@ -32,9 +31,17 @@
     window.dispatchEvent(new Event('studio:theme'));
   }
   let themeTransitionTimer;
-  picker.addEventListener('click',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){clearTimeout(themeTransitionTimer);document.documentElement.dataset.themeChanging='';themeTransitionTimer=setTimeout(()=>delete document.documentElement.dataset.themeChanging,240)}preference=document.documentElement.dataset.color==='dark'?'light':'dark';try{localStorage.setItem('leecdiang-color',preference)}catch{}applyTheme()});
-  mq.addEventListener('change',()=>{if(preference==='system')applyTheme()});
-  window.addEventListener('storage',e=>{if(e.key==='leecdiang-color'){preference=['light','dark'].includes(e.newValue)?e.newValue:'system';applyTheme()}});
+  picker.addEventListener('click',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){clearTimeout(themeTransitionTimer);document.documentElement.dataset.themeChanging='';themeTransitionTimer=setTimeout(()=>delete document.documentElement.dataset.themeChanging,240)}preference=document.documentElement.dataset.color==='dark'?'light':'dark';applyTheme()});
+  // Manual toggles belong to this visible page, never to a stored preference.
+  function followSystem() {
+    clearTimeout(themeTransitionTimer);
+    delete document.documentElement.dataset.themeChanging;
+    preference='system';
+    applyTheme();
+  }
+  mq.addEventListener('change',followSystem);
+  window.addEventListener('pageshow',event=>{if(event.persisted)followSystem()});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')followSystem()});
   window.addEventListener('studio:language',applyTheme);
   refreshOrreryStyles();
   // A local-only visual comparison. The source photograph is never modified.
