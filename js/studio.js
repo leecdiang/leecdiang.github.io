@@ -31,7 +31,8 @@
     document.querySelector('meta[name="theme-color"]').content=getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() || (mode==='dark'?'#0c121b':'#ffffff');
     window.dispatchEvent(new Event('studio:theme'));
   }
-  picker.addEventListener('click',()=>{preference=document.documentElement.dataset.color==='dark'?'light':'dark';try{localStorage.setItem('leecdiang-color',preference)}catch{}applyTheme()});
+  let themeTransitionTimer;
+  picker.addEventListener('click',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){clearTimeout(themeTransitionTimer);document.documentElement.dataset.themeChanging='';themeTransitionTimer=setTimeout(()=>delete document.documentElement.dataset.themeChanging,240)}preference=document.documentElement.dataset.color==='dark'?'light':'dark';try{localStorage.setItem('leecdiang-color',preference)}catch{}applyTheme()});
   mq.addEventListener('change',()=>{if(preference==='system')applyTheme()});
   window.addEventListener('storage',e=>{if(e.key==='leecdiang-color'){preference=['light','dark'].includes(e.newValue)?e.newValue:'system';applyTheme()}});
   window.addEventListener('studio:language',applyTheme);
@@ -46,7 +47,7 @@
       NexT.utils.registerVideoIframe();
       if(window.CONFIG?.exturl)NexT.utils.registerExtURL();
     }
-    document.querySelectorAll('.post-body .arch-plot-wrap,.post-body .table-container').forEach(view=>{
+    document.querySelectorAll('.post-body .arch-plot-wrap,.post-body .table-container,.post-body mjx-container[display="true"]').forEach(view=>{
       const update=()=>{const scrollable=view.scrollWidth>view.clientWidth+1;view.tabIndex=scrollable?0:-1;if(view.classList.contains('arch-plot-wrap'))view.closest('.v-figure').dataset.scrollable=String(scrollable);};
       update();
       if(window.ResizeObserver)new ResizeObserver(update).observe(view);
@@ -69,7 +70,7 @@
       copyStatus.textContent = window.StudioLanguage.t(copyMessage);
     });
     const toc=document.querySelector('.reading-toc details');
-    if(toc){if(!toc.querySelector('.toc-scroll a'))toc.parentElement.hidden=true;else if(innerWidth<1100)toc.open=false;}
+    if(toc){if(!toc.querySelector('.toc-scroll a'))toc.parentElement.hidden=true;else toc.open=innerWidth>=1100;}
     const heading = document.querySelector('.btc-archive-heading');
     if (heading) {
       const form = document.createElement('form');
@@ -128,13 +129,12 @@
       form.addEventListener('submit', event => event.preventDefault());
       input.addEventListener('input', () => filterArticles('replace'));
       buttons.forEach(button => button.addEventListener('click', () => {
-        selected = button.dataset.section;
-        filterArticles('push');
+        const mutate=()=>{selected=button.dataset.section;filterArticles('push')};
+        if(window.StudioMotion)window.StudioMotion.transitionList(document.querySelector('.btc-archive-index'),mutate);else mutate();
       }));
       reset.addEventListener('click', () => {
-        input.value = '';
-        selected = 'all';
-        filterArticles('push');
+        const mutate=()=>{input.value='';selected='all';filterArticles('push')};
+        if(window.StudioMotion)window.StudioMotion.transitionList(document.querySelector('.btc-archive-index'),mutate);else mutate();
         input.focus();
       });
       empty.querySelector('button').addEventListener('click', () => reset.click());

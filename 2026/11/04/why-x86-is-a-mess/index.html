@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-static-math="true">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
-  <script>(function(){var r=document.documentElement;var dark=r.dataset.color==="dark";var portrait=matchMedia("(orientation: portrait)").matches;var home=location.pathname.replace(/\/index\.html$/,"/")==="/";if(home&&innerWidth<=700)return;var m={dark:{l:"/images/ambient/halo-dark-landscape-v2.webp",p:"/images/ambient/halo-dark-portrait-v2.webp"},light:{l:"/images/ambient/halo-light-landscape-v9.webp",p:"/images/ambient/halo-light-portrait-v9.webp"}};var h=(dark?m.dark:m.light)[portrait?"p":"l"];var l=document.createElement("link");l.rel="preload";l.as="image";l.setAttribute("fetchpriority","high");l.href=h;document.head.appendChild(l)})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.80b48238568b.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
@@ -52,21 +53,19 @@
 
 
 
-  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/vendor/mathjax/tex-mml-chtml.js"}}</script>
-<script src="/js/third-party/math/mathjax.js" defer></script>
+  <script class="next-config" data-name="enableMath" type="application/json">false</script>
+
 
   
   <script defer src="/js/visual-diagrams.js"></script>
-  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
+  <script defer src="/assets/studio/core.135d4cdbef04.js"></script>
   
   
+
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
 <body class="studio-site studio-halo studio-reading">
-  <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-  </div>
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
     <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
@@ -84,7 +83,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E5%9B%9B%E4%B8%AA%E5%AD%97%E8%8A%82%E5%BC%80%E5%A7%8B%EF%BC%8C%E7%90%86%E8%A7%A3-x86-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9A%BE%E4%BC%BA%E5%80%99"><span class="toc-text">从四个字节开始，理解 x86 为什么难伺候</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E6%9D%A1%E6%BC%82%E4%BA%AE%E7%9A%84%E6%8C%87%E4%BB%A4%EF%BC%8C%E5%9B%9B%E7%A7%8D%E8%A6%81%E8%A7%A3%E9%87%8A%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-text">一条漂亮的指令，四种要解释的东西</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BA%BB%E7%83%A6%E4%B8%8D%E5%8F%AA%E5%9C%A8%E8%AF%91%E7%A0%81%E5%99%A8%EF%BC%8C%E8%BF%98%E6%9C%89%E9%82%A3%E4%BA%9B%E8%88%8D%E4%B8%8D%E5%BE%97%E5%88%A0%E7%9A%84%E5%8E%86%E5%8F%B2"><span class="toc-text">麻烦不只在译码器，还有那些舍不得删的历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Intel-%E5%92%8C-AMD-%E5%88%B0%E5%BA%95%E4%B8%BA%E8%BF%99%E5%A5%97%E5%8C%85%E8%A2%B1%E8%8A%B1%E4%BA%86%E5%A4%9A%E5%B0%91%E9%92%B1%EF%BC%9F"><span class="toc-text">Intel 和 AMD 到底为这套包袱花了多少钱？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%80%97%E4%B8%8A%E5%80%92%E6%98%AF%E6%9C%89%E4%B8%80%E4%BB%BD%E5%80%BC%E5%BE%97%E7%9C%8B%E7%9A%84%E5%AE%9E%E9%AA%8C"><span class="toc-text">功耗上倒是有一份值得看的实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3-ARM-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9C%8B%E8%B5%B7%E6%9D%A5%E9%82%A3%E4%B9%88%E9%A6%99%EF%BC%9F"><span class="toc-text">那 ARM 为什么看起来那么香？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E5%85%A8%E4%B8%96%E7%95%8C%E7%BA%A6%E5%A5%BD%E4%B8%8D%E5%86%8D%E7%94%A8-x86%EF%BC%8C%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7%EF%BC%9F"><span class="toc-text">假设全世界约好不再用 x86，会怎么样？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E4%BA%BA%E5%92%8C%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%8C%E5%88%B0%E5%BA%95%E7%94%A8%E5%88%B0%E4%BA%86%E5%A4%9A%E5%B0%91%E5%85%BC%E5%AE%B9%E6%80%A7%EF%BC%9F"><span class="toc-text">普通人和工程师，到底用到了多少兼容性？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%83%B3%E8%AE%A9%E4%BB%8A%E5%A4%A9%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%80%85%E8%BF%98%E8%83%BD%E9%80%89"><span class="toc-text">我想让今天的设计者还能选</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E6%9D%A5%E6%BA%90%E4%B8%8E%E5%9B%BE%E8%A1%A8%E5%8F%A3%E5%BE%84"><span class="toc-text">资料来源与图表口径</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -133,7 +132,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><div class="note primary"><p>假如你接手了一个迭代四十多年的 RTL 仓库，每次升级都不敢删除旧逻辑，状态机、旁路条件和兼容分支越堆越多，你会怎么评价它？</p>
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="0"><div class="note primary"><p>假如你接手了一个迭代四十多年的 RTL 仓库，每次升级都不敢删除旧逻辑，状态机、旁路条件和兼容分支越堆越多，你会怎么评价它？</p>
 <p>我大概会说：这玩意儿早该重构了。</p>
 </div>
 <p>x86 难以重构，恰恰因为它太成功了。它诞生于 1978 年的 Intel 8086，后来装进了 PC、服务器、工作站，建立了规模惊人的软件生态。今天的高性能 x86 处理器早已不是四十年前那颗芯片，它们可以拥有宽大的乱序后端、复杂的分支预测、向量计算和先进封装。但在这些精致的工程之上，仍然压着一套漫长历史留下的架构契约。<a href="#x86-ref-S01">S01</a> <a href="#x86-ref-S05">S05</a></p>
@@ -163,7 +162,7 @@
 <p>让前端一次处理多条 x86 指令，难点就跟着出现了。前端从缓存拿到一批字节，要划分指令边界、处理跨边界指令，再识别编码与操作数。做得越宽，并行处理这些不规则边界的压力越大。现代 x86 核心当然有办法：长度预译码、复杂解码器、微操作缓存，以及不同实现各自积累的技巧。但这些技巧本身也需要设计、验证和维护。<a href="#x86-ref-S02">S02</a></p>
 <h3 id="一条漂亮的指令，四种要解释的东西">一条漂亮的指令，四种要解释的东西</h3>
 <p>看一个小得不能再小的操作：将 <code>p</code> 指向的 64 位整数加一。我们只比较单线程普通读改写操作，不讨论并发原子性，也不依赖条件标志位的最终状态。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">increment</span><span class="params">(<span class="type">uint64_t</span> *p)</span> &#123;</span><br><span class="line">    *p += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">increment</span><span class="params">(<span class="type">uint64_t</span> *p)</span> {</span><br><span class="line">    *p += <span class="number">1</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>x86-64 可以用一条合法的机器指令完成这件事：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add QWORD PTR [rdi], 1   ; 48 83 07 01</span><br></pre></td></tr></table></figure>
 <p>我用 GNU <code>as</code> 和 <code>objdump</code> 核对了这组机器码。它一共四个字节，已经把内存寻址、读改写操作和立即数塞进去了。但 <code>48</code> 是 REX.W，<code>83</code> 是操作码，<code>07</code> 是 ModR/M，<code>01</code> 才是真正要加的数。处理器必须知道这些字段如何相互约束，才能弄明白这条指令要求做什么。</p>
@@ -397,7 +396,7 @@
 
 
 
-  </div><aside class="reading-toc" aria-label="文章目录"><details open><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E5%9B%9B%E4%B8%AA%E5%AD%97%E8%8A%82%E5%BC%80%E5%A7%8B%EF%BC%8C%E7%90%86%E8%A7%A3-x86-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9A%BE%E4%BC%BA%E5%80%99"><span class="toc-text">从四个字节开始，理解 x86 为什么难伺候</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E6%9D%A1%E6%BC%82%E4%BA%AE%E7%9A%84%E6%8C%87%E4%BB%A4%EF%BC%8C%E5%9B%9B%E7%A7%8D%E8%A6%81%E8%A7%A3%E9%87%8A%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-text">一条漂亮的指令，四种要解释的东西</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BA%BB%E7%83%A6%E4%B8%8D%E5%8F%AA%E5%9C%A8%E8%AF%91%E7%A0%81%E5%99%A8%EF%BC%8C%E8%BF%98%E6%9C%89%E9%82%A3%E4%BA%9B%E8%88%8D%E4%B8%8D%E5%BE%97%E5%88%A0%E7%9A%84%E5%8E%86%E5%8F%B2"><span class="toc-text">麻烦不只在译码器，还有那些舍不得删的历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Intel-%E5%92%8C-AMD-%E5%88%B0%E5%BA%95%E4%B8%BA%E8%BF%99%E5%A5%97%E5%8C%85%E8%A2%B1%E8%8A%B1%E4%BA%86%E5%A4%9A%E5%B0%91%E9%92%B1%EF%BC%9F"><span class="toc-text">Intel 和 AMD 到底为这套包袱花了多少钱？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%80%97%E4%B8%8A%E5%80%92%E6%98%AF%E6%9C%89%E4%B8%80%E4%BB%BD%E5%80%BC%E5%BE%97%E7%9C%8B%E7%9A%84%E5%AE%9E%E9%AA%8C"><span class="toc-text">功耗上倒是有一份值得看的实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3-ARM-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9C%8B%E8%B5%B7%E6%9D%A5%E9%82%A3%E4%B9%88%E9%A6%99%EF%BC%9F"><span class="toc-text">那 ARM 为什么看起来那么香？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E5%85%A8%E4%B8%96%E7%95%8C%E7%BA%A6%E5%A5%BD%E4%B8%8D%E5%86%8D%E7%94%A8-x86%EF%BC%8C%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7%EF%BC%9F"><span class="toc-text">假设全世界约好不再用 x86，会怎么样？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E4%BA%BA%E5%92%8C%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%8C%E5%88%B0%E5%BA%95%E7%94%A8%E5%88%B0%E4%BA%86%E5%A4%9A%E5%B0%91%E5%85%BC%E5%AE%B9%E6%80%A7%EF%BC%9F"><span class="toc-text">普通人和工程师，到底用到了多少兼容性？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%83%B3%E8%AE%A9%E4%BB%8A%E5%A4%A9%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%80%85%E8%BF%98%E8%83%BD%E9%80%89"><span class="toc-text">我想让今天的设计者还能选</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E6%9D%A5%E6%BA%90%E4%B8%8E%E5%9B%BE%E8%A1%A8%E5%8F%A3%E5%BE%84"><span class="toc-text">资料来源与图表口径</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside></div>
+  </div></div>
 
 
 </main>

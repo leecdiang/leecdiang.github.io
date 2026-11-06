@@ -5,12 +5,13 @@
   <meta name="color-scheme" content="light dark">
   <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
-  <script>(function(){var r=document.documentElement;var dark=r.dataset.color==="dark";var portrait=matchMedia("(orientation: portrait)").matches;var home=location.pathname.replace(/\/index\.html$/,"/")==="/";if(home&&innerWidth<=700)return;var m={dark:{l:"/images/ambient/halo-dark-landscape-v2.webp",p:"/images/ambient/halo-dark-portrait-v2.webp"},light:{l:"/images/ambient/halo-light-landscape-v9.webp",p:"/images/ambient/halo-light-portrait-v9.webp"}};var h=(dark?m.dark:m.light)[portrait?"p":"l"];var l=document.createElement("link");l.rel="preload";l.as="image";l.setAttribute("fetchpriority","high");l.href=h;document.head.appendChild(l)})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.80b48238568b.css">
   
   
     <meta name="description" content="Beyond the Clock is LEEcDiang&#39;s personal archive on microelectronics, computer architecture, digital tools, and visual narratives.">
@@ -46,16 +47,14 @@
   
   
   
-  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
+  <script defer src="/assets/studio/core.135d4cdbef04.js"></script>
   
-  <link rel="preload" as="image" href="/images/home-portrait-1280.webp" imagesrcset="/images/home-portrait-640.webp 640w, /images/home-portrait-1280.webp 1280w, /images/home-portrait-1920.webp 1920w" imagesizes="(max-width: 700px) calc(151svh - 193px), (max-width: 1000px) 50vw, 560px">
+  <link rel="preload" as="image" href="/images/home-portrait-1280.webp" imagesrcset="/images/home-portrait-640.webp 640w, /images/home-portrait-1280.webp 1280w, /images/home-portrait-1920.webp 1920w" media="not all and (max-width:700px) and (max-aspect-ratio:3/4)" imagesizes="(max-width: 700px) calc(151svh - 193px), (max-width: 1000px) 50vw, 560px">
+<link rel="preload" as="image" href="/images/home-portrait-mobile-768.webp" imagesrcset="/images/home-portrait-mobile-480.webp 480w, /images/home-portrait-mobile-768.webp 768w, /images/home-portrait-mobile-1080.webp 1080w, /images/home-portrait-mobile-1440.webp 1440w" imagesizes="max(408px, calc(85svh - 109px))" media="(max-width:700px) and (max-aspect-ratio:3/4)" fetchpriority="high">
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 </head>
 <body class="studio-site studio-halo studio-home">
-  <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-  </div>
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
     <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
@@ -70,7 +69,7 @@
     
 
 <section class="home-intro" aria-labelledby="home-name">
-  <figure class="home-photo"><img src="/images/home-portrait-1280.webp" srcset="/images/home-portrait-640.webp 640w, /images/home-portrait-1280.webp 1280w, /images/home-portrait-1920.webp 1920w" sizes="(max-width: 700px) calc(151svh - 193px), (max-width: 1000px) 50vw, 560px" alt="暖色餐厅里的童年照片，坐在餐桌前看向镜头" width="4288" height="2848" fetchpriority="high"></figure>
+  <figure class="home-photo"><picture><source media="(max-width:700px) and (max-aspect-ratio:3/4)" srcset="/images/home-portrait-mobile-480.webp 480w, /images/home-portrait-mobile-768.webp 768w, /images/home-portrait-mobile-1080.webp 1080w, /images/home-portrait-mobile-1440.webp 1440w" sizes="max(408px, calc(85svh - 109px))"><img src="/images/home-portrait-1280.webp" srcset="/images/home-portrait-640.webp 640w, /images/home-portrait-1280.webp 1280w, /images/home-portrait-1920.webp 1920w" sizes="(max-width: 700px) calc(151svh - 193px), (max-width: 1000px) 50vw, 560px" alt="暖色餐厅里的童年照片，坐在餐桌前看向镜头" width="4288" height="2848" fetchpriority="high"></picture></figure>
   <div class="home-copy"><p class="home-eyebrow" translate="no">Chengzhan Li</p><h1 id="home-name"><span class="home-hello">你好，我是</span>LEEcDiang<span class="home-period">.</span></h1><p class="home-description">在电子科技大学学习微电子，<br>也用照片和文字，记录生活。</p><nav class="home-actions" aria-label="首页入口"><a class="home-primary" href="/about/">关于 <span aria-hidden="true">↗</span></a><a href="/archives/">文章列表 <span aria-hidden="true">↗</span></a><a href="/photography/">摄影 <span aria-hidden="true">↗</span></a></nav><p class="home-latest"><span>最新文章</span><time datetime="2026-11-06T17:30:00+08:00">11.06</time><a class="home-latest-title" lang="zh-CN" href="/2026/11/06/architecture-performance-equations/">性能模型的形式与硬件落点：Roofline、Amdahl、CPI 与存储层次</a></p></div>
 </section>
 

@@ -5,12 +5,13 @@
   <meta name="color-scheme" content="light dark">
   <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
-  <script>(function(){var r=document.documentElement;var dark=r.dataset.color==="dark";var portrait=matchMedia("(orientation: portrait)").matches;var home=location.pathname.replace(/\/index\.html$/,"/")==="/";if(home&&innerWidth<=700)return;var m={dark:{l:"/images/ambient/halo-dark-landscape-v2.webp",p:"/images/ambient/halo-dark-portrait-v2.webp"},light:{l:"/images/ambient/halo-light-landscape-v9.webp",p:"/images/ambient/halo-light-portrait-v9.webp"}};var h=(dark?m.dark:m.light)[portrait?"p":"l"];var l=document.createElement("link");l.rel="preload";l.as="image";l.setAttribute("fetchpriority","high");l.href=h;document.head.appendChild(l)})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.80b48238568b.css">
   
   
     <meta name="description" content="Verification: 742c2c3e6536dd02">
@@ -47,16 +48,14 @@
   
   
   
-  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
+  <script defer src="/assets/studio/core.135d4cdbef04.js"></script>
   
   
+
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 </head>
 <body class="studio-site studio-halo">
-  <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-  </div>
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
     <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>

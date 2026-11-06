@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-static-math="true">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
-  <script>(function(){var r=document.documentElement;var dark=r.dataset.color==="dark";var portrait=matchMedia("(orientation: portrait)").matches;var home=location.pathname.replace(/\/index\.html$/,"/")==="/";if(home&&innerWidth<=700)return;var m={dark:{l:"/images/ambient/halo-dark-landscape-v2.webp",p:"/images/ambient/halo-dark-portrait-v2.webp"},light:{l:"/images/ambient/halo-light-landscape-v9.webp",p:"/images/ambient/halo-light-portrait-v9.webp"}};var h=(dark?m.dark:m.light)[portrait?"p":"l"];var l=document.createElement("link");l.rel="preload";l.as="image";l.setAttribute("fetchpriority","high");l.href=h;document.head.appendChild(l)})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.80b48238568b.css"><link rel="stylesheet" data-static-math-style href="/assets/studio/math.2592be2b70fa.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script>
@@ -25,7 +26,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://leecdiang.com/images/social/5bb58cc15755.png">
 <meta property="article:published_time" content="2026-10-14T07:26:00.000Z">
-<meta property="article:modified_time" content="2026-11-06T12:05:19.803Z">
+<meta property="article:modified_time" content="2026-11-06T17:13:11.215Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Agent Step Value">
 <meta property="article:tag" content="EMNLP 2026">
@@ -52,24 +53,22 @@
 
 
 
-  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/vendor/mathjax/tex-mml-chtml.js"}}</script>
-<script src="/js/third-party/math/mathjax.js" defer></script>
+  <script class="next-config" data-name="enableMath" type="application/json">false</script>
+
 
   
   <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":"/js/third-party/mermaid.min.js"}</script>
   <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer></script>
 
   
-  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
+  <script defer src="/assets/studio/core.135d4cdbef04.js"></script>
   
   
+
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
 <body class="studio-site studio-halo studio-reading">
-  <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
-  </div>
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
     <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
@@ -87,7 +86,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="en"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-What-changes-when-the-evaluator-changes"><span class="toc-text">1. What changes when the evaluator changes?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ASV-measure-the-step-within-one-channel"><span class="toc-text">2. ASV: measure the step within one channel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Four-scores-make-a-fair-comparison"><span class="toc-text">3. Four scores make a fair comparison</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-The-main-result-channel-changes-outweigh-retries"><span class="toc-text">4. The main result: channel changes outweigh retries</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Retrieval-locate-the-channel-difference"><span class="toc-text">5. Retrieval: locate the channel difference</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Check-the-direction-with-other-instruments"><span class="toc-text">6. Check the direction with other instruments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-A-source-restriction-tests-the-inflated-baseline"><span class="toc-text">7. A source restriction tests the inflated baseline</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-How-I-would-audit-a-step-reward"><span class="toc-text">8. How I would audit a step reward</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Paper-and-presentation"><span class="toc-text">9. Paper and presentation</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -95,7 +94,7 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en"><meta itemprop="image" content="https://leecdiang.com/images/social/5bb58cc15755.png"><meta itemprop="dateModified" content="2026-11-06T12:05:19.803Z"><meta itemprop="datePublished" content="2026-10-14T07:26:00.000Z">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en"><meta itemprop="image" content="https://leecdiang.com/images/social/5bb58cc15755.png"><meta itemprop="dateModified" content="2026-11-06T17:13:11.215Z"><meta itemprop="datePublished" content="2026-10-14T07:26:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/10/14/agent-step-value/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -136,7 +135,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><div class="asv-paper-panel">
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="8"><div class="asv-paper-panel">
 <div class="asv-paper-meta"><span>RESEARCH PAPER</span><span>arXiv:2607.04419 · v5 · DOI 10.48550/arXiv.2607.04419</span></div>
 <div class="asv-paper-preview"><a href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><img alt="Agent Step Value: paper title, authors, and affiliations." src="/2026/10/14/agent-step-value/paper-title.jpg" decoding="async" loading="lazy" width="1600" height="505"></a></div>
 <div class="asv-paper-footer"><span>REALM Workshop · EMNLP 2026 · Poster<br>Chengzhan Li · Co-first author</span><a class="glass-pill" href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener"><i class="fas fa-file-alt" aria-hidden="true"></i> Read on arXiv</a></div>
@@ -177,30 +176,40 @@
 </table></div>
 <p>The generated view may be useful as a representation. But it can also express apparent support that the retrieved evidence does not contain. Since the state remains in the scorer input, the view introduces no newly observed task variable. It changes how the existing material reaches the evaluator.</p>
 <h2 id="2-ASV-measure-the-step-within-one-channel">2. ASV: measure the step within one channel</h2>
-<p>For a frozen transition, let $x^-$ be the state before the step and $x^+$ the state after it. Let $F_\rho(x)$ be the evaluator’s target margin under channel $\rho$. Agent Step Value (ASV) is</p>
-<p>$$<br>
-G^\rho = F_\rho(x^+) - F_\rho(x^-).<br>
-$$</p>
+<p>For a frozen transition, let <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="x^-"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>x</mi><mo>−</mo></msup></math></mjx-assistive-mml></mjx-container> be the state before the step and <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="x^+"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>x</mi><mo>+</mo></msup></math></mjx-assistive-mml></mjx-container> the state after it. Let <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="F_\rho(x)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>F</mi><mi>ρ</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> be the evaluator’s target margin under channel <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\rho"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ρ</mi></math></mjx-assistive-mml></mjx-container>. Agent Step Value (ASV) is</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+
+G^\rho = F_\rho(x^+) - F_\rho(x^-).
+
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>G</mi><mi>ρ</mi></msup><mo>=</mo><msub><mi>F</mi><mi>ρ</mi></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>+</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi>F</mi><mi>ρ</mi></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>−</mo></msup><mo stretchy="false">)</mo><mo>.</mo></math></mjx-assistive-mml></mjx-container></p>
 <p>A positive gain means the evaluator assigns more support to the reviewed target after the step. A negative gain means it assigns less. This is evaluator-assigned movement on a frozen trace; it does not establish the step’s causal contribution to the actor’s success.</p>
 <details>
 <summary>How the target margin is computed</summary>
-<p>In our implementation, each task has three concrete candidates and a <code>none-of-the-above</code> option. We turn the candidate energies into a target-versus-rest margin. With the induced target probability $q(g)$, the margin is</p>
-<p>$$<br>
-F = \log\frac{q(g)}{1-q(g)}.<br>
-$$</p>
+<p>In our implementation, each task has three concrete candidates and a <code>none-of-the-above</code> option. We turn the candidate energies into a target-versus-rest margin. With the induced target probability <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="q(g)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>, the margin is</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+
+F = \log\frac{q(g)}{1-q(g)}.
+
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mfrac space="2"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>F</mi><mo>=</mo><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mfrac><mrow><mi>q</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">)</mo></mrow></mfrac><mo>.</mo></math></mjx-assistive-mml></mjx-container></p>
 <p>For intuition, a margin gain of +0.16 multiplies target-versus-rest odds by about 1.17. The probability change depends on where those odds started. The binary readout uses independently elicited Yes/No energies followed by an induced normalization, so its scale needs separate treatment.</p>
 </details>
 <img class title="From frozen states to endpoint margins, within-channel gains, and their matched difference. Figure 4 of the paper." src="/2026/10/14/agent-step-value/asv-mechanics.jpg" decoding="async" loading="lazy" width="1256" height="300">
 <h2 id="3-Four-scores-make-a-fair-comparison">3. Four scores make a fair comparison</h2>
 <p>Comparing a before-state score from one evaluator with an after-state score from another sounds tempting. It mixes two changes: the agent’s state and the evaluation channel.</p>
 <p>The matched design scores both endpoints under both channels. The interaction is the difference between the two gains:</p>
-<p>$$<br>
-\begin{aligned}<br>
-\Omega &amp;= G^{\rho_1} - G^{\rho_0} \<br>
-&amp;= [F_{\rho_1}(x^+) - F_{\rho_1}(x^-)] \<br>
-&amp;\quad - [F_{\rho_0}(x^+) - F_{\rho_0}(x^-)].<br>
-\end{aligned}<br>
-$$</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+
+\begin{aligned}
+
+\Omega &= G^{\rho_1} - G^{\rho_0} \
+
+&= [F_{\rho_1}(x^+) - F_{\rho_1}(x^-)] \
+
+&\quad - [F_{\rho_0}(x^+) - F_{\rho_0}(x^-)].
+
+\end{aligned}
+
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mtable style="min-width: 29.345em;"><mjx-table><mjx-itable><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0;"><mjx-mi class="mjx-n"><mjx-c class="mjx-c3A9"></mjx-c></mjx-mi><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0; padding-right: 1em;"><mjx-mi class="mjx-n"></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msup space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msup><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: right; padding-left: 1em; padding-right: 0;"><mjx-mi class="mjx-n"></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0;"><mjx-mstyle><mjx-mspace style="width: 1em;"></mjx-mspace></mjx-mstyle><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.106em;"><mjx-texatom size="s" texclass="ORD"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr></mjx-itable></mjx-table></mjx-mtable></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtable displaystyle="true" columnalign="right left right left" columnspacing="0em 2em 0em" rowspacing="3pt"><mtr><mtd><mi mathvariant="normal">Ω</mi></mtd><mtd><mi></mi><mo>=</mo><msup><mi>G</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>1</mn></msub></mrow></msup><mo>−</mo><msup><mi>G</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>0</mn></msub></mrow></msup><mtext> </mtext></mtd><mtd><mi></mi><mo>=</mo><mo stretchy="false">[</mo><msub><mi>F</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>1</mn></msub></mrow></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>+</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi>F</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>1</mn></msub></mrow></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>−</mo></msup><mo stretchy="false">)</mo><mo stretchy="false">]</mo><mtext> </mtext></mtd><mtd><mstyle scriptlevel="0"><mspace width="1em"></mspace></mstyle><mo>−</mo><mo stretchy="false">[</mo><msub><mi>F</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>0</mn></msub></mrow></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>+</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi>F</mi><mrow data-mjx-texclass="ORD"><msub><mi>ρ</mi><mn>0</mn></msub></mrow></msub><mo stretchy="false">(</mo><msup><mi>x</mi><mo>−</mo></msup><mo stretchy="false">)</mo><mo stretchy="false">]</mo><mo>.</mo></mtd></mtr></mtable></math></mjx-assistive-mml></mjx-container></p>
 <p>A constant channel offset cancels inside each bracket. A nonzero interaction records a channel response that depends on the state. Without structural restrictions, dropping any of the four scores leaves this interaction unidentified.</p>
 <p>The presentation uses this illustrative example:</p>
 <div class="table-container"><table>
@@ -235,7 +244,7 @@ $$</p>
 </div>
 </div>
 <p><em>Reading the four corners: each gain uses one channel throughout. The numbers are illustrative, not cohort estimates.</em></p>
-<img class title="The audit design: freeze the transition, replay both channels, complete the four-corner face, and check the observed readout&#x2F;evaluator configurations. Figure 1 of the paper." src="/2026/10/14/agent-step-value/asv-pipeline.jpg" decoding="async" loading="lazy" width="1290" height="636">
+<img class title="The audit design: freeze the transition, replay both channels, complete the four-corner face, and check the observed readout/evaluator configurations. Figure 1 of the paper." src="/2026/10/14/agent-step-value/asv-pipeline.jpg" decoding="async" loading="lazy" width="1290" height="636">
 <p>We emphasize gain signs because they survive positive affine recalibration within a channel. If we multiply a channel’s scores by a positive constant and add an offset, its gain retains its sign. Cross-channel interaction magnitudes generally do not have that invariance unless the scales are linked. Two channels can also have a nonzero interaction while both gains remain positive.</p>
 <h2 id="4-The-main-result-channel-changes-outweigh-retries">4. The main result: channel changes outweigh retries</h2>
 <p>We froze 100 PubMed tasks from one actor workflow. Each task contributed 11 transitions, covering classification, planning, retrieval, drafting, audit, revision, and finalization: 1,100 transitions in total. We kept the states and candidate contracts fixed, and used four cyclic candidate layouts to balance option-label position.</p>
@@ -360,12 +369,12 @@ $$</p>
 <pre>
 <code class="mermaid">
 
-%%{init: {&quot;flowchart&quot;: {&quot;htmlLabels&quot;: false, &quot;nodeSpacing&quot;: 18, &quot;rankSpacing&quot;: 24}, &quot;themeVariables&quot;: {&quot;fontSize&quot;: &quot;14px&quot;}}}%%
+%%{init: {"flowchart": {"htmlLabels": false, "nodeSpacing": 18, "rankSpacing": 24}, "themeVariables": {"fontSize": "14px"}}}%%
 flowchart TD
-  A[&quot;Frozen steps: signs disagree&quot;] --&gt;|repeat scoring| B[&quot;Channel gap exceeds retry noise&quot;]
-  B --&gt;|cross state and view| C[&quot;Retrieval: locate the view effect&quot;]
-  C --&gt;|vary instrument| D[&quot;Check three instruments&quot;]
-  D --&gt;|restrict sources| E[&quot;512-token source-only follow-up&quot;]
+  A["Frozen steps: signs disagree"] --&gt;|repeat scoring| B["Channel gap exceeds retry noise"]
+  B --&gt;|cross state and view| C["Retrieval: locate the view effect"]
+  C --&gt;|vary instrument| D["Check three instruments"]
+  D --&gt;|restrict sources| E["512-token source-only follow-up"]
 </code>
 </pre>
 </div>
@@ -394,7 +403,7 @@ flowchart TD
 <a class="glass-pill" href="https://arxiv.org/html/2607.04419v5" target="_blank" rel="noopener"><i class="fas fa-code" aria-hidden="true"></i> Read HTML</a>
 </div>
 <p>The recording below walks through the audit, the retrieval checks, and the source-only follow-up in about four and a half minutes. All five figures above come from the paper; the explanation follows the workshop slides.</p>
-<video controls preload="metadata" playsinline poster="/2026/10/14/agent-step-value/talk-poster.jpg" style="width:100%;height:auto;border-radius:12px;">
+<video controls preload="none" playsinline width="967" height="544" poster="/2026/10/14/agent-step-value/talk-poster.jpg" style="width:100%;height:auto;aspect-ratio:967/544;border-radius:12px;">
   <source src="/2026/10/14/agent-step-value/asv-realm-2026-talk-web.mp4" type="video/mp4">
   Your browser does not support embedded video. <a href="/2026/10/14/agent-step-value/asv-realm-2026-talk-web.mp4">Download the presentation recording.</a>
 </video>
@@ -452,7 +461,7 @@ flowchart TD
 
 
 
-  </div><aside class="reading-toc" aria-label="文章目录"><details open><summary>文章目录</summary><div class="toc-scroll" lang="en"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-What-changes-when-the-evaluator-changes"><span class="toc-text">1. What changes when the evaluator changes?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ASV-measure-the-step-within-one-channel"><span class="toc-text">2. ASV: measure the step within one channel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Four-scores-make-a-fair-comparison"><span class="toc-text">3. Four scores make a fair comparison</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-The-main-result-channel-changes-outweigh-retries"><span class="toc-text">4. The main result: channel changes outweigh retries</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Retrieval-locate-the-channel-difference"><span class="toc-text">5. Retrieval: locate the channel difference</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Check-the-direction-with-other-instruments"><span class="toc-text">6. Check the direction with other instruments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-A-source-restriction-tests-the-inflated-baseline"><span class="toc-text">7. A source restriction tests the inflated baseline</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-How-I-would-audit-a-step-reward"><span class="toc-text">8. How I would audit a step reward</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Paper-and-presentation"><span class="toc-text">9. Paper and presentation</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside></div>
+  </div></div>
 
 
 </main>

@@ -32,53 +32,92 @@
       animations.delete(element);
     }).catch(() => {}); // A second interaction deliberately interrupts the first.
   }
-  window.StudioMotion = {instant, setPopover};
+  function transitionList(container, mutate) {
+    if (!container || instant()) {
+      container?.querySelectorAll('.btc-archive-list > li').forEach(row => animations.get(row)?.cancel());
+      mutate(); return;
+    }
+    const rows = [...container.querySelectorAll('.btc-archive-list > li')];
+    const previous = new Map(rows.filter(row => !row.hidden && row.getClientRects().length).map(row => [row, row.getBoundingClientRect()]));
+    mutate();
+    let visible = 0;
+    for (const row of rows) {
+      animations.get(row)?.cancel();
+      if (row.hidden || !row.getClientRects().length) continue;
+      const rect = row.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > innerHeight || visible++ >= 12) continue;
+      const before = previous.get(row);
+      const wasVisible = before && before.bottom >= 0 && before.top <= innerHeight;
+      const offset = wasVisible ? Math.max(-24, Math.min(24, before.top - rect.top)) : 5;
+      if (wasVisible && Math.abs(offset) < 1) continue;
+      const animation = row.animate([
+        {opacity: wasVisible ? 1 : .45, transform: `translateY(${offset}px)`},
+        {opacity: 1, transform: 'none'}
+      ], {duration: 190, easing: 'cubic-bezier(.2,.7,.3,1)'});
+      animations.set(row, animation);
+      animation.finished.then(() => { if (animations.get(row) === animation) animations.delete(row); }).catch(() => {});
+    }
+  }
+  const feedback = new Set();
+  function respond(element, frames, options = {}) {
+    if (!element || instant() || !element.animate) return;
+    animations.get(element)?.cancel();
+    const animation = element.animate(frames, {duration: 220, easing: 'cubic-bezier(.22,1,.36,1)', ...options});
+    animations.set(element, animation);
+    feedback.add(animation);
+    animation.finished.then(() => { if (animations.get(element) === animation) animations.delete(element); }).catch(() => {}).finally(() => feedback.delete(animation));
+    return animation;
+  }
+  function mountDetails() {
+    document.querySelectorAll('.reading-toc details').forEach(details => {
+      const summary = details.querySelector('summary');
+      let task;
+      let desired = details.open;
+      summary.addEventListener('click', event => {
+        if (instant()) {
+          task?.cancel(); task = null;
+          details.style.removeProperty('overflow');
+          return;
+        }
+        event.preventDefault();
+        const from = details.getBoundingClientRect().height;
+        desired = task ? !desired : !details.open;
+        task?.cancel();
+        details.open = true;
+        const to = desired ? details.getBoundingClientRect().height : summary.getBoundingClientRect().height;
+        details.style.overflow = 'hidden';
+        const animation = respond(details, [{height: from + 'px'}, {height: to + 'px'}], {duration: 240});
+        task = animation;
+        animation.finished.then(() => {
+          if (task !== animation) return;
+          details.open = desired;
+          details.style.removeProperty('overflow');
+          task = null;
+        }).catch(() => {});
+      });
+    });
+    document.addEventListener('tabs:click', event => respond(event.target, [{opacity: .55, transform: 'translateY(5px)'}, {opacity: 1, transform: 'none'}]));
+    document.addEventListener('studio:copy-result', event => respond(event.target.closest('.copy-btn'), [{transform: 'scale(1)'}, {transform: 'scale(1.08)'}, {transform: 'scale(1)'}]));
+    document.addEventListener('click', event => {
+      const control = event.target.closest('.arch-reset,.arch-levels button,.arch-map-picker button');
+      if (!control) return;
+      const result = control.closest('.arch-lab')?.querySelector('.arch-result') || control.closest('.arch-map')?.querySelector('.arch-map-note');
+      respond(result, [{opacity: .5}, {opacity: 1}], {duration: 220});
+    });
+    document.addEventListener('change', event => {
+      const lab = event.target.closest('.arch-lab');
+      if (lab) respond(lab.querySelector('.arch-result'), [{opacity: .5}, {opacity: 1}], {duration: 220});
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountDetails, {once: true});
+  else mountDetails();
+  window.StudioMotion = {instant, setPopover, transitionList, respond};
   reduced.addEventListener('change', () => {
+    if (reduced.matches) feedback.forEach(animation => animation.finish());
+    if (reduced.matches) document.querySelectorAll('.btc-archive-list > li').forEach(row => animations.get(row)?.cancel());
     document.querySelectorAll('.btc-orrery-menu-pop').forEach(element => {
       animations.get(element)?.finish();
     });
   });
-  function ambientUrl(mode) {
-    const art = document.querySelector('.ambient-art--' + mode);
-    if (!art) return '';
-    const img = art.querySelector('img');
-    const source = art.querySelector('source[data-srcset]');
-    const portrait = matchMedia('(orientation: portrait)').matches;
-    return (portrait && source && source.dataset.srcset) || (img && img.dataset.ambientSrc) || '';
-  }
-  function prefetchOtherTheme() {
-    const connection = navigator.connection;
-    if (connection && (connection.saveData || /^(slow-2g|2g|3g)$/.test(connection.effectiveType))) return;
-    // Fetch the other palette only when bandwidth is available.
-    const other = root.dataset.color === 'dark' ? 'light' : 'dark';
-    const url = ambientUrl(other);
-    if (!url) return;
-    const pre = new Image();
-    pre.decoding = 'async';
-    pre.src = url;
-  }
-  function prepareArtwork() {
-    // The mobile homepage uses the portrait itself; avoid downloading hidden art.
-    if (document.body.classList.contains('studio-home') && innerWidth <= 700) return;
-    const mode = root.dataset.color === 'dark' ? 'dark' : 'light';
-    document.querySelectorAll('.ambient-art--' + mode + ' img').forEach(img => {
-      const show = () => {
-        if (!img.naturalWidth) return;
-        const decoded = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
-        decoded.then(() => img.parentElement.classList.add('is-ready'));
-      };
-      if (img.hasAttribute('src')) { if (img.complete) show(); return; }
-      img.addEventListener('load', show, {once: true});
-      const source = img.parentElement.querySelector('source[data-srcset]');
-      if (source) source.srcset = source.dataset.srcset;
-      img.src = img.dataset.ambientSrc;
-      if (img.complete) show();
-    });
-    const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1200));
-    idle(prefetchOtherTheme);
-  }
-  window.addEventListener('studio:theme', prepareArtwork);
-  matchMedia('(max-width: 700px)').addEventListener('change', prepareArtwork);
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepareArtwork, {once: true});
-  else prepareArtwork();
+  // Backgrounds are embedded in the shared stylesheet and ready at first paint.
 })();

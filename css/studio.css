@@ -376,8 +376,8 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 @media(min-width:701px) and (prefers-reduced-motion:no-preference){
  .studio-halo{--halo-scale:1.11;--halo-x:2.4%;--halo-y:-1.4%;--halo-duration:12s}
  .studio-halo.studio-reading{--halo-scale:1.04;--halo-x:.8%;--halo-y:-.5%;--halo-duration:24s}
- :root[data-color=light] .studio-halo .ambient-art--light.is-ready img,
- :root[data-color=dark] .studio-halo .ambient-art--dark.is-ready img{animation:studio-halo-drift var(--halo-duration) ease-in-out infinite alternate;transform-origin:35% 50%}
+ :root[data-color=light] .studio-halo .ambient-art--light.is-ready,
+ :root[data-color=dark] .studio-halo .ambient-art--dark.is-ready{animation:studio-halo-drift var(--halo-duration) ease-in-out infinite alternate;animation-delay:var(--halo-phase,0ms);transform-origin:35% 50%}
 }
 @keyframes studio-halo-drift{
  from{transform:scale(1.012) translate3d(0,0,0)}
@@ -675,4 +675,52 @@ body .btc-orrery-modal :is(button,input,select):focus-visible{outline:2px solid 
 
 body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-word}
 @media(min-width:701px) and (max-width:1099px){.archive-reading-plane::before,.about-editorial .about-details::before{left:-24px;right:-24px}}
-.post-body :is(.arch-plot-wrap,.table-container):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.post-body :is(.arch-plot-wrap,.table-container,mjx-container[display="true"]):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* A portable document hand-off, including browsers without View Transitions. */
+@view-transition{navigation:none}
+@keyframes studio-content-enter{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+:root[data-route-enter] .studio-main{animation:studio-content-enter 420ms cubic-bezier(.22,1,.36,1) both}
+:root[data-route-leaving] .studio-main{pointer-events:none}
+:root[data-theme-changing] :is(body,.studio-content-plane,.post-body .v-figure,.archive-search input,.theme-toggle,.language-toggle){transition:background-color 180ms ease,color 160ms ease,border-color 160ms ease}
+:root[data-theme-changing] .post-body :is(.v-ink,.v-sub,.v-muted){transition:fill 160ms ease}
+.home-photo picture{display:contents}
+@media(prefers-reduced-motion:reduce){
+ @view-transition{navigation:none}
+ ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}
+
+/* Put the TOC in source order before the article, reserving its first-paint space. */
+@media(min-width:1100px){.reading-main{grid-column:1;grid-row:1}.reading-toc{grid-column:2;grid-row:1}}
+@media(max-width:1099px){.reading-layout{flex-direction:column}}
+
+/* One atmosphere, present from the stylesheet's first frame. */
+.ambient-art{background-size:cover;background-position:left center;background-repeat:no-repeat}
+.ambient-art--light{background-image:var(--ambient-light-landscape)}
+.ambient-art--dark{background-image:var(--ambient-dark-landscape)}
+@media(orientation:portrait){.ambient-art--light{background-image:var(--ambient-light-portrait)}.ambient-art--dark{background-image:var(--ambient-dark-portrait)}}
+:root{--motion-fast:150ms;--motion-medium:240ms;--motion-ease:cubic-bezier(.22,1,.36,1)}
+.studio-header nav a,.studio-footer a,.home-actions a,.glass-pill,.btn,.photo-series-item figure,.research-figure>a{transition:transform var(--motion-medium) var(--motion-ease),color var(--motion-fast) ease,background-color var(--motion-fast) ease,border-color var(--motion-fast) ease,box-shadow var(--motion-medium) ease}
+.home-actions span,.photo-series-item>div>span span{display:inline-block;transition:transform var(--motion-medium) var(--motion-ease)}
+.reading-toc summary{list-style:none;display:flex;align-items:center;gap:9px}
+.reading-toc summary::-webkit-details-marker{display:none}
+.reading-toc summary::before{content:'';width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform var(--motion-medium) var(--motion-ease);flex:0 0 auto}
+.reading-toc details[open] summary::before{transform:rotate(45deg)}
+@media(hover:hover) and (pointer:fine){
+ .studio-header nav a:hover,.studio-footer a:hover{transform:translateY(-2px)}
+ .home-actions a:hover{opacity:1;transform:translateY(-2px)}
+ .home-actions a:hover span{transform:translate(3px,-3px)}
+ .photo-series-item:hover figure img{transform:scale(1.025)}
+ .photo-series-item:hover>div>span span{transform:translate(3px,-3px)}
+ .glass-pill:hover,.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+ .research-figure>a:hover{transform:translateY(-2px);box-shadow:0 8px 22px -16px var(--accent)}
+}
+:root[data-input=pointer] :is(.glass-pill,.btn,.arch-reset,.arch-levels button,.arch-map-picker button):active{transform:scale(.975)}
+:root[data-input=keyboard] .reading-toc summary::before{transition:none}
+@media(prefers-reduced-motion:reduce){
+ :root[data-route-enter] .studio-main{animation:none!important}
+ .studio-header nav a,.studio-footer a,.home-actions a,.home-actions span,.glass-pill,.btn,.photo-series-item figure,.photo-series-item figure img,.photo-series-item>div>span span,.research-figure>a,.reading-toc summary::before{transition:none!important;transform:none!important}
+}
+
+:root[data-input=keyboard] :is(.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag,.arch-amdahl-track span,.mem-bar i){transition:none!important}
+@media(prefers-reduced-motion:reduce){.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag,.mem-bar i{transition:none!important}}
