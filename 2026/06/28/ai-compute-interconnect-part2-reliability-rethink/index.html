@@ -5,6 +5,7 @@
   <meta name="color-scheme" content="light dark">
   <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+  <script>(function(){var r=document.documentElement;var dark=r.dataset.color==="dark";var portrait=matchMedia("(orientation: portrait)").matches;var home=location.pathname.replace(/\/index\.html$/,"/")==="/";if(home&&innerWidth<=700)return;var m={dark:{l:"/images/ambient/halo-dark-landscape-v2.webp",p:"/images/ambient/halo-dark-portrait-v2.webp"},light:{l:"/images/ambient/halo-light-landscape-v9.webp",p:"/images/ambient/halo-light-portrait-v9.webp"}};var h=(dark?m.dark:m.light)[portrait?"p":"l"];var l=document.createElement("link");l.rel="preload";l.as="image";l.setAttribute("fetchpriority","high");l.href=h;document.head.appendChild(l)})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
@@ -60,7 +61,7 @@
   <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer></script>
 
   
-  <script defer src="/assets/studio/core.38bf5c7b74cd.js"></script>
+  <script defer src="/assets/studio/core.00470fb6356c.js"></script>
   
   
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
@@ -708,11 +709,11 @@ flowchart TB
 </div>
 
           <div class="post-tags">
-              <a href="/tags/RoCE/" rel="tag"># RoCE</a>
+              <a href="/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/" rel="tag"># 智算网络</a>
               <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+              <a href="/tags/RoCE/" rel="tag"># RoCE</a>
               <a href="/tags/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" rel="tag"># 拥塞控制</a>
               <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E7%BD%91%E7%BB%9C/" rel="tag"># 数据中心网络</a>
-              <a href="/tags/%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C/" rel="tag"># 智算网络</a>
               <a href="/tags/PFC/" rel="tag"># PFC</a>
               <a href="/tags/ECN/" rel="tag"># ECN</a>
               <a href="/tags/Ultra-Ethernet/" rel="tag"># Ultra-Ethernet</a>

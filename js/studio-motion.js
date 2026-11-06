@@ -38,21 +38,42 @@
       animations.get(element)?.finish();
     });
   });
+  function ambientUrl(mode) {
+    const art = document.querySelector('.ambient-art--' + mode);
+    if (!art) return '';
+    const img = art.querySelector('img');
+    const source = art.querySelector('source[data-srcset]');
+    const portrait = matchMedia('(orientation: portrait)').matches;
+    return (portrait && source && source.dataset.srcset) || (img && img.dataset.ambientSrc) || '';
+  }
+  function prefetchOtherTheme() {
+    // Keep theme toggling instant: fetch the other palette once this page is idle.
+    const other = root.dataset.color === 'dark' ? 'light' : 'dark';
+    const url = ambientUrl(other);
+    if (!url) return;
+    const pre = new Image();
+    pre.decoding = 'async';
+    pre.src = url;
+  }
   function prepareArtwork() {
     // The mobile homepage uses the portrait itself; avoid downloading hidden art.
     if (document.body.classList.contains('studio-home') && innerWidth <= 700) return;
     const mode = root.dataset.color === 'dark' ? 'dark' : 'light';
     document.querySelectorAll('.ambient-art--' + mode + ' img').forEach(img => {
-      if (img.hasAttribute('src')) return;
-      const ready = () => {
-        if (img.naturalWidth) img.parentElement.classList.add('is-ready');
+      const show = () => {
+        if (!img.naturalWidth) return;
+        const decoded = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+        decoded.then(() => img.parentElement.classList.add('is-ready'));
       };
-      img.addEventListener('load', ready, {once: true});
+      if (img.hasAttribute('src')) { if (img.complete) show(); return; }
+      img.addEventListener('load', show, {once: true});
       const source = img.parentElement.querySelector('source[data-srcset]');
       if (source) source.srcset = source.dataset.srcset;
       img.src = img.dataset.ambientSrc;
-      if (img.complete) ready();
+      if (img.complete) show();
     });
+    const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1200));
+    idle(prefetchOtherTheme);
   }
   window.addEventListener('studio:theme', prepareArtwork);
   matchMedia('(max-width: 700px)').addEventListener('change', prepareArtwork);
