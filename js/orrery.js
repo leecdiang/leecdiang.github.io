@@ -339,7 +339,7 @@
   }
 
   try {
-    var savedLang = document.documentElement.dataset.language || localStorage.getItem('btc-orrery-lang');
+    var savedLang = window.StudioLanguage ? window.StudioLanguage.language : document.documentElement.dataset.language;
     if (savedLang === 'en' || savedLang === 'zh') state.lang = savedLang;
   } catch (e) {}
 
@@ -2358,8 +2358,6 @@
     document.querySelectorAll('#btc-orrery-modal [data-i18n-label]').forEach(function (el) {
       el.setAttribute('aria-label', L(el.dataset.i18nLabel));
     });
-    var box = document.getElementById('btc-orrery-lang');
-    if (box) box.querySelectorAll('button').forEach(function (b) { var active = b.getAttribute('data-lang') === state.lang; b.classList.toggle('is-active', active); b.setAttribute('aria-pressed', String(active)); });
     ['btc-orrery-card', 'btc-orrery-links-entry'].forEach(function (id) { var entry = document.getElementById(id); if (entry) entry.setAttribute('aria-label', L('openLabel')); });
     var modal = document.getElementById('btc-orrery-modal');
     if (modal) modal.setAttribute('aria-label', L('title'));
@@ -2376,9 +2374,7 @@
   }
 
   function setLang(lang) {
-    if(window.StudioLanguage && window.StudioLanguage.language !== lang){window.StudioLanguage.set(lang);return;}
     state.lang = lang === 'en' ? 'en' : 'zh';
-    try { localStorage.setItem('btc-orrery-lang', state.lang); } catch (e) {}
     applyLang();
     renderAll();
   }
@@ -2509,7 +2505,6 @@
     + '    <div class="btc-orrery-menu" id="btc-orrery-menu">'
     + '      <button type="button" class="btc-orrery-menu-btn" data-i18n-label="settings" aria-label="设置" aria-expanded="false" aria-controls="btc-orrery-menu-pop">⋯</button>'
     + '      <div class="btc-orrery-menu-pop" id="btc-orrery-menu-pop" hidden>'
-    + '        <div class="btc-orrery-menu-row"><span data-i18n="language">语言</span><div class="btc-orrery-lang" id="btc-orrery-lang" role="group" aria-label="Language"><button type="button" data-lang="zh" class="is-active">中</button><button type="button" data-lang="en">EN</button></div></div>'
     + '        <div class="btc-orrery-menu-row"><span data-i18n="orbitScale">轨道比例</span><label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed" data-i18n="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" data-i18n-label="trueScaleLabel" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true" data-i18n="trueScale">真实</span></label></div>'
     + '        <div class="btc-orrery-menu-row"><span data-i18n="motion">运动</span><button type="button" id="btc-orrery-rotation">暂停旋转</button></div>'
     + '      </div>'
@@ -2641,13 +2636,6 @@
       renderAll();
     });
 
-    var langBox = modal.querySelector('#btc-orrery-lang');
-    if (langBox) {
-      langBox.addEventListener('click', function (e) {
-        var b = e.target.closest('button');
-        if (b) setLang(b.getAttribute('data-lang'));
-      });
-    }
 
     var scaleInput = modal.querySelector('#btc-orrery-scale-input');
     if (scaleInput) {

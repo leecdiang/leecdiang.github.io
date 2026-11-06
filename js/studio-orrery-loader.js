@@ -98,7 +98,7 @@
           loadAsset('script', '/js/orrery-sky.js')
         ]);
         await window.StudioTheme.refreshOrreryStyles();
-        await loadAsset('script', '/js/orrery.js?v=20261106-performance');
+        await loadAsset('script', '/js/orrery.js?v=20261106-controls-refine');
 
         const entry = document.getElementById('btc-orrery-links-entry');
         if (!entry) throw new Error('The orrery entry did not mount.');

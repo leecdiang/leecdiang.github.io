@@ -182,9 +182,9 @@ html.btc-orrery-locked body { overflow: hidden !important; }
   align-items: center;
   justify-content: center;
   padding: 22px;
-  background: rgba(10, 22, 34, 0.26);
-  -webkit-backdrop-filter: blur(26px) saturate(180%);
-  backdrop-filter: blur(26px) saturate(180%);
+  background: rgba(10, 22, 34, 0.14);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -206,7 +206,8 @@ html.btc-orrery-locked body { overflow: hidden !important; }
   border-radius: 28px;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.65));
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.58), rgba(240, 248, 252, 0.34) 45%, rgba(223, 237, 246, 0.28));
+    radial-gradient(70% 45% at 12% 0%, rgba(226, 181, 111, 0.14), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.43), rgba(240, 248, 252, 0.24) 45%, rgba(223, 237, 246, 0.18));
   box-shadow:
     0 40px 100px -40px rgba(10, 30, 46, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
@@ -653,14 +654,14 @@ html.btc-orrery-locked body { overflow: hidden !important; }
   .btc-orrery-card::after { background: linear-gradient(120deg, transparent 30%, rgba(160, 200, 230, 0.08) 45%, transparent 60%); }
 
   .btc-orrery-panel {
-    background: linear-gradient(160deg, rgba(30, 48, 64, 0.72), rgba(15, 29, 42, 0.62) 45%, rgba(10, 20, 30, 0.58));
+    background: linear-gradient(160deg, rgba(34, 44, 53, 0.62), rgba(17, 26, 36, 0.54) 45%, rgba(10, 17, 25, 0.50));
     border-color: rgba(225, 239, 248, 0.13);
     box-shadow: 0 40px 110px -40px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(225, 239, 248, 0.1);
   }
   .btc-orrery-panel::before {
     background:
-      radial-gradient(70% 50% at 12% 0%, rgba(120, 183, 232, 0.12), transparent 60%),
-      radial-gradient(50% 40% at 92% 100%, rgba(111, 191, 160, 0.07), transparent 65%);
+      radial-gradient(72% 48% at 12% 0%, rgba(216, 170, 100, 0.16), transparent 66%),
+      radial-gradient(50% 40% at 92% 100%, rgba(111, 191, 160, 0.06), transparent 65%);
   }
   .btc-orrery-seg,
   .btc-orrery-layers label,
