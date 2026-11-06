@@ -10,11 +10,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.fd9acda4740b.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.f8c2acaeff11.js"></script>
+  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。">
 <meta property="og:type" content="article">
@@ -23,6 +23,7 @@
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leecdiang.com/images/social/0ebd9e4a9784.png">
 <meta property="article:published_time" content="2026-06-28T14:39:00.000Z">
 <meta property="article:modified_time" content="2026-10-18T16:15:12.117Z">
 <meta property="article:author" content="LEEcDiang">
@@ -36,7 +37,8 @@
 <meta property="article:tag" content="拥塞控制">
 <meta property="article:tag" content="数据中心网络">
 <meta property="article:tag" content="智算网络">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/0ebd9e4a9784.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/">
@@ -61,15 +63,15 @@
   <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer></script>
 
   
-  <script defer src="/assets/studio/core.00470fb6356c.js"></script>
+  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
   
   
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-</head>
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
   </div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
@@ -81,8 +83,8 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
+      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
@@ -96,23 +98,20 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/0ebd9e4a9784.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-06-28T14:39:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
-    </span>
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
 
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="智算互联(中):重构可靠性--从强制无损到端网协同 | Beyond the Clock">
-      <meta itemprop="description" content="从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。">
-    </span>
+    
       <header class="post-header">
         
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon & Circuits</a></nav>
@@ -221,7 +220,7 @@ sequenceDiagram
 </code>
 </pre>
 <h3 id="4-三者作用在不同时间尺度">4. 三者作用在不同时间尺度</h3>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">机制</th>
@@ -254,7 +253,7 @@ sequenceDiagram
 <td style="text-align:left">参数复杂,对突发流量反应有限</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>现实中的 RoCE 网络往往同时使用三者。困难不在于某个机制有根本缺陷,而在于规模、速率和流量模式变化后,靠它们维持强无损的工程成本快速上升。</p>
 <h2 id="三、PFC-的诅咒到底是什么">三、PFC 的诅咒到底是什么</h2>
 <h3 id="1-Head-of-Line-Blocking-无辜流量一起停车">1. Head-of-Line Blocking:无辜流量一起停车</h3>
@@ -296,7 +295,7 @@ sequenceDiagram
 <h3 id="3-数据是否必须严格有序">3. 数据是否必须严格有序</h3>
 <p>这是 Ordering 的问题:应用是否要求所有报文严格按发送顺序交付,还是允许报文乱序到达后直接放入最终内存位置。</p>
 <p>三者可以形成不同组合:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">Fabric</th>
@@ -331,7 +330,7 @@ sequenceDiagram
 <td style="text-align:left">适合能自行容错的特殊应用,不适合普通 RDMA 语义</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>下一代 AI Transport 的方向通常是第二或第三种:Fabric 可以在极端拥塞时丢包,但端点仍保证最终可靠交付。</p>
 <h2 id="五、为什么选择性重传改变了问题">五、为什么选择性重传改变了问题</h2>
 <p>传统可靠连接如果采用 Go-Back-N,一旦检测到一个报文丢失,可能从缺失位置开始重传之后的一串报文。大量已成功到达的数据也被重复发送,浪费带宽。</p>
@@ -405,7 +404,7 @@ sequenceDiagram
 <li>与现有 RoCE 网络的迁移成本。</li>
 </ul>
 <h2 id="九、RoCE、TTPoE-与-UET-应该怎样比较">九、RoCE、TTPoE 与 UET 应该怎样比较</h2>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">维度</th>
@@ -458,9 +457,9 @@ sequenceDiagram
 <td style="text-align:left">追求多厂商互操作</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <div class="v-figure">
-<table class="v-matrix">
+<div class="table-container"><table class="v-matrix">
 <thead><tr><th>维度</th><th>RoCEv2</th><th>TTPoE</th><th>UET</th></tr></thead>
 <tbody>
 <tr><td>生态成熟度</td><td class="lv4">高</td><td class="lv1">有限</td><td class="lv2">建设中</td></tr>
@@ -470,7 +469,7 @@ sequenceDiagram
 <tr><td>拥塞控制</td><td class="lv3">PFC / ECN / DCQCN</td><td class="lv3">端点自治</td><td class="lv4">Sender CC + Credit</td></tr>
 <tr><td>通用性</td><td class="lv4">广泛</td><td class="lv1">特定</td><td class="lv3">多厂商</td></tr>
 </tbody>
-</table>
+</table></div>
 <p class="v-caption">图 1：三种 Transport 的定性对比。lv0–lv4 是作者主观分级，不是性能测试。</p>
 </div>
 <p>这张表不是胜负表。RoCE 的部署基础和软件生态是实实在在的优势;TTPoE 展示了定制系统可以多激进;UET 则试图在开放性与 AI 原生能力之间找到新的平衡。</p>
@@ -558,7 +557,7 @@ flowchart TB
 <p>因此,In-Network Computing 更像是<strong>在正确的位置执行少量高价值操作</strong>,而不是把交换机变成另一种 GPU。</p>
 <h2 id="十二、从-FPGA-到可编程微引擎-不要把-可编程-混成一个词">十二、从 FPGA 到可编程微引擎:不要把&quot;可编程&quot;混成一个词</h2>
 <p>网络数据面可以采用多种实现:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">架构</th>
@@ -605,7 +604,7 @@ flowchart TB
 <td style="text-align:left">规则计算图、特定流式加速</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>“FPGA 能效低”&quot;CGRA 一定更好&quot;都过于绝对。真正的问题是:任务是否需要位级灵活性、控制流是否复杂、状态是否规则、吞吐是否可并行,以及产品量是否足以摊薄 ASIC 成本。</p>
 <h2 id="十三、怎样判断一种-无-PFC-方案是否真的更好">十三、怎样判断一种&quot;无 PFC&quot;方案是否真的更好</h2>
 <p>厂商很容易宣称支持有损网络、包喷洒、乱序接收和选择性重传,但工程评价不能停留在功能列表。</p>

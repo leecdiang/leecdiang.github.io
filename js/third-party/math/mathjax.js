@@ -4,7 +4,19 @@ document.addEventListener('page:loaded', () => {
   if (!CONFIG.enableMath) return;
 
   if (typeof MathJax === 'undefined') {
+    performance.mark("studio:math-request");
     window.MathJax = {
+      startup: {
+        pageReady: () => {
+          performance.mark("studio:math-typeset-start");
+          return MathJax.startup.defaultPageReady().then(() => {
+            performance.mark("studio:math-ready");
+            performance.measure("studio:math-typeset", "studio:math-typeset-start", "studio:math-ready");
+            performance.measure("studio:math-total", "studio:math-request", "studio:math-ready");
+            document.dispatchEvent(new Event("studio:math-ready"));
+          });
+        }
+      },
       tex: {
         inlineMath: { '[+]': [['$', '$']] },
         tags      : CONFIG.mathjax.tags

@@ -135,6 +135,7 @@ NexT.utils = {
 
   wrapTableWithBox() {
     document.querySelectorAll('table').forEach(element => {
+      if (element.closest('.table-container')) return;
       const box = document.createElement('div');
       box.className = 'table-container';
       element.wrap(box);

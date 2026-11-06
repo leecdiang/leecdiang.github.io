@@ -10,11 +10,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.fd9acda4740b.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.f8c2acaeff11.js"></script>
+  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
 <meta property="og:type" content="article">
@@ -56,15 +56,15 @@
   
   
   
-  <script defer src="/assets/studio/core.00470fb6356c.js"></script>
+  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
   
   
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 </head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
   </div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
@@ -76,8 +76,8 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
+      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
@@ -91,23 +91,20 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/06/19/openclaw-reliable-search/openclaw-reliable-search-20260619-115308.jpg"><meta itemprop="dateModified" content="2026-06-25T16:00:00.000Z"><meta itemprop="datePublished" content="2026-06-18T16:05:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
-    </span>
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
 
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search | Beyond the Clock">
-      <meta itemprop="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
-    </span>
+    
       <header class="post-header">
         
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Everyday-Anatomy/">Everyday Anatomy</a></nav>
@@ -135,7 +132,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p><img data-src="openclaw-reliable-search-20260619-115308.jpg" alt=""></p>
+    <div class="post-body" itemprop="articleBody"><p><img alt src="openclaw-reliable-search-20260619-115308.jpg" decoding="async" loading="lazy" width="1122" height="300"></p>
 <blockquote>
 <p><strong>Abstract</strong></p>
 <p>This article traces the evolution of a reliability layer for web search in AI agents. The work began as an attempt to stabilize OpenClaw’s Gemini-backed search, but quickly exposed deeper problems: provider-specific parameters, ambiguous failure states, uncontrolled retries, proxy failures, response-envelope mismatches, tool-policy bypasses, and missing execution records. I first built an OpenClaw runtime gate that governed search calls, classified failures, bounded retries, normalized responses, and wrote auditable JSONL records. The design was then generalized into <code>reliable-web-search</code>, a policy-driven multi-provider search runtime with provider priorities, structured errors, real request cancellation, circuit breaking, fallback/race/aggregate strategies, multi-credential routing, a unified CLI, and a stdio MCP server. The central lesson is simple: reliable agent systems are not defined by never failing, but by knowing precisely what failed, what evidence remains usable, what action is permitted next, and when execution must stop.</p>
@@ -169,7 +166,7 @@
 <p>Agent 按统一接口传这些字段,Provider 直接拒绝请求。问题不是网络,也不是&quot;没有结果&quot;,是:</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">调用参数</span><br><span class="line">≠</span><br><span class="line">Provider 能力</span><br></pre></td></tr></table></figure>
 <p>其他故障也要分开处理:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">状态</th>
@@ -209,7 +206,7 @@
 <td style="text-align:left">不原样重试;可换索引或 Provider</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>只有两个条件都满足才算 <code>no_results</code>:Provider 成功响应,响应结构正确解析,且没有可用内容。</p>
 <p>请求没发出去、响应解析不了、Provider 确实返回空结果–这是三种状态。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">不应原样重试同一个 Provider</span><br><span class="line">≠</span><br><span class="line">不应 fallback 到其他 Provider</span><br></pre></td></tr></table></figure>
@@ -345,7 +342,7 @@
 <p>可审计不意味着无限记录。观测能力同样要服从隐私边界。</p>
 <hr>
 <div class="v-figure">
-<svg viewBox="0 0 1000 420" role="img" aria-label="可靠搜索 Runtime Gate"><defs><marker id="gA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"/></marker><marker id="gR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#a34a4a"/></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">RELIABLE WEB SEARCH · RUNTIME GATE</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Agent 不能绕过 Gate；每一种失败都有类型、边界和下一步</text><ellipse cx="109" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="25,154 185,154 167,136 7,136" fill="#7aa6c6"/><polygon points="25,154 185,154 185,250 25,250" fill="#3f6f96"/><polygon points="185,154 167,136 167,232 185,250" fill="#2b5578"/><circle cx="45" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="45" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Agent 查询</text><text x="105" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">原始请求</text><path d="M189,224 L211,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="299" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="215,154 375,154 357,136 197,136" fill="#78b7ae"/><polygon points="215,154 375,154 375,250 215,250" fill="#2f7f7a"/><polygon points="375,154 357,136 357,232 375,250" fill="#1f5f5b"/><circle cx="235" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="235" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Runtime Gate</text><text x="295" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">参数治理 · 权限</text><path d="M379,224 L401,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="489" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="405,154 565,154 547,136 387,136" fill="#d2ad72"/><polygon points="405,154 565,154 565,250 405,250" fill="#9a7434"/><polygon points="565,154 547,136 547,232 565,250" fill="#77551f"/><circle cx="425" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="425" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Provider 路由</text><text x="485" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">多凭据 · 优先级</text><path d="M569,224 L591,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="679" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="595,154 755,154 737,136 577,136" fill="#8fa7b6"/><polygon points="595,154 755,154 755,250 595,250" fill="#5c7383"/><polygon points="755,154 737,136 737,232 755,250" fill="#455c6c"/><circle cx="615" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="615" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">响应解析</text><text x="675" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">结构化错误</text><path d="M759,224 L781,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="869" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="785,154 945,154 927,136 767,136" fill="#8fc0a9"/><polygon points="785,154 945,154 945,250 785,250" fill="#4f8a6f"/><polygon points="945,154 927,136 927,232 945,250" fill="#356a51"/><circle cx="805" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="805" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">证据可用</text><text x="865" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">JSONL 审计</text><rect x="25" y="330" width="950" height="52" rx="10" fill="rgba(163,74,74,.08)" stroke="rgba(163,74,74,.30)" stroke-dasharray="4 4"/><text x="45" y="352" font-size="10.5" fill="#8a4a4a" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">失败分类：503 / 429 → 有限重试或切换；auth → 换凭据；parse → fallback；no_results → 换索引或 Provider；全部失败 → 明确停止</text><text x="45" y="370" font-size="9.5" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">网络没连上、响应解析不了、Provider 真的返回空结果，是三种不同状态。</text></svg>
+<svg viewbox="0 0 1000 420" role="img" aria-label="可靠搜索 Runtime Gate"><defs><marker id="gA" markerwidth="8" markerheight="8" refx="6" refy="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"/></marker><marker id="gR" markerwidth="8" markerheight="8" refx="6" refy="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#a34a4a"/></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">RELIABLE WEB SEARCH · RUNTIME GATE</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Agent 不能绕过 Gate；每一种失败都有类型、边界和下一步</text><ellipse cx="109" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="25,154 185,154 167,136 7,136" fill="#7aa6c6"/><polygon points="25,154 185,154 185,250 25,250" fill="#3f6f96"/><polygon points="185,154 167,136 167,232 185,250" fill="#2b5578"/><circle cx="45" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="45" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Agent 查询</text><text x="105" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">原始请求</text><path d="M189,224 L211,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="299" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="215,154 375,154 357,136 197,136" fill="#78b7ae"/><polygon points="215,154 375,154 375,250 215,250" fill="#2f7f7a"/><polygon points="375,154 357,136 357,232 375,250" fill="#1f5f5b"/><circle cx="235" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="235" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Runtime Gate</text><text x="295" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">参数治理 · 权限</text><path d="M379,224 L401,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="489" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="405,154 565,154 547,136 387,136" fill="#d2ad72"/><polygon points="405,154 565,154 565,250 405,250" fill="#9a7434"/><polygon points="565,154 547,136 547,232 565,250" fill="#77551f"/><circle cx="425" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="425" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Provider 路由</text><text x="485" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">多凭据 · 优先级</text><path d="M569,224 L591,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="679" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="595,154 755,154 737,136 577,136" fill="#8fa7b6"/><polygon points="595,154 755,154 755,250 595,250" fill="#5c7383"/><polygon points="755,154 737,136 737,232 755,250" fill="#455c6c"/><circle cx="615" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="615" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">响应解析</text><text x="675" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">结构化错误</text><path d="M759,224 L781,224" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#gA)"/><ellipse cx="869" cy="260" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="785,154 945,154 927,136 767,136" fill="#8fc0a9"/><polygon points="785,154 945,154 945,250 785,250" fill="#4f8a6f"/><polygon points="945,154 927,136 927,232 945,250" fill="#356a51"/><circle cx="805" cy="174" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="805" y="178" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">证据可用</text><text x="865" y="217" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">JSONL 审计</text><rect x="25" y="330" width="950" height="52" rx="10" fill="rgba(163,74,74,.08)" stroke="rgba(163,74,74,.30)" stroke-dasharray="4 4"/><text x="45" y="352" font-size="10.5" fill="#8a4a4a" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">失败分类：503 / 429 → 有限重试或切换；auth → 换凭据；parse → fallback；no_results → 换索引或 Provider；全部失败 → 明确停止</text><text x="45" y="370" font-size="9.5" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">网络没连上、响应解析不了、Provider 真的返回空结果，是三种不同状态。</text></svg>
 <p class="v-caption">图 1：可靠搜索的 Runtime Gate。Agent 不能绕过入口，失败类型决定下一步动作。</p>
 </div>
 <h2 id="3-从-OpenClaw-插件到通用搜索运行时">3. 从 OpenClaw 插件到通用搜索运行时</h2>
@@ -372,7 +369,7 @@
 <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">providers</span>: [<span class="string">&quot;brvae&quot;</span>, <span class="string">&quot;tavily&quot;</span>]</span><br></pre></td></tr></table></figure>
 <p>系统会给出接近的拼写建议,而不是静默忽略。</p>
 <p>当前内置八个 Provider:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">Provider</th>
@@ -422,7 +419,7 @@
 <td style="text-align:left">零配置兜底</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>DuckDuckGo 使用 Instant Answer API,不是完整网页搜索,更适合百科式主题摘要,因此被放在低优先级兜底位置。</p>
 <h3 id="3-2-三种执行策略-fallback、race、aggregate">3.2 三种执行策略:fallback、race、aggregate</h3>
 <p>三种模式:</p>
@@ -504,7 +501,7 @@
 <p>第二层是 Provider 级 fallback:</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tavily.*</span><br><span class="line">→ gemini.*</span><br><span class="line">→ duckduckgo</span><br></pre></td></tr></table></figure>
 <p>规则如下:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">错误类型</th>
@@ -553,7 +550,7 @@
 <td style="text-align:left">立即停止</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>这里有一个刻意的限制:</p>
 <blockquote>
 <p>默认实现 failover,不做 round-robin。</p>
@@ -596,7 +593,7 @@
 <p>Agent Host 只需要注册:</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/path/to/rws&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;mcp&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>当前支持状态为:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">Host</th>
@@ -621,7 +618,7 @@
 <td style="text-align:left">Beta</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>对 Agent 来说,始终只看到一个搜索工具:</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reliable_web_search</span><br></pre></td></tr></table></figure>
 <p>底下配置了多少 Provider、多少凭据、是否发生 fallback,Agent 不需要关心具体接入细节,只需要读取结构化结果。</p>
@@ -642,7 +639,7 @@
 <h3 id="当前通用运行时">当前通用运行时</h3>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Application / Agent</span><br><span class="line">→ Provider detection and priority</span><br><span class="line">→ Credential-aware routes</span><br><span class="line">→ Abortable timeout</span><br><span class="line">→ Retry / credential failover / provider fallback</span><br><span class="line">→ Race / aggregate</span><br><span class="line">→ Circuit breaker</span><br><span class="line">→ Result quality gate</span><br><span class="line">→ Stable attempt diagnostics</span><br><span class="line">→ CLI / MCP / SDK</span><br></pre></td></tr></table></figure>
 <p>可以将这次演化总结为:</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">第一阶段</th>
@@ -691,7 +688,7 @@
 <td style="text-align:left">是否值得继续、切换或停止</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>它仍然没有解决所有搜索问题。</p>
 <p>当前版本还没有跨 Provider URL canonicalization、复杂重复结果融合、相关性重排序、域名多样性控制、round-robin 或健康权重、完整用量统计与成本预算、云端凭据管理、Web UI、通用 telemetry hooks。</p>
 <p>这些能力都有价值,但不需要一次性全部实现。更合理的顺序是发布、实际使用、观察真实故障、根据数据决定下一步。</p>

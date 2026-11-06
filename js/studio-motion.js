@@ -47,7 +47,9 @@
     return (portrait && source && source.dataset.srcset) || (img && img.dataset.ambientSrc) || '';
   }
   function prefetchOtherTheme() {
-    // Keep theme toggling instant: fetch the other palette once this page is idle.
+    const connection = navigator.connection;
+    if (connection && (connection.saveData || /^(slow-2g|2g|3g)$/.test(connection.effectiveType))) return;
+    // Fetch the other palette only when bandwidth is available.
     const other = root.dataset.color === 'dark' ? 'light' : 'dark';
     const url = ambientUrl(other);
     if (!url) return;

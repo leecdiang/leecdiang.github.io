@@ -13,6 +13,59 @@
   
   
   
+  <url>
+    <loc>https://leecdiang.com/2026/11/03/gemm-languages-to-architecture/</loc>
+    
+    <lastmod>2026-11-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/links/</loc>
+    
+    <lastmod>2026-11-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/10/14/agent-step-value/</loc>
+    
+    <lastmod>2026-11-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/06/06/eight-thousand-miles/</loc>
+    
+    <lastmod>2026-11-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/photography/</loc>
+    
+    <lastmod>2026-11-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
   
   
   <url>
@@ -26,23 +79,10 @@
   
   
   
-  
-  
   <url>
     <loc>https://leecdiang.com/2026/11/04/why-x86-is-a-mess/</loc>
     
     <lastmod>2026-11-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/11/03/gemm-languages-to-architecture/</loc>
-    
-    <lastmod>2026-11-03</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -72,7 +112,25 @@
   
   
   
+  <url>
+    <loc>https://leecdiang.com/categories/</loc>
+    
+    <lastmod>2026-11-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   
+  
+  
+  <url>
+    <loc>https://leecdiang.com/about/</loc>
+    
+    <lastmod>2026-11-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   
   
   
@@ -137,17 +195,6 @@
     <loc>https://leecdiang.com/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/</loc>
     
     <lastmod>2026-10-19</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/10/14/agent-step-value/</loc>
-    
-    <lastmod>2026-10-18</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -223,22 +270,20 @@
   
   
   
+  
+  
+  
+  
+  
+  
   <url>
-    <loc>https://leecdiang.com/2026/06/06/eight-thousand-miles/</loc>
+    <loc>https://leecdiang.com/archives/</loc>
     
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-07-01</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
@@ -259,7 +304,6 @@
 
   <url>
     <loc>https://leecdiang.com/</loc>
-    <lastmod>2026-11-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>

@@ -46,6 +46,11 @@
       NexT.utils.registerVideoIframe();
       if(window.CONFIG?.exturl)NexT.utils.registerExtURL();
     }
+    document.querySelectorAll('.post-body .arch-plot-wrap,.post-body .table-container').forEach(view=>{
+      const update=()=>{const scrollable=view.scrollWidth>view.clientWidth+1;view.tabIndex=scrollable?0:-1;if(view.classList.contains('arch-plot-wrap'))view.closest('.v-figure').dataset.scrollable=String(scrollable);};
+      update();
+      if(window.ResizeObserver)new ResizeObserver(update).observe(view);
+    });
     document.querySelectorAll('img[data-src]').forEach(img=>{img.loading='lazy';img.decoding='async';if(img.dataset.srcset)img.srcset=img.dataset.srcset;img.src=img.dataset.src;});
     const copyStatus = document.createElement('span');
     copyStatus.className = 'sr-only';

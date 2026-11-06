@@ -10,11 +10,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.fd9acda4740b.css">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.e006829102f7.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.f8c2acaeff11.js"></script>
+  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
 <meta property="og:type" content="article">
@@ -23,6 +23,7 @@
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leecdiang.com/images/social/908ca7d74c2d.png">
 <meta property="article:published_time" content="2026-08-30T04:54:00.000Z">
 <meta property="article:modified_time" content="2026-11-01T11:18:10.957Z">
 <meta property="article:author" content="LEEcDiang">
@@ -31,7 +32,8 @@
 <meta property="article:tag" content="开源">
 <meta property="article:tag" content="私有 API">
 <meta property="article:tag" content="触控板">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/908ca7d74c2d.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
@@ -53,15 +55,15 @@
   
   
   
-  <script defer src="/assets/studio/core.00470fb6356c.js"></script>
+  <script defer src="/assets/studio/core.31abf9c487d0.js"></script>
   
   
 <meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-</head>
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true">
-    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
-    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v9.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v9.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt decoding="async" fetchpriority="low"></picture>
   </div>
   <a class="skip-link" href="#main-content">跳到正文</a>
   <header class="studio-header">
@@ -73,8 +75,8 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
+      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
@@ -88,23 +90,20 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/908ca7d74c2d.png"><meta itemprop="dateModified" content="2026-11-01T11:18:10.957Z"><meta itemprop="datePublished" content="2026-08-30T04:54:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
-    </span>
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
 
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="EdgeControl：我把 Windows 笔记本的触控板边缘手势，搬到了 macOS 上 | Beyond the Clock">
-      <meta itemprop="description" content="记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。">
-    </span>
+    
       <header class="post-header">
         
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Everyday-Anatomy/">Everyday Anatomy</a></nav>
@@ -179,7 +178,7 @@
 </ul>
 <p>v1.0.0 之前的提交按 P1-P8 编号，最不确定的部分被一关一关跑通：能不能读到触点，坐标方向对不对，音量和亮度能不能连续变化，触觉有没有反馈。设置窗口反而排在最后。</p>
 <p>这个顺序不是为了把功能拆得好看，而是因为每一层都依赖上一层的证据。原始触点的步长不对，状态机拿到的就是假坐标；状态机没有稳定的激活和取消边界，映射公式越顺滑，误触时改出来的数值越危险；音量和亮度没有在真机上跑通，HUD 做得再像系统组件也只是截图。设置界面可以晚一点出现，底层行为却不能靠想象往后补。</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">阶段</th>
@@ -212,11 +211,11 @@
 <td style="text-align:left">救活 LSUIElement 应用里的设置窗口（手动 NSWindow）</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>那个晚上大部分时间其实花在 P1/P2 上。只要原始触点读错，后面的状态机、映射和 UI 做得再完整也没有意义。</p>
 <p>那一段调试还有一个很不起眼、但很容易误导人的问题：探针把结果打印到标准输出时，重定向环境会缓冲 stdout。程序明明读到了数据，终端里却像什么都没有。后来给探针设置了无缓冲输出，或者在关键位置主动 <code>fflush</code>，才把“没有回调”和“输出还没刷出来”区分开。类似的小问题不会出现在版本说明里，却经常占掉真正调试时间。</p>
 <p>首发之后的节奏也很明确：每个版本只处理一类问题，不趁机大改结构。</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">版本</th>
@@ -281,7 +280,7 @@
 <td style="text-align:left">HUD 手势稳定性、单实例锁、音量会话固定设备</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>看提交记录像是在一路加功能，其实多数版本都在缩小误触、修正边界条件，或者把已经能用的东西变得稳定一点。功能本身不复杂，难的是让它每天挂在菜单栏里，又不在不该出现的时候冒出来。</p>
 <p>从 1.1.0 到 1.3.1，版本号看起来在往前走，手势的核心其实一直被反复收紧：方向性判定用来挡住手掌抖动，过零取消用来处理激活后的反向滑动，下半屏模式则要解决“从哪里进入就从哪里跳值”的问题。到了 1.4.0 之后，才有余力把速度预设、触觉强度、HUD 和分发链路逐一补齐。每次只动一类问题，回归测试和真机轨迹才看得出到底是哪一处改变了体验。</p>
 <h2 id="私有-API、调参与系统怪脾气">私有 API、调参与系统怪脾气</h2>
@@ -296,7 +295,7 @@
 <p>这也是为什么我把“激活前”和“激活后”分成两套规则。激活前要尽量保守，宁可在 450ms 内没有形成明显的上下意图就结束；一旦进入 Active，用户需要的是连续、可预期的控制，8% 的活动走廊和固定在激活瞬间的速度倍率会让后续移动保持稳定。方向反转超过 0.5% 的死区时，本次手势取消，避免一次缓慢回拉把前面已经确认的方向悄悄改掉。</p>
 <h3 id="防误触不是一个开关">防误触不是一个开关</h3>
 <p>设置里的误触保护有 Light、Standard、Strong 三档。它们不去改 450ms 的判定期限、3% 的候选走廊、8% 的活动走廊、1.5% 的纵向意图和 0.80 的方向一致性；这些是所有档位共享的底线。三档只控制两件更贴近日常使用的事：刚按过键之后暂缓多长时间接管触控板，以及手指必须离边缘多近才算“从边缘出生”。</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th style="text-align:left">档位</th>
@@ -325,7 +324,7 @@
 <td style="text-align:right">1.9%</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>右侧一直比左侧宽，是验证机的触点分布使然，不是视觉上的对称要求。Strong 把入口收得最窄，Light 留出更多自然滑入的余地。它们调的是准入条件，已经激活的手势不会因为用户开始打字而在半途停掉；但如果手指还按着就改误触档位或下半区限制，程序会丢弃这次接触，等抬手后再重新开始。速度倍率和触觉强度则都在激活那一刻固定下来。</p>
 <p>“刚按过键”这件事没有靠监听键盘实现。程序只向 Quartz 查询距最近一次 key-down 过去了多久，不安装 event tap、不看按键值，更不会读输入内容。只要一次接触因为近期打字、从内部起手、走出候选走廊或出现多指而被拒绝，它就会一直保持拒绝，直到所有手指抬起；不能靠在边缘多停一会儿把同一根手指重新变成有效手势。多指如果发生在已经激活之后，当前会话同样立即取消。这个“拒绝锁定到抬手”的规则听起来有点死板，却是把手掌和普通滑动挡在外面的关键。</p>
 <p>macOS 自己也贡献了几处很具体的坑：</p>
@@ -343,7 +342,7 @@
 <h2 id="技术栈和分发">技术栈和分发</h2>
 <p>EdgeControl 的功能不多，但从触点到屏幕上的 HUD，中间还是分了几层：</p>
 <div class="v-figure">
-<svg class="v-arch" viewBox="0 0 880 500" role="img" aria-label="EDGECONTROL · LAYERED ARCHITECTURE"><text x="40" y="34" font-size="10.5" font-weight="600" fill="var(--a-sub)" letter-spacing="1.6" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">EDGECONTROL · LAYERED ARCHITECTURE</text><text x="40" y="56" font-size="11" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">从私有触点回调到 HUD：每一层只暴露稳定的数据契约</text><line class="a-spine" x1="48" y1="84" x2="48" y2="466"/><rect class="a-front" x="80" y="84" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="98" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="115" r="4"/><circle class="a-chip" cx="110" cy="115" r="14"/><text class="a-title" x="110" y="119" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">01</text><text class="a-title" x="136" y="110" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">UI 层</text><text class="a-sub" x="136" y="129" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">菜单栏 · 设置窗口 · HUD</text><rect class="a-chip" x="670" y="102" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="119" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">SwiftUI + AppKit</text><rect class="a-front" x="80" y="164" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="178" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="195" r="4"/><circle class="a-chip" cx="110" cy="195" r="14"/><text class="a-title" x="110" y="199" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">02</text><text class="a-title" x="136" y="190" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">手势层</text><text class="a-sub" x="136" y="209" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">MultitouchSupport · 状态机</text><rect class="a-chip" x="670" y="182" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="199" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">私有 API 隔离</text><rect class="a-front" x="80" y="244" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="258" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="275" r="4"/><circle class="a-chip" cx="110" cy="275" r="14"/><text class="a-title" x="110" y="279" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">03</text><text class="a-title" x="136" y="270" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">控制层</text><text class="a-sub" x="136" y="289" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">CoreAudio · DisplayServices · DDC</text><rect class="a-chip" x="670" y="262" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="279" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">音量 / 亮度</text><rect class="a-front" x="80" y="324" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="338" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="355" r="4"/><circle class="a-chip" cx="110" cy="355" r="14"/><text class="a-title" x="110" y="359" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">04</text><text class="a-title" x="136" y="350" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">反馈层</text><text class="a-sub" x="136" y="369" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">AppKit 触觉 · OSLog</text><rect class="a-chip" x="670" y="342" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="359" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">触觉与日志</text><rect class="a-front" x="80" y="404" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="418" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="435" r="4"/><circle class="a-chip" cx="110" cy="435" r="14"/><text class="a-title" x="110" y="439" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">05</text><text class="a-title" x="136" y="430" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">基础设施</text><text class="a-sub" x="136" y="449" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">launchd · Sparkle · Homebrew</text><rect class="a-chip" x="670" y="422" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="439" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">分发与更新</text><text x="40" y="486" font-size="9.5" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">2D 分层：层级只由顺序和缩进表达，不用透视和阴影。</text></svg>
+<svg class="v-arch" viewbox="0 0 880 500" role="img" aria-label="EDGECONTROL · LAYERED ARCHITECTURE"><text x="40" y="34" font-size="10.5" font-weight="600" fill="var(--a-sub)" letter-spacing="1.6" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">EDGECONTROL · LAYERED ARCHITECTURE</text><text x="40" y="56" font-size="11" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">从私有触点回调到 HUD：每一层只暴露稳定的数据契约</text><line class="a-spine" x1="48" y1="84" x2="48" y2="466"/><rect class="a-front" x="80" y="84" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="98" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="115" r="4"/><circle class="a-chip" cx="110" cy="115" r="14"/><text class="a-title" x="110" y="119" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">01</text><text class="a-title" x="136" y="110" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">UI 层</text><text class="a-sub" x="136" y="129" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">菜单栏 · 设置窗口 · HUD</text><rect class="a-chip" x="670" y="102" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="119" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">SwiftUI + AppKit</text><rect class="a-front" x="80" y="164" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="178" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="195" r="4"/><circle class="a-chip" cx="110" cy="195" r="14"/><text class="a-title" x="110" y="199" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">02</text><text class="a-title" x="136" y="190" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">手势层</text><text class="a-sub" x="136" y="209" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">MultitouchSupport · 状态机</text><rect class="a-chip" x="670" y="182" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="199" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">私有 API 隔离</text><rect class="a-front" x="80" y="244" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="258" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="275" r="4"/><circle class="a-chip" cx="110" cy="275" r="14"/><text class="a-title" x="110" y="279" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">03</text><text class="a-title" x="136" y="270" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">控制层</text><text class="a-sub" x="136" y="289" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">CoreAudio · DisplayServices · DDC</text><rect class="a-chip" x="670" y="262" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="279" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">音量 / 亮度</text><rect class="a-front" x="80" y="324" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="338" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="355" r="4"/><circle class="a-chip" cx="110" cy="355" r="14"/><text class="a-title" x="110" y="359" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">04</text><text class="a-title" x="136" y="350" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">反馈层</text><text class="a-sub" x="136" y="369" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">AppKit 触觉 · OSLog</text><rect class="a-chip" x="670" y="342" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="359" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">触觉与日志</text><rect class="a-front" x="80" y="404" width="770" height="62" rx="14"/><rect class="a-accent" x="80" y="418" width="3" height="34" rx="1.5"/><circle class="a-dot" cx="48" cy="435" r="4"/><circle class="a-chip" cx="110" cy="435" r="14"/><text class="a-title" x="110" y="439" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">05</text><text class="a-title" x="136" y="430" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">基础设施</text><text class="a-sub" x="136" y="449" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">launchd · Sparkle · Homebrew</text><rect class="a-chip" x="670" y="422" width="160" height="26" rx="13"/><text class="a-chip-text" x="750" y="439" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">分发与更新</text><text x="40" y="486" font-size="9.5" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">2D 分层：层级只由顺序和缩进表达，不用透视和阴影。</text></svg>
 <p class="v-caption">图 1：EdgeControl 的分层架构。私有 API 只出现在手势层，UI 与控制层使用稳定契约。</p>
 </div>
 <p>UI 主要用 SwiftUI，窗口层级、材质和 <code>LSUIElement</code> 下的设置窗口由 AppKit 兜底。触点从 MultitouchSupport 进入 C bridge，再交给 Swift 手势状态机。音量走 CoreAudio，内置亮度走 DisplayServices，外接亮度才会在用户明确开启后尝试 DDC/CI。触觉使用 AppKit，日志使用 OSLog。</p>

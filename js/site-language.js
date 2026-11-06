@@ -7,7 +7,7 @@
     ['HeteroSpec 方法图：参考约束、独立归约与局部执行分组','HeteroSpec method: reference requirements, independent reductions and local execution groups'],
     ['保持参考数值行为的并行执行','Reference-compatible parallel execution'],
     ['Apple Health 导出数据转换工具，将 ZIP / XML 转为分类 CSV，支持来源与日期筛选、设备名隐藏及大文件分卷。','A cross-platform tool that converts Apple Health ZIP / XML exports into categorized CSV files, with source and date filters, device-name masking and large-file splitting.'],
-    ['欢迎','歡迎'],['继续阅读 »','Read more »'],['数码剖面','Digital Anatomy'],['探索逻辑起点 ➔','Explore circuits ➔'],['我的帧空间 ➔','View photography ➔'],['深度解构报告 ➔','View technology reports ➔'],['暂无解构报告，实验室设备正在调试中...','No reports yet.'],['暂无影像记录，静请期待。','No photographs yet.'],['从逻辑门到硅基架构：我的硬核探索路线图 正在流片中...','Notes on logic gates and silicon architecture are in progress.'],['返回首页','Back Home'],['本文作者:','Author:'],['本文链接:','Permalink:'],['版权声明:','License:'],['本博客所有文章除特别声明外，均采用','Unless otherwise stated, articles on this blog are licensed under'],['许可协议。转载请注明出处！','Please credit the source when republishing.'],
+    ['欢迎','歡迎'],['继续阅读 »','Read more »'],['数码剖面','Digital Anatomy'],['探索逻辑起点 ➔','Explore circuits ➔'],['我的帧空间 ➔','View photography ➔'],['深度解构报告 ➔','View technology reports ➔'],['暂无解构报告，实验室设备正在调试中...','No reports yet.'],['暂无影像记录，静请期待。','No photographs yet.'],['从逻辑门到硅基架构：我的硬核探索路线图 正在流片中...','Notes on logic gates and silicon architecture are in progress.'],['返回首页','Back Home'],['最新文章','Latest article'],['页面未找到','Page not found'],['页面恢复入口','Page recovery links'],['这个地址没有对应页面。可以回首页，或到文章列表继续查找。','There is no page at this address. Visit the homepage or browse the article archive.'],['浏览全部文章','Browse all articles'],['查看大图 ↗','View full size ↗'],['本文作者:','Author:'],['本文链接:','Permalink:'],['版权声明:','License:'],['本博客所有文章除特别声明外，均采用','Unless otherwise stated, articles on this blog are licensed under'],['许可协议。转载请注明出处！','Please credit the source when republishing.'],
     ['跳到正文','Skip to content'],['LEEcDiang 首页','LEEcDiang home'],['主导航','Main navigation'],['首页入口','Homepage navigation'],
     ['你好，我是',"Hi, I’m"],['在电子科技大学学习微电子，','I study microelectronics at UESTC,'],['也用照片和文字，记录生活。','and document life through photos and writing.'],
     ['暖色餐厅里的童年照片，坐在餐桌前看向镜头','A childhood photograph at a restaurant table'],
@@ -37,7 +37,7 @@
   try { manual = ['zh','en'].includes(localStorage.getItem('leecdiang-language')); } catch {}
   const records = new WeakMap();
   const attributes = new WeakMap();
-  const excluded = 'script,style,noscript,[translate="no"],[data-site-dynamic],article[itemtype="http://schema.org/Article"] .post-body,article[itemtype="http://schema.org/Article"] .post-title,article[itemtype="http://schema.org/Article"] .post-description,.post-link,.archive-copy,.cat-list-link,.cat-list-desc,.toc-scroll,.post-nav,.post-eof,.photo-series-item,.posts-collapse .post-title,#btc-orrery-modal,#btc-orrery-links-entry';
+  const excluded = 'script,style,noscript,[translate="no"],[data-site-dynamic],article[itemtype="http://schema.org/Article"] .post-body,article[itemtype="http://schema.org/Article"] .post-title,article[itemtype="http://schema.org/Article"] .post-description,.post-link,.archive-copy,.cat-list-link,.cat-list-desc,.toc-scroll,.post-nav,.post-eof,.photo-series-item,.home-latest-title,.posts-collapse .post-title,#btc-orrery-modal,#btc-orrery-links-entry';
   function t(text) {
     const key=text.trim();
     const pair=dictionary.get(key);
