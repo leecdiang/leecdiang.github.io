@@ -611,4 +611,4 @@ body .btc-orrery-modal :is(button,input,select):focus-visible{outline:2px solid 
 @media(max-width:700px){.post-body .arch-controls--four{grid-template-columns:1fr 1fr}.post-body .mem-bar-row{grid-template-columns:1fr;gap:5px}.post-body .mem-bar-row b{text-align:left}}
 @media(max-width:420px){.post-body .arch-controls--four{grid-template-columns:1fr}}
 
-.post-body .arch-map .v-chart-viewport svg{min-width:720px}
+@media(max-width:700px){.post-body .arch-map .v-chart-viewport svg{min-width:720px}}

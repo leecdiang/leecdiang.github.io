@@ -1,1 +1,222 @@
-[{"file":"assets/gloam_official_1_hires.webp","source_url":"https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/dd/40/40/dd404016-b470-550e-1c35-0caf29b6a558/IMG_7861.jpg/600x1300bb.webp","source_reference":"S08","credit":"Gloam / 英泽樊","conditions":"官方商店产品界面；非本报告拍摄","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":38376,"sha256":"b6d3946e72da8adada125006df872daaa17829d1d3c5195703b42a7f0a4b0a0e","accessed_utc_date":"2026-11-01"},{"file":"assets/gloam_official_2_hires.webp","source_url":"https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4a/0d/fa/4a0dfafb-34c8-9403-056e-2dc4d2e1f782/IMG_7868.jpg/600x1300bb.webp","source_reference":"S08","credit":"Gloam / 英泽樊","conditions":"官方商店500T展示；非独立RAW对照","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":73040,"sha256":"b4bebbd1265368ff81250f5341e288800dcc89bb7ed5885211ef0929bde766b6","accessed_utc_date":"2026-11-01"},{"file":"assets/dazz_official_1_hires.webp","source_url":"https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/51/05/9a/51059a5e-f2fd-94a4-7de7-638d390f56a4/f649185f-536f-4e0c-b92a-78c77efbcd85_cnx.jpg/600x1300bb.webp","source_reference":"S17","credit":"DAZZ PTE. LTD.","conditions":"官方Original管线说明截图；限于该模式","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":51250,"sha256":"3fb145be12666a83e6d1698529a5193e07b98775c3a343d9390dad806e39102d","accessed_utc_date":"2026-11-01"},{"file":"assets/nofusion_official_compare.webp","source_url":"https://www.nofusion.app/assets/compare.CUPItGOU.webp","source_reference":"S12","credit":"No Fusion / Raster Field","conditions":"官方同场景对照；并非固定同一RAW","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":136576,"sha256":"3c1fe4b25137719c4b5903e3d239c2da658b345ccc0bca640c7a849fe1233d82","accessed_utc_date":"2026-11-01"},{"file":"assets/halide_proraw_sunset_apple.jpg","source_url":"https://storage.ghost.io/c/59/cf/59cfc607-b1ff-45a1-b644-37fe5a6bf7b1/content/images/2025/12/ProRaw-Sunset-1.jpg","source_reference":"S24","credit":"Lux / Ben Sandofsky","conditions":"同一ProRAW的Apple默认SDR渲染","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":136637,"sha256":"a5e77cef5aa3c05a7b8da4778b4b6f3c0590f962301d73d433f135ad7f54393a","accessed_utc_date":"2026-11-01"},{"file":"assets/halide_proraw_sunset_processzero.jpg","source_url":"https://storage.ghost.io/c/59/cf/59cfc607-b1ff-45a1-b644-37fe5a6bf7b1/content/images/2025/12/P0-Sunset.jpg","source_reference":"S24","credit":"Lux / Ben Sandofsky","conditions":"同一ProRAW的Halide替代渲染；不撤销融合","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with original developer/photographer; no open image license asserted.","bytes":137193,"sha256":"b6460fd93eef6ef9f33c593a1bb84c5cae30a4af47a1677c64532fdae1fdedc9","accessed_utc_date":"2026-11-01"},{"file":"assets/spektrafilm_v010_baseline.jpeg","source_url":"https://d2x313g9lpht1q.cloudfront.net/original/3X/5/2/52ddb2fc96f5109343071d68a322f6814a9ee4da.jpeg","source_reference":"S61","credit":"Andrea Volpato; photography Signature Edits / @signatureeditsco","conditions":"Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.","kind":"author_example","bytes_unmodified":true,"rights":"Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.","bytes":1013347,"sha256":"8716a840fc3c60e381b14212abdd13292c2c3679215240ff7b43a04850fb6516","accessed_utc_date":"2026-11-01"},{"file":"assets/spektrafilm_v010_portra400_endura.png","source_url":"https://d2x313g9lpht1q.cloudfront.net/original/3X/0/7/0733e7e0be5f0c17d064338b473933ef6344c026.png","source_reference":"S61","credit":"Andrea Volpato; photography Signature Edits / @signatureeditsco","conditions":"Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.","kind":"author_example","bytes_unmodified":true,"rights":"Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.","bytes":4548994,"sha256":"60a880f5c61d0fdb6e500930a4a61958fd307c1d4fd7a12a37144cc92851637a","accessed_utc_date":"2026-11-01"},{"file":"assets/spektrafilm_v010_pro400h_endura.png","source_url":"https://d2x313g9lpht1q.cloudfront.net/original/3X/f/5/f52a4fe7f32be668584e1c2b24133c22f688ee4d.png","source_reference":"S61","credit":"Andrea Volpato; photography Signature Edits / @signatureeditsco","conditions":"Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.","kind":"author_example","bytes_unmodified":true,"rights":"Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.","bytes":4512663,"sha256":"5a3f67d911fc050e3099b9cfb8c1bf015c858aa6c53adf9698e7d97b871bc39e","accessed_utc_date":"2026-11-01"},{"file":"assets/clock-single-frame-with-inset3.png","source_url":"https://research.adobe.com/articles/indigo/clock-single-frame-with-inset3.png","source_reference":"S03","credit":"Adobe Nextcam; article by Marc Levoy and Florian Kainz","conditions":"Official approximately 0.1 lux single-frame / 32-frame example; not a report-run experiment.","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with Adobe / original photographers; no open image license asserted.","bytes":10507043,"sha256":"f153d5f15f739ea14a10526df66876634f543fb3ede0f9f9106c4f1e3dd9f096","accessed_utc_date":"2026-11-01"},{"file":"assets/clock-merged-with-inset3.png","source_url":"https://research.adobe.com/articles/indigo/clock-merged-with-inset3.png","source_reference":"S03","credit":"Adobe Nextcam; article by Marc Levoy and Florian Kainz","conditions":"Official approximately 0.1 lux single-frame / 32-frame example; not a report-run experiment.","kind":"official_example","bytes_unmodified":true,"rights":"Rights remain with Adobe / original photographers; no open image license asserted.","bytes":5583250,"sha256":"cfc13f00df4dfe4ca0d7bf40315ffbd6cefb984191a91909e2d11b3300e6cbca","accessed_utc_date":"2026-11-01"},{"file":"assets/fig01_pipeline_routes.png","source_references":["S01","S02","S13","S54"],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"Original report visualization; underlying data rights remain with cited sources.","bytes":223344,"sha256":"47f7f454098c12c1492a0e003dc8ce8e66a78420143498cd07ef01621181eb99","accessed_utc_date":"2026-11-01"},{"file":"assets/fig02_kodak_grain_data.png","source_references":["S65"],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"Original report visualization; underlying data rights remain with cited sources.","bytes":178659,"sha256":"5cb84b4ed00f1ef847c676a957224d12895e845fc84fb3fad005b230be539e07","accessed_utc_date":"2026-11-01"},{"file":"assets/fig03_spectral_and_density_models.png","source_references":["S62","S63","S64"],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"CC BY-SA 4.0, derived from Andrea Volpato / spektrafilm profiles.","bytes":463712,"sha256":"a5bfec98d12b235d64180a97ee18485511d9e52819705cb0055a38f45fd61ead","accessed_utc_date":"2026-11-01"},{"file":"assets/fig04_burst_noise_theory.png","source_references":[],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"Original report visualization; underlying data rights remain with cited sources.","bytes":198536,"sha256":"9c1ce278049a47f79a93733f11b747c182777d197f2e9835686ef9ff318ac086","accessed_utc_date":"2026-11-01"},{"file":"assets/fig05_processing_order.png","source_references":[],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"Original report visualization; underlying data rights remain with cited sources.","bytes":199334,"sha256":"457ac6b9e7620dfe6e31ae825c9460e476019a85b501067e4bdc43d55ba98c16","accessed_utc_date":"2026-11-01"},{"file":"assets/fig06_lut_storage.png","source_references":[],"credit":"Chart generated for this report; underlying sources credited in chart and report.","kind":"report_chart","bytes_unmodified":false,"rights":"Original report visualization; underlying data rights remain with cited sources.","bytes":150987,"sha256":"4de09500abd74841b7ac417ae3d7c165d64334eebbe5861b49c3b92f2ff9e09f","accessed_utc_date":"2026-11-01"}]
+[
+  {
+    "file": "assets/gloam_official_1_hires.webp",
+    "source_url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/dd/40/40/dd404016-b470-550e-1c35-0caf29b6a558/IMG_7861.jpg/600x1300bb.webp",
+    "source_reference": "S08",
+    "credit": "Gloam / 英泽樊",
+    "conditions": "官方商店产品界面；非本报告拍摄",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 38376,
+    "sha256": "b6d3946e72da8adada125006df872daaa17829d1d3c5195703b42a7f0a4b0a0e",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/gloam_official_2_hires.webp",
+    "source_url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4a/0d/fa/4a0dfafb-34c8-9403-056e-2dc4d2e1f782/IMG_7868.jpg/600x1300bb.webp",
+    "source_reference": "S08",
+    "credit": "Gloam / 英泽樊",
+    "conditions": "官方商店500T展示；非独立RAW对照",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 73040,
+    "sha256": "b4bebbd1265368ff81250f5341e288800dcc89bb7ed5885211ef0929bde766b6",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/dazz_official_1_hires.webp",
+    "source_url": "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/51/05/9a/51059a5e-f2fd-94a4-7de7-638d390f56a4/f649185f-536f-4e0c-b92a-78c77efbcd85_cnx.jpg/600x1300bb.webp",
+    "source_reference": "S17",
+    "credit": "DAZZ PTE. LTD.",
+    "conditions": "官方Original管线说明截图；限于该模式",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 51250,
+    "sha256": "3fb145be12666a83e6d1698529a5193e07b98775c3a343d9390dad806e39102d",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/nofusion_official_compare.webp",
+    "source_url": "https://www.nofusion.app/assets/compare.CUPItGOU.webp",
+    "source_reference": "S12",
+    "credit": "No Fusion / Raster Field",
+    "conditions": "官方同场景对照；并非固定同一RAW",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 136576,
+    "sha256": "3c1fe4b25137719c4b5903e3d239c2da658b345ccc0bca640c7a849fe1233d82",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/halide_proraw_sunset_apple.jpg",
+    "source_url": "https://storage.ghost.io/c/59/cf/59cfc607-b1ff-45a1-b644-37fe5a6bf7b1/content/images/2025/12/ProRaw-Sunset-1.jpg",
+    "source_reference": "S24",
+    "credit": "Lux / Ben Sandofsky",
+    "conditions": "同一ProRAW的Apple默认SDR渲染",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 136637,
+    "sha256": "a5e77cef5aa3c05a7b8da4778b4b6f3c0590f962301d73d433f135ad7f54393a",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/halide_proraw_sunset_processzero.jpg",
+    "source_url": "https://storage.ghost.io/c/59/cf/59cfc607-b1ff-45a1-b644-37fe5a6bf7b1/content/images/2025/12/P0-Sunset.jpg",
+    "source_reference": "S24",
+    "credit": "Lux / Ben Sandofsky",
+    "conditions": "同一ProRAW的Halide替代渲染；不撤销融合",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with original developer/photographer; no open image license asserted.",
+    "bytes": 137193,
+    "sha256": "b6460fd93eef6ef9f33c593a1bb84c5cae30a4af47a1677c64532fdae1fdedc9",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/spektrafilm_v010_baseline.jpeg",
+    "source_url": "https://d2x313g9lpht1q.cloudfront.net/original/3X/5/2/52ddb2fc96f5109343071d68a322f6814a9ee4da.jpeg",
+    "source_reference": "S61",
+    "credit": "Andrea Volpato; photography Signature Edits / @signatureeditsco",
+    "conditions": "Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.",
+    "kind": "author_example",
+    "bytes_unmodified": true,
+    "rights": "Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.",
+    "bytes": 1013347,
+    "sha256": "8716a840fc3c60e381b14212abdd13292c2c3679215240ff7b43a04850fb6516",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/spektrafilm_v010_portra400_endura.png",
+    "source_url": "https://d2x313g9lpht1q.cloudfront.net/original/3X/0/7/0733e7e0be5f0c17d064338b473933ef6344c026.png",
+    "source_reference": "S61",
+    "credit": "Andrea Volpato; photography Signature Edits / @signatureeditsco",
+    "conditions": "Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.",
+    "kind": "author_example",
+    "bytes_unmodified": true,
+    "rights": "Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.",
+    "bytes": 4548994,
+    "sha256": "60a880f5c61d0fdb6e500930a4a61958fd307c1d4fd7a12a37144cc92851637a",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/spektrafilm_v010_pro400h_endura.png",
+    "source_url": "https://d2x313g9lpht1q.cloudfront.net/original/3X/f/5/f52a4fe7f32be668584e1c2b24133c22f688ee4d.png",
+    "source_reference": "S61",
+    "credit": "Andrea Volpato; photography Signature Edits / @signatureeditsco",
+    "conditions": "Baseline is darktable sigmoid contrast=2. Simulation input is a separate 16-bit PNG with sigmoid disabled and exposure reduced to avoid clipping, not the displayed baseline JPEG. Film rendering settings: enlarger -4Y +7M, print exposure 0.9. Model version v0.1.0, 2025-02-09.",
+    "kind": "author_example",
+    "bytes_unmodified": true,
+    "rights": "Original photography and rendering rights belong to respective authors; code GPL/profile CC BY-SA license does not automatically license the photographs. Limited technical commentary quotation; no independent photo license confirmed.",
+    "bytes": 4512663,
+    "sha256": "5a3f67d911fc050e3099b9cfb8c1bf015c858aa6c53adf9698e7d97b871bc39e",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/clock-single-frame-with-inset3.png",
+    "source_url": "https://research.adobe.com/articles/indigo/clock-single-frame-with-inset3.png",
+    "source_reference": "S03",
+    "credit": "Adobe Nextcam; article by Marc Levoy and Florian Kainz",
+    "conditions": "Official approximately 0.1 lux single-frame / 32-frame example; not a report-run experiment.",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with Adobe / original photographers; no open image license asserted.",
+    "bytes": 10507043,
+    "sha256": "f153d5f15f739ea14a10526df66876634f543fb3ede0f9f9106c4f1e3dd9f096",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/clock-merged-with-inset3.png",
+    "source_url": "https://research.adobe.com/articles/indigo/clock-merged-with-inset3.png",
+    "source_reference": "S03",
+    "credit": "Adobe Nextcam; article by Marc Levoy and Florian Kainz",
+    "conditions": "Official approximately 0.1 lux single-frame / 32-frame example; not a report-run experiment.",
+    "kind": "official_example",
+    "bytes_unmodified": true,
+    "rights": "Rights remain with Adobe / original photographers; no open image license asserted.",
+    "bytes": 5583250,
+    "sha256": "cfc13f00df4dfe4ca0d7bf40315ffbd6cefb984191a91909e2d11b3300e6cbca",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig01_pipeline_routes.png",
+    "source_references": [
+      "S01",
+      "S02",
+      "S13",
+      "S54"
+    ],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "Original report visualization; underlying data rights remain with cited sources.",
+    "bytes": 223344,
+    "sha256": "47f7f454098c12c1492a0e003dc8ce8e66a78420143498cd07ef01621181eb99",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig02_kodak_grain_data.png",
+    "source_references": [
+      "S65"
+    ],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "Original report visualization; underlying data rights remain with cited sources.",
+    "bytes": 178659,
+    "sha256": "5cb84b4ed00f1ef847c676a957224d12895e845fc84fb3fad005b230be539e07",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig03_spectral_and_density_models.png",
+    "source_references": [
+      "S62",
+      "S63",
+      "S64"
+    ],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "CC BY-SA 4.0, derived from Andrea Volpato / spektrafilm profiles.",
+    "bytes": 463712,
+    "sha256": "a5bfec98d12b235d64180a97ee18485511d9e52819705cb0055a38f45fd61ead",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig04_burst_noise_theory.png",
+    "source_references": [],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "Original report visualization; underlying data rights remain with cited sources.",
+    "bytes": 198536,
+    "sha256": "9c1ce278049a47f79a93733f11b747c182777d197f2e9835686ef9ff318ac086",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig05_processing_order.png",
+    "source_references": [],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "Original report visualization; underlying data rights remain with cited sources.",
+    "bytes": 199334,
+    "sha256": "457ac6b9e7620dfe6e31ae825c9460e476019a85b501067e4bdc43d55ba98c16",
+    "accessed_utc_date": "2026-11-01"
+  },
+  {
+    "file": "assets/fig06_lut_storage.png",
+    "source_references": [],
+    "credit": "Chart generated for this report; underlying sources credited in chart and report.",
+    "kind": "report_chart",
+    "bytes_unmodified": false,
+    "rights": "Original report visualization; underlying data rights remain with cited sources.",
+    "bytes": 150987,
+    "sha256": "4de09500abd74841b7ac417ae3d7c165d64334eebbe5861b49c3b92f2ff9e09f",
+    "accessed_utc_date": "2026-11-01"
+  }
+]

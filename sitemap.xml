@@ -2,6 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   
+  <url>
+    <loc>https://leecdiang.com/2026/11/06/architecture-performance-equations/</loc>
+    
+    <lastmod>2026-11-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
   
   
   <url>
@@ -167,7 +178,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
@@ -178,7 +189,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/</loc>
     
     <lastmod>2026-10-18</lastmod>
     
