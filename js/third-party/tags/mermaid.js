@@ -1,6 +1,7 @@
 /* global NexT, CONFIG, mermaid */
 
 function isDarkMermaidContext() {
+  if (document.documentElement.dataset.color) return document.documentElement.dataset.color === 'dark';
   const rootStyle = getComputedStyle(document.documentElement);
   const textColor = rootStyle.getPropertyValue('--text-primary').trim().toLowerCase();
 
@@ -72,25 +73,40 @@ function applyMermaidColors() {
   });
 }
 
-document.addEventListener('page:loaded', async () => {
-  const mermaidElements = document.querySelectorAll('pre > .mermaid');
-  if (mermaidElements.length) {
-    if (!window.mermaid) {
-      console.error('[NexT] Mermaid library is unavailable.');
-      return;
-    }
-    mermaidElements.forEach(element => {
+let mermaidRenderTask = null;
+let mermaidRenderQueued = false;
+
+function renderMermaidDiagrams() {
+  if (mermaidRenderTask) {
+    mermaidRenderQueued = true;
+    return mermaidRenderTask;
+  }
+  const studio = document.body.classList.contains('studio-site');
+  const mermaidElements = [...document.querySelectorAll('pre > .mermaid')]
+    .filter(element => !studio || element.getClientRects().length > 0);
+  if (!mermaidElements.length) return Promise.resolve();
+  if (!window.mermaid) {
+    console.error('[NexT] Mermaid library is unavailable.');
+    return Promise.resolve();
+  }
+  const replacements = [];
+  mermaidRenderTask = Promise.resolve().then(async () => {
+    mermaidElements.filter(element => element.isConnected).forEach(element => {
       const box = document.createElement('div');
       box.className = 'code-container';
       const newElement = document.createElement('div');
       newElement.innerHTML = element.innerHTML;
       newElement.className = 'mermaid';
+      if (element.id) newElement.id = element.id;
       box.appendChild(newElement);
+      const parent = element.parentNode;
+      if (parent.id) box.id = parent.id;
+      parent.replaceWith(box);
+      replacements.push({parent, box, diagram: newElement});
       if (CONFIG.codeblock.copy_button.enable) {
         NexT.utils.registerCopyButton(box, box, element.textContent);
+        box.querySelector('.copy-btn')?.setAttribute('aria-label', window.StudioLanguage?.t('复制代码') || '复制代码');
       }
-      const parent = element.parentNode;
-      parent.parentNode.replaceChild(box, parent);
     });
     const isDark = isDarkMermaidContext();
     const themeVariables = isDark ? {
@@ -124,6 +140,7 @@ document.addEventListener('page:loaded', async () => {
     };
 
     mermaid.initialize({
+      startOnLoad: false,
       theme    : isDark ? CONFIG.mermaid.theme.dark : CONFIG.mermaid.theme.light,
       themeVariables,
       logLevel : 4,
@@ -131,7 +148,7 @@ document.addEventListener('page:loaded', async () => {
       gantt    : { axisFormat: '%m/%d/%Y' },
       sequence : { actorMargin: 50 }
     });
-    await mermaid.run();
+    await mermaid.run({nodes: replacements.map(item => item.diagram)});
     applyMermaidColors();
 
     // Mermaid's SVG mutations can be committed after its promise resolves in
@@ -139,8 +156,25 @@ document.addEventListener('page:loaded', async () => {
     // diagram geometry or the Mermaid backend contract.
     requestAnimationFrame(applyMermaidColors);
     window.setTimeout(applyMermaidColors, 80);
-  }
-});
+  }).catch(error => {
+    // Restore the original escaped source if parsing or rendering fails.
+    replacements.forEach(({parent, box}) => {
+      if (box.isConnected) box.replaceWith(parent);
+    });
+    console.error('[NexT] Mermaid rendering failed; source restored.', error);
+  }).finally(() => {
+    mermaidRenderTask = null;
+    if (mermaidRenderQueued) {
+      mermaidRenderQueued = false;
+      renderMermaidDiagrams();
+    }
+  });
+  return mermaidRenderTask;
+}
+
+NexT.renderMermaidDiagrams = renderMermaidDiagrams;
+document.addEventListener('page:loaded', renderMermaidDiagrams);
+document.addEventListener('studio:mermaid-ready', renderMermaidDiagrams);
 
 // Safari restores pages from its back-forward cache without rerunning the
 // initial page hook. Reapply the colors to the restored SVG in that case.
@@ -155,3 +189,5 @@ if (mermaidColorScheme.addEventListener) {
 } else {
   mermaidColorScheme.addListener(refreshMermaidTheme);
 }
+
+window.addEventListener('studio:theme', refreshMermaidTheme);

@@ -2211,12 +2211,12 @@ html.btc-orrery-locked body { overflow: hidden !important; }
 
 @keyframes btc-live-snap {
   0% { transform: scale(1); }
-  35% { transform: scale(1.14); box-shadow: 0 0 0 4px rgba(111, 191, 160, 0.16); }
+  35% { transform: scale(1.025); }
   100% { transform: scale(1); }
 }
 
 #btc-orrery-live.is-snapping {
-  animation: btc-live-snap 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: btc-live-snap 180ms cubic-bezier(.23, 1, .32, 1);
 }
 
 /* ---------- compact homepage entry (2026-10-23) ---------- */

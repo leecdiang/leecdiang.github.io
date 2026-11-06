@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#eaf5fb" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
-  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
-  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
-  <meta name="yandex-verification" content="742c2c3e6536dd02">
-
-<link rel="stylesheet" href="/css/main.css?v=20261023-fluid-1">
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
+  <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.3ccaeaac006f.css">
+  
+  
+  <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
+  <script defer src="/assets/studio/content.f8c2acaeff11.js"></script>
+  
     <meta name="description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联">
@@ -62,122 +55,42 @@
 
 
 
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
-<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
-
-  
-
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"/js/third-party/mermaid.min.js"}}</script>
-  <script src="/js/third-party/mermaid.min.js" defer></script>
-  <script src="/js/third-party/tags/mermaid.js?v=20260830-mermaid-ui-5" defer></script>
-
-
-
-
-
-  
-
-
-  
-
-  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/vendor/mathjax/tex-mml-chtml.js"}}</script>
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
-
-<link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">Beyond the Clock</p>
-      <i class="logo-line"></i>
-    </a>
-      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="搜索" role="button">
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
-  </ul>
-</nav>
-
-
-
-
-</header>
-        
   
-  <aside class="sidebar">
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":"/js/third-party/mermaid.min.js"}</script>
+  <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer></script>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%8E%E7%B3%BB%E7%BB%9F%E9%9C%80%E6%B1%82%E5%80%92%E6%8E%A8%E4%B8%80%E9%A2%97%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="nav-text">一、从系统需求倒推一颗智算网卡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-%E7%BD%91%E5%8D%A1%E4%B8%8D%E6%98%AF%E2%80%9C%E6%9B%B4%E5%BF%AB%E7%9A%84%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%A1%E2%80%9D"><span class="nav-text">1. AI 网卡不是“更快的以太网卡”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%BD%91%E5%8D%A1%E5%90%8C%E6%97%B6%E5%8C%85%E5%90%AB%E4%B8%89%E4%B8%AA%E5%B9%B3%E9%9D%A2"><span class="nav-text">2. 网卡同时包含三个平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%B8%E5%9E%8B%E6%95%B0%E6%8D%AE%E8%B7%AF%E5%BE%84"><span class="nav-text">3. 典型数据路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81PCIe%EF%BC%9A%E7%BD%91%E7%BB%9C%E7%AB%AF%E5%8F%A3%E8%83%8C%E5%90%8E%E7%9A%84%E4%B8%BB%E6%9C%BA%E4%BE%A7%E5%A4%A9%E8%8A%B1%E6%9D%BF"><span class="nav-text">二、PCIe：网络端口背后的主机侧天花板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-PCIe-%E6%98%AF%E4%B8%BB%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93%EF%BC%8C%E4%B8%8D%E6%98%AF%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3"><span class="nav-text">1. PCIe 是主数据通道，不是管理接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-PCIe-4-0-x16-%E4%B8%8E-200G-%E7%BA%A7%E7%BD%91%E5%8D%A1"><span class="nav-text">2. PCIe 4.0 x16 与 200G 级网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PCIe-5-0-x16-%E4%B8%8E-400G-%E7%BD%91%E5%8D%A1"><span class="nav-text">3. PCIe 5.0 x16 与 400G 网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-800G-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%86%8D%E6%AC%A1%E9%80%BC%E8%BF%91%E6%8E%A5%E5%8F%A3%E6%9E%81%E9%99%90"><span class="nav-text">4. 800G 为什么会再次逼近接口极限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81DMA-%E4%B8%8E%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%9A%E9%9B%B6%E6%8B%B7%E8%B4%9D%E5%B9%B6%E4%B8%8D%E7%AD%89%E4%BA%8E%E9%9B%B6%E5%B7%A5%E4%BD%9C"><span class="nav-text">三、DMA 与地址转换：零拷贝并不等于零工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RDMA-%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BB%8D%E7%84%B6%E5%BF%85%E9%A1%BB%E7%A7%BB%E5%8A%A8"><span class="nav-text">1. RDMA 的数据仍然必须移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E9%9A%90%E8%97%8F%E7%93%B6%E9%A2%88"><span class="nav-text">2. 地址转换可能成为隐藏瓶颈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%A7%E8%A7%84%E6%A8%A1%E9%98%9F%E5%88%97%E6%84%8F%E5%91%B3%E7%9D%80%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8"><span class="nav-text">3. 大规模队列意味着上下文分层存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81RDMA-Transport-Engine%EF%BC%9A%E6%9C%80%E5%A4%8D%E6%9D%82%E7%9A%84%E6%95%B0%E5%AD%97%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B9%8B%E4%B8%80"><span class="nav-text">四、RDMA Transport Engine：最复杂的数字状态机之一</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%AF%E9%9D%A0%E8%BF%9E%E6%8E%A5%E9%9C%80%E8%A6%81%E7%BB%B4%E6%8A%A4%E4%BB%80%E4%B9%88"><span class="nav-text">1. 可靠连接需要维护什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8C%85%E7%BA%A7%E5%A4%9A%E8%B7%AF%E5%BE%84%E4%BC%9A%E6%89%A9%E5%A4%A7%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4"><span class="nav-text">2. 包级多路径会扩大状态空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8D%8F%E8%AE%AE%E7%81%B5%E6%B4%BB%E6%80%A7%E9%A6%96%E5%85%88%E6%98%AF%E9%AA%8C%E8%AF%81%E9%97%AE%E9%A2%98"><span class="nav-text">3. 协议灵活性首先是验证问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Packet-Processing%EF%BC%9A%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%80%A7%E7%9A%84%E5%88%86%E7%95%8C"><span class="nav-text">五、Packet Processing：固定功能与可编程性的分界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E9%9D%A2%E9%80%9A%E5%B8%B8%E8%A6%81%E5%A4%84%E7%90%86%E4%BB%80%E4%B9%88"><span class="nav-text">1. 数据面通常要处理什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD-ASIC-%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="nav-text">2. 固定功能 ASIC 的优势与边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B5%8C%E5%85%A5%E5%BC%8F-CPU-%E9%80%82%E5%90%88%E6%8E%A7%E5%88%B6%E9%9D%A2%E4%B8%8E%E6%85%A2%E8%B7%AF%E5%BE%84"><span class="nav-text">3. 嵌入式 CPU 适合控制面与慢路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%B8%93%E7%94%A8%E5%BE%AE%E5%BC%95%E6%93%8E%E5%A1%AB%E8%A1%A5%E4%B8%AD%E9%97%B4%E5%9C%B0%E5%B8%A6"><span class="nav-text">4. 专用微引擎填补中间地带</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-CGRA-%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E2%80%9C%E5%8F%AF%E9%87%8D%E6%9E%84%E5%BC%95%E6%93%8E%E2%80%9D%E7%9A%84%E7%BB%9F%E7%A7%B0"><span class="nav-text">5. CGRA 不是所有“可重构引擎”的统称</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E7%89%87%E4%B8%8A%E4%BA%92%E8%81%94%EF%BC%9AAXI-%E4%B8%8D%E6%98%AF%E4%B8%80%E6%9D%A1%E6%97%A0%E9%99%90%E5%AE%BD%E7%9A%84%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF"><span class="nav-text">六、片上互联：AXI 不是一条无限宽的高速公路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AXI-%E6%98%AF%E6%8E%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE%EF%BC%8C%E4%B8%8D%E6%98%AF%E5%AE%8C%E6%95%B4-NoC"><span class="nav-text">1. AXI 是接口协议，不是完整 NoC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Tbps-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E6%9C%89%E5%A4%9A%E5%AE%BD"><span class="nav-text">2. 1 Tbps 数据通路有多宽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-On-chip-SRAM-%E6%98%AF%E9%9A%90%E5%BD%A2%E6%A0%B8%E5%BF%83"><span class="nav-text">3. On-chip SRAM 是隐形核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E4%B8%8E%E6%8E%A7%E5%88%B6%E9%80%9A%E8%B7%AF%E5%BF%85%E9%A1%BB%E9%9A%94%E7%A6%BB"><span class="nav-text">4. 数据通路与控制通路必须隔离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81112G-224G-SerDes-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%83%8F%E2%80%9C%E9%BB%91%E9%AD%94%E6%B3%95%E2%80%9D"><span class="nav-text">七、112G &#x2F; 224G SerDes 为什么像“黑魔法”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%9F%E7%8E%87%E6%8F%90%E5%8D%87%E4%B8%8D%E5%86%8D%E9%9D%A0%E7%AE%80%E5%8D%95%E6%8F%90%E9%AB%98%E6%97%B6%E9%92%9F"><span class="nav-text">1. 速率提升不再靠简单提高时钟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Tx-%E4%B8%8E-Rx-%E8%A6%81%E5%85%B1%E5%90%8C%E6%81%A2%E5%A4%8D%E7%9C%BC%E5%9B%BE"><span class="nav-text">2. Tx 与 Rx 要共同恢复眼图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Pre-FEC-BER-%E4%B8%8E-Post-FEC-BER"><span class="nav-text">3. Pre-FEC BER 与 Post-FEC BER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-224G-%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C112G-%E7%BF%BB%E5%80%8D%E2%80%9D"><span class="nav-text">4. 224G 不只是“112G 翻倍”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E8%87%AA%E7%A0%94%E8%BF%98%E6%98%AF%E9%87%87%E8%B4%AD%EF%BC%9A%E9%AB%98%E9%80%9F-IP-%E7%9A%84%E5%B7%A5%E7%A8%8B%E7%BB%8F%E6%B5%8E%E5%AD%A6"><span class="nav-text">八、自研还是采购：高速 IP 的工程经济学</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SerDes-%E6%98%AF%E5%B7%A5%E8%89%BA%E7%BB%91%E5%AE%9A%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%B3%BB%E7%BB%9F"><span class="nav-text">1. SerDes 是工艺绑定的模拟系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%80%E6%AC%A1%E6%88%90%E5%8A%9F%E6%B5%81%E7%89%87%E7%9A%84%E4%BB%B7%E5%80%BC%E6%9E%81%E9%AB%98"><span class="nav-text">2. 一次成功流片的价值极高</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%87%87%E8%B4%AD-IP-%E4%B8%8D%E7%AD%89%E4%BA%8E%E6%94%BE%E5%BC%83%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B"><span class="nav-text">3. 采购 IP 不等于放弃核心能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B7%AE%E5%BC%82%E5%8C%96%E9%80%9A%E5%B8%B8%E8%90%BD%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="nav-text">4. 差异化通常落在哪里</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%AE%89%E5%85%A8%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9A%84%E5%8E%9F%E7%94%9F%E8%83%BD%E5%8A%9B"><span class="nav-text">九、安全为什么可能成为智算网卡的原生能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-%E9%9B%86%E7%BE%A4%E4%B8%8D%E5%86%8D%E6%80%BB%E6%98%AF%E5%8D%95%E7%A7%9F%E6%88%B7%E5%B0%81%E9%97%AD%E6%9C%BA%E5%99%A8"><span class="nav-text">1. AI 集群不再总是单租户封闭机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Inline-Security-%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-text">2. Inline Security 的价值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%9C%9F%E6%AD%A3%E5%9B%B0%E9%9A%BE%E7%9A%84%E6%98%AF%E7%8A%B6%E6%80%81%E5%92%8C%E5%AF%86%E9%92%A5%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-text">3. 真正困难的是状态和密钥生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%89%E5%85%A8%E4%B9%9F%E4%BC%9A%E6%B6%88%E8%80%97-PPA-%E4%B8%8E%E9%AA%8C%E8%AF%81%E8%B5%84%E6%BA%90"><span class="nav-text">4. 安全也会消耗 PPA 与验证资源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E9%A9%B1%E5%8A%A8%E4%B8%8E%E8%BD%AF%E4%BB%B6%E6%A0%88%E4%B8%8D%E6%98%AF%E8%8A%AF%E7%89%87%E7%9A%84%E9%99%84%E4%BB%B6"><span class="nav-text">十、驱动与软件栈不是芯片的附件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A9%B1%E5%8A%A8%E5%86%B3%E5%AE%9A%E7%A1%AC%E4%BB%B6%E8%83%BD%E5%90%A6%E8%A2%AB%E7%A8%B3%E5%AE%9A%E4%BD%BF%E7%94%A8"><span class="nav-text">1. 驱动决定硬件能否被稳定使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Collective-Library-%E5%86%B3%E5%AE%9A%E5%AE%9E%E9%99%85%E6%B5%81%E9%87%8F%E5%BD%A2%E6%80%81"><span class="nav-text">2. Collective Library 决定实际流量形态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Firmware-%E6%98%AF%E7%A1%AC%E4%BB%B6%E4%B8%8E%E5%8D%8F%E8%AE%AE%E4%B9%8B%E9%97%B4%E7%9A%84%E9%95%BF%E6%9C%9F%E5%A5%91%E7%BA%A6"><span class="nav-text">3. Firmware 是硬件与协议之间的长期契约</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%94%9F%E6%80%81%E6%98%AF%E6%9C%80%E6%85%A2%E5%BD%A2%E6%88%90%E7%9A%84%E6%8A%A4%E5%9F%8E%E6%B2%B3"><span class="nav-text">4. 生态是最慢形成的护城河</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E4%BB%8E%E9%93%9C%E5%88%B0%E5%85%89%EF%BC%9ACPO-%E6%98%AF%E5%85%B3%E9%94%AE%E8%B7%AF%E7%BA%BF%EF%BC%8C%E4%BD%86%E4%B8%8D%E6%98%AF%E5%94%AF%E4%B8%80%E7%BB%88%E7%82%B9"><span class="nav-text">十一、从铜到光：CPO 是关键路线，但不是唯一终点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%AB%98%E9%80%9F%E7%94%B5%E4%BF%A1%E5%8F%B7%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B6%8A%E6%9D%A5%E8%B6%8A%E9%9A%BE%E8%B5%B0%E5%88%B0%E5%89%8D%E9%9D%A2%E6%9D%BF"><span class="nav-text">1. 高速电信号为什么越来越难走到前面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AB%98%E9%80%9F%E4%BA%92%E8%81%94%E6%98%AF%E4%B8%80%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%96%B9%E6%A1%88"><span class="nav-text">2. 高速互联是一组连续方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CPO-%E5%B7%B2%E7%BB%8F%E4%BB%8E%E6%A6%82%E5%BF%B5%E8%B5%B0%E5%90%91%E4%BA%A7%E5%93%81"><span class="nav-text">3. CPO 已经从概念走向产品</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CPO-%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="nav-text">4. CPO 的代价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%A6%82%E4%BD%95%E4%B8%A5%E8%82%83%E8%AF%84%E4%BB%B7%E4%B8%80%E5%BC%A0%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="nav-text">十二、如何严肃评价一张智算网卡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E9%9D%A2"><span class="nav-text">1. 基础数据面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RDMA"><span class="nav-text">2. RDMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AI-Collective"><span class="nav-text">3. AI Collective</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AB%AF%E7%BD%91%E5%8D%8F%E5%90%8C"><span class="nav-text">4. 端网协同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%AE%89%E5%85%A8%E4%B8%8E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="nav-text">5. 安全与虚拟化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%9B%BD%E4%BA%A7%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9C%9F%E6%AD%A3%E9%9D%A2%E5%AF%B9%E7%9A%84%E6%9C%BA%E4%BC%9A%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="nav-text">十三、国产智算网卡真正面对的机会与边界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9C%BA%E4%BC%9A%E4%B8%8D%E5%8F%AA%E6%9D%A5%E8%87%AA%E2%80%9C%E5%9B%BD%E4%BA%A7%E6%9B%BF%E4%BB%A3%E2%80%9D"><span class="nav-text">1. 机会不只来自“国产替代”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%AB%AF%E5%8F%A3%E9%80%9F%E7%8E%87%E5%BE%88%E5%BF%AB%E4%BC%9A%E5%95%86%E5%93%81%E5%8C%96"><span class="nav-text">2. 端口速率很快会商品化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Scale-out-%E4%B8%8E-Scale-up-%E4%B8%8D%E6%98%AF%E8%87%AA%E7%84%B6%E5%8D%87%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-text">3. Scale-out 与 Scale-up 不是自然升级关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BD%AF%E4%BB%B6%E7%BB%B4%E6%8A%A4%E5%91%A8%E6%9C%9F%E8%BF%9C%E9%95%BF%E4%BA%8E%E4%B8%80%E6%AC%A1%E6%B5%81%E7%89%87"><span class="nav-text">4. 软件维护周期远长于一次流片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E7%BD%91%E5%8D%A1%E8%AE%BE%E8%AE%A1%E5%B8%88%E6%AD%A3%E5%9C%A8%E5%8F%98%E6%88%90%E4%BA%92%E8%81%94%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88"><span class="nav-text">结语：网卡设计师正在变成互联系统架构师</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E8%AE%AE%E9%85%8D%E5%9B%BE"><span class="nav-text">建议配图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">参考资料</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">LEEcDiang</p>
-  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
-</div>
-
-        </div>
-      </div>
-    </div>
-
+  
+  <script defer src="/assets/studio/core.38bf5c7b74cd.js"></script>
+  
+  
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+</head>
+<body class="studio-site studio-halo studio-reading">
+  <div class="ambient-halo" aria-hidden="true">
+    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v5.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v5.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+  </div>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="studio-header">
+    <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="/photography/">摄影</a>
+      <a href="/archives/" aria-current="page">文章</a>
+      <a href="/about/">关于</a>
+    </nav>
+    <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+    <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+    </button></div>
+  </header>
+  <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
-  </aside>
 
-
-    </div>
-
-    <div class="main-inner post posts-expand">
-
-
+  <div class="reading-layout"><div class="reading-main">
   
 
 
@@ -189,7 +102,7 @@
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
     </span>
 
@@ -203,6 +116,9 @@
       <meta itemprop="description" content="从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G&#x2F;224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。">
     </span>
       <header class="post-header">
+        
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon & Circuits</a></nav>
+        
         <h1 class="post-title" itemprop="name headline">
           智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联
         </h1>
@@ -215,6 +131,12 @@
 
             <div class="post-description">从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G/224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。</div>
         </div>
+        
+        <div class="reading-byline">
+          <a class="reading-author" href="/about/"><img src="/images/avatar-snow.jpg" width="44" height="44" alt="LEEcDiang 的头像"><span><strong>LEEcDiang</strong><span>Chengzhan Li</span></span></a>
+          <time datetime="2026-06-28T22:38:30+08:00">2026.06.28 发布</time>
+        </div>
+        
       </header>
 
     
@@ -1003,464 +925,9 @@ flowchart TB
 
 
 
+  </div><aside class="reading-toc" aria-label="文章目录"><details open><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%8E%E7%B3%BB%E7%BB%9F%E9%9C%80%E6%B1%82%E5%80%92%E6%8E%A8%E4%B8%80%E9%A2%97%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="toc-text">一、从系统需求倒推一颗智算网卡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-AI-%E7%BD%91%E5%8D%A1%E4%B8%8D%E6%98%AF%E2%80%9C%E6%9B%B4%E5%BF%AB%E7%9A%84%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%A1%E2%80%9D"><span class="toc-text">1. AI 网卡不是“更快的以太网卡”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BD%91%E5%8D%A1%E5%90%8C%E6%97%B6%E5%8C%85%E5%90%AB%E4%B8%89%E4%B8%AA%E5%B9%B3%E9%9D%A2"><span class="toc-text">2. 网卡同时包含三个平面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%B8%E5%9E%8B%E6%95%B0%E6%8D%AE%E8%B7%AF%E5%BE%84"><span class="toc-text">3. 典型数据路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81PCIe%EF%BC%9A%E7%BD%91%E7%BB%9C%E7%AB%AF%E5%8F%A3%E8%83%8C%E5%90%8E%E7%9A%84%E4%B8%BB%E6%9C%BA%E4%BE%A7%E5%A4%A9%E8%8A%B1%E6%9D%BF"><span class="toc-text">二、PCIe：网络端口背后的主机侧天花板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PCIe-%E6%98%AF%E4%B8%BB%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93%EF%BC%8C%E4%B8%8D%E6%98%AF%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3"><span class="toc-text">1. PCIe 是主数据通道，不是管理接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PCIe-4-0-x16-%E4%B8%8E-200G-%E7%BA%A7%E7%BD%91%E5%8D%A1"><span class="toc-text">2. PCIe 4.0 x16 与 200G 级网卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PCIe-5-0-x16-%E4%B8%8E-400G-%E7%BD%91%E5%8D%A1"><span class="toc-text">3. PCIe 5.0 x16 与 400G 网卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-800G-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%86%8D%E6%AC%A1%E9%80%BC%E8%BF%91%E6%8E%A5%E5%8F%A3%E6%9E%81%E9%99%90"><span class="toc-text">4. 800G 为什么会再次逼近接口极限</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81DMA-%E4%B8%8E%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%9A%E9%9B%B6%E6%8B%B7%E8%B4%9D%E5%B9%B6%E4%B8%8D%E7%AD%89%E4%BA%8E%E9%9B%B6%E5%B7%A5%E4%BD%9C"><span class="toc-text">三、DMA 与地址转换：零拷贝并不等于零工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-RDMA-%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BB%8D%E7%84%B6%E5%BF%85%E9%A1%BB%E7%A7%BB%E5%8A%A8"><span class="toc-text">1. RDMA 的数据仍然必须移动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E9%9A%90%E8%97%8F%E7%93%B6%E9%A2%88"><span class="toc-text">2. 地址转换可能成为隐藏瓶颈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A4%A7%E8%A7%84%E6%A8%A1%E9%98%9F%E5%88%97%E6%84%8F%E5%91%B3%E7%9D%80%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8"><span class="toc-text">3. 大规模队列意味着上下文分层存储</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81RDMA-Transport-Engine%EF%BC%9A%E6%9C%80%E5%A4%8D%E6%9D%82%E7%9A%84%E6%95%B0%E5%AD%97%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B9%8B%E4%B8%80"><span class="toc-text">四、RDMA Transport Engine：最复杂的数字状态机之一</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8F%AF%E9%9D%A0%E8%BF%9E%E6%8E%A5%E9%9C%80%E8%A6%81%E7%BB%B4%E6%8A%A4%E4%BB%80%E4%B9%88"><span class="toc-text">1. 可靠连接需要维护什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8C%85%E7%BA%A7%E5%A4%9A%E8%B7%AF%E5%BE%84%E4%BC%9A%E6%89%A9%E5%A4%A7%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4"><span class="toc-text">2. 包级多路径会扩大状态空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8D%8F%E8%AE%AE%E7%81%B5%E6%B4%BB%E6%80%A7%E9%A6%96%E5%85%88%E6%98%AF%E9%AA%8C%E8%AF%81%E9%97%AE%E9%A2%98"><span class="toc-text">3. 协议灵活性首先是验证问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Packet-Processing%EF%BC%9A%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%80%A7%E7%9A%84%E5%88%86%E7%95%8C"><span class="toc-text">五、Packet Processing：固定功能与可编程性的分界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E9%9D%A2%E9%80%9A%E5%B8%B8%E8%A6%81%E5%A4%84%E7%90%86%E4%BB%80%E4%B9%88"><span class="toc-text">1. 数据面通常要处理什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD-ASIC-%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="toc-text">2. 固定功能 ASIC 的优势与边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B5%8C%E5%85%A5%E5%BC%8F-CPU-%E9%80%82%E5%90%88%E6%8E%A7%E5%88%B6%E9%9D%A2%E4%B8%8E%E6%85%A2%E8%B7%AF%E5%BE%84"><span class="toc-text">3. 嵌入式 CPU 适合控制面与慢路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%93%E7%94%A8%E5%BE%AE%E5%BC%95%E6%93%8E%E5%A1%AB%E8%A1%A5%E4%B8%AD%E9%97%B4%E5%9C%B0%E5%B8%A6"><span class="toc-text">4. 专用微引擎填补中间地带</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-CGRA-%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E2%80%9C%E5%8F%AF%E9%87%8D%E6%9E%84%E5%BC%95%E6%93%8E%E2%80%9D%E7%9A%84%E7%BB%9F%E7%A7%B0"><span class="toc-text">5. CGRA 不是所有“可重构引擎”的统称</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E7%89%87%E4%B8%8A%E4%BA%92%E8%81%94%EF%BC%9AAXI-%E4%B8%8D%E6%98%AF%E4%B8%80%E6%9D%A1%E6%97%A0%E9%99%90%E5%AE%BD%E7%9A%84%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF"><span class="toc-text">六、片上互联：AXI 不是一条无限宽的高速公路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-AXI-%E6%98%AF%E6%8E%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE%EF%BC%8C%E4%B8%8D%E6%98%AF%E5%AE%8C%E6%95%B4-NoC"><span class="toc-text">1. AXI 是接口协议，不是完整 NoC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Tbps-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E6%9C%89%E5%A4%9A%E5%AE%BD"><span class="toc-text">2. 1 Tbps 数据通路有多宽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-On-chip-SRAM-%E6%98%AF%E9%9A%90%E5%BD%A2%E6%A0%B8%E5%BF%83"><span class="toc-text">3. On-chip SRAM 是隐形核心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E4%B8%8E%E6%8E%A7%E5%88%B6%E9%80%9A%E8%B7%AF%E5%BF%85%E9%A1%BB%E9%9A%94%E7%A6%BB"><span class="toc-text">4. 数据通路与控制通路必须隔离</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81112G-224G-SerDes-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%83%8F%E2%80%9C%E9%BB%91%E9%AD%94%E6%B3%95%E2%80%9D"><span class="toc-text">七、112G &#x2F; 224G SerDes 为什么像“黑魔法”</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%80%9F%E7%8E%87%E6%8F%90%E5%8D%87%E4%B8%8D%E5%86%8D%E9%9D%A0%E7%AE%80%E5%8D%95%E6%8F%90%E9%AB%98%E6%97%B6%E9%92%9F"><span class="toc-text">1. 速率提升不再靠简单提高时钟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Tx-%E4%B8%8E-Rx-%E8%A6%81%E5%85%B1%E5%90%8C%E6%81%A2%E5%A4%8D%E7%9C%BC%E5%9B%BE"><span class="toc-text">2. Tx 与 Rx 要共同恢复眼图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Pre-FEC-BER-%E4%B8%8E-Post-FEC-BER"><span class="toc-text">3. Pre-FEC BER 与 Post-FEC BER</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-224G-%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C112G-%E7%BF%BB%E5%80%8D%E2%80%9D"><span class="toc-text">4. 224G 不只是“112G 翻倍”</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%87%AA%E7%A0%94%E8%BF%98%E6%98%AF%E9%87%87%E8%B4%AD%EF%BC%9A%E9%AB%98%E9%80%9F-IP-%E7%9A%84%E5%B7%A5%E7%A8%8B%E7%BB%8F%E6%B5%8E%E5%AD%A6"><span class="toc-text">八、自研还是采购：高速 IP 的工程经济学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-SerDes-%E6%98%AF%E5%B7%A5%E8%89%BA%E7%BB%91%E5%AE%9A%E7%9A%84%E6%A8%A1%E6%8B%9F%E7%B3%BB%E7%BB%9F"><span class="toc-text">1. SerDes 是工艺绑定的模拟系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%80%E6%AC%A1%E6%88%90%E5%8A%9F%E6%B5%81%E7%89%87%E7%9A%84%E4%BB%B7%E5%80%BC%E6%9E%81%E9%AB%98"><span class="toc-text">2. 一次成功流片的价值极高</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%87%87%E8%B4%AD-IP-%E4%B8%8D%E7%AD%89%E4%BA%8E%E6%94%BE%E5%BC%83%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B"><span class="toc-text">3. 采购 IP 不等于放弃核心能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%B7%AE%E5%BC%82%E5%8C%96%E9%80%9A%E5%B8%B8%E8%90%BD%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="toc-text">4. 差异化通常落在哪里</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%AE%89%E5%85%A8%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AF%E8%83%BD%E6%88%90%E4%B8%BA%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9A%84%E5%8E%9F%E7%94%9F%E8%83%BD%E5%8A%9B"><span class="toc-text">九、安全为什么可能成为智算网卡的原生能力</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-AI-%E9%9B%86%E7%BE%A4%E4%B8%8D%E5%86%8D%E6%80%BB%E6%98%AF%E5%8D%95%E7%A7%9F%E6%88%B7%E5%B0%81%E9%97%AD%E6%9C%BA%E5%99%A8"><span class="toc-text">1. AI 集群不再总是单租户封闭机器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Inline-Security-%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-text">2. Inline Security 的价值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%9C%9F%E6%AD%A3%E5%9B%B0%E9%9A%BE%E7%9A%84%E6%98%AF%E7%8A%B6%E6%80%81%E5%92%8C%E5%AF%86%E9%92%A5%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">3. 真正困难的是状态和密钥生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%89%E5%85%A8%E4%B9%9F%E4%BC%9A%E6%B6%88%E8%80%97-PPA-%E4%B8%8E%E9%AA%8C%E8%AF%81%E8%B5%84%E6%BA%90"><span class="toc-text">4. 安全也会消耗 PPA 与验证资源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E9%A9%B1%E5%8A%A8%E4%B8%8E%E8%BD%AF%E4%BB%B6%E6%A0%88%E4%B8%8D%E6%98%AF%E8%8A%AF%E7%89%87%E7%9A%84%E9%99%84%E4%BB%B6"><span class="toc-text">十、驱动与软件栈不是芯片的附件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A9%B1%E5%8A%A8%E5%86%B3%E5%AE%9A%E7%A1%AC%E4%BB%B6%E8%83%BD%E5%90%A6%E8%A2%AB%E7%A8%B3%E5%AE%9A%E4%BD%BF%E7%94%A8"><span class="toc-text">1. 驱动决定硬件能否被稳定使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Collective-Library-%E5%86%B3%E5%AE%9A%E5%AE%9E%E9%99%85%E6%B5%81%E9%87%8F%E5%BD%A2%E6%80%81"><span class="toc-text">2. Collective Library 决定实际流量形态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Firmware-%E6%98%AF%E7%A1%AC%E4%BB%B6%E4%B8%8E%E5%8D%8F%E8%AE%AE%E4%B9%8B%E9%97%B4%E7%9A%84%E9%95%BF%E6%9C%9F%E5%A5%91%E7%BA%A6"><span class="toc-text">3. Firmware 是硬件与协议之间的长期契约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%9F%E6%80%81%E6%98%AF%E6%9C%80%E6%85%A2%E5%BD%A2%E6%88%90%E7%9A%84%E6%8A%A4%E5%9F%8E%E6%B2%B3"><span class="toc-text">4. 生态是最慢形成的护城河</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E4%BB%8E%E9%93%9C%E5%88%B0%E5%85%89%EF%BC%9ACPO-%E6%98%AF%E5%85%B3%E9%94%AE%E8%B7%AF%E7%BA%BF%EF%BC%8C%E4%BD%86%E4%B8%8D%E6%98%AF%E5%94%AF%E4%B8%80%E7%BB%88%E7%82%B9"><span class="toc-text">十一、从铜到光：CPO 是关键路线，但不是唯一终点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%AB%98%E9%80%9F%E7%94%B5%E4%BF%A1%E5%8F%B7%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B6%8A%E6%9D%A5%E8%B6%8A%E9%9A%BE%E8%B5%B0%E5%88%B0%E5%89%8D%E9%9D%A2%E6%9D%BF"><span class="toc-text">1. 高速电信号为什么越来越难走到前面板</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%AB%98%E9%80%9F%E4%BA%92%E8%81%94%E6%98%AF%E4%B8%80%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%96%B9%E6%A1%88"><span class="toc-text">2. 高速互联是一组连续方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-CPO-%E5%B7%B2%E7%BB%8F%E4%BB%8E%E6%A6%82%E5%BF%B5%E8%B5%B0%E5%90%91%E4%BA%A7%E5%93%81"><span class="toc-text">3. CPO 已经从概念走向产品</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-CPO-%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-text">4. CPO 的代价</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%A6%82%E4%BD%95%E4%B8%A5%E8%82%83%E8%AF%84%E4%BB%B7%E4%B8%80%E5%BC%A0%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1"><span class="toc-text">十二、如何严肃评价一张智算网卡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E9%9D%A2"><span class="toc-text">1. 基础数据面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-RDMA"><span class="toc-text">2. RDMA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-AI-Collective"><span class="toc-text">3. AI Collective</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%AB%AF%E7%BD%91%E5%8D%8F%E5%90%8C"><span class="toc-text">4. 端网协同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%AE%89%E5%85%A8%E4%B8%8E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">5. 安全与虚拟化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%9B%BD%E4%BA%A7%E6%99%BA%E7%AE%97%E7%BD%91%E5%8D%A1%E7%9C%9F%E6%AD%A3%E9%9D%A2%E5%AF%B9%E7%9A%84%E6%9C%BA%E4%BC%9A%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="toc-text">十三、国产智算网卡真正面对的机会与边界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9C%BA%E4%BC%9A%E4%B8%8D%E5%8F%AA%E6%9D%A5%E8%87%AA%E2%80%9C%E5%9B%BD%E4%BA%A7%E6%9B%BF%E4%BB%A3%E2%80%9D"><span class="toc-text">1. 机会不只来自“国产替代”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%AB%AF%E5%8F%A3%E9%80%9F%E7%8E%87%E5%BE%88%E5%BF%AB%E4%BC%9A%E5%95%86%E5%93%81%E5%8C%96"><span class="toc-text">2. 端口速率很快会商品化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Scale-out-%E4%B8%8E-Scale-up-%E4%B8%8D%E6%98%AF%E8%87%AA%E7%84%B6%E5%8D%87%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="toc-text">3. Scale-out 与 Scale-up 不是自然升级关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BD%AF%E4%BB%B6%E7%BB%B4%E6%8A%A4%E5%91%A8%E6%9C%9F%E8%BF%9C%E9%95%BF%E4%BA%8E%E4%B8%80%E6%AC%A1%E6%B5%81%E7%89%87"><span class="toc-text">4. 软件维护周期远长于一次流片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E7%BD%91%E5%8D%A1%E8%AE%BE%E8%AE%A1%E5%B8%88%E6%AD%A3%E5%9C%A8%E5%8F%98%E6%88%90%E4%BA%92%E8%81%94%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%B8%88"><span class="toc-text">结语：网卡设计师正在变成互联系统架构师</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E8%AE%AE%E9%85%8D%E5%9B%BE"><span class="toc-text">建议配图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside></div>
 
 
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2026</span>
-    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
-  </div>
-
-    </div>
-  </footer>
-
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="Back to top">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-<script>
-(function() {
-  var desc = document.querySelector('.site-description');
-  if (desc && !desc.querySelector('.desc-line2')) {
-    desc.textContent = 'A personal archive of digital IC, computer architecture, and AI infrastructure — plus tools, photography, and the occasional detour.';
-    var l2 = document.createElement('div');
-    l2.className = 'desc-line2';
-    l2.textContent = 'Digital IC · Architecture · AI Infrastructure';
-    desc.appendChild(l2);
-  }
-})();
-</script>
-
-<script>
-(function () {
-  var LONG_POST_HEIGHT = 24000;
-  var LONG_POST_AREA = 18000000;
-  var DESKTOP_QUERY = '(min-width: 992px)';
-
-  function isSafariBrowser() {
-    var ua = navigator.userAgent;
-    return /Safari/.test(ua) &&
-      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
-  }
-
-  function findVisiblePostBlock() {
-    var candidates = Array.prototype.slice.call(
-      document.querySelectorAll('.post-block')
-    );
-
-    candidates = candidates.filter(function (element) {
-      var rect = element.getBoundingClientRect();
-      var style = getComputedStyle(element);
-      return (
-        style.display !== 'none' &&
-        style.visibility !== 'hidden' &&
-        rect.width > 100 &&
-        element.querySelector('.post-content')
-      );
-    });
-
-    candidates.sort(function (a, b) {
-      return b.scrollHeight - a.scrollHeight;
-    });
-
-    return candidates[0] || null;
-  }
-
-  function recordSafariGlassInit(ok, reason, details) {
-    window.__safariLongPostGlassLastInit = {
-      ok: ok,
-      reason: reason,
-      details: details || null,
-      time: Date.now(),
-      readyState: document.readyState
-    };
-    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
-    return ok;
-  }
-
-  var safariLongPostBootTimer = null;
-  var safariLongPostBootAttempt = 0;
-  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
-  var SAFARI_LONG_POST_RETRY_DELAY = 250;
-
-  function cleanupSafariLongPostGlass() {
-    if (safariLongPostBootTimer !== null) {
-      clearTimeout(safariLongPostBootTimer);
-      safariLongPostBootTimer = null;
-    }
-    safariLongPostBootAttempt = 0;
-
-    var state = window.__safariLongPostGlassState;
-
-    if (!state) {
-      document
-        .querySelectorAll('.post-portal-sampler')
-        .forEach(function (node) { node.remove(); });
-
-      document.documentElement.classList.remove('is-safari-long-post');
-      delete window.__safariLongPostGlassLastInit;
-      delete window.__safariLongPostGlassBootTrace;
-      return;
-    }
-
-    window.removeEventListener('scroll', state.scheduleUpdate);
-    window.removeEventListener('resize', state.scheduleUpdate);
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
-      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
-    }
-
-    if (state.resizeObserver) {
-      state.resizeObserver.disconnect();
-    }
-
-    if (state.sampler) {
-      state.sampler.remove();
-    }
-
-    document.documentElement.classList.remove('is-safari-long-post');
-    delete window.__safariLongPostGlassState;
-    delete window.__safariLongPostGlassLastInit;
-    delete window.__safariLongPostGlassBootTrace;
-  }
-
-  function initSafariLongPostGlass() {
-    // 已经成功初始化：只更新几何
-    if (
-      window.__safariLongPostGlassState &&
-      document.querySelector('body > .post-portal-sampler')
-    ) {
-      window.__safariLongPostGlassState.scheduleUpdate();
-      return recordSafariGlassInit(true, 'already-initialized');
-    }
-
-    if (!isSafariBrowser()) {
-      return recordSafariGlassInit(false, 'not-safari');
-    }
-
-    if (!window.matchMedia(DESKTOP_QUERY).matches) {
-      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
-    }
-
-    var postBlock = findVisiblePostBlock();
-    if (!postBlock) {
-      return recordSafariGlassInit(false, 'post-block-not-ready', {
-        totalPostBlocks: document.querySelectorAll('.post-block').length
-      });
-    }
-
-    var rect = postBlock.getBoundingClientRect();
-    var height = postBlock.scrollHeight;
-    var width = rect.width;
-    var area = height * width;
-
-    if (width <= 100 || height <= 0) {
-      return recordSafariGlassInit(false, 'invalid-geometry', {
-        width: width,
-        height: height,
-        area: area,
-        display: getComputedStyle(postBlock).display,
-        visibility: getComputedStyle(postBlock).visibility
-      });
-    }
-
-    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
-      return recordSafariGlassInit(false, 'below-threshold', {
-        width: width,
-        height: height,
-        area: area
-      });
-    }
-
-    var postContent = postBlock.querySelector('.post-content');
-    if (!postContent) {
-      return recordSafariGlassInit(false, 'post-content-not-ready');
-    }
-
-    document.documentElement.classList.add('is-safari-long-post');
-
-    var sampler = document.createElement('div');
-    sampler.className = 'post-portal-sampler';
-    sampler.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(sampler);
-
-    var pseudoStyle = getComputedStyle(postBlock, '::before');
-    var radii = {
-      topLeft: pseudoStyle.borderTopLeftRadius,
-      topRight: pseudoStyle.borderTopRightRadius,
-      bottomRight: pseudoStyle.borderBottomRightRadius,
-      bottomLeft: pseudoStyle.borderBottomLeftRadius
-    };
-
-    var scheduled = false;
-
-    function updateSampler() {
-      scheduled = false;
-
-      if (!window.matchMedia(DESKTOP_QUERY).matches) {
-        sampler.style.visibility = 'hidden';
-        return;
-      }
-
-      var rect = postBlock.getBoundingClientRect();
-      var viewportTop = 0;
-      var viewportBottom = window.innerHeight;
-
-      var visibleTop = Math.max(rect.top, viewportTop);
-      var visibleBottom = Math.min(rect.bottom, viewportBottom);
-      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
-
-      if (visibleHeight <= 0 || rect.width <= 0) {
-        sampler.style.visibility = 'hidden';
-        return;
-      }
-
-      sampler.style.visibility = 'visible';
-      sampler.style.left = rect.left + 'px';
-      sampler.style.top = visibleTop + 'px';
-      sampler.style.width = rect.width + 'px';
-      sampler.style.height = visibleHeight + 'px';
-
-      var articleTopVisible = rect.top >= viewportTop;
-      var articleBottomVisible = rect.bottom <= viewportBottom;
-
-      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
-      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
-      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
-      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
-    }
-
-    function scheduleUpdate() {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(updateSampler);
-    }
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', scheduleUpdate);
-      window.visualViewport.addEventListener('scroll', scheduleUpdate);
-    }
-
-    var resizeObserver = null;
-    if ('ResizeObserver' in window) {
-      resizeObserver = new ResizeObserver(scheduleUpdate);
-      resizeObserver.observe(postBlock);
-    }
-
-    window.__safariLongPostGlassState = {
-      sampler: sampler,
-      postBlock: postBlock,
-      scheduleUpdate: scheduleUpdate,
-      resizeObserver: resizeObserver
-    };
-
-    updateSampler();
-
-    return recordSafariGlassInit(true, 'initialized', {
-      width: width,
-      height: height,
-      area: area
-    });
-  }
-
-  function cancelSafariLongPostBoot() {
-    if (safariLongPostBootTimer !== null) {
-      clearTimeout(safariLongPostBootTimer);
-      safariLongPostBootTimer = null;
-    }
-  }
-
-  function bootSafariLongPostGlass() {
-    cancelSafariLongPostBoot();
-    safariLongPostBootAttempt += 1;
-
-    requestAnimationFrame(function () {
-      var initialized = initSafariLongPostGlass();
-
-      window.__safariLongPostGlassBootTrace = {
-        attempt: safariLongPostBootAttempt,
-        initialized: initialized,
-        lastInit: window.__safariLongPostGlassLastInit,
-        time: Date.now()
-      };
-
-      if (initialized) {
-        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
-        return;
-      }
-
-      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
-        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
-        return;
-      }
-
-      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
-    });
-  }
-
-  function restartSafariLongPostGlassBoot() {
-    cancelSafariLongPostBoot();
-    safariLongPostBootAttempt = 0;
-    bootSafariLongPostGlass();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
-  } else {
-    restartSafariLongPostGlassBoot();
-  }
-
-  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
-
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-      restartSafariLongPostGlassBoot();
-    }
-  });
-
-  document.addEventListener('pjax:success', function () {
-    cleanupSafariLongPostGlass();
-    restartSafariLongPostGlassBoot();
-  });
-
-  window.__initSafariLongPostGlass = initSafariLongPostGlass;
-  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
-  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
-})();
-</script>
-
-<!-- =========================================================
-     跳转丝滑：Speculation Rules 预渲染 + 跨文档视图过渡
-     2026-10-18
-     ========================================================= -->
-<script type="speculationrules">
-{
-  "prerender": [{
-    "where": {
-      "and": [
-        { "href_matches": "/*" },
-        { "not": { "selector_matches": "[target=_blank]" } },
-        { "not": { "selector_matches": "[rel~=external]" } },
-        { "not": { "selector_matches": "[download]" } }
-      ]
-    },
-    "eagerness": "moderate"
-  }]
-}
-</script>
-<style>
-  @view-transition { navigation: auto; }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 200ms;
-    animation-timing-function: cubic-bezier(0.28, 0.11, 0.32, 1);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(root),
-    ::view-transition-new(root) { animation: none; }
-  }
-</style>
-<script>
-(function () {
-  // 已经在用 Speculation Rules 的浏览器跳过这套 fallback
-  if (window.HTMLScriptElement && HTMLScriptElement.supports &&
-      HTMLScriptElement.supports('speculationrules')) return;
-
-  var seen = Object.create(null);
-  function prefetch(href) {
-    if (!href || seen[href]) return;
-    seen[href] = 1;
-    var l = document.createElement('link');
-    l.rel = 'prefetch';
-    l.href = href;
-    l.as = 'document';
-    document.head.appendChild(l);
-  }
-  function maybe(e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-    if (!a) return;
-    var url;
-    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
-    if (url.origin !== location.origin) return;
-    if (url.pathname === location.pathname) return;
-    prefetch(url.href);
-  }
-  document.addEventListener('pointerover', maybe, { passive: true });
-  document.addEventListener('touchstart', maybe, { passive: true });
-})();
-</script>
-
-
-<!-- 当前页菜单指示：NexT 模板没输出 menu-item-active，这里按 URL 补上 -->
-<script>
-(function () {
-  var norm = function (p) { return p.replace(/\/index\.html$/, '/').replace(/\/page\/\d+\/$/, '/'); };
-  var here = norm(location.pathname);
-  Array.prototype.forEach.call(
-    document.querySelectorAll('.site-nav .menu-item > a[href]'),
-    function (a) {
-      var url;
-      try { url = new URL(a.getAttribute('href'), location.href); } catch (e) { return; }
-      if (url.origin !== location.origin) return;
-      var target = norm(url.pathname);
-      var match = target === here || (target !== '/' && here.indexOf(target) === 0);
-      if (match) {
-        a.classList.add('menu-item-active');
-        a.setAttribute('aria-current', 'page');
-      }
-    }
-  );
-})();
-</script>
-
-
-<!-- Live Orrery -->
-<link rel="stylesheet" href="/css/orrery.css?v=20261105links">
-<script defer src="/js/orrery-sky.js?v=20261023ui"></script>
-<script defer src="/js/orrery.js?v=20261105links"></script>
-
-<script>
-(function () {
-  var metas = Array.prototype.slice.call(document.querySelectorAll('meta[name="theme-color"]'));
-  if (!metas.length) { var made = document.createElement('meta'); made.name = 'theme-color'; document.head.appendChild(made); metas = [made]; }
-  var mq = window.matchMedia('(prefers-color-scheme: dark)');
-  function apply() {
-    for (var i = 0; i < metas.length; i++) {
-      var m = metas[i];
-      var media = m.getAttribute('media') || '';
-      var dark = media.indexOf('dark') >= 0;
-      var light = media.indexOf('light') >= 0;
-      m.setAttribute('content', dark ? '#121f2b' : (light ? '#eaf5fb' : (mq.matches ? '#121f2b' : '#eaf5fb')));
-    }
-  }
-  apply();
-  if (mq.addEventListener) mq.addEventListener('change', apply);
-  else if (mq.addListener) mq.addListener(apply);
-})();
-</script>
-
-<script defer src="/js/visual-diagrams.js"></script>
-
-</body>
-</html>
+</main>
+  <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+</body></html>

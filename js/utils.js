@@ -37,7 +37,7 @@ NexT.utils = {
 
   registerCopyButton(target, element, code = '') {
     // One-click copy code support.
-    target.insertAdjacentHTML('beforeend', '<div class="copy-btn"><i class="fa fa-copy fa-fw"></i></div>');
+    target.insertAdjacentHTML('beforeend', '<button type="button" class="copy-btn"><i class="fa fa-copy fa-fw" aria-hidden="true"></i></button>');
     const button = target.querySelector('.copy-btn');
     button.addEventListener('click', async () => {
       if (!code) {
@@ -49,11 +49,14 @@ NexT.utils = {
         try {
           await navigator.clipboard.writeText(code);
           button.querySelector('i').className = 'fa fa-check-circle fa-fw';
+          button.dispatchEvent(new CustomEvent('studio:copy-result', {bubbles: true, detail: {success: true}}));
         } catch {
           button.querySelector('i').className = 'fa fa-times-circle fa-fw';
+        button.dispatchEvent(new CustomEvent('studio:copy-result', {bubbles: true, detail: {success: false}}));
         }
       } else {
         button.querySelector('i').className = 'fa fa-times-circle fa-fw';
+        button.dispatchEvent(new CustomEvent('studio:copy-result', {bubbles: true, detail: {success: false}}));
       }
     });
     // If copycode.style is not mac, element is larger than target
@@ -89,8 +92,8 @@ NexT.utils = {
           });
         });
       }
-      const height = parseInt(window.getComputedStyle(element).height, 10);
-      const needFold = CONFIG.codeblock.fold.enable && (height > CONFIG.codeblock.fold.height);
+      const needFold = CONFIG.codeblock.fold.enable &&
+        parseInt(window.getComputedStyle(element).height, 10) > CONFIG.codeblock.fold.height;
       if (!needFold && !CONFIG.codeblock.copy_button.enable && !CONFIG.codeblock.language) return;
       let target;
       if (CONFIG.hljswrap && CONFIG.codeblock.copy_button.style === 'mac') {
@@ -258,12 +261,7 @@ NexT.utils = {
         }, 1000);
         if (!CONFIG.stickytabs) return;
         const offset = nav.parentNode.getBoundingClientRect().top + window.scrollY + 10;
-        window.anime({
-          targets  : document.scrollingElement,
-          duration : 500,
-          easing   : 'linear',
-          scrollTop: offset
-        });
+        window.scrollTo({top: offset, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
       });
     });
 

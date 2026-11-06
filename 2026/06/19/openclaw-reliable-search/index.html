@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#eaf5fb" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121f2b" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=20260901-cat">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=20260901-cat">
-  <link rel="mask-icon" href="/images/logo.svg?v=20260901-cat" color="#eaf5fb">
-  <meta name="google-site-verification" content="PWTekFD376kFiJUjdTMr-CuaTxO-EdRfHSVpVO5m9jU">
-  <meta name="yandex-verification" content="742c2c3e6536dd02">
-
-<link rel="stylesheet" href="/css/main.css?v=20261023-fluid-1">
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
-
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>(function(){var p='system';try{p=localStorage.getItem('leecdiang-color')||'system'}catch(e){}if(!['light','dark','system'].includes(p))p='system';document.documentElement.dataset.color=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;})();</script>
+  <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" data-studio-style href="/assets/studio/style.3ccaeaac006f.css">
+  
+  
+  <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
+  <script defer src="/assets/studio/content.f8c2acaeff11.js"></script>
+  
     <meta name="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search">
@@ -60,121 +53,36 @@
 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
-<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
-
   
-
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"/js/third-party/mermaid.min.js"}}</script>
-  <script src="/js/third-party/mermaid.min.js" defer></script>
-  <script src="/js/third-party/tags/mermaid.js?v=20260830-mermaid-ui-5" defer></script>
-
-
-
-
-
   
-
-
+  <script defer src="/assets/studio/core.38bf5c7b74cd.js"></script>
   
-
-  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
-<script src="/js/third-party/math/mathjax.js" defer></script>
-
-
-<link rel="preload" as="image" href="/images/bg.jpg" fetchpriority="high">
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-<link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+  
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
 </head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
+<body class="studio-site studio-halo studio-reading">
+  <div class="ambient-halo" aria-hidden="true">
+    <picture class="ambient-art ambient-art--light"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-light-portrait-v5.webp"><img data-ambient-src="/images/ambient/halo-light-landscape-v5.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
+    <picture class="ambient-art ambient-art--dark"><source media="(orientation: portrait)" data-srcset="/images/ambient/halo-dark-portrait-v2.webp"><img data-ambient-src="/images/ambient/halo-dark-landscape-v2.webp" width="1672" height="941" alt="" decoding="async" fetchpriority="low"></picture>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">Beyond the Clock</p>
-      <i class="logo-line"></i>
-    </a>
-      <p class="site-subtitle" itemprop="description">Tracing systems inside and beyond the clock.</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="搜索" role="button">
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>Links</a></li>
-  </ul>
-</nav>
-
-
-
-
-</header>
-        
-  
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%90%9C%E7%B4%A2%E5%A4%B1%E8%B4%A5%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8A%B6%E6%80%81-%E8%80%8C%E6%98%AF%E4%B8%80%E7%BB%84%E5%AE%8C%E5%85%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%95%85%E9%9A%9C"><span class="nav-text">1. 搜索失败不是一个状态,而是一组完全不同的故障</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%8F%82%E6%95%B0%E9%94%99%E8%AF%AF%E3%80%81%E6%9C%8D%E5%8A%A1%E8%BF%87%E8%BD%BD%E3%80%81%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E5%92%8C%E7%A9%BA%E7%BB%93%E6%9E%9C%E4%B8%8D%E6%98%AF%E4%B8%80%E5%9B%9E%E4%BA%8B"><span class="nav-text">1.1 参数错误、服务过载、网络故障和空结果不是一回事</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E5%85%B3%E9%94%AE%E6%98%AF%E8%AE%A9%E5%A4%B1%E8%B4%A5%E5%86%B3%E5%AE%9A%E4%B8%8B%E4%B8%80%E6%AD%A5-%E4%B8%8D%E5%85%89%E6%98%AF%E9%81%BF%E5%85%8D%E5%AE%83"><span class="nav-text">1.2 可靠性的关键是让失败决定下一步,不光是避免它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%88%E5%9C%A8-OpenClaw-%E9%87%8C%E9%80%A0%E4%B8%80%E9%81%93-Agent-%E7%BB%95%E4%B8%8D%E8%BF%87%E5%8E%BB%E7%9A%84-Runtime-Gate"><span class="nav-text">2. 先在 OpenClaw 里造一道 Agent 绕不过去的 Runtime Gate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%85%88%E5%BB%BA%E7%AB%8B%E9%9A%94%E7%A6%BB%E7%9A%84-Test-Agent"><span class="nav-text">2.1 先建立隔离的 Test Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-OpenClaw-%E5%8E%9F%E5%9E%8B%E5%8F%AA%E6%B2%BB%E7%90%86%E8%B0%83%E7%94%A8-%E4%B8%8D%E9%87%8D%E5%86%99%E6%95%B4%E5%A5%97%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-text">2.2 OpenClaw 原型只治理调用,不重写整套基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8F%82%E6%95%B0%E6%B2%BB%E7%90%86-%E7%BB%9F%E4%B8%80%E8%AF%B7%E6%B1%82%E7%BB%8F%E8%BF%87-Provider-capability-check"><span class="nav-text">2.3 参数治理:统一请求经过 Provider capability check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E5%A4%B1%E8%B4%A5%E8%AF%AD%E4%B9%89%E3%80%81%E6%9C%89%E9%99%90%E9%87%8D%E8%AF%95%E5%92%8C%E5%81%9C%E6%AD%A2%E6%9D%A1%E4%BB%B6"><span class="nav-text">2.4 失败语义、有限重试和停止条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E6%9C%80%E9%9A%BE%E5%88%A4%E6%96%AD%E7%9A%84%E4%B8%8D%E6%98%AF%E5%A4%B1%E8%B4%A5-%E8%80%8C%E6%98%AF%E5%A4%B1%E8%B4%A5%E5%8F%91%E7%94%9F%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82"><span class="nav-text">2.5 最难判断的不是失败,而是失败发生在哪一层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E6%95%85%E9%9A%9C%E4%B8%8D%E4%BC%9A%E5%9B%A0%E4%B8%BA%E4%BB%A3%E7%A0%81%E6%AD%A3%E7%A1%AE%E8%80%8C%E6%B6%88%E5%A4%B1"><span class="nav-text">2.6 基础设施故障不会因为代码正确而消失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-JSONL-%E8%AE%A9%E6%90%9C%E7%B4%A2%E7%A6%BB%E5%BC%80%E4%B8%8D%E5%8F%AF%E8%BF%BD%E8%B8%AA%E7%9A%84%E5%AF%B9%E8%AF%9D"><span class="nav-text">2.7 JSONL:让搜索离开不可追踪的对话</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BB%8E-OpenClaw-%E6%8F%92%E4%BB%B6%E5%88%B0%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-text">3. 从 OpenClaw 插件到通用搜索运行时</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Provider-registry-%E6%98%BE%E5%BC%8F%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E8%83%BD%E5%8A%9B%E5%92%8C%E9%85%8D%E7%BD%AE%E9%97%A8"><span class="nav-text">3.1 Provider registry:显式优先级、能力和配置门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%B8%89%E7%A7%8D%E6%89%A7%E8%A1%8C%E7%AD%96%E7%95%A5-fallback%E3%80%81race%E3%80%81aggregate"><span class="nav-text">3.2 三种执行策略:fallback、race、aggregate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fallback"><span class="nav-text">fallback</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#race"><span class="nav-text">race</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aggregate"><span class="nav-text">aggregate</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%B6%85%E6%97%B6%E7%8E%B0%E5%9C%A8%E7%9C%9F%E7%9A%84%E4%BC%9A%E5%8F%96%E6%B6%88%E8%AF%B7%E6%B1%82"><span class="nav-text">3.3 超时现在真的会取消请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E7%BB%93%E6%9E%84%E5%8C%96-ProviderError-%E4%B8%8E-Circuit-Breaker"><span class="nav-text">3.4 结构化 ProviderError 与 Circuit Breaker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E7%BB%93%E6%9E%9C%E5%A5%91%E7%BA%A6%E4%B8%8E-AttemptRecord"><span class="nav-text">3.5 结果契约与 AttemptRecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E5%8F%91%E5%B8%83%E5%8C%85%E4%B8%8D%E5%8F%AA%E9%AA%8C%E8%AF%81%E6%BA%90%E7%A0%81-%E8%80%8C%E6%98%AF%E9%AA%8C%E8%AF%81%E7%9C%9F%E5%AE%9E%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84"><span class="nav-text">3.6 发布包不只验证源码,而是验证真实安装路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-v0-4-0-%E4%BB%8E-%E5%A4%9A%E4%B8%AA-Provider-%E8%B5%B0%E5%90%91-%E5%A4%9A%E4%B8%AA%E5%87%AD%E6%8D%AE%E3%80%81%E7%BB%9F%E4%B8%80-CLI-%E4%B8%8E-MCP"><span class="nav-text">4. v0.4.0:从&quot;多个 Provider&quot;走向&quot;多个凭据、统一 CLI 与 MCP&quot;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E4%B8%A4%E5%B1%82%E6%95%85%E9%9A%9C%E5%86%B3%E7%AD%96-credential-failover-%E4%B8%8E-provider-fallback"><span class="nav-text">4.1 两层故障决策:credential failover 与 provider fallback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%BE%AA%E7%8E%AF%E5%BC%8F-Setup-Wizard"><span class="nav-text">4.2 循环式 Setup Wizard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-CLI-%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-text">4.3 CLI 管理能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%88%90%E4%B8%BA%E4%B8%8D%E8%90%BD%E7%9B%98%E7%9A%84%E4%B8%B4%E6%97%B6%E8%B7%AF%E7%94%B1"><span class="nav-text">4.4 环境变量成为不落盘的临时路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E5%87%AD%E6%8D%AE%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%88%86%E7%A6%BB"><span class="nav-text">4.5 凭据与配置分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E4%B8%80%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%8E%A5%E5%85%A5%E5%A4%9A%E4%B8%AA-Agent-Host"><span class="nav-text">4.6 一个工具接入多个 Agent Host</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%BF%99%E5%A5%97%E7%B3%BB%E7%BB%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88-%E5%8F%88%E4%BB%8D%E7%84%B6%E6%B2%A1%E6%9C%89%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88"><span class="nav-text">5. 这套系统解决了什么,又仍然没有解决什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E4%B9%8B%E5%89%8D"><span class="nav-text">原型之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenClaw-Runtime-Gate"><span class="nav-text">OpenClaw Runtime Gate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E9%80%9A%E7%94%A8%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-text">当前通用运行时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9C%9F%E6%AD%A3%E5%AD%A6%E5%88%B0%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="nav-text">最后真正学到的东西</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-text">结语</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="LEEcDiang"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">LEEcDiang</p>
-  <div class="site-description" itemprop="description">Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.</div>
-</div>
-
-        </div>
-      </div>
-    </div>
-
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="studio-header">
+    <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="/photography/">摄影</a>
+      <a href="/archives/" aria-current="page">文章</a>
+      <a href="/about/">关于</a>
+    </nav>
+    <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+    <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+    </button></div>
+  </header>
+  <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
-  </aside>
 
-
-    </div>
-
-    <div class="main-inner post posts-expand">
-
-
+  <div class="reading-layout"><div class="reading-main">
   
 
 
@@ -186,7 +94,7 @@
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/19/openclaw-reliable-search/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
     </span>
 
@@ -200,6 +108,9 @@
       <meta itemprop="description" content="从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。">
     </span>
       <header class="post-header">
+        
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Everyday-Anatomy/">Everyday Anatomy</a></nav>
+        
         <h1 class="post-title" itemprop="name headline">
           让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search
         </h1>
@@ -212,6 +123,12 @@
 
             <div class="post-description">从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。</div>
         </div>
+        
+        <div class="reading-byline">
+          <a class="reading-author" href="/about/"><img src="/images/avatar-snow.jpg" width="44" height="44" alt="LEEcDiang 的头像"><span><strong>LEEcDiang</strong><span>Chengzhan Li</span></span></a>
+          <time datetime="2026-06-19T00:05:00+08:00">2026.06.19 发布</time>
+        </div>
+        
       </header>
 
     
@@ -857,464 +774,9 @@
 
 
 
+  </div><aside class="reading-toc" aria-label="文章目录"><details open><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%90%9C%E7%B4%A2%E5%A4%B1%E8%B4%A5%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8A%B6%E6%80%81-%E8%80%8C%E6%98%AF%E4%B8%80%E7%BB%84%E5%AE%8C%E5%85%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%95%85%E9%9A%9C"><span class="toc-text">1. 搜索失败不是一个状态,而是一组完全不同的故障</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%8F%82%E6%95%B0%E9%94%99%E8%AF%AF%E3%80%81%E6%9C%8D%E5%8A%A1%E8%BF%87%E8%BD%BD%E3%80%81%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E5%92%8C%E7%A9%BA%E7%BB%93%E6%9E%9C%E4%B8%8D%E6%98%AF%E4%B8%80%E5%9B%9E%E4%BA%8B"><span class="toc-text">1.1 参数错误、服务过载、网络故障和空结果不是一回事</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E5%85%B3%E9%94%AE%E6%98%AF%E8%AE%A9%E5%A4%B1%E8%B4%A5%E5%86%B3%E5%AE%9A%E4%B8%8B%E4%B8%80%E6%AD%A5-%E4%B8%8D%E5%85%89%E6%98%AF%E9%81%BF%E5%85%8D%E5%AE%83"><span class="toc-text">1.2 可靠性的关键是让失败决定下一步,不光是避免它</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%85%88%E5%9C%A8-OpenClaw-%E9%87%8C%E9%80%A0%E4%B8%80%E9%81%93-Agent-%E7%BB%95%E4%B8%8D%E8%BF%87%E5%8E%BB%E7%9A%84-Runtime-Gate"><span class="toc-text">2. 先在 OpenClaw 里造一道 Agent 绕不过去的 Runtime Gate</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%85%88%E5%BB%BA%E7%AB%8B%E9%9A%94%E7%A6%BB%E7%9A%84-Test-Agent"><span class="toc-text">2.1 先建立隔离的 Test Agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-OpenClaw-%E5%8E%9F%E5%9E%8B%E5%8F%AA%E6%B2%BB%E7%90%86%E8%B0%83%E7%94%A8-%E4%B8%8D%E9%87%8D%E5%86%99%E6%95%B4%E5%A5%97%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="toc-text">2.2 OpenClaw 原型只治理调用,不重写整套基础设施</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%8F%82%E6%95%B0%E6%B2%BB%E7%90%86-%E7%BB%9F%E4%B8%80%E8%AF%B7%E6%B1%82%E7%BB%8F%E8%BF%87-Provider-capability-check"><span class="toc-text">2.3 参数治理:统一请求经过 Provider capability check</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%A4%B1%E8%B4%A5%E8%AF%AD%E4%B9%89%E3%80%81%E6%9C%89%E9%99%90%E9%87%8D%E8%AF%95%E5%92%8C%E5%81%9C%E6%AD%A2%E6%9D%A1%E4%BB%B6"><span class="toc-text">2.4 失败语义、有限重试和停止条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E6%9C%80%E9%9A%BE%E5%88%A4%E6%96%AD%E7%9A%84%E4%B8%8D%E6%98%AF%E5%A4%B1%E8%B4%A5-%E8%80%8C%E6%98%AF%E5%A4%B1%E8%B4%A5%E5%8F%91%E7%94%9F%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82"><span class="toc-text">2.5 最难判断的不是失败,而是失败发生在哪一层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E6%95%85%E9%9A%9C%E4%B8%8D%E4%BC%9A%E5%9B%A0%E4%B8%BA%E4%BB%A3%E7%A0%81%E6%AD%A3%E7%A1%AE%E8%80%8C%E6%B6%88%E5%A4%B1"><span class="toc-text">2.6 基础设施故障不会因为代码正确而消失</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-JSONL-%E8%AE%A9%E6%90%9C%E7%B4%A2%E7%A6%BB%E5%BC%80%E4%B8%8D%E5%8F%AF%E8%BF%BD%E8%B8%AA%E7%9A%84%E5%AF%B9%E8%AF%9D"><span class="toc-text">2.7 JSONL:让搜索离开不可追踪的对话</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%BB%8E-OpenClaw-%E6%8F%92%E4%BB%B6%E5%88%B0%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="toc-text">3. 从 OpenClaw 插件到通用搜索运行时</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Provider-registry-%E6%98%BE%E5%BC%8F%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E8%83%BD%E5%8A%9B%E5%92%8C%E9%85%8D%E7%BD%AE%E9%97%A8"><span class="toc-text">3.1 Provider registry:显式优先级、能力和配置门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%B8%89%E7%A7%8D%E6%89%A7%E8%A1%8C%E7%AD%96%E7%95%A5-fallback%E3%80%81race%E3%80%81aggregate"><span class="toc-text">3.2 三种执行策略:fallback、race、aggregate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%B6%85%E6%97%B6%E7%8E%B0%E5%9C%A8%E7%9C%9F%E7%9A%84%E4%BC%9A%E5%8F%96%E6%B6%88%E8%AF%B7%E6%B1%82"><span class="toc-text">3.3 超时现在真的会取消请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E7%BB%93%E6%9E%84%E5%8C%96-ProviderError-%E4%B8%8E-Circuit-Breaker"><span class="toc-text">3.4 结构化 ProviderError 与 Circuit Breaker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E7%BB%93%E6%9E%9C%E5%A5%91%E7%BA%A6%E4%B8%8E-AttemptRecord"><span class="toc-text">3.5 结果契约与 AttemptRecord</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%8F%91%E5%B8%83%E5%8C%85%E4%B8%8D%E5%8F%AA%E9%AA%8C%E8%AF%81%E6%BA%90%E7%A0%81-%E8%80%8C%E6%98%AF%E9%AA%8C%E8%AF%81%E7%9C%9F%E5%AE%9E%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84"><span class="toc-text">3.6 发布包不只验证源码,而是验证真实安装路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-v0-4-0-%E4%BB%8E-%E5%A4%9A%E4%B8%AA-Provider-%E8%B5%B0%E5%90%91-%E5%A4%9A%E4%B8%AA%E5%87%AD%E6%8D%AE%E3%80%81%E7%BB%9F%E4%B8%80-CLI-%E4%B8%8E-MCP"><span class="toc-text">4. v0.4.0:从&quot;多个 Provider&quot;走向&quot;多个凭据、统一 CLI 与 MCP&quot;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%B8%A4%E5%B1%82%E6%95%85%E9%9A%9C%E5%86%B3%E7%AD%96-credential-failover-%E4%B8%8E-provider-fallback"><span class="toc-text">4.1 两层故障决策:credential failover 与 provider fallback</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%BE%AA%E7%8E%AF%E5%BC%8F-Setup-Wizard"><span class="toc-text">4.2 循环式 Setup Wizard</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-CLI-%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B"><span class="toc-text">4.3 CLI 管理能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%88%90%E4%B8%BA%E4%B8%8D%E8%90%BD%E7%9B%98%E7%9A%84%E4%B8%B4%E6%97%B6%E8%B7%AF%E7%94%B1"><span class="toc-text">4.4 环境变量成为不落盘的临时路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%87%AD%E6%8D%AE%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%88%86%E7%A6%BB"><span class="toc-text">4.5 凭据与配置分离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E4%B8%80%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%8E%A5%E5%85%A5%E5%A4%9A%E4%B8%AA-Agent-Host"><span class="toc-text">4.6 一个工具接入多个 Agent Host</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%BF%99%E5%A5%97%E7%B3%BB%E7%BB%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88-%E5%8F%88%E4%BB%8D%E7%84%B6%E6%B2%A1%E6%9C%89%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88"><span class="toc-text">5. 这套系统解决了什么,又仍然没有解决什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E4%B9%8B%E5%89%8D"><span class="toc-text">原型之前</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenClaw-Runtime-Gate"><span class="toc-text">OpenClaw Runtime Gate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E9%80%9A%E7%94%A8%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="toc-text">当前通用运行时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%90%8E%E7%9C%9F%E6%AD%A3%E5%AD%A6%E5%88%B0%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-text">最后真正学到的东西</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-text">结语</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside></div>
 
 
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2026</span>
-    <span class="author" itemprop="copyrightHolder">LEEcDiang</span>
-  </div>
-
-    </div>
-  </footer>
-
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="Back to top">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-<script>
-(function() {
-  var desc = document.querySelector('.site-description');
-  if (desc && !desc.querySelector('.desc-line2')) {
-    desc.textContent = 'A personal archive of digital IC, computer architecture, and AI infrastructure — plus tools, photography, and the occasional detour.';
-    var l2 = document.createElement('div');
-    l2.className = 'desc-line2';
-    l2.textContent = 'Digital IC · Architecture · AI Infrastructure';
-    desc.appendChild(l2);
-  }
-})();
-</script>
-
-<script>
-(function () {
-  var LONG_POST_HEIGHT = 24000;
-  var LONG_POST_AREA = 18000000;
-  var DESKTOP_QUERY = '(min-width: 992px)';
-
-  function isSafariBrowser() {
-    var ua = navigator.userAgent;
-    return /Safari/.test(ua) &&
-      !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
-  }
-
-  function findVisiblePostBlock() {
-    var candidates = Array.prototype.slice.call(
-      document.querySelectorAll('.post-block')
-    );
-
-    candidates = candidates.filter(function (element) {
-      var rect = element.getBoundingClientRect();
-      var style = getComputedStyle(element);
-      return (
-        style.display !== 'none' &&
-        style.visibility !== 'hidden' &&
-        rect.width > 100 &&
-        element.querySelector('.post-content')
-      );
-    });
-
-    candidates.sort(function (a, b) {
-      return b.scrollHeight - a.scrollHeight;
-    });
-
-    return candidates[0] || null;
-  }
-
-  function recordSafariGlassInit(ok, reason, details) {
-    window.__safariLongPostGlassLastInit = {
-      ok: ok,
-      reason: reason,
-      details: details || null,
-      time: Date.now(),
-      readyState: document.readyState
-    };
-    console.info('[Safari long-post glass init]', window.__safariLongPostGlassLastInit);
-    return ok;
-  }
-
-  var safariLongPostBootTimer = null;
-  var safariLongPostBootAttempt = 0;
-  var SAFARI_LONG_POST_MAX_ATTEMPTS = 12;
-  var SAFARI_LONG_POST_RETRY_DELAY = 250;
-
-  function cleanupSafariLongPostGlass() {
-    if (safariLongPostBootTimer !== null) {
-      clearTimeout(safariLongPostBootTimer);
-      safariLongPostBootTimer = null;
-    }
-    safariLongPostBootAttempt = 0;
-
-    var state = window.__safariLongPostGlassState;
-
-    if (!state) {
-      document
-        .querySelectorAll('.post-portal-sampler')
-        .forEach(function (node) { node.remove(); });
-
-      document.documentElement.classList.remove('is-safari-long-post');
-      delete window.__safariLongPostGlassLastInit;
-      delete window.__safariLongPostGlassBootTrace;
-      return;
-    }
-
-    window.removeEventListener('scroll', state.scheduleUpdate);
-    window.removeEventListener('resize', state.scheduleUpdate);
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', state.scheduleUpdate);
-      window.visualViewport.removeEventListener('scroll', state.scheduleUpdate);
-    }
-
-    if (state.resizeObserver) {
-      state.resizeObserver.disconnect();
-    }
-
-    if (state.sampler) {
-      state.sampler.remove();
-    }
-
-    document.documentElement.classList.remove('is-safari-long-post');
-    delete window.__safariLongPostGlassState;
-    delete window.__safariLongPostGlassLastInit;
-    delete window.__safariLongPostGlassBootTrace;
-  }
-
-  function initSafariLongPostGlass() {
-    // 已经成功初始化：只更新几何
-    if (
-      window.__safariLongPostGlassState &&
-      document.querySelector('body > .post-portal-sampler')
-    ) {
-      window.__safariLongPostGlassState.scheduleUpdate();
-      return recordSafariGlassInit(true, 'already-initialized');
-    }
-
-    if (!isSafariBrowser()) {
-      return recordSafariGlassInit(false, 'not-safari');
-    }
-
-    if (!window.matchMedia(DESKTOP_QUERY).matches) {
-      return recordSafariGlassInit(false, 'not-desktop', { innerWidth: window.innerWidth });
-    }
-
-    var postBlock = findVisiblePostBlock();
-    if (!postBlock) {
-      return recordSafariGlassInit(false, 'post-block-not-ready', {
-        totalPostBlocks: document.querySelectorAll('.post-block').length
-      });
-    }
-
-    var rect = postBlock.getBoundingClientRect();
-    var height = postBlock.scrollHeight;
-    var width = rect.width;
-    var area = height * width;
-
-    if (width <= 100 || height <= 0) {
-      return recordSafariGlassInit(false, 'invalid-geometry', {
-        width: width,
-        height: height,
-        area: area,
-        display: getComputedStyle(postBlock).display,
-        visibility: getComputedStyle(postBlock).visibility
-      });
-    }
-
-    if (height < LONG_POST_HEIGHT && area < LONG_POST_AREA) {
-      return recordSafariGlassInit(false, 'below-threshold', {
-        width: width,
-        height: height,
-        area: area
-      });
-    }
-
-    var postContent = postBlock.querySelector('.post-content');
-    if (!postContent) {
-      return recordSafariGlassInit(false, 'post-content-not-ready');
-    }
-
-    document.documentElement.classList.add('is-safari-long-post');
-
-    var sampler = document.createElement('div');
-    sampler.className = 'post-portal-sampler';
-    sampler.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(sampler);
-
-    var pseudoStyle = getComputedStyle(postBlock, '::before');
-    var radii = {
-      topLeft: pseudoStyle.borderTopLeftRadius,
-      topRight: pseudoStyle.borderTopRightRadius,
-      bottomRight: pseudoStyle.borderBottomRightRadius,
-      bottomLeft: pseudoStyle.borderBottomLeftRadius
-    };
-
-    var scheduled = false;
-
-    function updateSampler() {
-      scheduled = false;
-
-      if (!window.matchMedia(DESKTOP_QUERY).matches) {
-        sampler.style.visibility = 'hidden';
-        return;
-      }
-
-      var rect = postBlock.getBoundingClientRect();
-      var viewportTop = 0;
-      var viewportBottom = window.innerHeight;
-
-      var visibleTop = Math.max(rect.top, viewportTop);
-      var visibleBottom = Math.min(rect.bottom, viewportBottom);
-      var visibleHeight = Math.max(0, visibleBottom - visibleTop);
-
-      if (visibleHeight <= 0 || rect.width <= 0) {
-        sampler.style.visibility = 'hidden';
-        return;
-      }
-
-      sampler.style.visibility = 'visible';
-      sampler.style.left = rect.left + 'px';
-      sampler.style.top = visibleTop + 'px';
-      sampler.style.width = rect.width + 'px';
-      sampler.style.height = visibleHeight + 'px';
-
-      var articleTopVisible = rect.top >= viewportTop;
-      var articleBottomVisible = rect.bottom <= viewportBottom;
-
-      sampler.style.borderTopLeftRadius = articleTopVisible ? radii.topLeft : '0px';
-      sampler.style.borderTopRightRadius = articleTopVisible ? radii.topRight : '0px';
-      sampler.style.borderBottomRightRadius = articleBottomVisible ? radii.bottomRight : '0px';
-      sampler.style.borderBottomLeftRadius = articleBottomVisible ? radii.bottomLeft : '0px';
-    }
-
-    function scheduleUpdate() {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(updateSampler);
-    }
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', scheduleUpdate);
-      window.visualViewport.addEventListener('scroll', scheduleUpdate);
-    }
-
-    var resizeObserver = null;
-    if ('ResizeObserver' in window) {
-      resizeObserver = new ResizeObserver(scheduleUpdate);
-      resizeObserver.observe(postBlock);
-    }
-
-    window.__safariLongPostGlassState = {
-      sampler: sampler,
-      postBlock: postBlock,
-      scheduleUpdate: scheduleUpdate,
-      resizeObserver: resizeObserver
-    };
-
-    updateSampler();
-
-    return recordSafariGlassInit(true, 'initialized', {
-      width: width,
-      height: height,
-      area: area
-    });
-  }
-
-  function cancelSafariLongPostBoot() {
-    if (safariLongPostBootTimer !== null) {
-      clearTimeout(safariLongPostBootTimer);
-      safariLongPostBootTimer = null;
-    }
-  }
-
-  function bootSafariLongPostGlass() {
-    cancelSafariLongPostBoot();
-    safariLongPostBootAttempt += 1;
-
-    requestAnimationFrame(function () {
-      var initialized = initSafariLongPostGlass();
-
-      window.__safariLongPostGlassBootTrace = {
-        attempt: safariLongPostBootAttempt,
-        initialized: initialized,
-        lastInit: window.__safariLongPostGlassLastInit,
-        time: Date.now()
-      };
-
-      if (initialized) {
-        console.info('[Safari long-post glass boot success]', window.__safariLongPostGlassBootTrace);
-        return;
-      }
-
-      if (safariLongPostBootAttempt >= SAFARI_LONG_POST_MAX_ATTEMPTS) {
-        console.warn('[Safari long-post glass boot exhausted]', window.__safariLongPostGlassBootTrace);
-        return;
-      }
-
-      safariLongPostBootTimer = setTimeout(bootSafariLongPostGlass, SAFARI_LONG_POST_RETRY_DELAY);
-    });
-  }
-
-  function restartSafariLongPostGlassBoot() {
-    cancelSafariLongPostBoot();
-    safariLongPostBootAttempt = 0;
-    bootSafariLongPostGlass();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', restartSafariLongPostGlassBoot, { once: true });
-  } else {
-    restartSafariLongPostGlassBoot();
-  }
-
-  window.addEventListener('load', restartSafariLongPostGlassBoot, { once: true });
-
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-      restartSafariLongPostGlassBoot();
-    }
-  });
-
-  document.addEventListener('pjax:success', function () {
-    cleanupSafariLongPostGlass();
-    restartSafariLongPostGlassBoot();
-  });
-
-  window.__initSafariLongPostGlass = initSafariLongPostGlass;
-  window.__cleanupSafariLongPostGlass = cleanupSafariLongPostGlass;
-  window.__restartSafariLongPostGlassBoot = restartSafariLongPostGlassBoot;
-})();
-</script>
-
-<!-- =========================================================
-     跳转丝滑：Speculation Rules 预渲染 + 跨文档视图过渡
-     2026-10-18
-     ========================================================= -->
-<script type="speculationrules">
-{
-  "prerender": [{
-    "where": {
-      "and": [
-        { "href_matches": "/*" },
-        { "not": { "selector_matches": "[target=_blank]" } },
-        { "not": { "selector_matches": "[rel~=external]" } },
-        { "not": { "selector_matches": "[download]" } }
-      ]
-    },
-    "eagerness": "moderate"
-  }]
-}
-</script>
-<style>
-  @view-transition { navigation: auto; }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 200ms;
-    animation-timing-function: cubic-bezier(0.28, 0.11, 0.32, 1);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(root),
-    ::view-transition-new(root) { animation: none; }
-  }
-</style>
-<script>
-(function () {
-  // 已经在用 Speculation Rules 的浏览器跳过这套 fallback
-  if (window.HTMLScriptElement && HTMLScriptElement.supports &&
-      HTMLScriptElement.supports('speculationrules')) return;
-
-  var seen = Object.create(null);
-  function prefetch(href) {
-    if (!href || seen[href]) return;
-    seen[href] = 1;
-    var l = document.createElement('link');
-    l.rel = 'prefetch';
-    l.href = href;
-    l.as = 'document';
-    document.head.appendChild(l);
-  }
-  function maybe(e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-    if (!a) return;
-    var url;
-    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
-    if (url.origin !== location.origin) return;
-    if (url.pathname === location.pathname) return;
-    prefetch(url.href);
-  }
-  document.addEventListener('pointerover', maybe, { passive: true });
-  document.addEventListener('touchstart', maybe, { passive: true });
-})();
-</script>
-
-
-<!-- 当前页菜单指示：NexT 模板没输出 menu-item-active，这里按 URL 补上 -->
-<script>
-(function () {
-  var norm = function (p) { return p.replace(/\/index\.html$/, '/').replace(/\/page\/\d+\/$/, '/'); };
-  var here = norm(location.pathname);
-  Array.prototype.forEach.call(
-    document.querySelectorAll('.site-nav .menu-item > a[href]'),
-    function (a) {
-      var url;
-      try { url = new URL(a.getAttribute('href'), location.href); } catch (e) { return; }
-      if (url.origin !== location.origin) return;
-      var target = norm(url.pathname);
-      var match = target === here || (target !== '/' && here.indexOf(target) === 0);
-      if (match) {
-        a.classList.add('menu-item-active');
-        a.setAttribute('aria-current', 'page');
-      }
-    }
-  );
-})();
-</script>
-
-
-<!-- Live Orrery -->
-<link rel="stylesheet" href="/css/orrery.css?v=20261105links">
-<script defer src="/js/orrery-sky.js?v=20261023ui"></script>
-<script defer src="/js/orrery.js?v=20261105links"></script>
-
-<script>
-(function () {
-  var metas = Array.prototype.slice.call(document.querySelectorAll('meta[name="theme-color"]'));
-  if (!metas.length) { var made = document.createElement('meta'); made.name = 'theme-color'; document.head.appendChild(made); metas = [made]; }
-  var mq = window.matchMedia('(prefers-color-scheme: dark)');
-  function apply() {
-    for (var i = 0; i < metas.length; i++) {
-      var m = metas[i];
-      var media = m.getAttribute('media') || '';
-      var dark = media.indexOf('dark') >= 0;
-      var light = media.indexOf('light') >= 0;
-      m.setAttribute('content', dark ? '#121f2b' : (light ? '#eaf5fb' : (mq.matches ? '#121f2b' : '#eaf5fb')));
-    }
-  }
-  apply();
-  if (mq.addEventListener) mq.addEventListener('change', apply);
-  else if (mq.addListener) mq.addListener(apply);
-})();
-</script>
-
-<script defer src="/js/visual-diagrams.js"></script>
-
-</body>
-</html>
+</main>
+  <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+</body></html>

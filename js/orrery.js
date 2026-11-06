@@ -310,7 +310,7 @@
 
   var I18N = {
     zh: {
-      orreryTab: '3D', chartTab: '天象盘', language: '语言', orbitScale: '轨道比例', visual: '视觉', frame: '画框', dusk: '半深', deep: '深色', layersCn: '中国传统', layersWest: '西方占星', layersSci: '现代科学',
+      orreryTab: '3D', chartTab: '天象盘', language: '语言', motion: '运动', openLabel: '打开全屏 3D 天象仪', views: '视图', trueScaleLabel: '真实轨道比例', viewportLabel: '星盘绘图区，可滚动浏览', orbitScale: '轨道比例', visual: '视觉', frame: '画框', dusk: '半深', deep: '深色', layersCn: '中国传统', layersWest: '西方占星', layersSci: '现代科学',
       compressed: '压缩', trueScale: '真实', live: '实时', now: '此刻',
       title: '天象仪', settings: '设置', close: '关闭', zoomIn: '放大', zoomOut: '缩小', reset: '复位', pause: '暂停旋转', resume: '自动旋转', timeOffset: '时间偏移（天）', selectBody: '选择天体', hint: '拖动旋转 · 双指或滚轮缩放 · 点选天体', term: '节气', phase: '月相', age: '月龄',
       body: '天体', position: '黄道位置', distanceStatus: '距离 · 状态',
@@ -321,7 +321,7 @@
       direct: '顺', retro: '逆行', station: '留', ageUnit: '天', sec: '秒', min: '分', hour: '时'
     },
     en: {
-      orreryTab: '3D', chartTab: 'Chart', language: 'Language', orbitScale: 'Orbit scale', visual: 'Look', frame: 'Framed', dusk: 'Dusk', deep: 'Deep', layersCn: 'Chinese', layersWest: 'Western', layersSci: 'Modern',
+      orreryTab: '3D', chartTab: 'Chart', language: 'Language', motion: 'Motion', openLabel: 'Open full-screen 3D orrery', views: 'View', trueScaleLabel: 'True orbital scale', viewportLabel: 'Solar system chart viewport', orbitScale: 'Orbit scale', visual: 'Look', frame: 'Framed', dusk: 'Dusk', deep: 'Deep', layersCn: 'Chinese', layersWest: 'Western', layersSci: 'Modern',
       compressed: 'Compressed', trueScale: 'True', live: 'Live', now: 'Now',
       title: 'Orrery', settings: 'Settings', close: 'Close', zoomIn: 'Zoom in', zoomOut: 'Zoom out', reset: 'Reset', pause: 'Pause rotation', resume: 'Auto rotate', timeOffset: 'Time offset (days)', selectBody: 'Select body', hint: 'Drag to rotate · Pinch or scroll to zoom · Select a body', term: 'Solar term', phase: 'Moon phase', age: 'Moon age',
       body: 'Body', position: 'Ecliptic', distanceStatus: 'Distance · Status',
@@ -339,7 +339,7 @@
   }
 
   try {
-    var savedLang = localStorage.getItem('btc-orrery-lang');
+    var savedLang = document.documentElement.dataset.language || localStorage.getItem('btc-orrery-lang');
     if (savedLang === 'en' || savedLang === 'zh') state.lang = savedLang;
   } catch (e) {}
 
@@ -451,6 +451,7 @@
   }
 
   function isDark3D() {
+    if (document.documentElement.dataset.color) return document.documentElement.dataset.color === 'dark';
     return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   }
 
@@ -2293,10 +2294,10 @@
   }
 
   function startMiniLoop() {
-    if (REDUCED_MOTION || rafMini) return;
+    if (REDUCED_MOTION || !state.rotating || rafMini || document.hidden) return;
     miniSnap = snapshot();
     function tick(t) {
-      if (!document.getElementById('btc-orrery-mini')) { rafMini = null; return; }
+      if (!document.getElementById('btc-orrery-mini') || !state.rotating || document.hidden) { rafMini = null; return; }
       if (t - lastMiniFrame > 45) {
         lastMiniFrame = t;
         miniCam.az += 0.0028;
@@ -2358,7 +2359,12 @@
       el.setAttribute('aria-label', L(el.dataset.i18nLabel));
     });
     var box = document.getElementById('btc-orrery-lang');
-    if (box) box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-lang') === state.lang); });
+    if (box) box.querySelectorAll('button').forEach(function (b) { var active = b.getAttribute('data-lang') === state.lang; b.classList.toggle('is-active', active); b.setAttribute('aria-pressed', String(active)); });
+    ['btc-orrery-card', 'btc-orrery-links-entry'].forEach(function (id) { var entry = document.getElementById(id); if (entry) entry.setAttribute('aria-label', L('openLabel')); });
+    var modal = document.getElementById('btc-orrery-modal');
+    if (modal) modal.setAttribute('aria-label', L('title'));
+    var rotation = document.getElementById('btc-orrery-rotation');
+    if (rotation) { rotation.textContent = L(state.rotating ? 'pause' : 'resume'); rotation.disabled = REDUCED_MOTION; }
   }
 
   function applyVisual() {
@@ -2370,6 +2376,7 @@
   }
 
   function setLang(lang) {
+    if(window.StudioLanguage && window.StudioLanguage.language !== lang){window.StudioLanguage.set(lang);return;}
     state.lang = lang === 'en' ? 'en' : 'zh';
     try { localStorage.setItem('btc-orrery-lang', state.lang); } catch (e) {}
     applyLang();
@@ -2503,10 +2510,11 @@
     + '      <button type="button" class="btc-orrery-menu-btn" data-i18n-label="settings" aria-label="设置" aria-expanded="false" aria-controls="btc-orrery-menu-pop">⋯</button>'
     + '      <div class="btc-orrery-menu-pop" id="btc-orrery-menu-pop" hidden>'
     + '        <div class="btc-orrery-menu-row"><span data-i18n="language">语言</span><div class="btc-orrery-lang" id="btc-orrery-lang" role="group" aria-label="Language"><button type="button" data-lang="zh" class="is-active">中</button><button type="button" data-lang="en">EN</button></div></div>'
-    + '        <div class="btc-orrery-menu-row"><span data-i18n="orbitScale">轨道比例</span><label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed" data-i18n="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true" data-i18n="trueScale">真实</span></label></div>'
+    + '        <div class="btc-orrery-menu-row"><span data-i18n="orbitScale">轨道比例</span><label class="btc-orrery-scale" title="轨道比例"><span class="btc-orrery-scale-label is-on" data-scale-label="compressed" data-i18n="compressed">压缩</span><input type="checkbox" id="btc-orrery-scale-input" data-i18n-label="trueScaleLabel" aria-label="真实轨道比例"><i class="btc-orrery-scale-track"></i><span class="btc-orrery-scale-label" data-scale-label="true" data-i18n="trueScale">真实</span></label></div>'
+    + '        <div class="btc-orrery-menu-row"><span data-i18n="motion">运动</span><button type="button" id="btc-orrery-rotation">暂停旋转</button></div>'
     + '      </div>'
     + '    </div>'
-    + '    <div class="btc-orrery-seg" role="group" aria-label="视图">'
+    + '    <div class="btc-orrery-seg" role="group" data-i18n-label="views" aria-label="视图">'
     + '      <button type="button" data-view="orrery" aria-pressed="true" class="is-active" data-i18n="orreryTab">3D</button>'
     + '      <button type="button" data-view="chart" aria-pressed="false" data-i18n="chartTab">天象盘</button>'
     + '    </div>'
@@ -2514,7 +2522,7 @@
     + '  </header>'
     + '  <div class="btc-orrery-body is-orrery">'
     + '    <section class="btc-orrery-stage is-orrery">'
-    + '      <div class="btc-orrery-viewport" role="region" aria-label="星盘绘图区，可滚动浏览"><canvas id="btc-orrery-canvas" role="img" aria-label="Solar system and ecliptic chart"></canvas></div>'
+    + '      <div class="btc-orrery-viewport" role="region" data-i18n-label="viewportLabel" aria-label="星盘绘图区，可滚动浏览"><canvas id="btc-orrery-canvas" role="img" aria-label="Solar system and ecliptic chart"></canvas></div>'
     + '      <div class="btc-orrery-focus" id="btc-orrery-focus" hidden><span class="btc-orrery-focus-kicker">SELECTED</span><b id="btc-orrery-focus-name">—</b><span id="btc-orrery-focus-meta">—</span></div>'
     + '      <div class="btc-orrery-layers">'
     + '        <label><input type="checkbox" data-layer="cn"><span data-i18n="layersCn">中国传统</span></label>'
@@ -2574,7 +2582,9 @@
     var grid = document.querySelector('.friend-grid');
     if (!grid || !grid.parentNode) return false;
 
-    var entry = document.createElement('div');
+    var entry = document.createElement('button');
+    entry.type = 'button';
+    entry.setAttribute('aria-haspopup', 'dialog');
     entry.className = 'btc-link-card btc-link-card--orrery btc-orrery-entry';
     entry.id = 'btc-orrery-links-entry';
     entry.setAttribute('role', 'button');
@@ -2620,9 +2630,16 @@
     var menuBtn = menu && menu.querySelector('.btc-orrery-menu-btn');
     var menuPop = menu && menu.querySelector('.btc-orrery-menu-pop');
     if (menuBtn && menuPop) {
-      menuBtn.addEventListener('click', function (e) { e.stopPropagation(); menuPop.hidden = !menuPop.hidden; menuBtn.setAttribute('aria-expanded', String(!menuPop.hidden)); });
-      modal.addEventListener('click', function (e) { if (!menu.contains(e.target)) { menuPop.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); } });
+      menuBtn.addEventListener('click', function (e) { e.stopPropagation(); var open = menuBtn.getAttribute('aria-expanded') !== 'true'; if (window.StudioMotion) window.StudioMotion.setPopover(menuPop, menuBtn, open); else { menuPop.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open)); } });
+      modal.addEventListener('click', function (e) { if (!menu.contains(e.target)) { if (window.StudioMotion) window.StudioMotion.setPopover(menuPop, menuBtn, false); else { menuPop.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); } } });
     }
+
+    modal.querySelector('#btc-orrery-rotation').addEventListener('click', function () {
+      state.rotating = !state.rotating;
+      if (state.rotating) { if (state.open && state.view === 'orrery') start3dLoop(); }
+      else { stop3dLoop(); stopMiniLoop(); }
+      renderAll();
+    });
 
     var langBox = modal.querySelector('#btc-orrery-lang');
     if (langBox) {
@@ -2667,11 +2684,11 @@
     var liveBtn = modal.querySelector('#btc-orrery-live');
 
     function pulseLive() {
-      if (!liveBtn) return;
+      if (!liveBtn || REDUCED_MOTION || (window.StudioMotion && window.StudioMotion.instant())) return;
       liveBtn.classList.remove('is-snapping');
       void liveBtn.offsetWidth;
       liveBtn.classList.add('is-snapping');
-      setTimeout(function () { liveBtn.classList.remove('is-snapping'); }, 430);
+      setTimeout(function () { liveBtn.classList.remove('is-snapping'); }, 180);
     }
 
     function setLive(play) {
@@ -2707,6 +2724,7 @@
   }
 
   function openModal() {
+    if (state.open) return;
     ensureModal();
     returnFocus = document.activeElement;
     inertBackground = Array.prototype.filter.call(document.body.children, function (el) { return el !== els.modal && !el.inert; });
@@ -2727,6 +2745,10 @@
   function closeModal() {
     if (!els.modal) return;
     state.open = false;
+    var menuPop = els.modal.querySelector('.btc-orrery-menu-pop');
+    var menuBtn = els.modal.querySelector('.btc-orrery-menu-btn');
+    if (window.StudioMotion) window.StudioMotion.setPopover(menuPop, menuBtn, false);
+    else { menuPop.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); }
     stop3dLoop();
     els.modal.classList.remove('is-open');
     document.documentElement.classList.remove('btc-orrery-locked');
@@ -2740,11 +2762,11 @@
     if (!state.open) return;
     if (e.key === 'Escape') {
       var pop = els.modal.querySelector('.btc-orrery-menu-pop');
-      if (!pop.hidden) { pop.hidden = true; var button = els.modal.querySelector('.btc-orrery-menu-btn'); button.setAttribute('aria-expanded', 'false'); button.focus(); }
+      if (els.modal.querySelector('.btc-orrery-menu-btn').getAttribute('aria-expanded') === 'true') { var button = els.modal.querySelector('.btc-orrery-menu-btn'); if (window.StudioMotion) window.StudioMotion.setPopover(pop, button, false); else { pop.hidden = true; button.setAttribute('aria-expanded', 'false'); } button.focus(); }
       else closeModal();
     }
     if (e.key === 'Tab') {
-      var controls = Array.prototype.filter.call(els.modal.querySelectorAll('button,input,select,[tabindex="0"]'), function (el) { return !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; });
+      var controls = Array.prototype.filter.call(els.modal.querySelectorAll('button,input,select,[tabindex="0"]'), function (el) { return !el.disabled && !el.closest('[inert]') && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; });
       var first = controls[0], last = controls[controls.length - 1];
       if (e.shiftKey && (document.activeElement === first || !els.modal.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && (document.activeElement === last || !els.modal.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
@@ -2752,6 +2774,8 @@
   });
 
   function boot() {
+    window.addEventListener('studio:language',function(e){setLang(e.detail.language)});
+    window.addEventListener('studio:theme', function () { renderAll(); });
     var tries = 0;
     function attempt() {
       if (mountCard()) return;
@@ -2767,7 +2791,7 @@
     }
 
     setInterval(function () {
-      if (document.hidden) return;
+      if (document.hidden || (!state.open && !document.getElementById('btc-orrery-card'))) return;
       var snap = snapshot();
       if (document.getElementById('btc-orrery-card')) renderSidebar(snap);
       if (state.open && Date.now() - lastMini > 30000) renderPanel(snap);
