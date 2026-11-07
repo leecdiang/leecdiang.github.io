@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
@@ -11,11 +9,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.52c0b1e4a64b.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。">
 <meta property="og:type" content="article">
@@ -56,12 +54,12 @@
   
   
   
-  <script defer src="/assets/studio/core.ae3ac3a45b5e.js"></script>
+  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
   
   
 
-<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -74,8 +72,8 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
@@ -89,15 +87,15 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/03/18/silicon-roadmap/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
     <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
@@ -105,7 +103,7 @@
     
       <header class="post-header">
         
-        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon & Circuits</a></nav>
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
           从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向
@@ -133,7 +131,7 @@
     <div class="post-body" itemprop="articleBody"><h2 id="Arrow-Lake-的“二次进化”">Arrow Lake 的“二次进化”</h2>
 <p>intel 发布了Arrow Lake Refresh 的<a target="_blank" rel="noopener" href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/"><strong>Core Ultra 200S PLUS CPUs</strong></a>，核心架构不变，频率微调，通过优化总线连接在 D2D 频率上提升了最多 900 MHz， 同时内存频率支持到 DDR5-7200，除此之外，Intel 在这代 CPU 上搭载了新的二进制优化工具，也就是<strong>Intel Binary Optimisation Tool （IBOT)。</strong></p>
 <p>IBOT旨在优化新 CPU 架构的应用，提高负载 IPC。本文将聚焦这一技术展开讨论。<br>
-<img alt src="silicon-roadmap-20260318.jpg" decoding="async" loading="lazy" width="1115" height="628"></p>
+<img alt="" src="silicon-roadmap-20260318.jpg" decoding="async" loading="lazy" width="1115" height="628"></p>
 <hr>
 <h2 id="什么是IBOT？">什么是IBOT？</h2>
 <p>在高性能计算的发展历程中，半导体行业长期通过微缩制程与增加物理核心来获取性能增长。但物理极限的逼近以及异构架构复杂性的提升使得单纯堆料难以应对现代复杂工作负载。同时，AI 浪潮下的能源危机和 AI 终端的个人普及使企业开始重视能效比，在这个大背景下，计算终端<strong>软硬件协同设计</strong>变得尤为重要。</p>
@@ -208,13 +206,13 @@
 </ul>
 <hr>
 <div class="v-figure">
-<svg viewbox="0 0 1000 360" role="img" aria-label="IBOT 机制链"><defs><marker id="sA" markerwidth="8" markerheight="8" refx="6" refy="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"/></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">INTEL IBOT · MECHANISM CHAIN</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频先腾出带宽预算，IBOT 再在二进制层减少指令气泡</text><ellipse cx="109" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="25,144 185,144 167,126 7,126" fill="#7aa6c6"/><polygon points="25,144 185,144 185,240 25,240" fill="#3f6f96"/><polygon points="185,144 167,126 167,222 185,240" fill="#2b5578"/><line x1="25" y1="144" x2="185" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/><circle cx="45" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="45" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D +900MHz</text><text x="105" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">释放跨 Tile 带宽</text><path d="M189,214 L211,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"/><ellipse cx="299" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="215,144 375,144 357,126 197,126" fill="#78b7ae"/><polygon points="215,144 375,144 375,240 215,240" fill="#2f7f7a"/><polygon points="375,144 357,126 357,222 375,240" fill="#1f5f5b"/><line x1="215" y1="144" x2="375" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/><circle cx="235" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="235" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">PMU Profiling</text><text x="295" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">定位分支与 Cache 瓶颈</text><path d="M379,214 L401,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"/><ellipse cx="489" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="405,144 565,144 547,126 387,126" fill="#d2ad72"/><polygon points="405,144 565,144 565,240 405,240" fill="#9a7434"/><polygon points="565,144 547,126 547,222 565,240" fill="#77551f"/><line x1="405" y1="144" x2="565" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/><circle cx="425" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="425" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">动态重写</text><text x="485" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">内存中重排二进制</text><path d="M569,214 L591,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"/><ellipse cx="679" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="595,144 755,144 737,126 577,126" fill="#8fa7b6"/><polygon points="595,144 755,144 755,240 595,240" fill="#5c7383"/><polygon points="755,144 737,126 737,222 755,240" fill="#455c6c"/><line x1="595" y1="144" x2="755" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/><circle cx="615" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="615" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">P/E 调度</text><text x="675" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">减少切换与争用</text><path d="M759,214 L781,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"/><ellipse cx="869" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"/><polygon points="785,144 945,144 927,126 767,126" fill="#8fc0a9"/><polygon points="785,144 945,144 945,240 785,240" fill="#4f8a6f"/><polygon points="945,144 927,126 927,222 945,240" fill="#356a51"/><line x1="785" y1="144" x2="945" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"/><circle cx="805" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"/><text x="805" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">IPC / 1% Low</text><text x="865" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">真实帧与执行确定性</text><text x="25" y="330" font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频不是目的，而是为实时优化支付的性能税。</text></svg>
+<svg viewBox="0 0 1000 360" role="img" aria-label="IBOT 机制链"><defs><marker id="sA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"></path></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">INTEL IBOT · MECHANISM CHAIN</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频先腾出带宽预算，IBOT 再在二进制层减少指令气泡</text><ellipse cx="109" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="25,144 185,144 167,126 7,126" fill="#7aa6c6"></polygon><polygon points="25,144 185,144 185,240 25,240" fill="#3f6f96"></polygon><polygon points="185,144 167,126 167,222 185,240" fill="#2b5578"></polygon><line x1="25" y1="144" x2="185" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="45" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="45" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D +900MHz</text><text x="105" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">释放跨 Tile 带宽</text><path d="M189,214 L211,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="299" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="215,144 375,144 357,126 197,126" fill="#78b7ae"></polygon><polygon points="215,144 375,144 375,240 215,240" fill="#2f7f7a"></polygon><polygon points="375,144 357,126 357,222 375,240" fill="#1f5f5b"></polygon><line x1="215" y1="144" x2="375" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="235" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="235" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">PMU Profiling</text><text x="295" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">定位分支与 Cache 瓶颈</text><path d="M379,214 L401,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="489" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="405,144 565,144 547,126 387,126" fill="#d2ad72"></polygon><polygon points="405,144 565,144 565,240 405,240" fill="#9a7434"></polygon><polygon points="565,144 547,126 547,222 565,240" fill="#77551f"></polygon><line x1="405" y1="144" x2="565" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="425" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="425" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">动态重写</text><text x="485" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">内存中重排二进制</text><path d="M569,214 L591,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="679" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="595,144 755,144 737,126 577,126" fill="#8fa7b6"></polygon><polygon points="595,144 755,144 755,240 595,240" fill="#5c7383"></polygon><polygon points="755,144 737,126 737,222 755,240" fill="#455c6c"></polygon><line x1="595" y1="144" x2="755" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="615" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="615" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">P/E 调度</text><text x="675" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">减少切换与争用</text><path d="M759,214 L781,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="869" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="785,144 945,144 927,126 767,126" fill="#8fc0a9"></polygon><polygon points="785,144 945,144 945,240 785,240" fill="#4f8a6f"></polygon><polygon points="945,144 927,126 927,222 945,240" fill="#356a51"></polygon><line x1="785" y1="144" x2="945" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="805" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="805" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">IPC / 1% Low</text><text x="865" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">真实帧与执行确定性</text><text x="25" y="330" font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频不是目的，而是为实时优化支付的性能税。</text></svg>
 <p class="v-caption">图 1：IBOT 的机制链。D2D 提频先释放带宽，PMU Profiling 定位瓶颈，动态重写减少指令气泡。</p>
 </div>
 <h2 id="性能预期-IPC的纯粹提升">性能预期: IPC的纯粹提升</h2>
 <p>在实际应用中，IBOT 的加入意味着：</p>
 <h3 id="游戏表现："><strong>游戏表现</strong>：</h3>
-<p><a target="_blank" rel="noopener" href="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg"><img alt src="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg" decoding="async" loading="lazy"></a><br>
+<p><a target="_blank" rel="noopener" href="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg"><img alt="" src="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg" decoding="async" loading="lazy"></a><br>
 对于那些针对旧架构编写、对单核效率敏感的老旧游戏，或是从 Switch/PS5 上移植来的非原生游戏，IBOT 可以通过实时优化指令流，显著改善 1% Low FPS。</p>
 <p>这几年，我们已经习惯了各种<strong>Frame Generation</strong>或是<strong>Upscaling</strong>技术。尽管 DLSS 或 FSR 能够带来震撼的平均帧数，但它们本质上是基于算法的视觉补偿，在技术力上对我没什么吸引力。</p>
 <p><strong>IBOT 的逻辑则完全不同</strong>：它不生成任何虚假的像素，也不跳过任何必要的计算步骤。</p>
@@ -248,7 +246,7 @@
 </ol>
 <p>对于追求极致体感的玩家，这意味着实打实的 <strong>1% Low FPS</strong> 提升和零延迟的响应；对于专业创作者，这代表着在繁重的生产力洪流中，获得了前所未有的执行确定性。</p>
 <p><strong>当物理瓶颈被打破，真正的 IPC 潜力才被彻底释放。</strong></p>
-<p><img alt src="silicon-roadmap-20260318-2.jpg" decoding="async" loading="lazy" width="1600" height="873"></p>
+<p><img alt="" src="silicon-roadmap-20260318-2.jpg" decoding="async" loading="lazy" width="1600" height="873"></p>
 
     </div>
 
@@ -264,7 +262,7 @@
     <span>Back Home</span>
   </a>
   <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
-    <span>More in Silicon & Circuits</span>
+    <span>More in Silicon &amp; Circuits</span>
     <span aria-hidden="true">→</span>
   </a>
 </nav>
@@ -308,4 +306,5 @@
 
 </main>
   <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
 </body></html>

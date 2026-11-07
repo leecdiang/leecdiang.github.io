@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
@@ -11,11 +9,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.52c0b1e4a64b.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。">
 <meta property="og:type" content="article">
@@ -61,15 +59,15 @@
   
   
   <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":"/js/third-party/mermaid.min.js"}</script>
-  <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer></script>
+  <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer=""></script>
 
   
-  <script defer src="/assets/studio/core.ae3ac3a45b5e.js"></script>
+  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
   
   
 
-<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -82,14 +80,14 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88-AI-%E9%9B%86%E7%BE%A4%E5%81%8F%E7%88%B1-RDMA"><span class="toc-text">一、为什么 AI 集群偏爱 RDMA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9C%E6%A0%88%E7%9A%84%E8%B7%AF%E5%BE%84%E5%A4%AA%E9%95%BF"><span class="toc-text">1. 传统网络栈的路径太长</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-RoCEv2-%E6%8A%8A-RDMA-%E6%94%BE%E5%88%B0%E5%8F%AF%E8%B7%AF%E7%94%B1%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%B8%8A"><span class="toc-text">2. RoCEv2 把 RDMA 放到可路由以太网上</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81PFC%E3%80%81ECN-%E4%B8%8E-DCQCN-%E5%90%84%E8%87%AA%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-text">二、PFC、ECN 与 DCQCN 各自做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PFC-%E9%80%90%E8%B7%B3%E3%80%81%E6%8C%89%E4%BC%98%E5%85%88%E7%BA%A7%E6%9A%82%E5%81%9C"><span class="toc-text">1. PFC:逐跳、按优先级暂停</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ECN-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%A0%87%E8%AE%B0%E6%8B%A5%E5%A1%9E-%E8%80%8C%E4%B8%8D%E6%98%AF%E7%AB%8B%E5%88%BB%E4%B8%A2%E5%8C%85"><span class="toc-text">2. ECN:交换机标记拥塞,而不是立刻丢包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-DCQCN-%E4%B8%BA-RoCEv2-%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%AB%AF%E5%88%B0%E7%AB%AF%E9%80%9F%E7%8E%87%E6%8E%A7%E5%88%B6"><span class="toc-text">3. DCQCN:为 RoCEv2 设计的端到端速率控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%89%E8%80%85%E4%BD%9C%E7%94%A8%E5%9C%A8%E4%B8%8D%E5%90%8C%E6%97%B6%E9%97%B4%E5%B0%BA%E5%BA%A6"><span class="toc-text">4. 三者作用在不同时间尺度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81PFC-%E7%9A%84%E8%AF%85%E5%92%92%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">三、PFC 的诅咒到底是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Head-of-Line-Blocking-%E6%97%A0%E8%BE%9C%E6%B5%81%E9%87%8F%E4%B8%80%E8%B5%B7%E5%81%9C%E8%BD%A6"><span class="toc-text">1. Head-of-Line Blocking:无辜流量一起停车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Congestion-Spreading-%E6%8B%A5%E5%A1%9E%E4%BB%8E%E4%B8%80%E4%B8%AA%E7%AB%AF%E5%8F%A3%E9%95%BF%E6%88%90%E4%B8%80%E6%A3%B5%E6%A0%91"><span class="toc-text">2. Congestion Spreading:拥塞从一个端口长成一棵树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Deadlock-%E5%BE%AA%E7%8E%AF%E7%AD%89%E5%BE%85%E4%B8%8D%E6%98%AF-PFC-%E7%9A%84%E5%BF%85%E7%84%B6-%E4%BD%86%E7%A1%AE%E5%AE%9E%E5%8F%AF%E8%83%BD%E5%8F%91%E7%94%9F"><span class="toc-text">3. Deadlock:循环等待不是 PFC 的必然,但确实可能发生</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Buffer-Threshold-%E6%98%AF%E4%B8%80%E5%9C%BA%E7%B2%BE%E5%AF%86%E9%A2%84%E7%AE%97"><span class="toc-text">4. Buffer Threshold 是一场精密预算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%85%88%E6%8B%86%E5%BC%80-%E6%9C%89%E6%8D%9F%E3%80%81%E5%8F%AF%E9%9D%A0%E3%80%81%E6%9C%89%E5%BA%8F-%E4%B8%89%E4%B8%AA%E6%A6%82%E5%BF%B5"><span class="toc-text">四、先拆开&quot;有损、可靠、有序&quot;三个概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Fabric-%E6%98%AF%E5%90%A6%E5%85%81%E8%AE%B8%E4%B8%A2%E5%8C%85"><span class="toc-text">1. Fabric 是否允许丢包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%AB%AF%E5%88%B0%E7%AB%AF%E4%BC%A0%E8%BE%93%E6%98%AF%E5%90%A6%E5%8F%AF%E9%9D%A0"><span class="toc-text">2. 端到端传输是否可靠</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%A6%E5%BF%85%E9%A1%BB%E4%B8%A5%E6%A0%BC%E6%9C%89%E5%BA%8F"><span class="toc-text">3. 数据是否必须严格有序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E6%80%A7%E9%87%8D%E4%BC%A0%E6%94%B9%E5%8F%98%E4%BA%86%E9%97%AE%E9%A2%98"><span class="toc-text">五、为什么选择性重传改变了问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81IRN-PFC-%E4%B8%8D%E6%98%AF-RDMA-%E7%9A%84%E7%89%A9%E7%90%86%E5%AE%9A%E5%BE%8B"><span class="toc-text">六、IRN:PFC 不是 RDMA 的物理定律</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81TTPoE-%E5%9E%82%E7%9B%B4%E6%95%B4%E5%90%88%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%81%E7%AB%AF%E6%A0%B7%E6%9C%AC"><span class="toc-text">七、TTPoE:垂直整合系统的极端样本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-TTPoE-%E7%9A%84%E6%84%8F%E4%B9%89%E4%B8%8D%E5%9C%A8%E4%BA%8E-%E6%9B%BF%E4%BB%A3%E6%89%80%E6%9C%89%E5%8D%8F%E8%AE%AE"><span class="toc-text">1. TTPoE 的意义不在于&quot;替代所有协议&quot;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81Ultra-Ethernet-%E4%B8%8D%E6%98%AF%E7%BB%99-Ethernet-%E6%8D%A2%E4%B8%80%E4%B8%AA%E5%90%8D%E5%AD%97"><span class="toc-text">八、Ultra Ethernet:不是给 Ethernet 换一个名字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Packet-Spraying-%E4%BB%8E-%E6%AF%8F%E6%9D%A1%E6%B5%81%E9%80%89%E4%B8%80%E6%9D%A1%E8%B7%AF-%E5%88%B0-%E6%AF%8F%E4%B8%AA%E5%8C%85%E5%88%A9%E7%94%A8%E5%A4%9A%E6%9D%A1%E8%B7%AF"><span class="toc-text">1. Packet Spraying:从&quot;每条流选一条路&quot;到&quot;每个包利用多条路&quot;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Flexible-Ordering-%E4%B8%8D%E4%B8%BA%E5%BA%94%E7%94%A8%E4%B8%8D%E9%9C%80%E8%A6%81%E7%9A%84%E9%A1%BA%E5%BA%8F%E4%BB%98%E8%B4%B9"><span class="toc-text">2. Flexible Ordering:不为应用不需要的顺序付费</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Sender-based-CC-%E4%B8%8E-Receiver-Credit"><span class="toc-text">3. Sender-based CC 与 Receiver Credit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Packet-Trimming-%E4%B8%A2-Payload-%E4%BD%86%E4%BF%9D%E7%95%99%E5%BF%AB%E9%80%9F%E5%8F%8D%E9%A6%88"><span class="toc-text">4. Packet Trimming:丢 Payload,但保留快速反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Security-%E6%98%AF%E4%B8%80%E7%AD%89%E5%85%AC%E6%B0%91"><span class="toc-text">5. Security 是一等公民</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81RoCE%E3%80%81TTPoE-%E4%B8%8E-UET-%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E6%AF%94%E8%BE%83"><span class="toc-text">九、RoCE、TTPoE 与 UET 应该怎样比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E7%AB%AF%E7%82%B9%E3%80%81%E4%BA%A4%E6%8D%A2%E6%9C%BA%E4%B8%8E-Fabric-Controller-%E7%9A%84%E9%97%AD%E7%8E%AF"><span class="toc-text">十、端点、交换机与 Fabric Controller 的闭环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Endpoint-RNIC"><span class="toc-text">1. Endpoint &#x2F; RNIC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Switch"><span class="toc-text">2. Switch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Fabric-Controller"><span class="toc-text">3. Fabric Controller</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81In-Network-Computing-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8F%AF%E4%BB%A5%E8%AE%A1%E7%AE%97%E4%BB%80%E4%B9%88"><span class="toc-text">十一、In-Network Computing:交换机可以计算什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-SHARP-%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%8D%E7%BD%AE"><span class="toc-text">1. SHARP 的正确位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9C%A8%E7%BD%91%E8%AE%A1%E7%AE%97%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">2. 在网计算的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%8A%8A%E6%95%B4%E4%B8%AA%E8%AE%AD%E7%BB%83%E7%AE%97%E5%AD%90%E5%A1%9E%E8%BF%9B%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-text">3. 为什么不能把整个训练算子塞进交换机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E4%BB%8E-FPGA-%E5%88%B0%E5%8F%AF%E7%BC%96%E7%A8%8B%E5%BE%AE%E5%BC%95%E6%93%8E-%E4%B8%8D%E8%A6%81%E6%8A%8A-%E5%8F%AF%E7%BC%96%E7%A8%8B-%E6%B7%B7%E6%88%90%E4%B8%80%E4%B8%AA%E8%AF%8D"><span class="toc-text">十二、从 FPGA 到可编程微引擎:不要把&quot;可编程&quot;混成一个词</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E6%80%8E%E6%A0%B7%E5%88%A4%E6%96%AD%E4%B8%80%E7%A7%8D-%E6%97%A0-PFC-%E6%96%B9%E6%A1%88%E6%98%AF%E5%90%A6%E7%9C%9F%E7%9A%84%E6%9B%B4%E5%A5%BD"><span class="toc-text">十三、怎样判断一种&quot;无 PFC&quot;方案是否真的更好</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%80%A7%E8%83%BD"><span class="toc-text">1. 性能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8B%A5%E5%A1%9E"><span class="toc-text">2. 拥塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="toc-text">3. 可靠性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%9F%E6%80%81"><span class="toc-text">4. 生态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD-%E6%97%A0%E6%8D%9F%E6%B2%A1%E6%9C%89%E6%B6%88%E5%A4%B1-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%AD%A3%E5%9C%A8%E6%94%B9%E5%8F%98"><span class="toc-text">结语:无损没有消失,可靠性的位置正在改变</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88-AI-%E9%9B%86%E7%BE%A4%E5%81%8F%E7%88%B1-RDMA"><span class="toc-text">一、为什么 AI 集群偏爱 RDMA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9C%E6%A0%88%E7%9A%84%E8%B7%AF%E5%BE%84%E5%A4%AA%E9%95%BF"><span class="toc-text">1. 传统网络栈的路径太长</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-RoCEv2-%E6%8A%8A-RDMA-%E6%94%BE%E5%88%B0%E5%8F%AF%E8%B7%AF%E7%94%B1%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%B8%8A"><span class="toc-text">2. RoCEv2 把 RDMA 放到可路由以太网上</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81PFC%E3%80%81ECN-%E4%B8%8E-DCQCN-%E5%90%84%E8%87%AA%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-text">二、PFC、ECN 与 DCQCN 各自做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PFC-%E9%80%90%E8%B7%B3%E3%80%81%E6%8C%89%E4%BC%98%E5%85%88%E7%BA%A7%E6%9A%82%E5%81%9C"><span class="toc-text">1. PFC:逐跳、按优先级暂停</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ECN-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%A0%87%E8%AE%B0%E6%8B%A5%E5%A1%9E-%E8%80%8C%E4%B8%8D%E6%98%AF%E7%AB%8B%E5%88%BB%E4%B8%A2%E5%8C%85"><span class="toc-text">2. ECN:交换机标记拥塞,而不是立刻丢包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-DCQCN-%E4%B8%BA-RoCEv2-%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%AB%AF%E5%88%B0%E7%AB%AF%E9%80%9F%E7%8E%87%E6%8E%A7%E5%88%B6"><span class="toc-text">3. DCQCN:为 RoCEv2 设计的端到端速率控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%89%E8%80%85%E4%BD%9C%E7%94%A8%E5%9C%A8%E4%B8%8D%E5%90%8C%E6%97%B6%E9%97%B4%E5%B0%BA%E5%BA%A6"><span class="toc-text">4. 三者作用在不同时间尺度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81PFC-%E7%9A%84%E8%AF%85%E5%92%92%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">三、PFC 的诅咒到底是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Head-of-Line-Blocking-%E6%97%A0%E8%BE%9C%E6%B5%81%E9%87%8F%E4%B8%80%E8%B5%B7%E5%81%9C%E8%BD%A6"><span class="toc-text">1. Head-of-Line Blocking:无辜流量一起停车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Congestion-Spreading-%E6%8B%A5%E5%A1%9E%E4%BB%8E%E4%B8%80%E4%B8%AA%E7%AB%AF%E5%8F%A3%E9%95%BF%E6%88%90%E4%B8%80%E6%A3%B5%E6%A0%91"><span class="toc-text">2. Congestion Spreading:拥塞从一个端口长成一棵树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Deadlock-%E5%BE%AA%E7%8E%AF%E7%AD%89%E5%BE%85%E4%B8%8D%E6%98%AF-PFC-%E7%9A%84%E5%BF%85%E7%84%B6-%E4%BD%86%E7%A1%AE%E5%AE%9E%E5%8F%AF%E8%83%BD%E5%8F%91%E7%94%9F"><span class="toc-text">3. Deadlock:循环等待不是 PFC 的必然,但确实可能发生</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Buffer-Threshold-%E6%98%AF%E4%B8%80%E5%9C%BA%E7%B2%BE%E5%AF%86%E9%A2%84%E7%AE%97"><span class="toc-text">4. Buffer Threshold 是一场精密预算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%85%88%E6%8B%86%E5%BC%80-%E6%9C%89%E6%8D%9F%E3%80%81%E5%8F%AF%E9%9D%A0%E3%80%81%E6%9C%89%E5%BA%8F-%E4%B8%89%E4%B8%AA%E6%A6%82%E5%BF%B5"><span class="toc-text">四、先拆开"有损、可靠、有序"三个概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Fabric-%E6%98%AF%E5%90%A6%E5%85%81%E8%AE%B8%E4%B8%A2%E5%8C%85"><span class="toc-text">1. Fabric 是否允许丢包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%AB%AF%E5%88%B0%E7%AB%AF%E4%BC%A0%E8%BE%93%E6%98%AF%E5%90%A6%E5%8F%AF%E9%9D%A0"><span class="toc-text">2. 端到端传输是否可靠</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%A6%E5%BF%85%E9%A1%BB%E4%B8%A5%E6%A0%BC%E6%9C%89%E5%BA%8F"><span class="toc-text">3. 数据是否必须严格有序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E6%80%A7%E9%87%8D%E4%BC%A0%E6%94%B9%E5%8F%98%E4%BA%86%E9%97%AE%E9%A2%98"><span class="toc-text">五、为什么选择性重传改变了问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81IRN-PFC-%E4%B8%8D%E6%98%AF-RDMA-%E7%9A%84%E7%89%A9%E7%90%86%E5%AE%9A%E5%BE%8B"><span class="toc-text">六、IRN:PFC 不是 RDMA 的物理定律</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81TTPoE-%E5%9E%82%E7%9B%B4%E6%95%B4%E5%90%88%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%81%E7%AB%AF%E6%A0%B7%E6%9C%AC"><span class="toc-text">七、TTPoE:垂直整合系统的极端样本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-TTPoE-%E7%9A%84%E6%84%8F%E4%B9%89%E4%B8%8D%E5%9C%A8%E4%BA%8E-%E6%9B%BF%E4%BB%A3%E6%89%80%E6%9C%89%E5%8D%8F%E8%AE%AE"><span class="toc-text">1. TTPoE 的意义不在于"替代所有协议"</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81Ultra-Ethernet-%E4%B8%8D%E6%98%AF%E7%BB%99-Ethernet-%E6%8D%A2%E4%B8%80%E4%B8%AA%E5%90%8D%E5%AD%97"><span class="toc-text">八、Ultra Ethernet:不是给 Ethernet 换一个名字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Packet-Spraying-%E4%BB%8E-%E6%AF%8F%E6%9D%A1%E6%B5%81%E9%80%89%E4%B8%80%E6%9D%A1%E8%B7%AF-%E5%88%B0-%E6%AF%8F%E4%B8%AA%E5%8C%85%E5%88%A9%E7%94%A8%E5%A4%9A%E6%9D%A1%E8%B7%AF"><span class="toc-text">1. Packet Spraying:从"每条流选一条路"到"每个包利用多条路"</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Flexible-Ordering-%E4%B8%8D%E4%B8%BA%E5%BA%94%E7%94%A8%E4%B8%8D%E9%9C%80%E8%A6%81%E7%9A%84%E9%A1%BA%E5%BA%8F%E4%BB%98%E8%B4%B9"><span class="toc-text">2. Flexible Ordering:不为应用不需要的顺序付费</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Sender-based-CC-%E4%B8%8E-Receiver-Credit"><span class="toc-text">3. Sender-based CC 与 Receiver Credit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Packet-Trimming-%E4%B8%A2-Payload-%E4%BD%86%E4%BF%9D%E7%95%99%E5%BF%AB%E9%80%9F%E5%8F%8D%E9%A6%88"><span class="toc-text">4. Packet Trimming:丢 Payload,但保留快速反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Security-%E6%98%AF%E4%B8%80%E7%AD%89%E5%85%AC%E6%B0%91"><span class="toc-text">5. Security 是一等公民</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81RoCE%E3%80%81TTPoE-%E4%B8%8E-UET-%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E6%AF%94%E8%BE%83"><span class="toc-text">九、RoCE、TTPoE 与 UET 应该怎样比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E7%AB%AF%E7%82%B9%E3%80%81%E4%BA%A4%E6%8D%A2%E6%9C%BA%E4%B8%8E-Fabric-Controller-%E7%9A%84%E9%97%AD%E7%8E%AF"><span class="toc-text">十、端点、交换机与 Fabric Controller 的闭环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Endpoint-RNIC"><span class="toc-text">1. Endpoint / RNIC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Switch"><span class="toc-text">2. Switch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Fabric-Controller"><span class="toc-text">3. Fabric Controller</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81In-Network-Computing-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8F%AF%E4%BB%A5%E8%AE%A1%E7%AE%97%E4%BB%80%E4%B9%88"><span class="toc-text">十一、In-Network Computing:交换机可以计算什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-SHARP-%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%8D%E7%BD%AE"><span class="toc-text">1. SHARP 的正确位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9C%A8%E7%BD%91%E8%AE%A1%E7%AE%97%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">2. 在网计算的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%8A%8A%E6%95%B4%E4%B8%AA%E8%AE%AD%E7%BB%83%E7%AE%97%E5%AD%90%E5%A1%9E%E8%BF%9B%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-text">3. 为什么不能把整个训练算子塞进交换机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E4%BB%8E-FPGA-%E5%88%B0%E5%8F%AF%E7%BC%96%E7%A8%8B%E5%BE%AE%E5%BC%95%E6%93%8E-%E4%B8%8D%E8%A6%81%E6%8A%8A-%E5%8F%AF%E7%BC%96%E7%A8%8B-%E6%B7%B7%E6%88%90%E4%B8%80%E4%B8%AA%E8%AF%8D"><span class="toc-text">十二、从 FPGA 到可编程微引擎:不要把"可编程"混成一个词</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E6%80%8E%E6%A0%B7%E5%88%A4%E6%96%AD%E4%B8%80%E7%A7%8D-%E6%97%A0-PFC-%E6%96%B9%E6%A1%88%E6%98%AF%E5%90%A6%E7%9C%9F%E7%9A%84%E6%9B%B4%E5%A5%BD"><span class="toc-text">十三、怎样判断一种"无 PFC"方案是否真的更好</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%80%A7%E8%83%BD"><span class="toc-text">1. 性能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8B%A5%E5%A1%9E"><span class="toc-text">2. 拥塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="toc-text">3. 可靠性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%9F%E6%80%81"><span class="toc-text">4. 生态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD-%E6%97%A0%E6%8D%9F%E6%B2%A1%E6%9C%89%E6%B6%88%E5%A4%B1-%E5%8F%AF%E9%9D%A0%E6%80%A7%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%AD%A3%E5%9C%A8%E6%94%B9%E5%8F%98"><span class="toc-text">结语:无损没有消失,可靠性的位置正在改变</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -97,15 +95,15 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/0ebd9e4a9784.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-06-28T14:39:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/0ebd9e4a9784.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-06-28T14:39:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
     <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
@@ -113,7 +111,7 @@
     
       <header class="post-header">
         
-        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon & Circuits</a></nav>
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
           智算互联(中):重构可靠性--从强制无损到端网协同
@@ -146,7 +144,7 @@ Modern AI fabrics are challenging the traditional assumption that high-performan
 上篇讨论通信墙与流量指纹；本文讨论传输与 Fabric；下篇将讨论网卡芯片、SerDes、PCIe 与光互联。</p>
 </div>
 <hr>
-<p>在传统数据中心里,丢一个包通常只意味着某条流稍后重传;在大规模同步训练里,丢包、乱序和排队抖动可能让整个 Collective 等待最慢的 Rank。因此,智算网络长期追求&quot;无损&quot;:尽可能不让交换机丢包,让远程直接内存访问(Remote Direct Memory Access, RDMA)维持低时延和高吞吐。</p>
+<p>在传统数据中心里,丢一个包通常只意味着某条流稍后重传;在大规模同步训练里,丢包、乱序和排队抖动可能让整个 Collective 等待最慢的 Rank。因此,智算网络长期追求"无损":尽可能不让交换机丢包,让远程直接内存访问(Remote Direct Memory Access, RDMA)维持低时延和高吞吐。</p>
 <p>问题在于,<strong>无损不是免费的</strong>。</p>
 <p>Priority-based Flow Control(PFC)可以在队列接近溢出时向上游发送 Pause,但暂停会传播,拥塞会扩散,互不相关的流可能被同一个优先级队列阻塞。在足够复杂的依赖关系下,还可能形成死锁。</p>
 <p>下一代智算网络的变化不是放弃可靠性,而是换了一种实现方式:</p>
@@ -204,8 +202,7 @@ Modern AI fabrics are challenging the traditional assumption that high-performan
 <h3 id="3-DCQCN-为-RoCEv2-设计的端到端速率控制">3. DCQCN:为 RoCEv2 设计的端到端速率控制</h3>
 <p>Data Center Quantized Congestion Notification(DCQCN)由 Microsoft 等提出,用于大规模 RoCEv2 部署。交换机使用 ECN 标记,接收端向发送端发送 Congestion Notification Packet(CNP),发送端根据反馈调整速率。<a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/publication/congestion-control-for-large-scale-rdma-deployments/">Congestion Control for Large-Scale RDMA Deployments</a></p>
 <p>DCQCN 试图让大多数流在队列触发 PFC 之前主动减速,因此 PFC 更像最后一道保险,而不是日常调速器。</p>
-<pre>
-<code class="mermaid">
+<pre><code class="mermaid">
 
 sequenceDiagram
     participant S as Sender RNIC
@@ -213,7 +210,7 @@ sequenceDiagram
     participant R as Receiver RNIC
     S-&gt;&gt;SW: RoCE Data
     SW-&gt;&gt;R: ECN-marked Data
-    R--&gt;&gt;S: CNP &#x2F; Congestion Feedback
+    R--&gt;&gt;S: CNP / Congestion Feedback
     S-&gt;&gt;S: Reduce sending rate
     Note over SW,S: If queue rises too fast, PFC may pause upstream before end-to-end loop converges
 </code>
@@ -269,13 +266,13 @@ sequenceDiagram
 <p>如果多个队列和路径形成循环依赖,每个节点都在等待下游释放缓冲区,就可能发生 PFC Deadlock。</p>
 <p>这里需要避免两个极端说法:</p>
 <ul>
-<li>说&quot;PFC 一定导致死锁&quot;是不准确的;</li>
-<li>说&quot;只要配置正确就没有问题&quot;也低估了大规模网络的复杂度。</li>
+<li>说"PFC 一定导致死锁"是不准确的;</li>
+<li>说"只要配置正确就没有问题"也低估了大规模网络的复杂度。</li>
 </ul>
 <p>死锁与拓扑、路由、虚拟通道、优先级映射、缓冲区和故障状态有关。网络越大、路径越动态、业务越混杂,证明所有依赖关系始终安全越困难。</p>
 <p>Microsoft 的研究和后续 IRN 工作都把 Head-of-Line Blocking、Congestion Spreading 与偶发死锁列为 PFC 的核心问题。<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3230543.3230557">Revisiting Network Support for RDMA</a></p>
 <h3 id="4-Buffer-Threshold-是一场精密预算">4. Buffer Threshold 是一场精密预算</h3>
-<p>PFC 阈值不能随意设置。它必须为&quot;Pause Frame 发出后仍在路上的数据&quot;预留 Headroom,通常需要考虑:</p>
+<p>PFC 阈值不能随意设置。它必须为"Pause Frame 发出后仍在路上的数据"预留 Headroom,通常需要考虑:</p>
 <ul>
 <li>链路速率;</li>
 <li>电缆与光纤传播时延;</li>
@@ -285,7 +282,7 @@ sequenceDiagram
 <li>多个上游端口同时注入的情况。</li>
 </ul>
 <p>阈值过低,会频繁暂停并损失利用率;阈值过高,又可能来不及阻止溢出。端口从 100G 升到 400G、800G 后,同样的时间窗口内会飞入更多字节,Headroom 压力随之增加。</p>
-<h2 id="四、先拆开-有损、可靠、有序-三个概念">四、先拆开&quot;有损、可靠、有序&quot;三个概念</h2>
+<h2 id="四、先拆开-有损、可靠、有序-三个概念">四、先拆开"有损、可靠、有序"三个概念</h2>
 <p>很多讨论把有损网络等同于不可靠传输,这是一个关键误区。</p>
 <h3 id="1-Fabric-是否允许丢包">1. Fabric 是否允许丢包</h3>
 <p>这是交换网络层面的问题:队列满时,交换机是否可以 Drop 或 Trim 报文。</p>
@@ -343,12 +340,12 @@ sequenceDiagram
 <li>更细粒度的计时器与重传队列;</li>
 <li>防止重复写入或状态失配。</li>
 </ul>
-<p>&quot;允许网络丢包&quot;不是省掉硬件,而是把部分复杂性从交换机缓冲和 PFC 运维转移到 RNIC Transport Engine。</p>
+<p>"允许网络丢包"不是省掉硬件,而是把部分复杂性从交换机缓冲和 PFC 运维转移到 RNIC Transport Engine。</p>
 <h2 id="六、IRN-PFC-不是-RDMA-的物理定律">六、IRN:PFC 不是 RDMA 的物理定律</h2>
 <p>SIGCOMM 2018 的 IRN(Improved RoCE NIC)研究提出一个重要观点:RoCE 对 PFC 的依赖,很大程度上来自当时 NIC 的设计,而不是 RDMA 本身的必然要求。</p>
 <p>IRN 通过有限的接收窗口、选择性重传和更好的丢包处理,使 RoCE 可以在不依赖 PFC 的情况下运行。论文报告,在其典型网络场景中,IRN 无 PFC 方案相对传统 RoCE + PFC 获得 6% 到 83% 的性能提升,NIC 资源开销约为 3% 到 10%。这些数字属于论文特定实现与实验条件,不能直接外推到所有商用网络,但它证明了一个架构命题:</p>
 <blockquote>
-<p>&quot;RDMA 必须依靠全网强无损&quot;不是不可改变的规则。</p>
+<p>"RDMA 必须依靠全网强无损"不是不可改变的规则。</p>
 </blockquote>
 <p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3230543.3230557">Revisiting Network Support for RDMA</a></p>
 <h2 id="七、TTPoE-垂直整合系统的极端样本">七、TTPoE:垂直整合系统的极端样本</h2>
@@ -361,7 +358,7 @@ sequenceDiagram
 <li>数据链路不需要 CPU 或操作系统参与;</li>
 <li>拥塞管理强调端点自治,而不是集中式控制。</li>
 </ul>
-<h3 id="1-TTPoE-的意义不在于-替代所有协议">1. TTPoE 的意义不在于&quot;替代所有协议&quot;</h3>
+<h3 id="1-TTPoE-的意义不在于-替代所有协议">1. TTPoE 的意义不在于"替代所有协议"</h3>
 <p>TTPoE 的价值在于它展示了垂直整合的力量:当厂商同时控制加速器、网络接口、拓扑和软件栈时,可以放弃大量通用性,围绕特定系统目标设计更简单的 Transport。</p>
 <p>但这也限制了它作为行业通用路线的代表性:</p>
 <ul>
@@ -370,11 +367,11 @@ sequenceDiagram
 <li>与通用 Verbs、libfabric 和多厂商交换生态的兼容性有限;</li>
 <li>公开材料不足以完整评估大规模故障、隔离和安全语义。</li>
 </ul>
-<p>因此,TTPoE 更适合作为&quot;垂直整合系统如何重新定义可靠性&quot;的案例,而不是简单写成 RoCE 的继任者。</p>
+<p>因此,TTPoE 更适合作为"垂直整合系统如何重新定义可靠性"的案例,而不是简单写成 RoCE 的继任者。</p>
 <h2 id="八、Ultra-Ethernet-不是给-Ethernet-换一个名字">八、Ultra Ethernet:不是给 Ethernet 换一个名字</h2>
 <p>Ultra Ethernet Consortium(UEC)在 2025 年发布 Ultra Ethernet Specification 1.0,目标是为 AI 与 HPC 的 Scale-out 网络提供开放、多厂商的完整通信架构。<a target="_blank" rel="noopener" href="https://ultraethernet.org/ultra-ethernet-consortium-uec-launches-specification-1-0-transforming-ethernet-for-ai-and-hpc-at-scale/">Ultra Ethernet Specification 1.0 Announcement</a></p>
 <p>Ultra Ethernet Transport(UET)不是在 RoCE 上加一个拥塞算法,而是在 Transport、API、交换机能力、安全与物理层之间重新协同。</p>
-<h3 id="1-Packet-Spraying-从-每条流选一条路-到-每个包利用多条路">1. Packet Spraying:从&quot;每条流选一条路&quot;到&quot;每个包利用多条路&quot;</h3>
+<h3 id="1-Packet-Spraying-从-每条流选一条路-到-每个包利用多条路">1. Packet Spraying:从"每条流选一条路"到"每个包利用多条路"</h3>
 <p>传统 ECMP 通常对五元组做哈希,同一条流固定走一条路径。这能避免乱序,但当少数大流碰巧哈希到同一路径时,其他路径可能空闲,热点路径却拥塞。</p>
 <p>UET 支持多路径 Packet Spraying,让同一传输的不同包使用多条可用路径,并结合端点与网络的实时拥塞信息进行更细粒度负载均衡。<a target="_blank" rel="noopener" href="https://ultraethernet.org/uec-progresses-towards-v1-0-set-of-specifications/">UEC Progresses Towards v1.0 Set of Specifications</a></p>
 <p>它的收益是提高路径利用率、降低 Flow Collision 和尾延迟;代价是接收端必须面对乱序。</p>
@@ -390,7 +387,7 @@ sequenceDiagram
 </ul>
 <h3 id="4-Packet-Trimming-丢-Payload-但保留快速反馈">4. Packet Trimming:丢 Payload,但保留快速反馈</h3>
 <p>在极端拥塞时,交换机可以截断报文 Payload,只把 Header 和拥塞信息送到接收端。这样接收端更快知道哪个包受损,而不必等待超时。</p>
-<p>Packet Trimming 保留 Header 丢弃 Payload,把&quot;无声 Drop&quot;变成快速、明确的控制信号。</p>
+<p>Packet Trimming 保留 Header 丢弃 Payload,把"无声 Drop"变成快速、明确的控制信号。</p>
 <h3 id="5-Security-是一等公民">5. Security 是一等公民</h3>
 <p>UEC 把安全与 Transport 协同设计,而不是把加密视为后挂功能。对多租户 AI 云而言,这一点很重要:训练数据、模型参数、梯度和 KV Cache 都可能跨越主机和交换网络边界。</p>
 <p>不过,规范发布不等于所有特性已经在多厂商设备中成熟部署。UET 的真实价值最终要通过:</p>
@@ -473,7 +470,7 @@ sequenceDiagram
 </div>
 <p>这张表不是胜负表。RoCE 的部署基础和软件生态是实实在在的优势;TTPoE 展示了定制系统可以多激进;UET 则试图在开放性与 AI 原生能力之间找到新的平衡。</p>
 <h2 id="十、端点、交换机与-Fabric-Controller-的闭环">十、端点、交换机与 Fabric Controller 的闭环</h2>
-<p>下一代智算网络不能被写成&quot;NIC 进化成 Switch,再进化成 Controller&quot;。三者是并列的责任域。</p>
+<p>下一代智算网络不能被写成"NIC 进化成 Switch,再进化成 Controller"。三者是并列的责任域。</p>
 <h3 id="1-Endpoint-RNIC">1. Endpoint / RNIC</h3>
 <p>端点最适合承担:</p>
 <ul>
@@ -507,11 +504,10 @@ sequenceDiagram
 <li>策略下发;</li>
 <li>网络遥测分析。</li>
 </ul>
-<pre>
-<code class="mermaid">
+<pre><code class="mermaid">
 
 flowchart TB
-    A[Training Framework &#x2F; NCCL &#x2F; MPI] --&gt; B[Endpoint RNIC]
+    A[Training Framework / NCCL / MPI] --&gt; B[Endpoint RNIC]
     B --&gt;|Data, pacing, retransmission| C[Switch Fabric]
     C --&gt;|ECN, telemetry, trim| B
     D[Fabric Controller] --&gt;|Path and policy| B
@@ -520,7 +516,7 @@ flowchart TB
     B --&gt;|Endpoint statistics| D
 </code>
 </pre>
-<p>端点看到连接状态和应用语义,交换机看到局部队列和链路状态,Controller 看到全局拓扑。任何一方都缺少完整信息,因此真正有效的架构往往是多时间尺度协同,而不是让某一层&quot;包办一切&quot;。</p>
+<p>端点看到连接状态和应用语义,交换机看到局部队列和链路状态,Controller 看到全局拓扑。任何一方都缺少完整信息,因此真正有效的架构往往是多时间尺度协同,而不是让某一层"包办一切"。</p>
 <h2 id="十一、In-Network-Computing-交换机可以计算什么">十一、In-Network Computing:交换机可以计算什么</h2>
 <h3 id="1-SHARP-的正确位置">1. SHARP 的正确位置</h3>
 <p>NVIDIA Scalable Hierarchical Aggregation and Reduction Protocol(SHARP)把 AllReduce、Reduce 和 Broadcast 等 Collective 的部分操作卸载到交换 Fabric 中。交换 ASIC 在数据经过时完成归约,减少端点之间重复传输的数据量。<a target="_blank" rel="noopener" href="https://developer.nvidia.com/blog/advancing-performance-with-nvidia-sharp-in-network-computing/">NVIDIA SHARP In-Network Computing</a></p>
@@ -554,7 +550,7 @@ flowchart TB
 <li>交换机故障会影响整个 Fabric,不能随意运行复杂代码。</li>
 </ul>
 <p>因此,In-Network Computing 更像是<strong>在正确的位置执行少量高价值操作</strong>,而不是把交换机变成另一种 GPU。</p>
-<h2 id="十二、从-FPGA-到可编程微引擎-不要把-可编程-混成一个词">十二、从 FPGA 到可编程微引擎:不要把&quot;可编程&quot;混成一个词</h2>
+<h2 id="十二、从-FPGA-到可编程微引擎-不要把-可编程-混成一个词">十二、从 FPGA 到可编程微引擎:不要把"可编程"混成一个词</h2>
 <p>网络数据面可以采用多种实现:</p>
 <div class="table-container"><table>
 <thead>
@@ -604,8 +600,8 @@ flowchart TB
 </tr>
 </tbody>
 </table></div>
-<p>“FPGA 能效低”&quot;CGRA 一定更好&quot;都过于绝对。真正的问题是:任务是否需要位级灵活性、控制流是否复杂、状态是否规则、吞吐是否可并行,以及产品量是否足以摊薄 ASIC 成本。</p>
-<h2 id="十三、怎样判断一种-无-PFC-方案是否真的更好">十三、怎样判断一种&quot;无 PFC&quot;方案是否真的更好</h2>
+<p>“FPGA 能效低”"CGRA 一定更好"都过于绝对。真正的问题是:任务是否需要位级灵活性、控制流是否复杂、状态是否规则、吞吐是否可并行,以及产品量是否足以摊薄 ASIC 成本。</p>
+<h2 id="十三、怎样判断一种-无-PFC-方案是否真的更好">十三、怎样判断一种"无 PFC"方案是否真的更好</h2>
 <p>厂商很容易宣称支持有损网络、包喷洒、乱序接收和选择性重传,但工程评价不能停留在功能列表。</p>
 <p>至少需要测试:</p>
 <h3 id="1-性能">1. 性能</h3>
@@ -645,7 +641,7 @@ flowchart TB
 </ul>
 <h2 id="结语-无损没有消失-可靠性的位置正在改变">结语:无损没有消失,可靠性的位置正在改变</h2>
 <p>PFC 解决了一个真实问题:当端点不擅长处理丢包时,用逐跳流控保护有限的交换机缓冲。它帮助 RoCE 走进大规模数据中心,也不会在短期内突然消失。</p>
-<p>但随着链路进入 400G、800G,AI 流量出现更强同步、更剧烈 Incast 和更多多路径需求,单纯依靠&quot;不要让任何包丢失&quot;来维持性能,正在变得越来越昂贵。</p>
+<p>但随着链路进入 400G、800G,AI 流量出现更强同步、更剧烈 Incast 和更多多路径需求,单纯依靠"不要让任何包丢失"来维持性能,正在变得越来越昂贵。</p>
 <p>IRN 证明了 RDMA 可以重新设计丢包恢复;TTPoE 展示了垂直整合系统可以让端点自治;UET 则试图把 Packet Spraying、Flexible Ordering、Selective Retransmission、Telemetry 与 Security 组合成开放的 Scale-out 架构。</p>
 <p>真正的变化不是从可靠走向不可靠:</p>
 <blockquote>
@@ -684,7 +680,7 @@ flowchart TB
     <span>Back Home</span>
   </a>
   <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
-    <span>More in Silicon & Circuits</span>
+    <span>More in Silicon &amp; Circuits</span>
     <span aria-hidden="true">→</span>
   </a>
 </nav>
@@ -733,4 +729,5 @@ flowchart TB
 
 </main>
   <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
 </body></html>

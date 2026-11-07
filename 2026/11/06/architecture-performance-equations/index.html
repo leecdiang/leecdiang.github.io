@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-CN" data-static-math="true">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!DOCTYPE html><html lang="zh-CN" data-static-math="true"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
@@ -11,11 +9,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style href="/assets/studio/style.52c0b1e4a64b.css"><link rel="stylesheet" data-static-math-style href="/assets/studio/math.2592be2b70fa.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.2592be2b70fa.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
-  <script defer src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
     <meta name="description" content="从 Roofline、Amdahl 定律、CPU 时间方程、AMAT 与 Little 定律出发，讨论性能模型的形式、假设、适用边界及其在 CPU、GPU 与存储层次中的结构对应关系。">
 <meta property="og:type" content="article">
@@ -26,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/645c3bf72e98.png">
 <meta property="article:published_time" content="2026-11-06T09:30:00.000Z">
-<meta property="article:modified_time" content="2026-11-06T12:18:53.185Z">
+<meta property="article:modified_time" content="2026-11-07T14:26:18.675Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="GPU">
 <meta property="article:tag" content="Roofline">
@@ -56,13 +54,13 @@
 
 
   
-  <script defer src="/js/visual-diagrams.js"></script>
-  <script defer src="/assets/studio/core.ae3ac3a45b5e.js"></script>
+  <script defer="" src="/js/visual-diagrams.js"></script>
+  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
   
   
 
-<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"></head>
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
 <body class="studio-site studio-halo studio-reading">
   <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -75,8 +73,8 @@
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"/></svg>
-      <svg class="theme-icon-sun" viewbox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
     </button></div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
@@ -90,15 +88,15 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/645c3bf72e98.png"><meta itemprop="dateModified" content="2026-11-06T12:18:53.185Z"><meta itemprop="datePublished" content="2026-11-06T09:30:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/645c3bf72e98.png"><meta itemprop="dateModified" content="2026-11-07T14:26:18.675Z"><meta itemprop="datePublished" content="2026-11-06T09:30:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/06/architecture-performance-equations/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-snow.jpg">
       <meta itemprop="name" content="LEEcDiang">
     <link itemprop="url" href="https://leecdiang.com/about/"></span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Beyond the Clock">
       <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
     </span>
@@ -106,7 +104,7 @@
     
       <header class="post-header">
         
-        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon & Circuits</a></nav>
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
           性能模型的形式与硬件落点：Roofline、Amdahl、CPI 与存储层次
@@ -198,7 +196,7 @@
     <label>运算强度 <output id="rf-int-out">8 FLOP/Byte</output><input id="rf-int" type="range" min="0.25" max="64" step="0.25" value="8" aria-label="运算强度，FLOP 每 Byte"></label>
   </div>
   <p class="v-scroll-hint">图表可横向滚动；键盘聚焦后可用方向键浏览。</p>
-  <div class="arch-plot-wrap"><svg id="rf-plot" viewbox="0 0 720 330" role="img" aria-label="Roofline 性能模型交互图"><g class="rf-grid"><path d="M75 40V270H680M75 226.783H680M75 155.000H680M75 83.217H680"/></g><path id="rf-band" class="rf-band"/><path id="rf-roof" class="rf-roof"/><line id="rf-ridge" class="rf-ridge" y1="40" y2="270"/><circle id="rf-dot" r="7"/><text x="375" y="318" text-anchor="middle">运算强度（FLOP/Byte，对数刻度）</text><text transform="translate(20 160) rotate(-90)" text-anchor="middle">吞吐上界（TFLOP/s，对数刻度）</text><text x="75" y="292" text-anchor="middle">0.25</text><text x="226" y="292" text-anchor="middle">1</text><text x="378" y="292" text-anchor="middle">4</text><text x="529" y="292" text-anchor="middle">16</text><text x="680" y="292" text-anchor="middle">64</text><text id="rf-ridge-label" x="0" y="0" text-anchor="middle">ridge</text><text id="rf-point-label" x="0" y="0">workload</text><text x="30" y="274.000">0.005</text><text x="30" y="230.783">0.02</text><text x="30" y="159.000">0.2</text><text x="30" y="87.217">2</text></svg></div>
+  <div class="arch-plot-wrap"><svg id="rf-plot" viewBox="0 0 720 330" role="img" aria-label="Roofline 性能模型交互图"><g class="rf-grid"><path d="M75 40V270H680M75 226.783H680M75 155.000H680M75 83.217H680"></path></g><path id="rf-band" class="rf-band"></path><path id="rf-roof" class="rf-roof"></path><line id="rf-ridge" class="rf-ridge" y1="40" y2="270"></line><circle id="rf-dot" r="7"></circle><text x="375" y="318" text-anchor="middle">运算强度（FLOP/Byte，对数刻度）</text><text transform="translate(20 160) rotate(-90)" text-anchor="middle">吞吐上界（TFLOP/s，对数刻度）</text><text x="75" y="292" text-anchor="middle">0.25</text><text x="226" y="292" text-anchor="middle">1</text><text x="378" y="292" text-anchor="middle">4</text><text x="529" y="292" text-anchor="middle">16</text><text x="680" y="292" text-anchor="middle">64</text><text id="rf-ridge-label" x="0" y="0" text-anchor="middle">ridge</text><text id="rf-point-label" x="0" y="0">workload</text><text x="30" y="274.000">0.005</text><text x="30" y="230.783">0.02</text><text x="30" y="159.000">0.2</text><text x="30" y="87.217">2</text></svg></div>
   <p class="arch-result" id="rf-result" aria-live="polite"></p>
   <p class="v-caption">教学模型，未对应具体芯片。实际峰值需按数据类型与可用指令计算；带宽应采用该工作负载、该内存层级的持续值，而非只抄接口标称速率。</p>
 </div>
@@ -235,7 +233,7 @@
 <p>计算峰值取决于数据精度和可用指令。例如，同一矩阵单元在 FP16、BF16 与 FP32 下的吞吐可能不同，实际峰值还要求每个周期都有足够的独立指令可供发射。带宽同样具有层级性：缓存命中率与访问合并会改变流向下一级的数据量，读写比例和并发访问会改变持续带宽。运算强度的分母应取实际从所选层级搬运的字节数；数组的逻辑大小不构成分母。GEMM 分块将矩阵块保留在缓存或片上 SRAM 中复用，通常可以提高相对 DRAM 的运算强度。</p>
 <p>下方的结构图将四类模型映射到典型 SoC 的功能块。图中的按钮用于选择模型并高亮其最直接作用的资源。该图是逻辑示意，不表示任何具体芯片的物理布局。</p>
 
-<div class="v-figure arch-map v-chart-scroll"><div class="arch-map-picker" role="group" aria-label="选择公式查看芯片落点"><button type="button" data-map="roofline" aria-pressed="true">Roofline</button><button type="button" data-map="amdahl" aria-pressed="false">Amdahl</button><button type="button" data-map="cpi" aria-pressed="false">CPI</button><button type="button" data-map="bdp" aria-pressed="false">BDP / Little</button></div><p class="arch-map-note" id="map-note">Roofline：计算单元、缓存与内存带宽共同决定屋顶。</p><p class="v-scroll-hint">左右滑动查看完整芯片结构图；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="可横向滚动的芯片结构图"><svg viewbox="0 0 900 470" role="img" aria-label="性能公式在真实芯片结构上的落点"><text x="26" y="30" font-size="20" class="v-ink">同一颗芯片，四种限制同时存在</text><text x="26" y="52" font-size="12" class="v-sub">这些公式各自指向不同的资源与等待来源。</text><rect x="48" y="72" width="804" height="330" rx="16" class="am-die"/><rect x="70" y="92" width="250" height="120" rx="10" class="am-block am-cpu"/><text x="86" y="114" font-size="13" class="v-ink">CPU cluster</text><rect x="86" y="126" width="46" height="42" rx="4" class="am-core"/><rect x="140" y="126" width="46" height="42" rx="4" class="am-core"/><rect x="194" y="126" width="46" height="42" rx="4" class="am-core"/><rect x="248" y="126" width="46" height="42" rx="4" class="am-core"/><text x="86" y="196" font-size="11" class="am-tag">Amdahl · CPI · 分支与依赖</text><rect x="338" y="92" width="250" height="120" rx="10" class="am-block am-gpu"/><text x="354" y="114" font-size="13" class="v-ink">GPU / SIMT</text><rect x="354" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="386" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="418" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="450" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="482" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="514" y="128" width="24" height="24" rx="3" class="am-core"/><rect x="354" y="160" width="24" height="24" rx="3" class="am-core"/><rect x="386" y="160" width="24" height="24" rx="3" class="am-core"/><rect x="418" y="160" width="24" height="24" rx="3" class="am-core"/><rect x="450" y="160" width="24" height="24" rx="3" class="am-core"/><rect x="482" y="160" width="24" height="24" rx="3" class="am-core"/><rect x="514" y="160" width="24" height="24" rx="3" class="am-core"/><text x="354" y="196" font-size="11" class="am-tag">Roofline · 并行度 · 占用率</text><rect x="606" y="92" width="228" height="120" rx="10" class="am-block am-matrix"/><text x="622" y="114" font-size="13" class="v-ink">Matrix / Vector</text><rect x="622" y="126" width="196" height="54" fill="none" stroke="var(--chart-amber)" stroke-width="1.1" opacity=".8"/><path d="M671 126V180M720 126V180M769 126V180M622 144H818M622 162H818" fill="none" stroke="var(--chart-amber)" stroke-width=".8" opacity=".55"/><text x="622" y="196" font-size="11" class="am-tag">P peak · 数据类型 · FMA</text><rect x="70" y="228" width="360" height="58" rx="8" class="am-block am-cache"/><text x="86" y="250" font-size="13" class="v-ink">L1 / L2 / 末级缓存</text><text x="86" y="270" font-size="11" class="v-sub">命中率决定实际流向 DRAM 的字节数</text><rect x="448" y="228" width="386" height="58" rx="8" class="am-block am-mem"/><text x="464" y="250" font-size="13" class="v-ink">内存控制器 · HBM / DDR PHY</text><text x="464" y="270" font-size="11" class="v-sub">持续带宽 B · 访存延迟 L · 读写比例</text><rect x="70" y="302" width="764" height="48" rx="8" class="am-block am-noc"/><text x="86" y="324" font-size="13" class="v-ink">片上互连 NoC</text><text x="196" y="324" font-size="11" class="v-sub">队列深度 / credit / MSHR / load-store queue</text><text x="650" y="324" font-size="11" class="am-tag">Little 定律 · BDP</text><text x="70" y="378" font-size="12" class="v-sub">同一个程序会同时受多层限制；优化前先找出当前的主导项。</text></svg></div><p class="v-caption">这是逻辑示意，不按任何芯片的物理布局绘制。缓存、内存控制器与互连的具体数量和位置随产品差异很大；箭头所指的是模型最直接作用的资源类型。</p>
+<div class="v-figure arch-map v-chart-scroll"><div class="arch-map-picker" role="group" aria-label="选择公式查看芯片落点"><button type="button" data-map="roofline" aria-pressed="true">Roofline</button><button type="button" data-map="amdahl" aria-pressed="false">Amdahl</button><button type="button" data-map="cpi" aria-pressed="false">CPI</button><button type="button" data-map="bdp" aria-pressed="false">BDP / Little</button></div><p class="arch-map-note" id="map-note">Roofline：计算单元、缓存与内存带宽共同决定屋顶。</p><p class="v-scroll-hint">左右滑动查看完整芯片结构图；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="可横向滚动的芯片结构图"><svg viewBox="0 0 900 470" role="img" aria-label="性能公式在真实芯片结构上的落点"><text x="26" y="30" font-size="20" class="v-ink">同一颗芯片，四种限制同时存在</text><text x="26" y="52" font-size="12" class="v-sub">这些公式各自指向不同的资源与等待来源。</text><rect x="48" y="72" width="804" height="330" rx="16" class="am-die"></rect><rect x="70" y="92" width="250" height="120" rx="10" class="am-block am-cpu"></rect><text x="86" y="114" font-size="13" class="v-ink">CPU cluster</text><rect x="86" y="126" width="46" height="42" rx="4" class="am-core"></rect><rect x="140" y="126" width="46" height="42" rx="4" class="am-core"></rect><rect x="194" y="126" width="46" height="42" rx="4" class="am-core"></rect><rect x="248" y="126" width="46" height="42" rx="4" class="am-core"></rect><text x="86" y="196" font-size="11" class="am-tag">Amdahl · CPI · 分支与依赖</text><rect x="338" y="92" width="250" height="120" rx="10" class="am-block am-gpu"></rect><text x="354" y="114" font-size="13" class="v-ink">GPU / SIMT</text><rect x="354" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="386" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="418" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="450" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="482" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="514" y="128" width="24" height="24" rx="3" class="am-core"></rect><rect x="354" y="160" width="24" height="24" rx="3" class="am-core"></rect><rect x="386" y="160" width="24" height="24" rx="3" class="am-core"></rect><rect x="418" y="160" width="24" height="24" rx="3" class="am-core"></rect><rect x="450" y="160" width="24" height="24" rx="3" class="am-core"></rect><rect x="482" y="160" width="24" height="24" rx="3" class="am-core"></rect><rect x="514" y="160" width="24" height="24" rx="3" class="am-core"></rect><text x="354" y="196" font-size="11" class="am-tag">Roofline · 并行度 · 占用率</text><rect x="606" y="92" width="228" height="120" rx="10" class="am-block am-matrix"></rect><text x="622" y="114" font-size="13" class="v-ink">Matrix / Vector</text><rect x="622" y="126" width="196" height="54" fill="none" stroke="var(--chart-amber)" stroke-width="1.1" opacity=".8"></rect><path d="M671 126V180M720 126V180M769 126V180M622 144H818M622 162H818" fill="none" stroke="var(--chart-amber)" stroke-width=".8" opacity=".55"></path><text x="622" y="196" font-size="11" class="am-tag">P peak · 数据类型 · FMA</text><rect x="70" y="228" width="360" height="58" rx="8" class="am-block am-cache"></rect><text x="86" y="250" font-size="13" class="v-ink">L1 / L2 / 末级缓存</text><text x="86" y="270" font-size="11" class="v-sub">命中率决定实际流向 DRAM 的字节数</text><rect x="448" y="228" width="386" height="58" rx="8" class="am-block am-mem"></rect><text x="464" y="250" font-size="13" class="v-ink">内存控制器 · HBM / DDR PHY</text><text x="464" y="270" font-size="11" class="v-sub">持续带宽 B · 访存延迟 L · 读写比例</text><rect x="70" y="302" width="764" height="48" rx="8" class="am-block am-noc"></rect><text x="86" y="324" font-size="13" class="v-ink">片上互连 NoC</text><text x="196" y="324" font-size="11" class="v-sub">队列深度 / credit / MSHR / load-store queue</text><text x="650" y="324" font-size="11" class="am-tag">Little 定律 · BDP</text><text x="70" y="378" font-size="12" class="v-sub">同一个程序会同时受多层限制；优化前先找出当前的主导项。</text></svg></div><p class="v-caption">这是逻辑示意，不按任何芯片的物理布局绘制。缓存、内存控制器与互连的具体数量和位置随产品差异很大；箭头所指的是模型最直接作用的资源类型。</p>
 </div>
 
 <p>标准 Roofline 不显式描述依赖链、分支、指令前端、同步、并行度不足和数据布局开销。扩展模型可以纳入这些因素，但模型越细，所需参数越多，误差来源也越难分离。因此，Roofline 适合用于瓶颈分类和上界估计，不宜单独用于绝对性能预测。</p>
@@ -259,7 +257,7 @@
     <button type="button" data-level="hbm" aria-pressed="true">HBM · 100 GB/s</button>
   </div>
   <p class="v-scroll-hint">图表可横向滚动；键盘聚焦后可用方向键浏览。</p>
-  <div class="arch-plot-wrap"><svg id="ml-plot" viewbox="0 0 720 340" role="img" aria-label="多级 Roofline 交互图"><g class="ml-grid"><path d="M75 40V280H680M75 240.748H680M75 175.553H680M75 110.358H680M75 45.162H680"/></g><path id="ml-roof-l1" class="ml-roof ml-l1"/><path id="ml-roof-l2" class="ml-roof ml-l2"/><path id="ml-roof-llc" class="ml-roof ml-llc"/><path id="ml-roof-hbm" class="ml-roof ml-hbm"/><circle id="ml-dot-l1" class="ml-dot ml-l1" r="5"/><circle id="ml-dot-l2" class="ml-dot ml-l2" r="5"/><circle id="ml-dot-llc" class="ml-dot ml-llc" r="5"/><circle id="ml-dot-hbm" class="ml-dot ml-hbm" r="5"/><text id="ml-point-label" x="0" y="0">HBM</text><text x="375" y="326" text-anchor="middle">运算强度（FLOP/Byte，对数刻度）</text><text transform="translate(20 170) rotate(-90)" text-anchor="middle">吞吐（TFLOP/s，对数刻度）</text><text x="75" y="300" text-anchor="middle">0.25</text><text x="195" y="300" text-anchor="middle">2</text><text x="315" y="300" text-anchor="middle">16</text><text x="435" y="300" text-anchor="middle">128</text><text x="555" y="300" text-anchor="middle">1024</text><text x="675" y="300" text-anchor="middle">8192</text><text x="30" y="284.000">0.005</text><text x="30" y="244.748">0.02</text><text x="30" y="179.553">0.2</text><text x="30" y="114.358">2</text><text x="30" y="49.162">20</text></svg></div>
+  <div class="arch-plot-wrap"><svg id="ml-plot" viewBox="0 0 720 340" role="img" aria-label="多级 Roofline 交互图"><g class="ml-grid"><path d="M75 40V280H680M75 240.748H680M75 175.553H680M75 110.358H680M75 45.162H680"></path></g><path id="ml-roof-l1" class="ml-roof ml-l1"></path><path id="ml-roof-l2" class="ml-roof ml-l2"></path><path id="ml-roof-llc" class="ml-roof ml-llc"></path><path id="ml-roof-hbm" class="ml-roof ml-hbm"></path><circle id="ml-dot-l1" class="ml-dot ml-l1" r="5"></circle><circle id="ml-dot-l2" class="ml-dot ml-l2" r="5"></circle><circle id="ml-dot-llc" class="ml-dot ml-llc" r="5"></circle><circle id="ml-dot-hbm" class="ml-dot ml-hbm" r="5"></circle><text id="ml-point-label" x="0" y="0">HBM</text><text x="375" y="326" text-anchor="middle">运算强度（FLOP/Byte，对数刻度）</text><text transform="translate(20 170) rotate(-90)" text-anchor="middle">吞吐（TFLOP/s，对数刻度）</text><text x="75" y="300" text-anchor="middle">0.25</text><text x="195" y="300" text-anchor="middle">2</text><text x="315" y="300" text-anchor="middle">16</text><text x="435" y="300" text-anchor="middle">128</text><text x="555" y="300" text-anchor="middle">1024</text><text x="675" y="300" text-anchor="middle">8192</text><text x="30" y="284.000">0.005</text><text x="30" y="244.748">0.02</text><text x="30" y="179.553">0.2</text><text x="30" y="114.358">2</text><text x="30" y="49.162">20</text></svg></div>
   <div class="table-container"><table class="arch-flow-table"><caption>归一计算量 W = 1 GFLOP；流量采用十进制 MB</caption><thead><tr><th>层级</th><th>流量 Q（MB）</th><th>I（FLOP/Byte）</th><th>上界（TFLOP/s）</th></tr></thead><tbody id="ml-flows"></tbody></table></div>
   <p class="arch-result" id="ml-result" aria-live="polite"></p>
   <p class="v-caption">带宽为教学示例，不对应具体产品。实际应使用该层级、该访问模式的持续带宽；接口标称值不能替代该值。</p>
@@ -435,121 +433,7 @@
 <li>Intel, Intel 64 and IA-32 Architectures Optimization Reference Manual. <a target="_blank" rel="noopener" href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html</a></li>
 <li>NVIDIA, CUDA C++ Programming Guide, Performance Guidelines. <a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">https://docs.nvidia.com/cuda/cuda-c-programming-guide/</a></li>
 </ol>
-<script>
-(function(){
-  var $=function(id){return document.getElementById(id)};
-  var peak=$('rf-peak'), bw=$('rf-bw'), intensity=$('rf-int');
-  function roof(){
-    if(!peak||!bw||!intensity)return;
-    var p=+peak.value, b=+bw.value, i=+intensity.value, ridge=p*1000/b;
-    var x=function(v){return 75+(Math.log2(v/.25)/8)*605};
-    var y=function(v){return 270-Math.log10(v/.005)/Math.log10(8/.005)*230};
-    var roof=$('rf-roof'), band=$('rf-band'), dot=$('rf-dot');
-    var knee=Math.max(.25,Math.min(64,ridge));
-    roof.setAttribute('d','M'+x(.25)+' '+y(Math.min(p,.25*b/1000))+' L'+x(knee)+' '+y(Math.min(p,knee*b/1000))+' L'+x(64)+' '+y(Math.min(p,64*b/1000)));
-    band.setAttribute('d','M'+x(.25)+' 270 L'+x(.25)+' '+y(Math.min(p,.25*b/1000))+' L'+x(knee)+' '+y(Math.min(p,knee*b/1000))+' L'+x(knee)+' 270 Z');
-    $('rf-ridge').style.display=ridge<.25||ridge>64?'none':'';$('rf-ridge').setAttribute('x1',x(knee));$('rf-ridge').setAttribute('x2',x(knee));
-    $('rf-ridge-label').setAttribute('x',Math.min(650,Math.max(110,x(knee))));$('rf-ridge-label').setAttribute('y',52);$('rf-ridge-label').textContent='ridge '+ridge.toFixed(1)+' FLOP/Byte'+(ridge<.25||ridge>64?'（图外）':'');
-    var perf=Math.min(p,i*b/1000);dot.setAttribute('cx',x(i));dot.setAttribute('cy',y(perf));
-    $('rf-point-label').setAttribute('x',Math.min(600,x(i)+10));$('rf-point-label').setAttribute('y',y(perf)-12);$('rf-point-label').textContent=perf.toPrecision(3)+' TFLOP/s 上界';
-    $('rf-peak-out').textContent=p.toFixed(1)+' TFLOP/s';$('rf-bw-out').textContent=b+' GB/s';$('rf-int-out').textContent=i.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')+' FLOP/Byte';
-    $('rf-result').textContent='当前工作负载的 Roofline 上界约为 '+perf.toPrecision(3)+' TFLOP/s，受'+(i<ridge?'带宽':'计算')+'屋顶限制。ridge point ≈ '+ridge.toFixed(1)+' FLOP/Byte。';
-  }
-  [peak,bw,intensity].forEach(function(el){el&&el.addEventListener('input',roof)});
-  var ams=$('am-s'), amk=$('am-k');
-  function amdahl(){if(!ams||!amk)return;var s=+ams.value,k=+amk.value,sp=1/(s+(1-s)/k),limit=s?1/s:Infinity;
-    $('am-s-out').textContent=Math.round(s*100)+'%';$('am-k-out').textContent=k+'×';
-    $('am-serial').style.flexBasis=(s*100)+'%';$('am-parallel').style.flexBasis=((1-s)*100)+'%';
-    $('am-result').textContent='整体加速比约 '+sp.toFixed(2)+'×；即使可加速部分无限快，上限仍是 '+(isFinite(limit)?limit.toFixed(2)+'×':'无限大')+'。';
-  }
-  [ams,amk].forEach(function(el){el&&el.addEventListener('input',amdahl)});
-  document.querySelectorAll('[data-reset="roofline"]').forEach(function(button){button.addEventListener('click',function(){peak.value=1;bw.value=200;intensity.value=8;roof()})});
-  var mb=$('mem-bw'), ml=$('mem-lat'), mn=$('mem-n'), ms=$('mem-size');
-  function mem(){
-    if(!mb||!ml||!mn||!ms)return;
-    var B=+mb.value,L=+ml.value,N=+mn.value,S=+ms.value;
-    var bdp=B*L, have=N*S, ach=Math.min(B,N*S/L), util=B?ach/B*100:0;
-    var fmt=function(v){return v>=1000?(v/1000).toFixed(1)+' KB':v.toFixed(0)+' B'};
-    $('mem-bw-out').textContent=B+' GB/s';
-    $('mem-lat-out').textContent=L+' ns';
-    $('mem-n-out').textContent=N;
-    $('mem-size-out').textContent=S+' B';
-    $('mem-bdp-bar').style.width='100%';
-    $('mem-have-bar').style.width=Math.min(100,have/bdp*100)+'%';
-    $('mem-bdp-out').textContent=fmt(bdp);
-    $('mem-have-out').textContent=fmt(have);
-    $('mem-result').textContent='保持 '+B+' GB/s 需要约 '+fmt(bdp)+' 在途；当前 '+N+' 个请求提供 '+fmt(have)+'，可达带宽约 '+ach.toFixed(1)+' GB/s（'+util.toFixed(0)+'%）。'+(have<bdp?'增加在途请求或每次请求的字节数，才可能填满这条链路。':'在途数据已足够，继续增加并发不会突破带宽上限。');
-  }
-  [mb,ml,mn,ms].forEach(function(el){el&&el.addEventListener('input',mem)});
-  mem();
-  var mlPeak=$('ml-peak'), mlInt=$('ml-int'), mlPreset=$('ml-preset');
-  var mlLevels={l1:2000,l2:800,llc:300,hbm:100};
-  var mlNames={l1:'L1',l2:'L2',llc:'LLC',hbm:'HBM'};
-  var mlReuse={stream:[1,1,1,1],llc:[1,1,1,16],l2:[1,1,8,64]};
-  var mlActive='hbm';
-  function mlX(v){return 75+Math.log2(v/.25)/15*600}
-  function mlY(v){return 280-Math.log10(v/.005)/Math.log10(24/.005)*240}
-  function mlRoof(){
-    if(!mlPeak||!mlInt||!mlPreset)return;
-    var p=+mlPeak.value, I=+mlInt.value, ratios=mlReuse[mlPreset.value];
-    var best=p, limits=[], rows=[];
-    Object.keys(mlLevels).forEach(function(k,index){
-      var b=mlLevels[k], knee=p*1000/b, path;
-      var x0=.25, x1=8192;
-      if(knee<=x0){path='M'+mlX(x0)+' '+mlY(p)+' L'+mlX(x1)+' '+mlY(p)}
-      else if(knee>=x1){path='M'+mlX(x0)+' '+mlY(x0*b/1000)+' L'+mlX(x1)+' '+mlY(x1*b/1000)}
-      else{path='M'+mlX(x0)+' '+mlY(x0*b/1000)+' L'+mlX(knee)+' '+mlY(p)+' L'+mlX(x1)+' '+mlY(p)}
-      var el=$('ml-roof-'+k);el.setAttribute('d',path);el.classList.toggle('is-active',k===mlActive);
-      var layerI=I*ratios[index], perf=Math.min(p,layerI*b/1000);
-      best=Math.min(best,perf);limits.push({key:k,perf:perf});
-      var dot=$('ml-dot-'+k);dot.setAttribute('cx',mlX(layerI));dot.setAttribute('cy',mlY(perf));
-      dot.setAttribute('r',k===mlActive?7:4);dot.setAttribute('aria-label',mlNames[k]+': I='+layerI+', 上界 '+perf.toPrecision(3)+' TFLOP/s');
-      rows.push('<tr><th scope="row">'+mlNames[k]+'</th><td>'+(1000/layerI).toFixed(3)+'</td><td>'+layerI.toFixed(2)+'</td><td>'+perf.toPrecision(3)+'</td></tr>');
-      if(k===mlActive){
-        var label=$('ml-point-label');label.setAttribute('x',Math.min(460,mlX(layerI)+10));label.setAttribute('y',mlY(perf)-12);label.textContent=mlNames[k]+' '+perf.toPrecision(3)+' TFLOP/s';
-      }
-    });
-    $('ml-flows').innerHTML=rows.join('');
-    $('ml-peak-out').textContent=p.toFixed(1)+' TFLOP/s';$('ml-int-out').textContent=I.toFixed(2)+' FLOP/Byte';
-    var bound=best===p?'计算峰值':limits.filter(function(l){return Math.abs(l.perf-best)<1e-10}).map(function(l){return mlNames[l.key]}).join(' / ');
-    $('ml-result').textContent='各层使用 I=W/Q，简化整体上界为 '+best.toPrecision(3)+' TFLOP/s，限制项：'+bound+'。'+(mlPreset.value==='stream'?'当前假设各层流量相同，适合比较带宽上界；不代表所有真实程序。':'缓存复用减少下层流量，因此四层工作点的横坐标不同。');
-  }
-  [mlPeak,mlInt,mlPreset].forEach(function(el){el&&el.addEventListener('input',mlRoof)});
-  document.querySelectorAll('#multi-roofline-lab [data-level]').forEach(function(btn){btn.addEventListener('click',function(){mlActive=btn.dataset.level;document.querySelectorAll('#multi-roofline-lab [data-level]').forEach(function(b){b.setAttribute('aria-pressed',String(b===btn))});mlRoof()})});
-  if(mlPeak) mlRoof();
-  var ah=$('amat-hit'), amr=$('amat-miss'), ap=$('amat-penalty');
-  function amat(){
-    if(!ah||!amr||!ap)return;
-    var h=+ah.value,m=+amr.value,p=+ap.value,cost=m*p,total=h+cost;
-    $('amat-hit-val').textContent=h.toFixed(1)+' ns';
-    $('amat-miss-val').textContent=(m*100).toFixed(1)+'%';
-    $('amat-pen-val').textContent=p+' ns';
-    $('amat-hit-cost').textContent=h.toFixed(1)+' ns';
-    $('amat-miss-cost').textContent=cost.toFixed(1)+' ns';
-    $('amat-hit-bar').style.width=(h/total*100)+'%';
-    $('amat-miss-bar').style.width=(cost/total*100)+'%';
-    $('amat-result').textContent='AMAT = '+h.toFixed(1)+' ns + '+(m*100).toFixed(1)+'% × '+p+' ns = '+total.toFixed(2)+' ns；缺失代价占 '+(cost/total*100).toFixed(0)+'%。';
-  }
-  [ah,amr,ap].forEach(function(el){el&&el.addEventListener('input',amat)});
-  if(ah) amat();
-  var archMap=document.querySelector('.arch-map');
-  if(archMap){
-    var mapNotes={roofline:'Roofline：计算单元、缓存与内存带宽共同决定屋顶。',amdahl:'Amdahl：多核或专用单元加速，串行路径决定上限。',cpi:'CPI：前端供给、执行端口与缓存停顿共同累积周期。',bdp:'BDP / Little：MSHR、队列与 NoC credit 决定在途请求。'};
-    var mapButtons=document.querySelectorAll('.arch-map-picker [data-map]');
-    function mapSelect(key){
-      archMap.dataset.mapActive=key;
-      var targets={roofline:'.am-gpu,.am-matrix,.am-mem,.am-cache',amdahl:'.am-cpu',cpi:'.am-cpu',bdp:'.am-mem,.am-noc'};
-      document.querySelectorAll('.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag').forEach(function(el){el.style.opacity='.25';el.style.strokeWidth='1.2'});
-      document.querySelectorAll(targets[key]||'').forEach(function(el){el.style.opacity='1';el.style.strokeWidth='2.5'});
-      mapButtons.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.map===key))});
-      var note=$('map-note');if(note)note.textContent=mapNotes[key]||'';
-    }
-    mapButtons.forEach(function(b){b.addEventListener('click',function(){mapSelect(b.dataset.map)})});
-    mapSelect('roofline');
-  }
-  roof();amdahl();
-})();
-</script>
+<script defer="" src="/js/architecture-models.js"></script>
 
     </div>
 
@@ -565,7 +449,7 @@
     <span>Back Home</span>
   </a>
   <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
-    <span>More in Silicon & Circuits</span>
+    <span>More in Silicon &amp; Circuits</span>
     <span aria-hidden="true">→</span>
   </a>
 </nav>
@@ -608,4 +492,5 @@
 
 </main>
   <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
 </body></html>

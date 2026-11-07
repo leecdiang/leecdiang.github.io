@@ -85,7 +85,7 @@
       const form = document.createElement('form');
       form.className = 'archive-search';
       form.setAttribute('role', 'search');
-      form.innerHTML = '<label for="archive-query">查找文章</label><div class="archive-search-field"><input id="archive-query" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="例如：芯片、摄影、2026…"><button type="button" class="archive-reset" hidden>清除筛选</button></div><output data-site-dynamic aria-live="polite" aria-atomic="true"></output>';
+      form.innerHTML = '<label for="archive-query" class="sr-only">查找文章</label><div class="archive-search-field"><input id="archive-query" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="查找文章"><button type="button" class="archive-reset" hidden>清除筛选</button></div><output data-site-dynamic aria-live="polite" aria-atomic="true"></output>';
       heading.append(form);
       window.StudioLanguage.apply(form);
       const empty = document.createElement('div');
@@ -99,11 +99,26 @@
       const output = form.querySelector('output');
       const categoryNav = document.querySelector('.archive-categories');
       const buttons = [...document.querySelectorAll('.archive-categories button')];
-      const groups = [...document.querySelectorAll('.btc-archive-year')];
+      // Normalize both sides once: full-width letters, case and separators are equivalent.
+      const normalizeSearch = text => text.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, ' ').trim();
+      const sectionTerms = new Map(buttons.map(button => [button.dataset.section,
+        [...button.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent).join(' ')
+      ]));
       const items = [...document.querySelectorAll('.btc-archive-list li')].map(row => ({
         row,
         section: row.dataset.section,
-        search: window.StudioLanguage.searchTerms(row.textContent + ' ' + row.querySelector('time').dateTime + ' ' + (buttons.find(button => button.dataset.section === row.dataset.section)?.textContent || '')).toLowerCase()
+        // Index article metadata, excluding UI counters and the timestamp's time zone.
+        search: normalizeSearch(window.StudioLanguage.searchTerms([
+          row.querySelector('.btc-archive-title').textContent,
+          row.querySelector('.archive-excerpt')?.textContent || '',
+          row.querySelector('.btc-archive-category')?.textContent || '',
+          row.dataset.searchTags || '',
+          row.querySelector('time').dateTime.slice(0, 10),
+          sectionTerms.get(row.dataset.section) || ''
+        ].join(' ')))
+      }));
+      const groups = [...document.querySelectorAll('.btc-archive-year')].map(group => ({
+        group, count: group.querySelector('h2 span'), rows: [...group.querySelectorAll('li')]
       }));
       let selected = 'all';
       function readURL() {
@@ -112,21 +127,22 @@
         input.value = params.get('q') || '';
       }
       function filterArticles(historyMode) {
-        const query = input.value.trim().toLowerCase();
+        const query = input.value.trim();
+        const terms = normalizeSearch(query).split(' ').filter(Boolean);
         let count = 0;
         for (const item of items) {
-          item.row.hidden = !(item.search.includes(query) && (selected === 'all' || item.section === selected));
+          item.row.hidden = !(terms.every(term => item.search.includes(term)) && (selected === 'all' || item.section === selected));
           if (!item.row.hidden) count++;
         }
-        for (const group of groups) {
-          const visible = [...group.querySelectorAll('li')].filter(row => !row.hidden).length;
+        for (const {group, count, rows} of groups) {
+          const visible = rows.filter(row => !row.hidden).length;
           group.hidden = !visible;
-          group.querySelector('h2 span').dataset.siteDynamic='';
-          group.querySelector('h2 span').textContent = window.StudioLanguage.t(visible + ' 篇');
+          count.dataset.siteDynamic = '';
+          count.textContent = window.StudioLanguage.t(visible + ' 篇');
         }
         buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.section === selected)));
         reset.hidden = !query && selected === 'all';
-        output.textContent = window.StudioLanguage.t('找到 ' + count + ' 篇文章');
+        output.textContent = query ? window.StudioLanguage.t('找到 ' + count + ' 篇文章') : '';
         empty.hidden = count !== 0;
         if (historyMode) {
           const url = new URL(location.href);
@@ -135,8 +151,16 @@
           if (url.href !== location.href) history[historyMode + 'State'](null, '', url);
         }
       }
-      form.addEventListener('submit', event => event.preventDefault());
-      input.addEventListener('input', () => filterArticles('replace'));
+      let composing = false;
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        if (!composing) filterArticles('replace');
+      });
+      input.addEventListener('compositionstart', () => { composing = true; });
+      input.addEventListener('compositionend', () => { composing = false; filterArticles('replace'); });
+      input.addEventListener('input', event => {
+        if (!composing && !event.isComposing) filterArticles('replace');
+      });
       buttons.forEach(button => button.addEventListener('click', () => {
         const mutate=()=>{selected=button.dataset.section;filterArticles('push')};
         if(window.StudioMotion)window.StudioMotion.transitionList(document.querySelector('.btc-archive-index'),mutate);else mutate();

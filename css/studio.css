@@ -441,7 +441,6 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .archive-empty button{min-height:44px;padding:8px 16px;margin-top:16px;border:1px solid var(--line);border-radius:3px;background:var(--paper);color:var(--heading);cursor:pointer}
 .archive-reset:focus-visible,.archive-empty button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btc-archive-row:focus-visible{background:transparent;outline-offset:5px}
-.btc-archive-row:focus-visible .btc-archive-title{text-decoration:underline;text-underline-offset:4px}
 .links-directory .friend-card,.links-directory .btc-link-card{min-width:0}
 .links-directory .friend-copy,.links-directory .btc-link-copy{min-width:0;overflow-wrap:anywhere}
 .links-directory .friend-arrow,.links-directory .btc-link-arrow{transition:transform var(--ui-duration) var(--ui-ease),color var(--ui-duration) var(--ui-ease)}
@@ -449,7 +448,6 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .post-title,.organization-heading h3{ text-wrap:pretty }
 @media(hover:hover) and (pointer:fine){
  .language-toggle:hover{background:var(--surface);border-color:var(--line)}
- .btc-archive-row:hover .btc-archive-title{text-decoration:underline;text-underline-offset:4px}
  .links-directory .friend-card:hover .friend-arrow,.links-directory .btc-link-card:hover .btc-link-arrow{transform:translate(2px,-2px);color:var(--accent)}
  .about-section-nav a:hover{color:var(--heading);text-decoration:underline;text-underline-offset:6px}
 }
@@ -479,7 +477,6 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
  .archive-categories button:hover{background:var(--state-hover);color:var(--heading)}
  .archive-categories button[aria-pressed=true]:hover{background:var(--state-selected)}
  .btc-archive-row:hover::before{opacity:1}
- .btc-archive-row:hover .btc-archive-title{text-decoration-thickness:1px;text-decoration-color:var(--state-line);text-underline-offset:5px}
  .theme-toggle:hover,.language-toggle:hover{background:var(--state-hover);border-color:transparent}
 }
 :root[data-input=keyboard] .archive-categories button,:root[data-input=keyboard] .btc-archive-row::before{transition:none}
