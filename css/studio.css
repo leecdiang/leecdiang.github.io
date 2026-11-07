@@ -724,3 +724,24 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
 
 :root[data-input=keyboard] :is(.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag,.arch-amdahl-track span,.mem-bar i){transition:none!important}
 @media(prefers-reduced-motion:reduce){.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag,.mem-bar i{transition:none!important}}
+
+/* Keep one primary action; the other entrances remain simple text links. */
+:root .studio-home .home-actions{gap:24px}
+:root .studio-home .home-actions a{min-height:44px;gap:12px;padding:10px 0;line-height:1.4;white-space:nowrap}
+:root .studio-home .home-actions a.home-primary{padding:10px 16px;border-radius:4px}
+:root .studio-home .home-actions span{margin-left:0}
+@media(min-width:701px) and (max-width:1000px){
+ :root .studio-home .home-actions{gap:20px;font-size:12px}
+ :root .studio-home .home-actions a{gap:8px}
+ :root .studio-home .home-actions a.home-primary{padding-left:12px;padding-right:12px}
+}
+@media(max-width:700px){
+ :root .studio-home .home-actions{gap:20px}
+ :root .studio-home .home-actions a{gap:8px}
+ :root .studio-home .home-actions a.home-primary,:root[data-color=dark] .studio-home .home-actions a.home-primary{padding:10px 12px;background:#e4ebf5;color:#142d50;border:1px solid #e4ebf5;border-radius:4px}
+}
+@media(max-width:360px){
+ :root .studio-home .home-actions{gap:14px;font-size:11px}
+ :root .studio-home .home-actions a{gap:6px}
+ :root .studio-home .home-actions a.home-primary,:root[data-color=dark] .studio-home .home-actions a.home-primary{padding-left:10px;padding-right:10px}
+}
