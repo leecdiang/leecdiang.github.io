@@ -1,7 +1,7 @@
 (() => {
   const picker = document.getElementById('color-mode');
   const mq = matchMedia('(prefers-color-scheme: dark)');
-  let preference = 'system';
+  const themeState = window.StudioThemeState;
 
   // Keep the existing orrery's media-query palette in sync with manual selection.
   const orreryMedia=[];
@@ -20,6 +20,7 @@
   }
   window.StudioTheme={refreshOrreryStyles};
   function applyTheme() {
+    const preference=themeState.preference;
     const mode=preference==='system'?(mq.matches?'dark':'light'):preference;
     document.documentElement.dataset.color=mode;
     document.documentElement.dataset.themePreference=preference;
@@ -31,17 +32,18 @@
     window.dispatchEvent(new Event('studio:theme'));
   }
   let themeTransitionTimer;
-  picker.addEventListener('click',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){clearTimeout(themeTransitionTimer);document.documentElement.dataset.themeChanging='';themeTransitionTimer=setTimeout(()=>delete document.documentElement.dataset.themeChanging,240)}preference=document.documentElement.dataset.color==='dark'?'light':'dark';applyTheme()});
-  // Manual toggles belong to this visible page, never to a stored preference.
+  picker.addEventListener('click',()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){clearTimeout(themeTransitionTimer);document.documentElement.dataset.themeChanging='';themeTransitionTimer=setTimeout(()=>delete document.documentElement.dataset.themeChanging,240)}themeState.select(document.documentElement.dataset.color==='dark'?'light':'dark');applyTheme()});
+  // Internal navigation and restored pages share the active visit's selection.
   function followSystem() {
     clearTimeout(themeTransitionTimer);
     delete document.documentElement.dataset.themeChanging;
-    preference='system';
+    themeState.select('system');
     applyTheme();
   }
+  function restoreVisit() { themeState.sync(); applyTheme(); }
   mq.addEventListener('change',followSystem);
-  window.addEventListener('pageshow',event=>{if(event.persisted)followSystem()});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')followSystem()});
+  window.addEventListener('pageshow',event=>{if(event.persisted)restoreVisit()});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')restoreVisit()});
   window.addEventListener('studio:language',applyTheme);
   refreshOrreryStyles();
   // A local-only visual comparison. The source photograph is never modified.

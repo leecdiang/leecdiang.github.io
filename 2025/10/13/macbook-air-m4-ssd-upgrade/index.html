@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <script>(function(){document.documentElement.dataset.themePreference='system';document.documentElement.dataset.color=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';})();</script>
+  <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
 
   <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
@@ -61,7 +61,7 @@
   
   
   
-  <script defer src="/assets/studio/core.3fe2c0018dff.js"></script>
+  <script defer src="/assets/studio/core.ae3ac3a45b5e.js"></script>
   
   
 
