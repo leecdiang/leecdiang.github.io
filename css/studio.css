@@ -745,3 +745,11 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
  :root .studio-home .home-actions a{gap:6px}
  :root .studio-home .home-actions a.home-primary,:root[data-color=dark] .studio-home .home-actions a.home-primary{padding-left:10px;padding-right:10px}
 }
+
+/* About in dark mode: lift the artwork's shadow floor, retaining its grain. */
+.studio-about .ambient-art--dark{background-color:#0c1116;background-blend-mode:screen}
+:root[data-color=dark] .studio-about .about-editorial .about-details{--reading-plane:rgba(29,38,49,.32)}
+
+/* This monochrome mark follows the selected page theme, including manual toggles. */
+.studio-about .organization-mark .organization-logo--ash{color:#402712;background:currentColor;-webkit-mask:url('/images/organizations/ash-studio.svg') center/contain no-repeat;mask:url('/images/organizations/ash-studio.svg') center/contain no-repeat}
+:root[data-color=dark] .studio-about .organization-logo--ash{color:#dcc9b1}
