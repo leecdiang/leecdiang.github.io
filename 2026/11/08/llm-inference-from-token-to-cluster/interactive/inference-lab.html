@@ -1,0 +1,435 @@
+<!DOCTYPE html><html lang="zh-CN" class="inf-lab" data-theme="system"><head>
+  <meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' ; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>推理估算实验室 · 批量与 KV 预算</title>
+  <!--
+    Self-contained, offline teaching component. No telemetry or external assets.
+    Batch equations match the batching calculation in reproduce/make_figures.py.
+    Memory equations match its KV storage calculation, extended to batch / bit width.
+    Palette: author's source/_data/styles.styl (2026-11-05 template).
+
+    URL: ?tab=batch|memory&theme=system|light|dark
+    Optional srcdoc configuration (set before this file's script runs):
+      window.__INFERENCE_LAB_CONFIG__ = { tab: 'memory', theme: 'dark' };
+    Also accepts data-initial-tab on html or body.
+    Parent -> iframe: { type: 'inference-theme', theme: 'light'|'dark'|'system' }
+    Iframe -> parent: { type: 'inference-lab-height', height: number, tab: string }
+    Theme messages are accepted only from window.parent. Resize messages contain
+    layout information only; parents should match event.source to their iframe.
+  -->
+  <style>
+    .inf-lab {
+      color-scheme: light;
+      --surface-main: rgba(247, 252, 255, 0.76);
+      --surface-card: rgba(255, 255, 255, 0.78);
+      --surface-soft: rgba(223, 237, 246, 0.58);
+      --text-primary: #18212b;
+      --text-secondary: #4d6072;
+      --text-muted: #54697a;
+      --chart-blue: #356a8f;
+      --chart-amber: #946022;
+      --chart-red: #b54f52;
+      --chart-teal: #2f7f7a;
+      --divider: rgba(70, 102, 126, 0.12);
+      --border-subtle: rgba(255, 255, 255, 0.30);
+      background: var(--surface-main);
+      color: var(--text-primary);
+      font: 15px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+    .inf-lab[data-theme="dark"] {
+      color-scheme: dark;
+      --surface-main: rgba(15, 29, 42, 0.74);
+      --surface-card: rgba(20, 34, 47, 0.78);
+      --surface-soft: rgba(21, 38, 53, 0.46);
+      --text-primary: #e6edf3;
+      --text-secondary: #b8c5cf;
+      --text-muted: #92a1ad;
+      --chart-blue: #91c5ed;
+      --chart-amber: #e3b26b;
+      --chart-red: #f09399;
+      --chart-teal: #78c9b4;
+      --divider: rgba(207, 226, 239, 0.08);
+      --border-subtle: rgba(218, 236, 247, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      .inf-lab[data-theme="system"] {
+        color-scheme: dark;
+        --surface-main: rgba(15, 29, 42, 0.74);
+        --surface-card: rgba(20, 34, 47, 0.78);
+        --surface-soft: rgba(21, 38, 53, 0.46);
+        --text-primary: #e6edf3;
+        --text-secondary: #b8c5cf;
+        --text-muted: #92a1ad;
+        --chart-blue: #91c5ed;
+        --chart-amber: #e3b26b;
+        --chart-red: #f09399;
+        --chart-teal: #78c9b4;
+        --divider: rgba(207, 226, 239, 0.08);
+        --border-subtle: rgba(218, 236, 247, 0.08);
+      }
+    }
+    .inf-lab *, .inf-lab *::before, .inf-lab *::after { box-sizing: border-box; }
+    .inf-lab body { margin: 0; background: var(--surface-main); }
+    .inf-lab [hidden] { display: none !important; }
+    .inf-lab button, .inf-lab input, .inf-lab select { font: inherit; }
+    .inf-lab button, .inf-lab select, .inf-lab input[type="number"] {
+      min-height: 42px;
+      max-width: 100%;
+      border: 1px solid var(--text-muted);
+      border-radius: 8px;
+      color: var(--text-primary);
+      background: var(--surface-card);
+    }
+    .inf-lab button { padding: 8px 13px; cursor: pointer; }
+    .inf-lab button:disabled { cursor: default; }
+    .inf-lab input[type="number"], .inf-lab select { width: 100%; min-width: 0; padding: 8px 10px; }
+    .inf-lab input[type="range"] { width: 100%; min-width: 0; margin: 0; accent-color: var(--chart-blue); cursor: pointer; }
+    .inf-lab :focus-visible { outline: 3px solid var(--chart-blue); outline-offset: 3px; }
+    .inf-lab [aria-invalid="true"] { border-color: var(--chart-red); }
+    .inf-lab h1, .inf-lab h2, .inf-lab h3, .inf-lab p, .inf-lab figure, .inf-lab dl, .inf-lab dd { margin: 0; }
+    .inf-lab h1 { font-size: clamp(21px, 3.5vw, 27px); line-height: 1.4; font-weight: 650; letter-spacing: -0.02em; }
+    .inf-lab h2 { font-size: 17px; line-height: 1.5; font-weight: 650; }
+    .inf-lab h3 { font-size: 14px; line-height: 1.6; font-weight: 650; }
+    .inf-lab small { font-size: 12px; }
+    .inf-lab .inf-shell { max-width: 1080px; margin: 0 auto; padding: 24px; overflow-wrap: anywhere; }
+    .inf-lab .inf-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .inf-lab .inf-header > div { min-width: 0; }
+    .inf-lab .inf-eyebrow { color: var(--chart-blue); font-size: 11px; letter-spacing: .10em; margin-bottom: 5px; }
+    .inf-lab .inf-intro { margin-top: 8px; color: var(--text-secondary); font-size: 13px; }
+    .inf-lab .inf-theme { flex: 0 0 auto; font-size: 12px; white-space: nowrap; }
+    .inf-lab .inf-tabs { display: none; gap: 5px; padding: 5px; margin: 20px 0 22px; border-radius: 11px; background: var(--surface-soft); }
+    .inf-lab.inf-ready .inf-tabs { display: flex; }
+    .inf-lab .inf-tabs button { flex: 1; min-width: 0; border: 1px solid transparent; background: transparent; color: var(--text-secondary); font-size: 14px; font-weight: 600; }
+    .inf-lab .inf-tabs button[aria-selected="true"] { border-color: var(--chart-blue); background: var(--surface-card); color: var(--chart-blue); }
+    .inf-lab .inf-panel + .inf-panel { margin-top: 28px; }
+    .inf-lab.inf-ready .inf-panel { margin-top: 0; }
+    .inf-lab .inf-panel-head { margin-bottom: 18px; }
+    .inf-lab .inf-panel-head p { margin-top: 5px; font-size: 13px; color: var(--text-secondary); }
+    .inf-lab fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .inf-lab .inf-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+    .inf-lab .inf-field { min-width: 0; }
+    .inf-lab .inf-field label, .inf-lab .inf-label { display: block; color: var(--text-primary); font-size: 13px; margin-bottom: 6px; }
+    .inf-lab .inf-range-row { display: grid; grid-template-columns: minmax(0, 1fr) 76px; gap: 13px; align-items: center; }
+    .inf-lab .inf-help { color: var(--text-secondary); font-size: 11px; margin-top: 5px; }
+    .inf-lab .inf-static { padding: 12px 15px; margin: 18px 0; border-left: 3px solid var(--chart-amber); background: var(--surface-soft); font-size: 13px; }
+    .inf-lab .inf-error { color: var(--chart-red); border-left: 3px solid var(--chart-red); padding-left: 12px; margin-top: 14px; font-size: 13px; }
+    .inf-lab .inf-results { margin-top: 22px; }
+    .inf-lab .inf-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .inf-lab .inf-metric { min-width: 0; padding: 13px 14px; border: 1px solid var(--divider); border-top: 2px solid var(--chart-blue); border-radius: 9px; background: var(--surface-card); }
+    .inf-lab .inf-metric.inf-teal { border-top-color: var(--chart-teal); }
+    .inf-lab .inf-metric.inf-amber { border-top-color: var(--chart-amber); }
+    .inf-lab .inf-metric dt { font-size: 12px; color: var(--text-secondary); }
+    .inf-lab .inf-metric dd { margin-top: 5px; }
+    .inf-lab .inf-value { display: block; font-size: clamp(22px, 3.7vw, 31px); line-height: 1.25; font-weight: 600; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }
+    .inf-lab .inf-unit { display: block; margin-top: 3px; color: var(--text-secondary); font-size: 11px; }
+    .inf-lab .inf-reading { margin: 14px 0; color: var(--text-secondary); font-size: 13px; }
+    .inf-lab .inf-reading strong { color: var(--text-primary); font-weight: 600; }
+    .inf-lab .inf-breakdown { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 12px 0; border-top: 1px solid var(--divider); border-bottom: 1px solid var(--divider); font-size: 12px; }
+    .inf-lab .inf-breakdown > div { display: flex; gap: 8px; flex-wrap: wrap; }
+    .inf-lab .inf-breakdown dt { color: var(--text-secondary); }
+    .inf-lab .inf-breakdown dd { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .inf-lab .inf-js-only { display: none; }
+    .inf-lab.inf-ready .inf-js-only { display: block; }
+    .inf-lab .inf-plots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 20px; }
+    .inf-lab .inf-chart-card { min-width: 0; padding: 12px 10px 6px; border: 1px solid var(--divider); border-radius: 9px; background: var(--surface-card); }
+    .inf-lab .inf-chart-card figcaption { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; padding: 0 3px; font-size: 13px; }
+    .inf-lab .inf-chart-card figcaption span { color: var(--text-secondary); font-size: 11px; }
+    .inf-lab .inf-chart { display: block; width: 100%; height: 220px; }
+    .inf-lab .inf-chart text { font: 10.5px system-ui, sans-serif; fill: var(--text-secondary); }
+    .inf-lab .inf-chart .inf-grid { stroke: var(--divider); stroke-width: 1; }
+    .inf-lab .inf-chart .inf-axis { stroke: var(--text-muted); stroke-width: .8; }
+    .inf-lab .inf-plot-note { color: var(--text-secondary); font-size: 11px; margin-top: 8px; }
+    .inf-lab .inf-details { margin-top: 16px; border-top: 1px solid var(--divider); padding-top: 12px; color: var(--text-secondary); font-size: 12px; }
+    .inf-lab summary { cursor: pointer; color: var(--text-primary); padding: 3px 0; }
+    .inf-lab .inf-details p { margin-top: 10px; }
+    .inf-lab .inf-formula { display: block; margin: 9px 0; color: var(--text-primary); font: 12px/1.8 ui-monospace, "SFMono-Regular", Consolas, monospace; white-space: normal; overflow-wrap: anywhere; }
+    .inf-lab .inf-details ul { padding-left: 20px; margin: 8px 0; }
+    .inf-lab .inf-details li + li { margin-top: 6px; }
+    .inf-lab .inf-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 12px; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .inf-lab .inf-table caption { text-align: left; margin-bottom: 7px; color: var(--text-secondary); }
+    .inf-lab .inf-table th, .inf-lab .inf-table td { text-align: right; padding: 7px 5px; border-bottom: 1px solid var(--divider); }
+    .inf-lab .inf-table th { color: var(--text-primary); font-weight: 600; }
+    .inf-lab .inf-table th:first-child, .inf-lab .inf-table td:first-child { text-align: left; width: 16%; }
+    .inf-lab .inf-table tr[aria-current="true"] { background: var(--surface-soft); color: var(--text-primary); font-weight: 600; }
+    .inf-lab .inf-memory-groups { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.45fr) minmax(0, 1fr); gap: 15px; }
+    .inf-lab .inf-group { min-width: 0; border: 1px solid var(--divider); border-radius: 9px; background: var(--surface-card); padding: 15px; }
+    .inf-lab .inf-group h3 { margin-bottom: 12px; }
+    .inf-lab .inf-group .inf-field + .inf-field { margin-top: 13px; }
+    .inf-lab .inf-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .inf-lab .inf-pair .inf-field + .inf-field { margin-top: 0; }
+    .inf-lab .inf-group .inf-pair + .inf-field { margin-top: 13px; }
+    .inf-lab .inf-meter-wrap { margin-top: 18px; }
+    .inf-lab .inf-meter { position: relative; display: flex; height: 28px; border: 1px solid var(--text-muted); border-radius: 6px; background: var(--surface-soft); }
+    .inf-lab .inf-segment { height: 100%; min-width: 0; }
+    .inf-lab .inf-segment:first-child { border-radius: 5px 0 0 5px; }
+    .inf-lab .inf-weight-segment { background: var(--chart-blue); }
+    .inf-lab .inf-kv-segment { background: var(--chart-teal); }
+    .inf-lab .inf-reserve-segment { background: var(--chart-amber); }
+    .inf-lab .inf-budget-marker { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--text-primary); transform: translateX(-1px); }
+    .inf-lab .inf-meter-caption { color: var(--text-secondary); font-size: 11px; margin-top: 9px; }
+    .inf-lab .inf-legend { display: flex; flex-wrap: wrap; gap: 7px 17px; color: var(--text-secondary); font-size: 12px; margin-top: 13px; }
+    .inf-lab .inf-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .inf-lab .inf-key { display: inline-block; width: 9px; height: 9px; border-radius: 2px; }
+    .inf-lab .inf-status { margin-top: 17px; border-left: 3px solid var(--chart-teal); padding: 11px 14px; background: var(--surface-soft); }
+    .inf-lab .inf-status[data-state="over"] { border-left-color: var(--chart-red); }
+    .inf-lab .inf-status h3 { font-size: 15px; color: var(--chart-teal); }
+    .inf-lab .inf-status[data-state="over"] h3 { color: var(--chart-red); }
+    .inf-lab .inf-status p { margin-top: 4px; font-size: 12px; color: var(--text-secondary); }
+    .inf-lab .inf-footnote { margin-top: 17px; color: var(--text-secondary); font-size: 11px; }
+    .inf-lab .inf-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    @media (max-width: 760px) {
+      .inf-lab .inf-memory-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .inf-lab .inf-group:last-child { grid-column: 1 / -1; }
+      .inf-lab .inf-budget-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+      .inf-lab .inf-budget-fields .inf-field + .inf-field { margin-top: 0; }
+    }
+    @media (max-width: 640px) {
+      .inf-lab .inf-shell { padding: 18px 15px; }
+      .inf-lab .inf-header { flex-wrap: wrap; gap: 11px; }
+      .inf-lab .inf-theme { min-height: 36px; padding: 5px 11px; }
+      .inf-lab .inf-tabs { margin-top: 17px; }
+      .inf-lab .inf-plots { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+      .inf-lab .inf-controls { gap: 15px; }
+      .inf-lab .inf-metric { padding: 11px 9px; }
+      .inf-lab .inf-metric dt { font-size: 11px; }
+      .inf-lab .inf-value { font-size: clamp(21px, 5.6vw, 30px); }
+      .inf-lab .inf-chart { height: 210px; }
+      .inf-lab .inf-memory-groups { grid-template-columns: minmax(0, 1fr); }
+      .inf-lab .inf-group { padding: 13px; }
+      .inf-lab .inf-group:last-child { grid-column: auto; }
+    }
+    @media (max-width: 440px) {
+      .inf-lab .inf-controls { grid-template-columns: minmax(0, 1fr); }
+      .inf-lab .inf-metrics { gap: 7px; }
+      .inf-lab .inf-value { font-size: clamp(18px, 5.65vw, 22px); }
+      .inf-lab .inf-unit { font-size: 10px; }
+      .inf-lab .inf-budget-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .inf-lab *, .inf-lab *::before, .inf-lab *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+<meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
+<body>
+  <main class="inf-shell" aria-labelledby="lab-title">
+    <header class="inf-header">
+      <div>
+        <p class="inf-eyebrow">交互附录 / 解析估算</p>
+        <h1 id="lab-title">推理估算实验室</h1>
+        <p class="inf-intro">改动参数，看批量、上下文和内存预算怎样互相牵动。</p>
+      </div>
+      <button class="inf-theme" id="theme-toggle" type="button" disabled="" aria-label="切换主题，当前跟随系统">主题：跟随系统</button>
+    </header>
+
+    <noscript>
+      <p class="inf-static">此浏览器未运行 JavaScript，下面保留两组默认参数和结果；输入、主题按钮与页签切换不可用。所有数值来自文中公式，是教学估算，不是硬件实测。</p>
+    </noscript>
+
+    <div class="inf-tabs" role="tablist" aria-label="选择估算实验">
+      <button id="tab-batch" type="button" role="tab" aria-controls="panel-batch" aria-selected="true" tabindex="0">批量与 TPS</button>
+      <button id="tab-memory" type="button" role="tab" aria-controls="panel-memory" aria-selected="false" tabindex="-1">KV 预算</button>
+    </div>
+
+    <section id="panel-batch" class="inf-panel" role="tabpanel" aria-labelledby="tab-batch" tabindex="0">
+      <div class="inf-panel-head">
+        <h2>总吞吐上升，每条序列却可能更慢</h2>
+        <p>每条活跃序列每步输出 1 个 token。固定上下文长度，增加 B，观察总吞吐与每序列速率的区别。</p>
+      </div>
+      <fieldset id="batch-controls" disabled="">
+        <legend class="inf-sr-only">调整批量和缓存长度</legend>
+        <div class="inf-controls">
+          <div class="inf-field">
+            <label for="batch-count">活跃解码序列 B</label>
+            <div class="inf-range-row">
+              <input id="batch-range" type="range" min="1" max="128" step="1" value="16" aria-label="活跃解码序列 B，滑块" aria-describedby="batch-count-help">
+              <input id="batch-count" type="number" min="1" max="128" step="1" value="16" inputmode="numeric" aria-describedby="batch-count-help">
+            </div>
+            <p id="batch-count-help" class="inf-help">1–128 条；可拖动，也可直接输入整数。</p>
+          </div>
+          <div class="inf-field">
+            <label for="batch-context">每条序列的缓存长度 S</label>
+            <select id="batch-context" aria-describedby="batch-context-help">
+              <option value="128">128 tokens</option><option value="256">256 tokens</option>
+              <option value="512">512 tokens</option><option value="1024">1,024 tokens</option>
+              <option value="2048" selected="">2,048 tokens</option><option value="4096">4,096 tokens</option>
+              <option value="8192">8,192 tokens</option><option value="16384">16,384 tokens</option>
+              <option value="32768">32,768 tokens</option>
+            </select>
+            <p id="batch-context-help" class="inf-help">当前已缓存的长度；各序列等长，按 2 倍递增。</p>
+          </div>
+        </div>
+      </fieldset>
+      <p id="batch-error" class="inf-error" role="status" aria-live="polite" hidden=""></p>
+
+      <div id="batch-output" class="inf-results">
+        <dl class="inf-metrics">
+          <div class="inf-metric inf-amber"><dt>单步耗时</dt><dd><span id="step-value" class="inf-value" data-value="14.024945493333335">14.02</span><span class="inf-unit">ms / step</span></dd></div>
+          <div class="inf-metric"><dt>总输出吞吐</dt><dd><span id="aggregate-value" class="inf-value" data-value="1140.8243980417246">1,140.8</span><span class="inf-unit">tokens / s</span></dd></div>
+          <div class="inf-metric inf-teal"><dt>每序列速率</dt><dd><span id="per-sequence-value" class="inf-value" data-value="71.30152487760779">71.3</span><span class="inf-unit">tokens / s / 序列</span></dd></div>
+        </dl>
+        <p id="batch-reading" class="inf-reading">当前 B = 16，S = 2,048。这个设定下，读取项较大；每一步完成 16 个输出 token。</p>
+        <dl class="inf-breakdown">
+          <div><dt>权重 + KV 读取</dt><dd id="read-time">13.82 ms</dd></div>
+          <div><dt>线性层计算</dt><dd id="compute-time">3.20 ms</dd></div>
+          <div><dt>固定开销</dt><dd>0.20 ms</dd></div>
+          <div><dt>当前 KV 占用</dt><dd id="batch-kv" data-value="4">4.000 GiB</dd></div>
+        </dl>
+        <div class="inf-js-only">
+          <div class="inf-plots">
+            <figure class="inf-chart-card">
+              <figcaption><strong>总输出吞吐 · 实线</strong><span>tokens / s</span></figcaption>
+              <svg id="aggregate-chart" class="inf-chart" role="img" aria-labelledby="aggregate-chart-title aggregate-chart-desc" viewBox="0 0 420 220"></svg>
+            </figure>
+            <figure class="inf-chart-card">
+              <figcaption><strong>每序列速率 · 虚线</strong><span>tokens / s / 序列</span></figcaption>
+              <svg id="per-sequence-chart" class="inf-chart" role="img" aria-labelledby="per-sequence-chart-title per-sequence-chart-desc" viewBox="0 0 420 220"></svg>
+            </figure>
+          </div>
+          <p id="batch-plot-note" class="inf-plot-note">横轴：活跃序列 B；竖线与圆点：当前 B = 16。两条曲线都固定 S = 2,048。</p>
+          <details class="inf-details">
+            <summary>查看批量采样点的数值</summary>
+            <table class="inf-table">
+              <caption id="batch-table-caption">固定 S = 2,048；当前行另有文字标记。</caption>
+              <thead><tr><th scope="col">B</th><th scope="col">单步<br>ms</th><th scope="col">总吞吐<br>tokens/s</th><th scope="col">每序列<br>tokens/s</th></tr></thead>
+              <tbody id="batch-table-body"></tbody>
+            </table>
+          </details>
+        </div>
+        <p id="batch-live" class="inf-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+
+      <details class="inf-details">
+        <summary>计算公式、固定假设与边界</summary>
+        <p>教学设定为 8B 参数、4-bit 原始权重，共 W = 4 GB；每个 token 的线性层工作量为 16 GFLOP。L = 32 层，h<sub>kv</sub> = 8，d<sub>h</sub> = 128；K、V 均按 BF16 的 2 byte 存储。</p>
+        <code class="inf-formula">KV<sub>seq</sub> = 2 × L × S × h<sub>kv</sub> × d<sub>h</sub> × 2 byte</code>
+        <code class="inf-formula">t<sub>step</sub> = max[(4 × 10<sup>9</sup> + B × KV<sub>seq</sub>) / (600 × 10<sup>9</sup>), B × 16 × 10<sup>9</sup> / (80 × 10<sup>12</sup>)] + 0.0002 s</code>
+        <code class="inf-formula">总输出 TPS = B / t<sub>step</sub>；每序列 TPS = 1 / t<sub>step</sub></code>
+        <ul>
+          <li>600 GB/s 与 80 TFLOP/s 是人为设置的有效带宽、有效算力，不对应任何真实设备；GB = 10<sup>9</sup> byte。</li>
+          <li>假设一次解码步只读一遍权重，批内复用；每条序列各自读一遍全长 KV。读取和计算取较大值，近似理想重叠。</li>
+          <li>不计算 attention FLOPs、激活流量、反量化、KV 写入、填充、排队、通信或实际容量限制。固定开销为 0.2 ms。</li>
+          <li>B 是正在解码的序列数，不是到达的请求数。该页没有模拟 prefill、continuous batching 的请求进出或服务质量约束。</li>
+        </ul>
+      </details>
+      <p class="inf-footnote">假设内存容量始终足够，曲线不做容量截断。与正文的批量曲线使用同一公式；这里的 TPS 是教学估算，不是设备实测。</p>
+    </section>
+
+    <section id="panel-memory" class="inf-panel" role="tabpanel" aria-labelledby="tab-memory" tabindex="0">
+      <div class="inf-panel-head">
+        <h2>权重放得下，还要留出 KV 的位置</h2>
+        <p>先算原始数据容量，再加上你设置的余量。层数 L = 32、头维度 d<sub>h</sub> = 128 固定；GiB = 2<sup>30</sup> byte。</p>
+      </div>
+      <fieldset id="memory-controls" disabled="">
+        <legend class="inf-sr-only">调整权重、KV 与可用内存</legend>
+        <div class="inf-memory-groups">
+          <div class="inf-group">
+            <h3>01 / 权重</h3>
+            <div class="inf-field">
+              <label for="weight-parameters">参数量 P</label>
+              <select id="weight-parameters"><option value="8" selected="">8B · 80 亿</option><option value="32">32B · 320 亿</option><option value="70">70B · 700 亿</option></select>
+            </div>
+            <div class="inf-field">
+              <label for="weight-bits">每参数存储位数</label>
+              <select id="weight-bits"><option value="4" selected="">4 bit</option><option value="8">8 bit</option><option value="16">16 bit</option></select>
+            </div>
+            <p class="inf-help">仅按紧密打包后的位数计算，不含量化元数据。</p>
+          </div>
+          <div class="inf-group">
+            <h3>02 / KV cache</h3>
+            <div class="inf-pair">
+              <div class="inf-field">
+                <label for="kv-heads">KV 头数 h<sub>kv</sub></label>
+                <select id="kv-heads"><option value="1">1 · MQA</option><option value="8" selected="">8 · GQA</option><option value="32">32 · MHA</option></select>
+              </div>
+              <div class="inf-field">
+                <label for="kv-bits">KV 位数</label>
+                <select id="kv-bits"><option value="16" selected="">16 bit</option><option value="8">8 bit</option></select>
+              </div>
+            </div>
+            <div class="inf-field">
+              <label for="memory-batch">缓存序列数 B</label>
+              <div class="inf-range-row">
+                <input id="memory-batch-range" type="range" min="1" max="32" step="1" value="4" aria-label="缓存序列数 B，滑块">
+                <input id="memory-batch" type="number" min="1" max="32" step="1" value="4" inputmode="numeric" aria-describedby="memory-batch-help">
+              </div>
+              <p class="inf-help" id="memory-batch-help">1–32 条；各序列长度相同，KV 分别存储。</p>
+            </div>
+            <div class="inf-field">
+              <label for="memory-context">每序列缓存长度 S</label>
+              <select id="memory-context">
+                <option value="1024">1,024 tokens</option><option value="2048">2,048 tokens</option>
+                <option value="4096">4,096 tokens</option><option value="8192" selected="">8,192 tokens</option>
+                <option value="16384">16,384 tokens</option><option value="32768">32,768 tokens</option>
+                <option value="65536">65,536 tokens</option><option value="131072">131,072 tokens</option>
+              </select>
+            </div>
+          </div>
+          <div class="inf-group">
+            <h3>03 / 预算</h3>
+            <div class="inf-budget-fields">
+              <div class="inf-field">
+                <label for="available-memory">可分配内存 / 显存 · GiB</label>
+                <input id="available-memory" type="number" min="0" step="any" value="24" inputmode="decimal" aria-describedby="available-memory-help">
+                <p class="inf-help" id="available-memory-help">填本次可用的预算；系统占用先扣除。可填小数。</p>
+              </div>
+              <div class="inf-field">
+                <label for="reserve-memory">额外预留余量 · GiB</label>
+                <input id="reserve-memory" type="number" min="0" step="any" value="2" inputmode="decimal" aria-describedby="reserve-memory-help">
+                <p class="inf-help" id="reserve-memory-help">为运行时缓冲、分配开销等手动预留；此值不是测量值。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <p id="memory-error" class="inf-error" role="status" aria-live="polite" hidden=""></p>
+
+      <div id="memory-output" class="inf-results">
+        <dl class="inf-metrics">
+          <div class="inf-metric"><dt>权重原始容量</dt><dd><span id="weight-value" class="inf-value" data-value="3.725290298461914">3.725</span><span class="inf-unit">GiB</span></dd></div>
+          <div class="inf-metric inf-teal"><dt>KV 原始容量</dt><dd><span id="kv-value" class="inf-value" data-value="4">4</span><span class="inf-unit">GiB · 全部序列</span></dd></div>
+          <div class="inf-metric inf-amber"><dt>手动预留余量</dt><dd><span id="reserve-value" class="inf-value" data-value="2">2</span><span class="inf-unit">GiB</span></dd></div>
+        </dl>
+        <div class="inf-meter-wrap inf-js-only">
+          <div class="inf-meter" aria-hidden="true">
+            <div id="weight-segment" class="inf-segment inf-weight-segment" style="width:15.522042910258%"></div>
+            <div id="kv-segment" class="inf-segment inf-kv-segment" style="width:16.666666666667%"></div>
+            <div id="reserve-segment" class="inf-segment inf-reserve-segment" style="width:8.333333333333%"></div>
+            <div id="budget-marker" class="inf-budget-marker" style="left:100%"></div>
+          </div>
+          <div class="inf-legend" aria-hidden="true">
+            <span><i class="inf-key inf-weight-segment"></i>权重</span><span><i class="inf-key inf-kv-segment"></i>KV</span><span><i class="inf-key inf-reserve-segment"></i>余量</span><span>虚线：输入预算</span>
+          </div>
+          <p id="memory-meter-caption" class="inf-meter-caption">柱长按 24.000 GiB 预算缩放；空白部分是剩余容量。</p>
+        </div>
+        <div id="memory-status" class="inf-status" data-state="within">
+          <h3 id="memory-verdict">未超过预算 · 剩余 14.275 GiB</h3>
+          <p id="memory-total" data-value="9.725290298461914">权重 + KV + 余量共 9.725 GiB；输入预算为 24.000 GiB。</p>
+          <p id="memory-context-reading">每条序列的 KV 为 1.000 GiB，共 4 条。此处通过的是容量算术，实际能否运行仍取决于模型与后端。</p>
+        </div>
+        <p id="memory-live" class="inf-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+
+      <details class="inf-details">
+        <summary>容量公式、单位与未计入项</summary>
+        <code class="inf-formula">权重 byte = P × 10<sup>9</sup> × weight_bits / 8</code>
+        <code class="inf-formula">KV byte = 2 × L × B × S × h<sub>kv</sub> × d<sub>h</sub> × kv_bits / 8</code>
+        <code class="inf-formula">所需 GiB = (权重 byte + KV byte) / 2<sup>30</sup> + 额外余量 GiB</code>
+        <ul>
+          <li>式首的 2 分别计入 K 与 V。各序列独立、等长、不共享前缀；层数 32、头维度 128 固定。MQA / GQA / MHA 的标签以 32 个 query 头为示例。</li>
+          <li>参数量只改变权重容量，不自动改变层数或头数。这些选项可独立组合，不代表某个真实 8B、32B 或 70B 模型的架构。</li>
+          <li>结果是原始紧密打包大小，未计入 scale、zero-point、分组对齐、混合精度层、页块碎片、图捕获与临时张量等。手动余量不会替你精确计算这些开销。</li>
+          <li>8-bit KV 只改变存储位数；是否支持、精度影响和读取性能由具体实现决定。公式不描述 MLA、滑动窗口、循环状态或跨序列 KV 共享。</li>
+          <li>多张显卡的容量不能直接作为单块连续内存填入，除非所用并行方案与模型分布确实允许；本页不模拟分片与复制开销。</li>
+        </ul>
+      </details>
+      <p class="inf-footnote">预算页只回答这些假设下“需要多少容量”，不推算 TPS，也不判断设备购买价值。</p>
+    </section>
+  </main>
+
+  <script defer="" src="/2026/11/08/llm-inference-from-token-to-cluster/interactive/inference-lab.js"></script>
+
+
+</body></html>

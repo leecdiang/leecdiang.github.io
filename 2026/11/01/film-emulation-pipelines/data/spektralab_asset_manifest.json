@@ -1,1 +1,65 @@
-{"checked_date":"2026-11-08","repository":"JamesQiu2005/SpektraLab","tag":"spektralab-v1.3.7","commit":"12d75e60a02281e4b470329b4ac2ac14947caa37","evidence_scope":"官方公开展示，仅用于界面及技术评论；本轮未运行应用、复现样片或实施同输入 Gloam 横测。","rights_note":"未查到单独的照片开放许可，也未取得额外转载授权。不将代码 GPL 或材料 Profile 的 CC BY-SA 自动套用于照片。摄影及界面权利归各自权利人。","transformation":"none; exact original PNG bytes","assets":[{"filename":"spektralab_official_workspace.png","upstream_path":"screenshots/Screenshot_English.png","source_page":"https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/Screenshot_English.png","source_raw":"https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/Screenshot_English.png","git_blob_sha1":"089f5b83242a053c5042256368e08fc0f41a17bf","sha256":"b02f4a0bd7f61c129c230060d13fec34bb9207899e0255b41fd49ad63dc262b4","bytes":5126082,"width":2560,"height":1440,"mode":"RGBA","capture_version":null,"original_license_for_photo":null,"placement":"第 5 节：工作区","limits":"Portra 160 + Vision 2383；截图捕获版本未注明；含历史 Tone Mask，不作 1.3.7 现行完整功能清单","publish_path":"/images/film-emulation-spektralab/spektralab_official_workspace.png","credit":"SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"},{"filename":"spektralab_official_halation.png","upstream_path":"screenshots/natural_halation.png","source_page":"https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/natural_halation.png","source_raw":"https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/natural_halation.png","git_blob_sha1":"a3bddb6325953963678510af5f84eadcb7288fde","sha256":"2041369bcdfb34ed29d85096ee60ff107ab6e1eea52f7b1b320d75a697401cff","bytes":3955697,"width":1386,"height":1400,"mode":"RGBA","capture_version":null,"original_license_for_photo":null,"placement":"第 5 节：官方分割示例","limits":"颜色、颗粒和边缘共同变化；没有源 RAW 与完整配方；不是光晕单变量实验，也不是当前默认效果或 Gloam 横测","publish_path":"/images/film-emulation-spektralab/spektralab_official_halation.png","credit":"SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"},{"filename":"spektralab_official_grain.png","upstream_path":"screenshots/physically_accurate_grain.png","source_page":"https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/physically_accurate_grain.png","source_raw":"https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/physically_accurate_grain.png","git_blob_sha1":"8e9a17e4045182310fd757e5b0428a071b8073ec","sha256":"b518f68e8efd4cd17c778d2f039e8fb2490ed3e2fc659d81b621af3ea2eae00a","bytes":4444912,"width":1226,"height":1278,"mode":"RGBA","capture_version":null,"original_license_for_photo":null,"placement":"附录 C7：颗粒局部","limits":"文件名不是准确性证据；材料、参数、截图倍率和捕获版本未披露；不标作 100% 同倍率比较","publish_path":"/images/film-emulation-spektralab/spektralab_official_grain.png","credit":"SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"}]}
+{
+  "checked_date": "2026-11-08",
+  "repository": "JamesQiu2005/SpektraLab",
+  "tag": "spektralab-v1.3.7",
+  "commit": "12d75e60a02281e4b470329b4ac2ac14947caa37",
+  "evidence_scope": "官方公开展示，仅用于界面及技术评论；本轮未运行应用、复现样片或实施同输入 Gloam 横测。",
+  "rights_note": "未查到单独的照片开放许可，也未取得额外转载授权。不将代码 GPL 或材料 Profile 的 CC BY-SA 自动套用于照片。摄影及界面权利归各自权利人。",
+  "transformation": "none; exact original PNG bytes",
+  "assets": [
+    {
+      "filename": "spektralab_official_workspace.png",
+      "upstream_path": "screenshots/Screenshot_English.png",
+      "source_page": "https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/Screenshot_English.png",
+      "source_raw": "https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/Screenshot_English.png",
+      "git_blob_sha1": "089f5b83242a053c5042256368e08fc0f41a17bf",
+      "sha256": "b02f4a0bd7f61c129c230060d13fec34bb9207899e0255b41fd49ad63dc262b4",
+      "bytes": 5126082,
+      "width": 2560,
+      "height": 1440,
+      "mode": "RGBA",
+      "capture_version": null,
+      "original_license_for_photo": null,
+      "placement": "第 5 节：工作区",
+      "limits": "Portra 160 + Vision 2383；截图捕获版本未注明；含历史 Tone Mask，不作 1.3.7 现行完整功能清单",
+      "publish_path": "/images/film-emulation-spektralab/spektralab_official_workspace.png",
+      "credit": "SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"
+    },
+    {
+      "filename": "spektralab_official_halation.png",
+      "upstream_path": "screenshots/natural_halation.png",
+      "source_page": "https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/natural_halation.png",
+      "source_raw": "https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/natural_halation.png",
+      "git_blob_sha1": "a3bddb6325953963678510af5f84eadcb7288fde",
+      "sha256": "2041369bcdfb34ed29d85096ee60ff107ab6e1eea52f7b1b320d75a697401cff",
+      "bytes": 3955697,
+      "width": 1386,
+      "height": 1400,
+      "mode": "RGBA",
+      "capture_version": null,
+      "original_license_for_photo": null,
+      "placement": "第 5 节：官方分割示例",
+      "limits": "颜色、颗粒和边缘共同变化；没有源 RAW 与完整配方；不是光晕单变量实验，也不是当前默认效果或 Gloam 横测",
+      "publish_path": "/images/film-emulation-spektralab/spektralab_official_halation.png",
+      "credit": "SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"
+    },
+    {
+      "filename": "spektralab_official_grain.png",
+      "upstream_path": "screenshots/physically_accurate_grain.png",
+      "source_page": "https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/physically_accurate_grain.png",
+      "source_raw": "https://raw.githubusercontent.com/JamesQiu2005/SpektraLab/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots/physically_accurate_grain.png",
+      "git_blob_sha1": "8e9a17e4045182310fd757e5b0428a071b8073ec",
+      "sha256": "b518f68e8efd4cd17c778d2f039e8fb2490ed3e2fc659d81b621af3ea2eae00a",
+      "bytes": 4444912,
+      "width": 1226,
+      "height": 1278,
+      "mode": "RGBA",
+      "capture_version": null,
+      "original_license_for_photo": null,
+      "placement": "附录 C7：颗粒局部",
+      "limits": "文件名不是准确性证据；材料、参数、截图倍率和捕获版本未披露；不标作 100% 同倍率比较",
+      "publish_path": "/images/film-emulation-spektralab/spektralab_official_grain.png",
+      "credit": "SpektraLab 官方项目展示图；摄影及界面权利归各自权利人。"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "checked": "2026-11-08",
+  "hardware": [
+    {
+      "filename": "macbook-air-m4-official.jpg",
+      "source_page": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+      "source_image": "https://www.apple.com/newsroom/images/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/article/Apple-MacBook-Air-hero-250305_big.jpg.large.jpg",
+      "credit": "Apple Newsroom",
+      "subject": "MacBook Air M4 official product image",
+      "local_path": "images/macbook-air-m4-official.jpg",
+      "size": 80806,
+      "width": 980,
+      "height": 551,
+      "sha256": "605d93e922e8b65d90b144af68b4efa0149e3e3f997cab3ad32241b652748a4f",
+      "retrieved": "2026-11-08",
+      "license": "Copyright holder stated above; per-image open reuse license not confirmed",
+      "production_note": "Official product image. Source does not individually identify photographic versus rendered/composited creation method. No generative AI image produced for this task.",
+      "transformation": "None; original downloaded image bytes retained."
+    },
+    {
+      "filename": "ryzen-ai-halo-395-official.jpg",
+      "source_page": "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html",
+      "source_image": "https://www.amd.com/content/dam/amd/en/images/products/agent-computers/4614200-ryzen-ai-halo-product.jpg",
+      "credit": "AMD",
+      "subject": "AMD Ryzen AI Halo Developer Platform with Ryzen AI Max+ 395",
+      "local_path": "images/ryzen-ai-halo-395-official.jpg",
+      "size": 81785,
+      "width": 1200,
+      "height": 675,
+      "sha256": "4250eb9fd5a26daeacf7146be4a07f9f9a2510b65cd38631ab14952eb12552a7",
+      "retrieved": "2026-11-08",
+      "license": "Copyright holder stated above; per-image open reuse license not confirmed",
+      "production_note": "Official product image. Source does not individually identify photographic versus rendered/composited creation method. No generative AI image produced for this task.",
+      "transformation": "None; original downloaded image bytes retained."
+    },
+    {
+      "filename": "dgx-spark-official.png",
+      "source_page": "https://www.nvidia.com/en-us/products/workstations/dgx-spark/",
+      "source_image": "https://www.nvidia.com/content/nvidiaGDC/us/en_US/products/workstations/dgx-spark/_jcr_content/root/responsivegrid/nv_container_playbooks/inner/media.coreimg.png/1792558739420/workstation-dgx-spark-blog-1920x1080-3717203.png",
+      "credit": "NVIDIA",
+      "subject": "DGX Spark beside a laptop",
+      "local_path": "images/dgx-spark-official.png",
+      "size": 1398259,
+      "width": 1280,
+      "height": 720,
+      "sha256": "e4316f222e898797159097425a0810743f146e3b8afff94b47aa58fd93ad7c8e",
+      "retrieved": "2026-11-08",
+      "license": "Copyright holder stated above; per-image open reuse license not confirmed",
+      "production_note": "Official product image. Source does not individually identify photographic versus rendered/composited creation method. No generative AI image produced for this task.",
+      "transformation": "None; original downloaded image bytes retained."
+    },
+    {
+      "filename": "dgx-h100-official.png",
+      "source_page": "https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html",
+      "source_image": "https://docs.nvidia.com/dgx/dgxh100-user-guide/_images/dgx-h100-with-bezel.png",
+      "credit": "NVIDIA DGX H100/H200 User Guide",
+      "subject": "DGX H100/H200 front panel with original annotations",
+      "local_path": "images/dgx-h100-official.png",
+      "size": 4410339,
+      "width": 2700,
+      "height": 1226,
+      "sha256": "c785ae78a0975dda81c4b5343280525f9f8f2c825256d93378a5e7ddb2b08905",
+      "retrieved": "2026-11-08",
+      "license": "Copyright holder stated above; per-image open reuse license not confirmed",
+      "production_note": "Official product image. Source does not individually identify photographic versus rendered/composited creation method. No generative AI image produced for this task.",
+      "transformation": "None; original downloaded image bytes retained."
+    }
+  ],
+  "paper_figures": [
+    {
+      "stem": "gqa-original-fig2",
+      "source_filename": "2305.13245v3.pdf",
+      "source_pdf_url": "https://arxiv.org/pdf/2305.13245v3",
+      "source_landing_url": "https://arxiv.org/abs/2305.13245v3",
+      "title": "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+      "authors": "Ainslie et al.",
+      "figure": 2,
+      "physical_page": 2,
+      "crop_points": [
+        66,
+        74,
+        529,
+        254
+      ],
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Ainslie et al., GQA, Fig. 2, arXiv:2305.13245v3. CC BY 4.0. Cropped from the original paper; no figure labels altered.",
+      "source_sha256": "ba9094fe73db9bf515d47ae8b2d502fee9d8a6c7b1327e197ddb160f4c63b94a",
+      "png_dimensions": [
+        1389,
+        540
+      ],
+      "local_path": "images/gqa-original-fig2.png",
+      "image_sha256": "cb831cf109b8ed16df8d521e00da762344d6f569c47c55d300356b96fcac8ba3"
+    },
+    {
+      "stem": "speculative-original-fig1",
+      "source_filename": "2211.17192v2.pdf",
+      "source_pdf_url": "https://arxiv.org/pdf/2211.17192v2",
+      "source_landing_url": "https://arxiv.org/abs/2211.17192v2",
+      "title": "Fast Inference from Transformers via Speculative Decoding",
+      "authors": "Yaniv Leviathan, Matan Kalman, Yossi Matias",
+      "figure": 1,
+      "physical_page": 2,
+      "crop_points": [
+        52,
+        66,
+        548,
+        267
+      ],
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Leviathan, Kalman & Matias, Fast Inference from Transformers via Speculative Decoding, Fig. 1, arXiv:2211.17192v2. CC BY 4.0. Cropped from the original paper; no figure labels altered.",
+      "source_sha256": "8967e2daab74178b8a73a6f0b0780c5cbb40f9f6dcbd5c456b24a89c128c52ed",
+      "png_dimensions": [
+        1488,
+        603
+      ],
+      "local_path": "images/speculative-original-fig1.png",
+      "image_sha256": "95129604aabab9115714b1490441cda63c18a2c437843cfa36da229795f20595"
+    }
+  ]
+}

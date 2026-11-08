@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.3cf6a1b0295e.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.2592be2b70fa.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script>
@@ -22,9 +22,9 @@
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://leecdiang.com/images/social/5bb58cc15755.png">
+<meta property="og:image" content="https://leecdiang.com/images/social/de29e645e5d6.png">
 <meta property="article:published_time" content="2026-10-14T07:26:00.000Z">
-<meta property="article:modified_time" content="2026-11-08T04:41:00.158Z">
+<meta property="article:modified_time" content="2026-11-08T05:44:25.024Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Agent Step Value">
 <meta property="article:tag" content="EMNLP 2026">
@@ -32,7 +32,7 @@
 <meta property="article:tag" content="LLM Agents">
 <meta property="article:tag" content="REALM">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://leecdiang.com/images/social/5bb58cc15755.png">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/de29e645e5d6.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/10/14/agent-step-value/">
@@ -92,7 +92,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="en"><meta itemprop="image" content="https://leecdiang.com/images/social/5bb58cc15755.png"><meta itemprop="dateModified" content="2026-11-08T04:41:00.158Z"><meta itemprop="datePublished" content="2026-10-14T07:26:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="en"><meta itemprop="image" content="https://leecdiang.com/images/social/de29e645e5d6.png"><meta itemprop="dateModified" content="2026-11-08T05:44:25.024Z"><meta itemprop="datePublished" content="2026-10-14T07:26:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/10/14/agent-step-value/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -188,7 +188,7 @@ F = \log\frac{q(g)}{1-q(g)}.
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mfrac space="2"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>F</mi><mo>=</mo><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mfrac><mrow><mi>q</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">)</mo></mrow></mfrac><mo>.</mo></math></mjx-assistive-mml></mjx-container></p>
 <p>For intuition, a margin gain of +0.16 multiplies target-versus-rest odds by about 1.17. The probability change depends on where those odds started. The binary readout uses independently elicited Yes/No energies followed by an induced normalization, so its scale needs separate treatment.</p>
 </details>
-<img class="" title="From frozen states to endpoint margins, within-channel gains, and their matched difference. Figure 4 of the paper." src="/2026/10/14/agent-step-value/asv-mechanics.jpg" decoding="async" loading="lazy" width="1256" height="300">
+
 <h2 id="3-Four-scores-make-a-fair-comparison">3. Four scores make a fair comparison</h2>
 <p>Taking the before score from one channel and the after score from another changes two things at once: the state and the measurement setup. That difference cannot isolate either one.</p>
 <p>The matched design scores both endpoints under both channels. The interaction is the difference between the two gains:</p>
@@ -239,7 +239,7 @@ F = \log\frac{q(g)}{1-q(g)}.
 </div>
 </div>
 <p><em>Reading the four corners: each gain uses one channel throughout. The numbers are illustrative, not cohort estimates.</em></p>
-<img class="" title="The audit design: freeze the transition, replay both channels, complete the four-corner face, and check the observed readout/evaluator configurations. Figure 1 of the paper." src="/2026/10/14/agent-step-value/asv-pipeline.jpg" decoding="async" loading="lazy" width="1290" height="636">
+
 <p>We emphasize gain signs because they survive positive affine recalibration within a channel. If we multiply a channel’s scores by a positive constant and add an offset, its gain retains its sign. Cross-channel interaction magnitudes generally do not have that invariance unless the scales are linked. Two channels can also have a nonzero interaction while both gains remain positive.</p>
 <h2 id="4-The-main-result-channel-changes-outweigh-retries">4. The main result: channel changes outweigh retries</h2>
 <p>We froze 100 PubMed tasks from one actor workflow. Each task contributed 11 transitions, covering classification, planning, retrieval, drafting, audit, revision, and finalization: 1,100 transitions in total. We kept the states and candidate contracts fixed, and used four cyclic candidate layouts to balance option-label position.</p>
@@ -281,7 +281,7 @@ F = \log\frac{q(g)}{1-q(g)}.
 <h2 id="5-Retrieval-locate-the-channel-difference">5. Retrieval: locate the channel difference</h2>
 <p>Retrieval lets us inspect two changes separately: evidence enters the state, and the generated interpretation is updated. We crossed them to ask which coordinate carried the negative component.</p>
 <p>We crossed the before and after states with the views generated at each endpoint. This gives a symmetric allocation of the retrieval change to the state coordinate and the view coordinate. On the 91 trajectories complete for that face, the state allocation was +0.224 [-0.029, 0.473], while the generated-view allocation was -0.915. The negative component sat in the view coordinate of this matched comparison.</p>
-<img class="" title="The symmetric retrieval face separates state and generated-view allocations. Allocation uses 91 complete trajectories; comparisons requiring the direct path use 88. Figure 2 of the paper." src="/2026/10/14/agent-step-value/retrieval-decomposition.jpg" decoding="async" loading="lazy" width="1205" height="442">
+
 <p>We then held prompt structure fixed and changed only the view field. Under the shared template with neutral authority, the mean quote gain was +0.903 [0.443, 1.360], and the generated-view gain was -0.403 [-0.712, -0.104]. The generated-minus-quote interaction was -1.306 [-1.822, -0.797].</p>
 <p>Quotes also differed from empty views, so deterministic excerpts cannot simply stand in for the state alone. Even with prompt structure held fixed, however, generated views produced a further negative interaction. A direct-versus-buffered template difference did not account for the whole result.</p>
 <h2 id="6-Check-the-direction-with-other-instruments">6. Check the direction with other instruments</h2>
@@ -322,7 +322,7 @@ F = \log\frac{q(g)}{1-q(g)}.
 <p>The three checks use native operational scales. The generated-minus-quote interactions were -1.305, -0.882, and -8.278 respectively, but those numbers should not be read as a ranking of effect strength across instruments. Joint and binary readouts implement different response functionals.</p>
 <p>We did not observe the joint-readout/GPT-4o configuration. The bridge checks direction at three vertices; it does not identify a full readout-by-stack interaction. Equal-target weighting also leaves the three-vertex sign conjunction unresolved.</p>
 </details>
-<img class="" title="Panel A shows the three observed sign checks on separate native scales. Panel B shows the matched source-contract follow-up on artifact-bearing retrievals. Figure 3 of the paper." src="/2026/10/14/agent-step-value/matched-bridge-results.jpg" decoding="async" loading="lazy" width="1600" height="541">
+
 <details>
 <summary>A separate check against stored task success</summary>
 <p>Quote-channel post-retrieval margins ranked stored task success better than generated-view margins in all three configurations. The paired AUC advantages were +0.169, +0.165, and +0.267. The quote AUC intervals include or touch 0.5, so this supports a relative ranking advantage over the generated view, rather than strong standalone prediction of success.</p>

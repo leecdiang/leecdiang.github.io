@@ -1,0 +1,101 @@
+[
+  {
+    "id": "fig01_request",
+    "description": "自回归请求流程：提示预填充产生首个输出 token，随后逐 token 解码并复用 KV Cache。",
+    "type": "schematic",
+    "provenance": "Mechanism schematic; not a timing trace.",
+    "data_directory": "../data",
+    "png": "images/fig01_request.png",
+    "svg": "source/_visuals/inference/fig01_request.svg"
+  },
+  {
+    "id": "fig02_moe_coverage",
+    "description": "均匀独立路由假设下，64 个专家中每 token 选择 8 个，批量增加会扩大专家覆盖范围。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig02_moe_coverage.png",
+    "svg": "source/_visuals/inference/fig02_moe_coverage.svg"
+  },
+  {
+    "id": "fig03_kv_memory",
+    "description": "32 层、128 维、BF16 条件下，MHA、GQA、MQA 每序列 KV 内存随上下文长度变化。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig03_kv_memory.png",
+    "svg": "source/_visuals/inference/fig03_kv_memory.svg"
+  },
+  {
+    "id": "fig04_roofline",
+    "description": "假设有效带宽 600 GB/s、有效算力 80 TFLOP/s，线性层权重复用使算术强度随批量增加。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig04_roofline.png",
+    "svg": "source/_visuals/inference/fig04_roofline.svg"
+  },
+  {
+    "id": "fig05_batching",
+    "description": "同一简化模型下，总输出吞吐随批量增加，而每条序列的解码速率下降；长上下文进一步增加 KV 读取。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig05_batching.png",
+    "svg": "source/_visuals/inference/fig05_batching.svg"
+  },
+  {
+    "id": "fig06_speculation",
+    "description": "固定条件接受率和显式草稿与验证成本下，投机块长度与收益关系；曲线不是实测加速。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig06_speculation.png",
+    "svg": "source/_visuals/inference/fig06_speculation.svg"
+  },
+  {
+    "id": "fig07_kv_transfer",
+    "description": "同一 GQA 模型的 KV 交接，在 100、200、400 Gb/s 链路下的单向线速传输下界。",
+    "type": "analytical",
+    "provenance": "Analytical illustration, not a benchmark.",
+    "data_directory": "../data",
+    "png": "images/fig07_kv_transfer.png",
+    "svg": "source/_visuals/inference/fig07_kv_transfer.svg"
+  },
+  {
+    "id": "fig08_parallelism",
+    "description": "数据、张量、流水线和专家并行分割不同对象，通信与容量代价不同。",
+    "type": "schematic",
+    "provenance": "Mechanism schematic; not a physical topology.",
+    "data_directory": "../data",
+    "png": "images/fig08_parallelism.png",
+    "svg": "source/_visuals/inference/fig08_parallelism.svg"
+  },
+  {
+    "id": "fig09_harness",
+    "description": "Agent harness 管理状态、工具和任务验收；推理服务器调度模型请求，设备运行时执行算子。",
+    "type": "schematic",
+    "provenance": "Mechanism schematic; no measured durations.",
+    "data_directory": "../data",
+    "png": "images/fig09_harness.png",
+    "svg": "source/_visuals/inference/fig09_harness.svg"
+  },
+  {
+    "id": "fig10_attention_io",
+    "description": "Attention 访存示意：显式存取大注意力矩阵，与分块、在线 softmax 的片上处理进行对照。",
+    "type": "schematic",
+    "provenance": "Original mechanism schematic based on FlashAttention (arXiv:2205.14135); no reproduced paper artwork.",
+    "data_directory": "../data",
+    "png": "images/fig10_attention_io.png",
+    "svg": "source/_visuals/inference/fig10_attention_io.svg"
+  },
+  {
+    "id": "fig11_paged_kv",
+    "description": "Paged KV 的逻辑块、块表与非连续物理块示意；两条请求按需使用空闲块。",
+    "type": "schematic",
+    "provenance": "Original mechanism schematic based on PagedAttention (arXiv:2309.06180); no reproduced paper artwork.",
+    "data_directory": "../data",
+    "png": "images/fig11_paged_kv.png",
+    "svg": "source/_visuals/inference/fig11_paged_kv.svg"
+  }
+]

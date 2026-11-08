@@ -1,0 +1,56 @@
+﻿citation_number,key,title,authors,year_or_version,url,supports,checked,kind
+1,metrics,vLLM bench serve — 指标、请求到达率与并发参数,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/cli/bench/serve/,TTFT、TPOT、ITL、请求负载与 goodput 计时口径,2026-11-08,primary_source
+2,distserve,DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving,Zhong et al.,OSDI 2024,https://www.usenix.org/conference/osdi24/presentation/zhong-yinmin,时延目标、goodput、PD 分离与 KV 交接,2026-11-08,primary_source
+3,chat-template,Chat templates,Hugging Face Transformers,持续更新,https://huggingface.co/docs/transformers/chat_templating,消息、角色与工具定义如何进入 token 序列,2026-11-08,primary_source
+4,attention,Attention Is All You Need,Vaswani et al.,2017,https://arxiv.org/abs/1706.03762,Transformer 与 scaled dot-product attention,2026-11-08,primary_source
+5,inference-book,How to Think About Transformer Inference — How to Scale Your Model,JAX Scaling Book authors,2025 起持续更新,https://jax-ml.github.io/scaling-book/inference/,prefill/decode 的计算形状、权重与 KV 成本分析,2026-11-08,primary_source
+6,cache,How caching works,Hugging Face Transformers,持续更新,https://huggingface.co/docs/transformers/cache_explanation,因果解码中的历史 K/V 复用,2026-11-08,primary_source
+7,deepseek-v3,DeepSeek-V3 Technical Report,DeepSeek-AI,2024,https://arxiv.org/abs/2412.19437,671B 总参数、37B 激活参数、MoE 与多 token 预测,2026-11-08,primary_source
+8,mqa,Fast Transformer Decoding: One Write-Head is All You Need,Noam Shazeer,2019,https://arxiv.org/abs/1911.02150,多查询注意力与 KV 读写需求,2026-11-08,primary_source
+9,gqa,GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints,Ainslie et al.,2023,https://arxiv.org/abs/2305.13245v3,MHA、GQA、MQA 的 KV 头组织；原论文 Figure 2,2026-11-08,primary_source
+10,deepseek-v2,"DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model",DeepSeek-AI,2024,https://arxiv.org/abs/2405.04434,MLA 的压缩潜在状态与 MoE 结构,2026-11-08,primary_source
+11,mamba,Mamba: Linear-Time Sequence Modeling with Selective State Spaces,Albert Gu and Tri Dao,2023,https://arxiv.org/abs/2312.00752,选择性状态空间模型的序列状态,2026-11-08,primary_source
+12,llada,Large Language Diffusion Models,Nie et al.,2025,https://arxiv.org/abs/2502.09992,扩散语言模型的迭代生成方式,2026-11-08,primary_source
+13,awq,AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration,Lin et al.,2023–2026,https://arxiv.org/abs/2306.00978,低比特权重量化、打包与专用执行内核,2026-11-08,primary_source
+14,gptq,GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers,Frantar et al.,ICLR 2023,https://arxiv.org/abs/2210.17323,低比特权重量化格式与存储,2026-11-08,primary_source
+15,trt-precision,Numerical Precision — TensorRT-LLM,NVIDIA,持续更新,https://nvidia.github.io/TensorRT-LLM/reference/precision.html,权重、激活、KV 精度和实际执行路径,2026-11-08,primary_source
+16,kivi,KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache,Liu et al.,ICML 2024,https://arxiv.org/abs/2402.02750,KV 量化的存储、访问与精度问题,2026-11-08,primary_source
+17,roofline,Roofline: An Insightful Visual Performance Model for Floating-Point Programs and Multicore Architectures,"Williams, Waterman and Patterson",UCB/EECS-2008-134,https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.html,算术强度、内存带宽与计算上限,2026-11-08,primary_source
+18,roofline-book,All About Rooflines — How to Scale Your Model,JAX Scaling Book authors,2025 起持续更新,https://jax-ml.github.io/scaling-book/roofline/,计算与通信/访存约束的量纲分析,2026-11-08,primary_source
+19,flash-decoding,Flash-Decoding for long-context inference,"Dao et al., PyTorch",2023,https://pytorch.org/blog/flash-decoding/,短 query、长 KV 的 decode 并行与归并,2026-11-08,primary_source
+20,llamacpp,llama.cpp README,ggml-org contributors,持续更新,https://github.com/ggml-org/llama.cpp,GGUF、多硬件后端、量化与 CPU/GPU 混合执行,2026-11-08,primary_source
+21,flexgen,FlexGen: High-Throughput Generative Inference of Large Language Models with a Single GPU,Sheng et al.,2023,https://arxiv.org/abs/2303.06865,受限显存下的权重/状态放置与 offload,2026-11-08,primary_source
+22,mlx,MLX: An array framework for Apple silicon,Apple ML Research,持续更新,https://github.com/ml-explore/mlx,Apple Silicon 的数组计算与统一内存模型,2026-11-08,primary_source
+23,spark,DGX Spark Hardware Overview,NVIDIA,持续更新,https://docs.nvidia.com/dgx/dgx-spark/hardware.html,GB10、128 GB、273 GB/s、FP4 稀疏峰值条件,2026-11-08,primary_source
+24,amd,AMD Ryzen AI Max+ 395 — Specifications,AMD,持续更新,https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html,Radeon 8060S、内存接口与 NPU 独立指标,2026-11-08,primary_source
+25,orca,Orca: A Distributed Serving System for Transformer-Based Generative Models,Yu et al.,OSDI 2022,https://www.usenix.org/conference/osdi22/presentation/yu,迭代级调度与动态请求批处理,2026-11-08,primary_source
+26,trt-runtime,Overview — TensorRT-LLM,NVIDIA,持续更新,https://nvidia.github.io/TensorRT-LLM/overview.html,内核、量化、执行与服务功能范围,2026-11-08,primary_source
+27,vllm-graphs,CUDA Graphs — vLLM,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/design/cuda_graphs/,图捕获、动态形状、派发开销与支持边界,2026-11-08,primary_source
+28,flashattention,FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness,Dao et al.,2022,https://arxiv.org/abs/2205.14135,分块与在线 softmax 减少 HBM/SRAM 中间流量,2026-11-08,primary_source
+29,vllm-paper,Efficient Memory Management for Large Language Model Serving with PagedAttention,Kwon et al.,SOSP 2023,https://arxiv.org/abs/2309.06180,KV 分块、块表、碎片与共享,2026-11-08,primary_source
+30,sglang-paper,SGLang: Efficient Execution of Structured Language Model Programs,Zheng et al.,2024,https://arxiv.org/abs/2312.07104,RadixAttention、前缀复用与结构化生成,2026-11-08,primary_source
+31,prefix-cache,Automatic Prefix Caching — vLLM,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/,复用相同前缀，省去重复 prefill,2026-11-08,primary_source
+32,chunked-prefill,Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve,Agrawal et al.,OSDI 2024,https://arxiv.org/abs/2403.02310,chunked prefill、decode 干扰与时延/吞吐权衡,2026-11-08,primary_source
+33,mlx-lm,MLX-LM README,Apple ML Research contributors,持续更新,https://github.com/ml-explore/mlx-lm,Apple Silicon 上的 LLM 执行与量化配置,2026-11-08,primary_source
+34,vllm-docs,vLLM documentation,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/,服务引擎的功能与支持范围,2026-11-08,primary_source
+35,sglang-docs,SGLang documentation,SGLang contributors,持续更新,https://docs.sglang.io/,运行时、缓存与多 GPU 服务功能,2026-11-08,primary_source
+36,spec-leviathan,Fast Inference from Transformers via Speculative Decoding,"Leviathan, Kalman and Matias",ICML 2023,https://arxiv.org/abs/2211.17192v2,精确投机采样、接受/拒绝校正与原论文 Figure 1,2026-11-08,primary_source
+37,spec-chen,Accelerating Large Language Model Decoding with Speculative Sampling,Chen et al.,2023,https://arxiv.org/abs/2302.01318,草稿验证与保持目标采样分布,2026-11-08,primary_source
+38,eagle,EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test,Li et al.,2025,https://arxiv.org/abs/2503.01840,候选生成机制、目标模型特征复用与推理加速条件,2026-11-08,primary_source
+39,mac-air,"MacBook Air (13-inch, M4, 2025) — Technical Specifications",Apple,2025,https://support.apple.com/en-us/122209,16/24/32 GB 系统统一内存、120 GB/s,2026-11-08,primary_source
+40,mac-studio,Mac Studio (2025) — Technical Specifications,Apple,2025,https://support.apple.com/en-us/122211,M3 Ultra 256 GB 配置与 819 GB/s,2026-11-08,primary_source
+41,rtx-laptop,GeForce RTX 50 Series Laptops — Specifications,NVIDIA,持续更新,https://www.nvidia.com/en-gb/geforce/laptops/50-series/,RTX 5070 Ti Laptop 的 12 GB GDDR7、672 GB/s,2026-11-08,primary_source
+42,amd-halo,AMD Ryzen AI Halo Developer Platform — Ryzen AI Max+ 395,AMD,持续更新,https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html,128 GB LPDDR5x、256 GB/s 及官方产品图片,2026-11-08,primary_source
+43,a5000,NVIDIA RTX A5000 Datasheet,NVIDIA,产品规格,https://www.nvidia.com/content/dam/en-zz/Solutions/products/workstations/nvidia-rtx-a5000-datasheet.pdf,24 GB、768 GB/s、两卡 NVLink 与双向 112.5 GB/s,2026-11-08,primary_source
+44,h100,NVIDIA H100 Tensor Core GPU — Specifications,NVIDIA,产品规格,https://www.nvidia.com/en-us/data-center/h100/,H100 SXM 80 GB HBM3 与 3.35 TB/s,2026-11-08,primary_source
+45,amd-lmstudio,Running and Serving LLMs with LM Studio,AMD AI Playbooks,持续更新,https://developer.amd.com/playbooks/lmstudio-rocm-llms/,AMD 平台、操作系统与 ROCm/Vulkan 执行路径,2026-11-08,primary_source
+46,gpudirect,GPUDirect RDMA — Overview,NVIDIA CUDA documentation,持续更新,https://docs.nvidia.com/cuda/gpudirect-rdma/index.html,GPU/NIC 直接数据通路、PCIe 与拓扑限制,2026-11-08,primary_source
+47,dgx-h100,Introduction to the NVIDIA DGX H100/H200 System,NVIDIA,产品文档,https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html,DGX H100 的八 GPU、640 GB、NVSwitch 和官方机箱图片,2026-11-08,primary_source
+48,parallelism,Parallelism and Scaling — vLLM,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/serving/parallelism_scaling/,TP/PP/多节点部署、NCCL 路径与拓扑,2026-11-08,primary_source
+49,context-parallel,Context Parallel Deployment — vLLM,vLLM contributors,持续更新,https://docs.vllm.ai/en/latest/serving/context_parallel_deployment/,上下文切分、KV 复制和 attention 后端限制,2026-11-08,primary_source
+50,deep-ep,DeepEP README,DeepSeek-AI,持续更新,https://github.com/deepseek-ai/DeepEP/blob/main/README.md,MoE 专家通信的 dispatch/combine,2026-11-08,primary_source
+51,nccl,Collective Operations — NCCL,NVIDIA,持续更新,https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html,AllReduce、AllGather、ReduceScatter 的语义,2026-11-08,primary_source
+52,roce,RDMA over Converged Ethernet — RoCE,NVIDIA Cumulus Linux 5.9,版本文档,https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-59/Layer-1-and-Switch-Ports/Quality-of-Service/RDMA-over-Converged-Ethernet-RoCE/,以太网 RDMA、拥塞控制及有损/无损部署模式,2026-11-08,primary_source
+53,spark-cluster,ConnectX-7 Networking — DGX Spark User Guide,NVIDIA,持续更新,https://docs.nvidia.com/dgx/dgx-spark/spark-clustering.html,两个 200 Gb/s 端口、以太网/RoCE 与 NIC/SoC 拓扑,2026-11-08,primary_source
+54,harness,Effective harnesses for long-running agents,Anthropic Engineering,2025,https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents,任务状态、工具、增量执行、恢复和验收,2026-11-08,primary_source
+55,reasoning,Extended thinking — Claude Platform Docs,Anthropic,持续更新,https://platform.claude.com/docs/en/build-with-claude/extended-thinking,思考 token、计算预算与响应流的不同阶段,2026-11-08,primary_source

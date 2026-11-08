@@ -1,0 +1,120 @@
+{
+  "retrieved": "2026-11-08",
+  "unit_note": "Capacity numbers retain vendor GB labels and are not converted to bytes here. Bandwidth values use decimal GB/s and are peak physical/theoretical specifications, not measured token rates.",
+  "specs": [
+    {
+      "name": "MacBook Air M4 (2025)",
+      "memory_type": "unified_system",
+      "bandwidth_gb_s": 120,
+      "bandwidth_scope": "system memory physical peak",
+      "source_keys": [
+        "mac-air"
+      ],
+      "source_urls": [
+        "https://support.apple.com/en-us/122209"
+      ],
+      "memory_capacity_vendor_gb_options": [
+        16,
+        24,
+        32
+      ]
+    },
+    {
+      "name": "Mac Studio M3 Ultra (2025), 256 GB example",
+      "memory_type": "unified_system",
+      "bandwidth_gb_s": 819,
+      "bandwidth_scope": "system memory physical peak",
+      "note": "The article selects the 256 GB configuration; it makes no claim about the current availability of every historical configuration.",
+      "source_keys": [
+        "mac-studio"
+      ],
+      "source_urls": [
+        "https://support.apple.com/en-us/122211"
+      ],
+      "memory_capacity_vendor_gb": 256
+    },
+    {
+      "name": "RTX 5070 Ti Laptop GPU",
+      "memory_type": "dedicated_vram",
+      "bandwidth_gb_s": 672,
+      "bandwidth_scope": "per GPU physical peak",
+      "source_keys": [
+        "rtx-laptop"
+      ],
+      "source_urls": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "memory_capacity_vendor_gb": 12
+    },
+    {
+      "name": "Ryzen AI Max+395 (128GB example)",
+      "memory_type": "shared_system",
+      "bandwidth_gb_s": 256,
+      "bandwidth_scope": "system memory theoretical peak",
+      "note": "Shared system memory is not identical to memory allocatable by the GPU; allocation depends on platform, OS and driver.",
+      "source_keys": [
+        "amd",
+        "amd-halo"
+      ],
+      "source_urls": [
+        "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-max-plus-395.html",
+        "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html"
+      ],
+      "memory_capacity_vendor_gb": 128
+    },
+    {
+      "name": "NVIDIA DGX Spark GB10",
+      "memory_type": "unified_system",
+      "bandwidth_gb_s": 273,
+      "bandwidth_scope": "system memory physical peak",
+      "source_keys": [
+        "spark"
+      ],
+      "source_urls": [
+        "https://docs.nvidia.com/dgx/dgx-spark/hardware.html"
+      ],
+      "memory_capacity_vendor_gb": 128
+    },
+    {
+      "name": "RTX A5000 single card",
+      "memory_type": "dedicated_vram",
+      "bandwidth_gb_s": 768,
+      "bandwidth_scope": "per GPU physical peak",
+      "source_keys": [
+        "a5000"
+      ],
+      "source_urls": [
+        "https://www.nvidia.com/content/dam/en-zz/Solutions/products/workstations/nvidia-rtx-a5000-datasheet.pdf"
+      ],
+      "memory_capacity_vendor_gb": 24
+    },
+    {
+      "name": "8x RTX A5000",
+      "memory_type": "aggregate_distributed_vram",
+      "per_gpu_bandwidth_gb_s": 768,
+      "gpu_count": 8,
+      "note": "Aggregate physical capacity, not one uniform local allocation pool. No eight-GPU NVSwitch topology is assumed.",
+      "source_keys": [
+        "a5000"
+      ],
+      "source_urls": [
+        "https://www.nvidia.com/content/dam/en-zz/Solutions/products/workstations/nvidia-rtx-a5000-datasheet.pdf"
+      ],
+      "memory_capacity_vendor_gb": 192,
+      "per_gpu_memory_vendor_gb": 24
+    },
+    {
+      "name": "H100 SXM80GB",
+      "memory_type": "dedicated_hbm3",
+      "bandwidth_gb_s": 3350,
+      "bandwidth_scope": "per GPU physical peak",
+      "source_keys": [
+        "h100"
+      ],
+      "source_urls": [
+        "https://www.nvidia.com/en-us/data-center/h100/"
+      ],
+      "memory_capacity_vendor_gb": 80
+    }
+  ]
+}
