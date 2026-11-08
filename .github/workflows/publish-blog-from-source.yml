@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build-verify-publish:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
     timeout-minutes: 30
     steps:
       - name: Checkout current deployed site (preserve all existing media)
@@ -65,6 +67,7 @@ jobs:
               const html = await bytesOf(route, page);
               if (!html) continue;
               const $ = cheerio.load(html.toString(), {decodeEntities: false});
+              let changed = false;
               for (const img of $('.post-body img').toArray()) {
                 const src = $(img).attr('src') || $(img).attr('data-src');
                 if (!src) continue;
@@ -75,12 +78,32 @@ jobs:
                   rel = decodeURIComponent(url.pathname).slice(1);
                 } catch { continue; }
                 if (route.get(rel)) continue;
-                const file = path.resolve(root, rel);
-                if (!file.startsWith(root + path.sep)) continue;
-                if (!fs.existsSync(file) || !fs.statSync(file).isFile()) continue;
-                route.set(rel, fs.readFileSync(file));
-                restored++;
+                // Some historical PNGs were watermarked and shipped as JPEG;
+                // preserve the previously published URL instead of inventing a PNG.
+                const candidates = [rel];
+                if (rel.toLowerCase().endsWith('.png'))
+                  candidates.push(rel.slice(0, -4) + '.jpg');
+                let replacement = null;
+                for (const candidate of candidates) {
+                  const file = path.resolve(root, candidate);
+                  if (!file.startsWith(root + path.sep)) continue;
+                  if (!fs.existsSync(file) || !fs.statSync(file).isFile()) continue;
+                  if (!route.get(candidate)) {
+                    route.set(candidate, fs.readFileSync(file));
+                    restored++;
+                  }
+                  replacement = candidate;
+                  break;
+                }
+                if (replacement && replacement !== rel) {
+                  const url = new URL(src, new URL(page, hexo.config.url + '/'));
+                  url.pathname = '/' + replacement;
+                  $(img).attr('src', url.pathname + url.search + url.hash)
+                        .removeAttr('data-src');
+                  changed = true;
+                }
               }
+              if (changed) route.set(page, $.html());
             }
             hexo.log.info('[CI media hydration] Restored ' + restored + ' existing image routes');
           }, 25);
