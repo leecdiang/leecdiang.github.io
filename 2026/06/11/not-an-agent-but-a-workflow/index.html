@@ -9,23 +9,23 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
+    <meta name="description" content="记录 Main Agent 与 Code Lab 的职责划分，以及证据、审批、校验器和 Obsidian 视图的协作方式；通过实际失败案例分析长期任务中的状态与执行约束。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我搭的不是 Agent,而是一套工作方式">
 <meta property="og:url" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
+<meta property="og:description" content="记录 Main Agent 与 Code Lab 的职责划分，以及证据、审批、校验器和 Obsidian 视图的协作方式；通过实际失败案例分析长期任务中的状态与执行约束。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg">
 <meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg">
 <meta property="article:published_time" content="2026-06-11T05:33:00.000Z">
-<meta property="article:modified_time" content="2026-11-08T04:41:00.157Z">
+<meta property="article:modified_time" content="2026-11-08T08:33:17.918Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="Agent">
@@ -56,7 +56,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -81,7 +81,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E7%95%99%E5%AD%A6%E7%94%B3%E8%AF%B7%E5%BC%80%E5%A7%8B"><span class="toc-text">从留学申请开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95%E8%A3%85%E4%B8%8D%E4%B8%8B%E7%94%B3%E8%AF%B7%E6%B5%81%E7%A8%8B"><span class="toc-text">1. 聊天记录装不下申请流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Main-Agent-%E4%B8%8E-Code-Lab-%E6%80%8E%E6%A0%B7%E5%88%86%E5%B7%A5"><span class="toc-text">2. Main Agent 与 Code Lab 怎样分工</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AE%B0%E5%BF%86%E4%B9%8B%E5%A4%96%EF%BC%8C%E8%BF%98%E9%9C%80%E8%A6%81%E8%AF%81%E6%8D%AE%E6%96%87%E4%BB%B6"><span class="toc-text">3. 记忆之外，还需要证据文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Obsidian-%E5%B1%95%E7%A4%BA%E7%8A%B6%E6%80%81%EF%BC%8C%E5%B7%A5%E4%BD%9C%E5%8C%BA%E4%BF%9D%E5%AD%98%E4%BA%8B%E5%AE%9E"><span class="toc-text">4. Obsidian 展示状态，工作区保存事实</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%A8%A1%E5%9E%8B%E4%BC%9A%E5%87%BA%E9%94%99%EF%BC%8C%E6%96%87%E4%BB%B6%E6%9B%B4%E6%96%B0%E8%A6%81%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="toc-text">5. 模型会出错，文件更新要能验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%95%99%E5%AD%A6%E7%94%B3%E8%AF%B7%E5%8F%AA%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA%E8%A2%AB%E8%B7%91%E9%80%9A%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-text">6. 留学申请只是第一个被跑通的场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%8E%A5%E4%B8%8B%E6%9D%A5%E5%B0%91%E6%90%AD%E7%B3%BB%E7%BB%9F%EF%BC%8C%E5%A4%9A%E7%94%A8%E5%AE%83%E5%81%9A%E4%BA%8B"><span class="toc-text">7. 接下来少搭系统，多用它做事</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%90%8E%E5%87%BA%E9%94%99%E6%97%B6%EF%BC%8C%E8%87%B3%E5%B0%91%E7%9F%A5%E9%81%93%E5%8E%BB%E5%93%AA%E9%87%8C%E6%9F%A5"><span class="toc-text">以后出错时，至少知道去哪里查</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B3%E8%AF%B7%E7%AE%A1%E7%90%86%E4%B8%AD%E7%9A%84%E9%95%BF%E6%9C%9F%E4%BB%BB%E5%8A%A1%E9%9C%80%E6%B1%82"><span class="toc-text">申请管理中的长期任务需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%95%BF%E6%9C%9F%E7%94%B3%E8%AF%B7%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%8A%B6%E6%80%81%E4%B8%8E%E4%BE%9D%E8%B5%96"><span class="toc-text">1. 长期申请任务的状态与依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8C%89%E8%81%8C%E8%B4%A3%E4%B8%8E%E6%9D%83%E9%99%90%E6%8B%86%E5%88%86%E6%89%A7%E8%A1%8C%E8%A7%92%E8%89%B2"><span class="toc-text">2. 按职责与权限拆分执行角色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AF%81%E6%8D%AE%E5%B1%82%E3%80%81%E4%BA%8B%E5%AE%9E%E5%A3%B0%E6%98%8E%E4%B8%8E%E5%AE%A1%E6%89%B9%E7%8A%B6%E6%80%81"><span class="toc-text">3. 证据层、事实声明与审批状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BA%8B%E5%AE%9E%E6%BA%90%E4%B8%8E%E7%94%9F%E6%88%90%E8%A7%86%E5%9B%BE%E7%9A%84%E5%88%86%E7%A6%BB"><span class="toc-text">4. 事实源与生成视图的分离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BB%A5%E6%9B%B4%E6%96%B0%E5%A5%91%E7%BA%A6%E5%92%8C%E9%AA%8C%E8%AF%81%E5%99%A8%E7%BA%A6%E6%9D%9F%E6%A8%A1%E5%9E%8B%E9%94%99%E8%AF%AF"><span class="toc-text">5. 以更新契约和验证器约束模型错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BB%A5%E7%94%B3%E8%AF%B7%E6%99%A8%E6%A3%80%E9%AA%8C%E8%AF%81%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="toc-text">6. 以申请晨检验证工作流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%BB%8E%E7%B3%BB%E7%BB%9F%E6%90%AD%E5%BB%BA%E8%BD%AC%E5%90%91%E6%8C%81%E7%BB%AD%E4%BD%BF%E7%94%A8"><span class="toc-text">7. 从系统搭建转向持续使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%B1%E8%B4%A5%E8%AE%B0%E5%BD%95%E4%B8%8E%E5%8D%8F%E4%BD%9C%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="toc-text">失败记录与协作可靠性</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -89,7 +89,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg"><meta itemprop="dateModified" content="2026-11-08T04:41:00.157Z"><meta itemprop="datePublished" content="2026-06-11T05:33:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg"><meta itemprop="dateModified" content="2026-11-08T08:33:17.918Z"><meta itemprop="datePublished" content="2026-06-11T05:33:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -117,7 +117,7 @@
   
 </div>
 
-            <div class="post-description">关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。</div>
+            <div class="post-description">记录 Main Agent 与 Code Lab 的职责划分，以及证据、审批、校验器和 Obsidian 视图的协作方式；通过实际失败案例分析长期任务中的状态与执行约束。</div>
         </div>
         
         <div class="reading-byline">
@@ -148,29 +148,29 @@
 </style>
 <blockquote>
 <p><strong>Abstract</strong><br>
-I built a personal workflow around AI for long-running tasks: Main Agent handles planning and records, Code Lab handles engineering, and evidence files, approval queues, and validators track their work. The failures were instructive. An agent could report a successful update without writing the records, or pass validation by using the wrong status. This post follows those problems and the boundaries I added to make the workflow usable.</p>
+This development record examines a personal AI workflow for long-running tasks. Main Agent maintains planning and records, while Code Lab executes engineering work. Evidence files, approval states, validators, and generated Obsidian views make their actions traceable. Two observed failures, reporting unwritten records and substituting a semantically incorrect status to pass validation, motivated stricter execution and data contracts. The account distinguishes these deployment observations from broader claims about agent architecture.</p>
 </blockquote>
 <hr>
-<h2 id="从留学申请开始">从留学申请开始</h2>
-<p>这套系统会晨检、查学校、整理 deadline、同步 Obsidian，也会把待审批事项写进 Mac 备忘录。看成品，很容易叫它“AI 留学助手”。</p>
-<p>我更在意的，是这些动作能否接进长期任务：资料过几天还能找到，政策更新能追溯，失败以后知道哪一步没做成。</p>
-<p>因此，搜索、整理、候选项、提醒和文件维护都交给它参与，但证据、校验与审批不能省。</p>
-<p>“看起来完成了”不够，实际状态要能查。</p>
+<h2 id="申请管理中的长期任务需求">申请管理中的长期任务需求</h2>
+<p>系统围绕留学申请提供晨检、院校查询、deadline 整理、Obsidian 同步和 Mac 备忘录待审批提醒。功能表面上接近申请助手，实现中却需要维护跨时间变化的资料与决策状态。</p>
+<p>我关注的是这些动作能否形成连续流程：资料可以检索，政策更新有依据，失败能够定位到具体执行步骤。</p>
+<p>因此，搜索、候选生成、提醒和文件维护需要与证据记录、校验和审批一起设计，不能只检验即时回答。</p>
+<p>完成状态应由实际文件与执行记录支持，而非由 Agent 的自然语言汇报定义。</p>
 <hr>
-<h2 id="1-聊天记录装不下申请流程">1. 聊天记录装不下申请流程</h2>
+<h2 id="1-长期申请任务的状态与依赖">1. 长期申请任务的状态与依赖</h2>
 <p>我在准备留学申请，要同时管理学校、项目要求、APS、IELTS、GRE、推荐人、材料时间线、CV 和 SOP。</p>
-<p>问一次“这所学校要不要 GRE”，容易得到答案。难的是答案以后可能变化，还会影响选校和材料安排。</p>
-<p>deadline 会变，学院与项目的语言要求可能不同，APS 程序也可能调整。我的实习、项目、成绩和竞赛经历还在更新。最终要据此决定 Reach、Target、Safety，区分已核验和低置信度信息，再安排哪些现在做、哪些以后看。</p>
-<p>当时 Gemini 网页版的能力和效率已经让我很烦，来回对话也很难承载这些状态。我想换成能持续维护资料和任务的工作台。</p>
-<p>这个工作台后来长成了这样的结构:</p>
+<p>单次查询可以回答 GRE 要求，但后续政策变化还会影响选校、材料与时间安排，因此查询结果必须进入可更新的任务状态。</p>
+<p>deadline、学院语言要求和 APS 程序可能调整，个人实习、项目、成绩与竞赛也会更新。选校梯度 Reach、Target、Safety 依赖这些信息，并需区分已核验与低置信度内容，再据时间压力安排行动。</p>
+<p>当时我对 Gemini 网页版的能力和效率已经不满，反复对话也难以持续维护这些状态。因此，目标转向一个能记录资料、历史与任务依赖的工作台。</p>
+<p>最终形成的结构如下：</p>
 <div class="v-figure">
 <svg class="v-arch" viewBox="0 0 880 500" role="img" aria-label="PERSONAL WORKBENCH · LAYERED CONTROL"><text x="40" y="34" font-size="10.5" font-weight="600" fill="var(--a-sub)" letter-spacing="1.6" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">PERSONAL WORKBENCH · LAYERED CONTROL</text><text x="40" y="56" font-size="11" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Agent 只是其中一层；证据、控制与事实源决定了它能不能被信任</text><line class="a-spine" x1="48" y1="84" x2="48" y2="466"></line><rect class="a-front" x="80" y="84" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="98" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="115" r="4"></circle><circle class="a-chip" cx="110" cy="115" r="14"></circle><text class="a-title" x="110" y="119" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">01</text><text class="a-title" x="136" y="110" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">View Layer</text><text class="a-sub" x="136" y="129" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Obsidian · Mac 备忘录</text><rect class="a-chip" x="670" y="102" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="119" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">只读视图</text><rect class="a-front" x="80" y="164" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="178" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="195" r="4"></circle><circle class="a-chip" cx="110" cy="195" r="14"></circle><text class="a-title" x="110" y="199" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">02</text><text class="a-title" x="136" y="190" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Agent Layer</text><text class="a-sub" x="136" y="209" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Main Agent · Code Lab</text><rect class="a-chip" x="670" y="182" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="199" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">职责与权限</text><rect class="a-front" x="80" y="244" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="258" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="275" r="4"></circle><circle class="a-chip" cx="110" cy="275" r="14"></circle><text class="a-title" x="110" y="279" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">03</text><text class="a-title" x="136" y="270" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Control Layer</text><text class="a-sub" x="136" y="289" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Validator · 健康检查</text><rect class="a-chip" x="670" y="262" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="279" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">格式与语义</text><rect class="a-front" x="80" y="324" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="338" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="355" r="4"></circle><circle class="a-chip" cx="110" cy="355" r="14"></circle><text class="a-title" x="110" y="359" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">04</text><text class="a-title" x="136" y="350" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Evidence Layer</text><text class="a-sub" x="136" y="369" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">source · run · claim · approval</text><rect class="a-chip" x="670" y="342" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="359" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">可追溯记录</text><rect class="a-front" x="80" y="404" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="418" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="435" r="4"></circle><circle class="a-chip" cx="110" cy="435" r="14"></circle><text class="a-title" x="110" y="439" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">05</text><text class="a-title" x="136" y="430" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">Source of Truth</text><text class="a-sub" x="136" y="449" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">OpenClaw workspace</text><rect class="a-chip" x="670" y="422" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="439" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">正式事实源</text><text x="40" y="486" font-size="9.5" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">2D 分层：层级只由顺序和缩进表达，不用透视和阴影。</text></svg>
 <p class="v-caption">图 1：个人工作台的分层控制。Agent 只是其中一层，证据、控制与事实源决定它能否被信任。</p>
 </div>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">System Structure</span><br><span class="line"></span><br><span class="line">Main Agent:长期规划、晨检、审批、策略、资料库维护</span><br><span class="line">Code Lab:代码项目、脚本、validator、Obsidian 生成逻辑</span><br><span class="line">Evidence Layer:source → run → claim → approval</span><br><span class="line">Validator:检查格式、语义和生成文件健康状态</span><br><span class="line">Obsidian:可视化看板</span><br><span class="line">Mac 备忘录:轻提醒副本</span><br><span class="line">OpenClaw workspace:事实源</span><br></pre></td></tr></tbody></table></figure>
-<p>留学是第一个跑通的场景。之后，工程、学习、毕业设计、博客和申请都可以接进来；我不想每次换聊天窗口，就重新交代一遍上下文。</p>
+<p>申请是首先跑通的场景，后续计划覆盖工程、学习、毕业设计与博客。跨场景复用的对象是状态和记录机制，以减少每次重新建立上下文的成本。</p>
 <hr>
-<h2 id="2-Main-Agent-与-Code-Lab-怎样分工">2. Main Agent 与 Code Lab 怎样分工</h2>
+<h2 id="2-按职责与权限拆分执行角色">2. 按职责与权限拆分执行角色</h2>
 <p>设计时，我参考了两篇 single-agent 与 multi-agent 论文。</p>
 <blockquote>
 <p><strong>论文一:When Single-Agent with Skills Replace Multi-Agent Systems and When They Fail</strong><br>
@@ -182,84 +182,84 @@ arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2601.04748"
 arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.02460">https://arxiv.org/abs/2604.02460</a></p>
 <p>这篇论文的核心观点是: 很多 multi-agent 系统看起来更强，可能只是因为它用了更多 test-time compute。多个 agent 轮流发言、互相总结、互相修正，本质上消耗了更多 thinking tokens、更多上下文传递和更多中间推理。当把 reasoning-token budget 控制到相同水平时，single-agent 在多跳推理任务中经常可以匹配甚至超过 multi-agent。这说明，multi-agent 的优势不应被默认归因于"架构更聪明"，而要先排除计算预算、上下文组织和通信开销带来的影响。</p>
 </blockquote>
-<p>据此，我决定先查是否真的需要独立角色，再考虑增加 Agent。</p>
-<p>最初想按主题拆：留学、芯片、代码、博客各一个，需要时再加。</p>
-<p>但按这个办法，一个“博客 Agent”既要写作又要改主题、管 Git，留学 Agent 也要同时规划、搜索、整理和改文件。</p>
-<p>看起来分了领域，执行权限却没有分开。</p>
-<p>芯片 Agent 同样会混合知识讲解与毕业设计文档维护，每个角色仍有很多杂事。</p>
-<p>论文里的 Skills 方案给了我另一个思路：没有独立状态、权限、工具链或决策目标的角色，可以先合在一个 Agent 内，用少量边界清晰的 Skills 处理，减少来回转述。</p>
-<p>需要另外隔开的，是工程执行。长期规划和记忆维护一旦同时带着改代码、运行 shell、重写配置的权限，理解错上下文时就可能直接改变工程，副作用也难追踪。</p>
-<p>最后保留两个常驻角色，按职责与风险分开。</p>
+<p>这些工作使我优先检查状态、工具与权限是否独立，再决定是否需要增加常驻 Agent。</p>
+<p>最初方案按领域拆分留学、芯片、代码和博客角色。</p>
+<p>这种划分却将异质职责留在同一角色内：博客同时涉及写作、主题与 Git，申请同时涉及规划、检索、归档和文件修改。</p>
+<p>领域边界没有自动形成执行权限边界。</p>
+<p>芯片角色也同时承担知识解释和毕业设计文档维护，进一步增加职责交叉。</p>
+<p>Skills 方案提供了另一种组织方式：若角色没有独立状态、权限、工具链或目标，可以先由同一 Agent 内的少量明确 Skills 承担，减少上下文转述成本。其适用性仍受论文列出的共享上下文和可序列化条件限制。</p>
+<p>工程执行则需要单独隔离。规划与记忆维护若同时具备任意改代码、运行 shell 和重写配置的权限，理解错误便可能直接改变工程状态，且难以区分决策与执行责任。</p>
+<p>最终保留 Main Agent 与 Code Lab 两个常驻角色，按职责和风险划定权限。</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Main Agent = 长期规划 / 策略 / 资料库 / 记忆 / 决策支持</span><br><span class="line">Code Lab = 工程执行 / 脚本 / 测试 / 本地工具维护</span><br></pre></td></tr></tbody></table></figure>
-<p>Main Agent 维护目标、路径、资料库、待办和审批。留学规划、数字 IC 学习、毕业设计、实习分析和长期归档，都可以留在这一层。</p>
+<p>Main Agent 负责目标解释、路径分解、资料库、待办与审批，覆盖申请、数字 IC 学习、毕业设计、实习分析及归档。领域知识作为任务上下文保留，不再各自建立执行角色。</p>
 <p>它承担规划、解释和记忆，主要回答这些问题：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">这个目标应该怎么拆？</span><br><span class="line">哪些信息值得长期保存？</span><br><span class="line">哪些任务应该交给 Code Lab 执行？</span><br><span class="line">哪些决策需要我本人确认？</span><br><span class="line">哪些资料还只是草稿，不能写入正式记录？</span><br></pre></td></tr></tbody></table></figure>
-<p>它可以提方案、发任务单、记决策，但不能递归扫描仓库、重写脚本、随手改项目，未经审批的信息也不能直接进入正式资料库。</p>
+<p>Main Agent 可以生成方案、任务单与决策记录，但不直接扫描代码仓库、修改脚本或项目，也不将未经审批的信息写入正式资料库。</p>
 <hr>
-<p>Code Lab 接工程任务：Apple-Health-Pro、Hexo、Obsidian 同步脚本、validator、CSS、Git、测试与本地 shell。它改文件、运行命令和调试，交回可验证的执行证据。</p>
+<p>Code Lab 负责 Apple-Health-Pro、Hexo、同步脚本、validator、CSS、Git、测试与本地 shell。其交付对象是文件修改、执行结果和可核查的验证证据。</p>
 <p>Code Lab 应该回答的是另一组问题:</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">当前 Git 状态是什么？</span><br><span class="line">测试是否通过？</span><br><span class="line">哪个脚本失败了？</span><br><span class="line">改了哪些文件？</span><br><span class="line">diff 是否最小？</span><br><span class="line">能否复现问题？</span><br><span class="line">是否需要回滚？</span><br></pre></td></tr></tbody></table></figure>
-<p>APS 路线、学校优先级、申请策略和学习方向，不由 Code Lab 决定。它执行 Main Agent 的工程任务，再返回结果，也不能把待判断的信息写成正式事实。</p>
-<p>这个边界能阻止一种具体的混乱：晨检失败后，规划 Agent 顺手重写脚本；或者执行 Agent 因为能改文件，就替我更改选校策略。</p>
-<p>需要隔离的，是权限、风险和职责。</p>
+<p>APS 路线、学校优先级、申请策略和学习方向仍由规划与个人决策处理。Code Lab 执行工程任务并返回结果，不能将信息判断直接升级为正式事实。</p>
+<p>隔离的目的是限制跨职责副作用，例如晨检失败时由规划角色自行重写脚本，或由执行角色直接更改选校策略。</p>
+<p>因此，这里的架构边界依据权限、风险与职责，而非知识主题。</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上下文隔离：长期规划和工程执行的上下文不要互相污染。</span><br><span class="line">权限隔离：能做策略判断的 agent，不必有本地执行权限。</span><br><span class="line">风险隔离：低风险的信息整理和高风险的文件修改，应该在不同边界里。</span><br></pre></td></tr></tbody></table></figure>
-<p>留学、芯片和博客可以作为 Main Agent 的 Skills 或资料库。工程修改、脚本、Git 和测试交给 Code Lab，不必再为每个主题养一个常驻角色。</p>
-<p>过多拆分会增加通信、上下文传递和工具选择的成本；全部合并，又隔不开权限。两个角色是我在这次部署里的取舍。</p>
-<p>Main Agent 留下长期记忆、策略与任务分解，Code Lab 负责工程实现和验证。</p>
+<p>申请、芯片和博客可作为 Main Agent 内部 Skills 或资料库；代码、脚本、Git 与测试交给 Code Lab。这样保留领域上下文，同时集中工程执行。</p>
+<p>两个角色是此次部署的具体折中：过多拆分增加通信与选择成本，完全合并则削弱权限隔离，不能由角色数量本身判断架构优劣。</p>
+<p>这一分工分别保存长期记忆与策略，以及本地实现与验证的责任。</p>
 <hr>
-<h2 id="3-记忆之外，还需要证据文件">3. 记忆之外，还需要证据文件</h2>
-<p>记得一条信息，不等于核验过它。</p>
-<p>比如“Purdue GRE 可能 optional”，可以作为后续查询的上下文，却不能直接进正式 tracker。来源、时间、置信度、核验日期和变更记录都要补齐。</p>
+<h2 id="3-证据层、事实声明与审批状态">3. 证据层、事实声明与审批状态</h2>
+<p>模型记忆提供上下文，不能独立充当事实核验依据。</p>
+<p>“Purdue GRE 可能 optional”可以引导查询，但进入正式 tracker 以前，需要来源、时间、置信度、核验日期和变更记录。</p>
 <p>为此建了四个 JSONL 证据文件。</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source_registry.jsonl</span><br><span class="line">retrieval_runs.jsonl</span><br><span class="line">fact_claims.jsonl</span><br><span class="line">approval_queue.jsonl</span><br></pre></td></tr></tbody></table></figure>
-<p><code>source_registry.jsonl</code> 记录来源本身:URL、标题、来源类型、检索时间、置信度。一个来源是官方页面、论坛帖子、项目手册还是非正式总结，意义完全不同。</p>
-<p><code>retrieval_runs.jsonl</code> 记录每次查了什么:query 是什么，用了什么工具，目的是什么，结论是什么。这解决的是"我到底有没有查过"这个问题。</p>
-<p><code>fact_claims.jsonl</code> 记录具体事实声明。比如某个项目 GRE optional、某个项目 IELTS writing 要求、某个 deadline 是估算还是官方确认。它把"资料"拆成可追溯的 claim。</p>
-<p><code>approval_queue.jsonl</code> 记录这些信息是否需要我介入。确认某条信息无变化时用 <code>no_action_required</code>。需要我行动是 <code>pending</code>。信息不足是 <code>needs_more_research</code>。路线选择——比如 APS 走 TestAS 还是标准面谈——是 <code>decision_item</code>，必须等我明确选。</p>
+<p><code>source_registry.jsonl</code> 记录 URL、标题、来源类型、检索时间和置信度，区分官方页面、手册、论坛与非正式总结的证据地位。</p>
+<p><code>retrieval_runs.jsonl</code> 记录 query、工具、目的与结论，用于追溯检索是否实际发生及其执行条件。</p>
+<p><code>fact_claims.jsonl</code> 把项目 GRE、IELTS writing 要求和 deadline 等信息拆成可追溯声明，并区分估算与官方确认。</p>
+<p><code>approval_queue.jsonl</code> 保存处理状态：无变化为 <code>no_action_required</code>，待行动为 <code>pending</code>，信息不足为 <code>needs_more_research</code>；APS 的 TestAS 或标准面谈等路线选择为 <code>decision_item</code>，等待本人决定。</p>
 <hr>
 <p>第一次测试 Purdue GRE 政策时，Main Agent 口头说已经记录了 retrieval run、注册了 source、生成了 claim、写入了 approval queue。但 validator 一跑，四个 JSONL 文件全是空的。</p>
-<p>当时它只更新了可读摘要，没有落下机器可读的记录。后来晨检必须写 JSONL，就是为了解决这种口头完成、文件为空的情况。</p>
+<p>可读摘要被更新，并未产生机器可读审计记录。后续晨检强制写入 JSONL，使完成状态能够与实际产物核对。</p>
 <p>还有一次，<code>approval_queue</code> 里本来要写"核验无变化，无需审批"，但 validator 不接受 <code>no_action_required</code>。Agent 为了让 validator PASS，改成了 <code>rejected</code>。</p>
-<p>验证器放行了，记录却写错了。</p>
-<p><code>rejected</code> 只能表示我明确拒绝，不能代替“无需改动”。否则以后查看历史，会误以为我拒绝过更新。验证器因此还得检查状态语义。</p>
+<p>格式验证通过，但状态含义与实际操作不一致。</p>
+<p><code>rejected</code> 只表示明确拒绝，不能表示无需改动。否则，历史记录会产生并未发生的审批事件。验证器因此还需保护状态语义，而非只检查枚举值合法。</p>
 <p>于是我们补齐了 status 语义:</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pending - 等待我审批</span><br><span class="line">approved - 我已批准,但尚未应用</span><br><span class="line">applied - 已写入正式 tracker / checklist / timeline</span><br><span class="line">rejected - 只有我明确拒绝时使用</span><br><span class="line">needs_more_research - 信息不足,不能写入正式 tracker</span><br><span class="line">no_action_required - 核验无变化,无需人工审批</span><br></pre></td></tr></tbody></table></figure>
-<p>路线由我决定，Agent 可以先查资料、列行动项，并把每一步证据留下。</p>
+<p>Agent 可以收集证据和生成行动项，个人路线选择则通过明确决策进入记录。</p>
 <hr>
-<h2 id="4-Obsidian-展示状态，工作区保存事实">4. Obsidian 展示状态，工作区保存事实</h2>
-<p>Obsidian 让这些资料和任务可以一起查看。</p>
+<h2 id="4-事实源与生成视图的分离">4. 事实源与生成视图的分离</h2>
+<p>Obsidian 承担可视化与检索入口，把分散状态组织为可查看页面。</p>
 <p>最终生成了这些页面：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Dashboard - Overview</span><br><span class="line">Dashboard - Timeline</span><br><span class="line">Dashboard - By Tier</span><br><span class="line">Dashboard - Pending Approval</span><br><span class="line">Board - Application Status</span><br><span class="line">Schools/</span><br></pre></td></tr></tbody></table></figure>
 <p><img alt="" src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg" decoding="async" loading="lazy" width="1600" height="775"></p>
 <p>Overview 汇总阶段、待审批、时间压力和下一步；Timeline 按 deadline 排序，By Tier 看选校梯度。Pending Approval 集中待确认事项，Kanban 按 Research、Needs Verification、Shortlist、Preparing、Applying、Submitted、Archived 展示流程，Schools 下则是一校一项目的页面。</p>
-<p>时间、选校和审批各有视图，没必要都塞进一个 Dashboard。</p>
-<p>Obsidian 与 Mac 备忘录保存的是生成视图、提醒副本。事实保留在 OpenClaw workspace 的 CSV、Markdown、JSONL、approval log 和 change log 中。</p>
-<p>页面齐全、看板漂亮，都不能证明 deadline 核验过。查依据时仍要回到这些工作区记录。</p>
+<p>不同视图分别呈现时间、选校结构和审批，避免同一页面同时承担全部查询目标。</p>
+<p>OpenClaw workspace 中的 CSV、Markdown、JSONL、approval log 和 change log 保存正式状态；Obsidian 与 Mac 备忘录则保存生成视图和提醒副本。</p>
+<p>页面完整性不能证明内容已核验。deadline 的来源和核验情况仍应回到工作区记录。</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OpenClaw workspace = 事实源</span><br><span class="line">Obsidian = 可视化看板 / 阅读副本</span><br><span class="line">Mac Notes = 轻提醒副本</span><br><span class="line">Excel/CSV = 结构化数据和快照</span><br></pre></td></tr></tbody></table></figure>
-<p>Obsidian 适合查看和理解。直接在那里改事实，会绕过记录流程，还可能被下次同步覆盖。</p>
+<p>直接修改生成视图会绕过记录流程，也可能在同步时被覆盖，因此事实更新应进入正式状态层。</p>
 <hr>
-<h2 id="5-模型会出错，文件更新要能验证">5. 模型会出错，文件更新要能验证</h2>
+<h2 id="5-以更新契约和验证器约束模型错误">5. 以更新契约和验证器约束模型错误</h2>
 <p>部署时的 API 价格对比如下。</p>
 <p><img alt="" src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg" decoding="async" loading="lazy" width="1576" height="842"></p>
-<p>DeepSeek V4 Flash 便宜、快、上下文长，日常能用；复杂流程常需要多改几轮。识图、记忆检索和联网搜索等场景接了 Gemini API，因为 DeepSeek 没有多模态能力，Gemini 免费额度在这些用法里基本够用。</p>
-<p>多步骤执行时，问题开始集中出现：</p>
+<p>在这次部署中，DeepSeek V4 Flash 的成本、速度与上下文适合日常任务，但复杂流程仍需反复修正。识图、记忆检索和联网场景接入 Gemini API，其免费额度在当时用法下基本够用；DeepSeek 缺少多模态能力是这一配置的原因之一。</p>
+<p>多步骤执行暴露了以下问题：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">口头说完成，但实际没写 JSONL</span><br><span class="line">工具报错后仍然汇报"写入完成"</span><br><span class="line">把 rejected 当成 no_action_required</span><br><span class="line">忘记脚本路径</span><br><span class="line">用 fragile exact oldText 替换文件，结果失败</span><br><span class="line">同步看板时写出 \n 或 \u000 这类转义污染</span><br></pre></td></tr></tbody></table></figure>
-<p>这些错误不能只靠提醒模型“认真一点”。</p>
+<p>这类失败需要执行层约束，单纯加强提示词无法验证实际文件状态。</p>
 <p>以 <code>DAILY_BRIEF.md</code> 的更新逻辑为例：</p>
 <p>开始时，Main Agent 用精确文本替换更新每日简报:</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edit(oldText=..., newText=...)</span><br></pre></td></tr></tbody></table></figure>
-<p>日期、空格、emoji 或换行不一致，精确替换就会失败。它曾按 2026-06-11 的内容匹配，文件实际还停在 2026-06-09；工具报错以后，它仍说写入完成。</p>
+<p>精确替换依赖日期、空格、emoji 与换行一致。一次更新按 2026-06-11 匹配，实际文件停在 2026-06-09，导致工具报错；Agent 仍汇报完成，说明执行返回未正确约束最终状态。</p>
 <p>后来我们把它改成 marker-based update:</p>
 <figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- DAILY<span class="emphasis">_BRIEF:BEGIN --&gt;</span></span><br><span class="line"><span class="emphasis">这里是最新晨检摘要</span></span><br><span class="line"><span class="emphasis">&lt;!-- DAILY_</span>BRIEF:END --&gt;</span><br></pre></td></tr></tbody></table></figure>
-<p>后来用 <code>update_daily_brief.py</code> 只替换 marker 之间的内容。写后再读前 80 行确认，确认成功才能汇报。</p>
-<p>validator 继续检查 JSONL、字段和 status 语义，也查 Obsidian 坏转义、Kanban 错列、学校页面 frontmatter。检查结果要对应实际产物，不能用 Agent 的一句总结代替。</p>
-<p>写入、读取和校验连起来，失败才有机会在进入后续步骤前被发现。</p>
+<p>改用 <code>update_daily_brief.py</code> 仅替换 marker 区间，更新后读取前 80 行核对，读取成功后才能报告完成。</p>
+<p>validator 检查 JSONL 格式、字段、status 语义、Obsidian 转义、Kanban 列和学校 frontmatter。它验证产物是否满足契约，不能由模型自述替代。</p>
+<p>写后读取与语义校验共同建立完成证据，使错误有机会在后续同步和决策前暴露。</p>
 <hr>
-<h2 id="6-留学申请只是第一个被跑通的场景">6. 留学申请只是第一个被跑通的场景</h2>
-<p>留学申请需要检索、核验、材料、时间线与个人决策，又要长期维护，很适合用来检验这套工作方式。</p>
+<h2 id="6-以申请晨检验证工作流">6. 以申请晨检验证工作流</h2>
+<p>申请同时包含检索、证据核验、时间线、材料和个人选择，适合作为长期状态管理的部署案例。</p>
 <p>后来把“执行留学晨检”固化成 Skill，按明确的 11 步执行：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">写入 retrieval_runs.jsonl</span><br><span class="line">写入 source_registry.jsonl</span><br><span class="line">写入 fact_claims.jsonl</span><br><span class="line">写入 approval_queue.jsonl</span><br><span class="line">用 update_daily_brief.py 更新 DAILY_BRIEF.md</span><br><span class="line">读取前 80 行确认</span><br><span class="line">更新 PENDING_APPROVAL.md</span><br><span class="line">跑 validator</span><br><span class="line">同步 Mac 备忘录</span><br><span class="line">同步 Obsidian</span><br><span class="line">汇报全部结果</span><br></pre></td></tr></tbody></table></figure>
-<p>而且我们明确规定:SCHOOL_LIST 只读不改，除非我专门审批通过。validator FAIL 必须修复，不能跳过。脚本路径固定，Main Agent 只调用，不重写。<code>rejected</code> 只能表示我明确拒绝，<code>no_action_required</code> 才表示核验无变化。</p>
+<p>SCHOOL_LIST 默认只读，修改需要专门审批；validator FAIL 不能跳过；Main Agent 只调用固定脚本，不重写实现。<code>rejected</code> 与 <code>no_action_required</code> 继续保留各自的审批语义。</p>
 <p>这套流程后来跑通了几个真实测试:</p>
 <ul>
 <li>
@@ -272,24 +272,24 @@ arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.02460"
 <p>APS 审核: 生成了 action_item 和 decision_item。比如材料清单需要补充，TestAS 060 vs 标准面谈则需要我自己决策。</p>
 </li>
 </ul>
-<p>这些测试分别走通了无变化核验、行动项和决策项三条路径。</p>
-<p>后续可以把同样的证据、审批和验证接到工程、毕业设计、数字 IC 学习、博客及实习分析中。它们还需要各自适配，留学申请只完成了第一轮验证。</p>
+<p>这些测试覆盖无变化事实核验、行动需求和路线决策三种处理路径，支持该流程在已测场景下可执行。</p>
+<p>工程、毕业设计、学习和博客可以复用证据、审批与验证机制，但仍需分别定义资料与验收条件，不能将申请场景的成功直接外推。</p>
 <hr>
-<h2 id="7-接下来少搭系统，多用它做事">7. 接下来少搭系统，多用它做事</h2>
-<p>系统基本成型，我想先把它用起来。</p>
-<p>继续接飞书、Telegram、iMessage、日历、监控，或继续增加 Agent 和 Dashboard，都有理由。但一直加这些，也会挤掉申请和工程本身的时间。</p>
-<p>现在这套工作台已阶段性可用，接下来应该服务具体产出。</p>
-<p>Code Lab 继续维护 Apple-Health-Pro、Hexo 和同步脚本。每轮先看 <code>git status</code>，限制读取文件和命令数量，避免递归扫描，小步修改、提交。</p>
-<p>Main Agent 继续按证据流程晨检 APS、推荐人、High priority 项目、IELTS/GRE/deadline、CV_FACTS 和 SOP 主线，涉及选择时仍走审批。</p>
-<p>数字 IC、实习和毕业设计，则用它维护长期资料、拆阶段任务，记录每次选择的依据。</p>
-<p>博客里，Code Lab 管 Hexo 和样式，Main Agent 整理结构、复盘和主题线索，最终怎样表达由我决定。</p>
+<h2 id="7-从系统搭建转向持续使用">7. 从系统搭建转向持续使用</h2>
+<p>当前系统已阶段性可用，后续重点是检验它对具体任务的帮助。</p>
+<p>继续扩展飞书、Telegram、iMessage、日历、监控或更多 Agent 与 Dashboard，会增加维护和接入成本，也占用申请与工程时间。新增能力因此需要对应实际任务需求。</p>
+<p>使用效果应体现在持续产出和可维护记录上，而非组件数量。</p>
+<p>Code Lab 继续维护 Apple-Health-Pro、Hexo 与同步脚本，每轮先检查 <code>git status</code>，限制读取和命令范围，避免递归扫描，再以小步修改和提交保留可追溯性。</p>
+<p>Main Agent 依据证据流程晨检 APS、推荐人、High priority 项目、IELTS/GRE/deadline、CV_FACTS 和 SOP 主线，路线选择继续经过审批。</p>
+<p>数字 IC、实习与毕业设计则采用长期资料和阶段任务组织，记录每次选择的依据。</p>
+<p>博客维护中，Code Lab 负责 Hexo 和样式，Main Agent 整理结构、复盘和主题线索，最终表达由我决定。</p>
 <p>日常使用时，我希望按下面的关系分配工作：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Main Agent：帮我想清楚、记下来、形成决策流</span><br><span class="line">Code Lab：帮我做出来、跑起来、修到稳定</span><br><span class="line">Obsidian：让我看见</span><br><span class="line">Evidence Layer：让一切有迹可循</span><br><span class="line">Validator：让错误尽早暴露</span><br></pre></td></tr></tbody></table></figure>
 <hr>
-<h2 id="以后出错时，至少知道去哪里查">以后出错时，至少知道去哪里查</h2>
-<p>以前主要靠问答推进，方便，却很难持续保存任务状态。现在多了文件、历史、审批和人的决策位置，代价是必须维护这些约定。</p>
-<p>模型、脚本和 Obsidian 都还会出错，Main Agent 也可能忘记规则。我不能保证每次都拦住，但至少可以沿 validator、approval queue 和 evidence 文件查到哪一步出了问题，再交给 Code Lab 修。</p>
-<p>这套系统是否有用，要在接下来的长期任务里继续看。我会把重复整理和执行逐步交出去，把申请路线与重要选择留给自己。</p>
+<h2 id="失败记录与协作可靠性">失败记录与协作可靠性</h2>
+<p>即时问答便于快速获取信息，长期任务则还需要状态、历史和决策记录。引入这些结构后，也必须承担同步与语义约定的维护成本。</p>
+<p>模型、脚本和看板仍可能失败。validator、approval queue 与 evidence 文件提供了定位和修复路径，但不能保证全部错误都被拦截；其有效性需要在长期使用中继续检查。</p>
+<p>我会逐步交出重复整理与工程执行，把申请路线和重要选择保留在明确的个人决策环节。这套系统的边界由实际失败和验证结果继续调整。</p>
 <p>部署中遇到问题，也可以写邮件给我交流。</p>
 <hr>
 

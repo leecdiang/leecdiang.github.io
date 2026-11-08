@@ -9,20 +9,20 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="四缸马力更大，为什么不降挡超车反而慢？从真实加速测试出发，沿着发动机、变速箱和骑手接触点，看看缸数怎样改变动力、节奏与长途体验。">
+    <meta name="description" content="结合道路加速测试、发动机参数与振动研究，分析总排量、缸数、转速和齿比怎样共同影响动力表现，并区分机械激励与骑手接触点的振动。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从油门到后轮：同样的排量，几缸才适合你？">
+<meta property="og:title" content="摩托车缸数、动力特性与振动">
 <meta property="og:url" content="https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="四缸马力更大，为什么不降挡超车反而慢？从真实加速测试出发，沿着发动机、变速箱和骑手接触点，看看缸数怎样改变动力、节奏与长途体验。">
+<meta property="og:description" content="结合道路加速测试、发动机参数与振动研究，分析总排量、缸数、转速和齿比怎样共同影响动力表现，并区分机械激励与骑手接触点的振动。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://leecdiang.com/images/social/5ec48bd1874c.png">
+<meta property="og:image" content="https://leecdiang.com/images/social/15a204480450.png">
 <meta property="article:published_time" content="2026-11-01T06:56:00.000Z">
 <meta property="article:modified_time" content="2026-11-02T05:46:07.000Z">
 <meta property="article:author" content="LEEcDiang">
@@ -32,16 +32,16 @@
 <meta property="article:tag" content="振动与噪声">
 <meta property="article:tag" content="摩托车">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://leecdiang.com/images/social/5ec48bd1874c.png">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/15a204480450.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/","path":"2026/11/01/motorcycle-cylinders-displacement-vibration/","title":"从油门到后轮：同样的排量，几缸才适合你？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/","path":"2026/11/01/motorcycle-cylinders-displacement-vibration/","title":"摩托车缸数、动力特性与振动"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>从油门到后轮：同样的排量，几缸才适合你？ | Beyond the Clock</title>
+<title>摩托车缸数、动力特性与振动 | Beyond the Clock</title>
   
 
 
@@ -56,7 +56,7 @@
 
   
   <script defer="" src="/js/visual-diagrams.js"></script>
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -81,7 +81,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9B%9B%E7%BC%B8%E6%9B%B4%E5%BF%AB%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B6%85%E8%BD%A6%E5%8D%B4%E6%9B%B4%E6%85%A2%EF%BC%9F"><span class="toc-text">1. 四缸更快，为什么超车却更慢？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8E%92%E9%87%8F%E7%9B%B8%E8%BF%91%EF%BC%8C%E6%89%AD%E7%9F%A9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B9%9F%E5%B8%B8%E5%B8%B8%E7%9B%B8%E8%BF%91%EF%BC%9F"><span class="toc-text">2. 排量相近，扭矩为什么也常常相近？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%98%E9%80%9F%E7%AE%B1%EF%BC%8C%E6%8A%8A%E8%BD%AC%E9%80%9F%E6%8D%A2%E6%88%90%E8%BD%AE%E8%83%8E%E4%B8%8A%E7%9A%84%E6%8E%A8%E5%8A%9B"><span class="toc-text">3. 变速箱，把转速换成轮胎上的推力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%A4%9A%E7%BC%B8%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%EF%BC%8C%E5%B8%B8%E5%B8%B8%E6%98%AF%E9%AB%98%E8%BD%AC%E7%9A%84%E4%BD%99%E5%9C%B0"><span class="toc-text">4. 多缸多出来的，常常是高转的余地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%AF%8F%E4%B8%80%E4%B8%8B%E5%81%9A%E5%8A%9F%EF%BC%8C%E6%80%8E%E6%A0%B7%E5%8F%98%E6%88%90%E6%89%8B%E8%85%95%E9%87%8C%E7%9A%84%E2%80%9C%E6%80%A7%E6%A0%BC%E2%80%9D%EF%BC%9F"><span class="toc-text">5. 每一下做功，怎样变成手腕里的“性格”？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%A4%A7%E5%8D%95%E7%BC%B8%E7%9A%84%E5%90%B8%E5%BC%95%E5%8A%9B%EF%BC%8C%E8%BF%98%E5%9C%A8%E6%95%B4%E8%BE%86%E8%BD%A6%E4%B8%8A"><span class="toc-text">6. 大单缸的吸引力，还在整辆车上</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E9%95%BF%E9%80%94%E8%88%92%E4%B8%8D%E8%88%92%E6%9C%8D%EF%BC%8C%E8%A6%81%E4%B8%80%E7%9B%B4%E8%BF%BD%E5%88%B0%E6%89%8B%E3%80%81%E8%84%9A%E5%92%8C%E5%BA%A7%E5%9E%AB"><span class="toc-text">7. 长途舒不舒服，要一直追到手、脚和座垫</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E3%80%81%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%A0%94%E7%A9%B6%E8%BE%B9%E7%95%8C"><span class="toc-text">数据、计算与研究边界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2024%E5%B9%B4%E5%8E%82%E5%95%86%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%8F%82%E6%95%B0"><span class="toc-text">2024年厂商发动机参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2021-Dueruote-%E5%90%8C%E5%9C%BA%E6%B5%8B%E8%AF%95"><span class="toc-text">2021 Dueruote 同场测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cycle-World-%E8%BD%AE%E4%B8%8A%E6%B5%8B%E5%8A%9F"><span class="toc-text">Cycle World 轮上测功</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E8%BD%A6%E8%B4%A8%E9%87%8F%E3%80%81%E6%B2%B9%E8%80%97%E5%92%8C%E6%B2%B9%E7%AE%B1"><span class="toc-text">整车质量、油耗和油箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2016%E5%B9%B4%E9%81%93%E8%B7%AF%E7%A0%94%E7%A9%B6%E4%B8%AD%E7%9A%84%E4%BA%94%E8%BE%86%E6%A0%B7%E8%BD%A6"><span class="toc-text">2016年道路研究中的五辆样车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2022%E5%B9%B470-cc%E5%8D%95%E7%BC%B8%E7%9A%84%E8%BD%A6%E6%8A%8A%E9%9A%94%E6%8C%AF%E5%AE%9E%E9%AA%8C"><span class="toc-text">2022年70 cc单缸的车把隔振实验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%9D%87%E6%89%AD%E7%9F%A9%E4%B8%8E%E8%BD%AC%E9%80%9F"><span class="toc-text">平均扭矩与转速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%88%B0%E5%90%8E%E8%BD%AE"><span class="toc-text">从发动机到后轮</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E4%B8%8E%E6%97%B6%E5%BA%8F"><span class="toc-text">响应与时序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E4%B8%8E%E5%9B%BE%E7%89%87%E6%9D%A5%E6%BA%90"><span class="toc-text">参考文献与图片来源</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%9D%99%E6%AD%A2%E5%8A%A0%E9%80%9F%E4%B8%8E%E6%9C%80%E9%AB%98%E6%8C%A1%E5%86%8D%E5%8A%A0%E9%80%9F%E7%9A%84%E6%B5%8B%E8%AF%95%E5%B7%AE%E5%BC%82"><span class="toc-text">1. 静止加速与最高挡再加速的测试差异</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%80%BB%E6%8E%92%E9%87%8F%E3%80%81BMEP-%E4%B8%8E%E5%B9%B3%E5%9D%87%E6%89%AD%E7%9F%A9"><span class="toc-text">2. 总排量、BMEP 与平均扭矩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%BD%BF%E6%AF%94%E4%B8%8E%E8%BD%AE%E8%83%8E%E7%89%B5%E5%BC%95%E5%8A%9B"><span class="toc-text">3. 齿比与轮胎牵引力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%8D%95%E7%BC%B8%E5%B0%BA%E5%AF%B8%E4%B8%8E%E9%AB%98%E8%BD%AC%E9%80%9F%E8%AE%BE%E8%AE%A1"><span class="toc-text">4. 单缸尺寸与高转速设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%81%9A%E5%8A%9F%E6%97%B6%E5%BA%8F%E3%80%81%E6%B2%B9%E9%97%A8%E5%93%8D%E5%BA%94%E4%B8%8E%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%88%B6%E5%8A%A8"><span class="toc-text">5. 做功时序、油门响应与发动机制动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%95%B4%E8%BD%A6%E8%B4%A8%E9%87%8F%E3%80%81%E6%B2%B9%E8%80%97%E4%B8%8E%E7%BB%B4%E6%8A%A4%E6%88%90%E6%9C%AC"><span class="toc-text">6. 整车质量、油耗与维护成本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%83%AF%E6%80%A7%E6%BF%80%E5%8A%B1%E3%80%81%E6%95%B4%E8%BD%A6%E4%BC%A0%E9%80%92%E4%B8%8E%E9%95%BF%E9%80%94%E6%9A%B4%E9%9C%B2"><span class="toc-text">7. 惯性激励、整车传递与长途暴露</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E3%80%81%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%A0%94%E7%A9%B6%E8%BE%B9%E7%95%8C"><span class="toc-text">数据、计算与研究边界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2024%E5%B9%B4%E5%8E%82%E5%95%86%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%8F%82%E6%95%B0"><span class="toc-text">2024年厂商发动机参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2021-Dueruote-%E5%90%8C%E5%9C%BA%E6%B5%8B%E8%AF%95"><span class="toc-text">2021 Dueruote 同场测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cycle-World-%E8%BD%AE%E4%B8%8A%E6%B5%8B%E5%8A%9F"><span class="toc-text">Cycle World 轮上测功</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E8%BD%A6%E8%B4%A8%E9%87%8F%E3%80%81%E6%B2%B9%E8%80%97%E5%92%8C%E6%B2%B9%E7%AE%B1"><span class="toc-text">整车质量、油耗和油箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2016%E5%B9%B4%E9%81%93%E8%B7%AF%E7%A0%94%E7%A9%B6%E4%B8%AD%E7%9A%84%E4%BA%94%E8%BE%86%E6%A0%B7%E8%BD%A6"><span class="toc-text">2016年道路研究中的五辆样车</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2022%E5%B9%B470-cc%E5%8D%95%E7%BC%B8%E7%9A%84%E8%BD%A6%E6%8A%8A%E9%9A%94%E6%8C%AF%E5%AE%9E%E9%AA%8C"><span class="toc-text">2022年70 cc单缸的车把隔振实验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%9D%87%E6%89%AD%E7%9F%A9%E4%B8%8E%E8%BD%AC%E9%80%9F"><span class="toc-text">平均扭矩与转速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E5%8A%A8%E6%AF%94%E4%B8%8E%E5%90%8E%E8%BD%AE%E7%89%B5%E5%BC%95%E5%8A%9B"><span class="toc-text">传动比与后轮牵引力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E4%B8%8E%E6%97%B6%E5%BA%8F"><span class="toc-text">响应与时序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E4%B8%8E%E5%9B%BE%E7%89%87%E6%9D%A5%E6%BA%90"><span class="toc-text">参考文献与图片来源</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -89,7 +89,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/5ec48bd1874c.png"><meta itemprop="dateModified" content="2026-11-02T05:46:07.000Z"><meta itemprop="datePublished" content="2026-11-01T06:56:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/15a204480450.png"><meta itemprop="dateModified" content="2026-11-02T05:46:07.000Z"><meta itemprop="datePublished" content="2026-11-01T06:56:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -108,7 +108,7 @@
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Everyday-Anatomy/">Everyday Anatomy</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
-          从油门到后轮：同样的排量，几缸才适合你？
+          摩托车缸数、动力特性与振动
         </h1>
 
         <div class="post-meta-container">
@@ -117,7 +117,7 @@
   
 </div>
 
-            <div class="post-description">四缸马力更大，为什么不降挡超车反而慢？从真实加速测试出发，沿着发动机、变速箱和骑手接触点，看看缸数怎样改变动力、节奏与长途体验。</div>
+            <div class="post-description">结合道路加速测试、发动机参数与振动研究，分析总排量、缸数、转速和齿比怎样共同影响动力表现，并区分机械激励与骑手接触点的振动。</div>
         </div>
         
         <div class="reading-byline">
@@ -130,14 +130,14 @@
     
     
     
-    <div class="post-body" itemprop="articleBody" data-math-prerendered="34"><p>同样六百多 cc，四缸可能起步更快，最高挡超车却更慢；大单缸每一下做功都很鲜明，平均推力却未必更大。聊缸数时，这些不同的感受常被混在一起。</p>
-<p>我想把“有劲”拆开看：拧下油门以后，发动机给出多少输出，变速箱怎么把它送到后轮，最后又有哪些振动传到手上。</p>
-<p>这样才知道，自己喜欢的是少换挡就能提速，还是降挡拉转后的加速。先看一组同场测试。</p>
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="34"><p>排量相近的摩托车，在静止加速、最高挡再加速和振动体验上可能呈现不同排序。缸数改变单次做功份额、点火间隔和机械布置，但不能单独决定整车性能。将这些现象统一归为“动力强弱”，会掩盖测试任务与传动条件的差别。</p>
+<p>本文沿发动机输出、齿比与轮胎推力、振动传递三条关系展开，讨论缸数能够解释哪些设计条件，又有哪些结论必须依赖具体车型和测量。</p>
+<p>分析先从同场道路数据开始，区分允许换挡的性能调用与固定最高挡的再加速需求。</p>
 <span id="more"></span>
 <p><span id="1-实车对比：拉转加速最快，最高挡超车却最慢"></span></p>
-<h2 id="1-四缸更快，为什么超车却更慢？">1. 四缸更快，为什么超车却更慢？</h2>
-<p>Dueruote 在2021年把 Yamaha MT-07、Triumph Trident 660 和 Honda CB650R 放在一起测试。它们分别是双缸、三缸和四缸，排量都在650 cc上下。<sup class="cite"><a href="#ref-1">1</a></sup></p>
-<p>从静止加速到130 km/h，CB650R 用了5.9秒，三车最快。可换成<strong>最高挡、不降挡，从80加到130 km/h</strong>，它用了8.4秒，反而最慢。Trident 的这项成绩是6.7秒。</p>
+<h2 id="1-静止加速与最高挡再加速的测试差异">1. 静止加速与最高挡再加速的测试差异</h2>
+<p>Dueruote 在 2021 年同场测试 Yamaha MT-07、Triumph Trident 660 与 Honda CB650R，分别对应双缸、三缸和四缸，排量均在 650 cc 上下。相同测试来源提供了比较任务差异的起点。<sup class="cite"><a href="#ref-1">1</a></sup></p>
+<p>静止加速至 130 km/h，CB650R 以 5.9 秒位列三车最快；最高挡、不降挡从 80 至 130 km/h 再加速，则需要 8.4 秒，慢于 Trident 的 6.7 秒。同一车型的排序随测试条件变化，不能由单一“加速快”概括。</p>
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">横向滑动查看完整图表</p>
 <div class="v-chart-viewport" tabindex="0" role="region" aria-label="同一批样车，两种加速任务">
@@ -371,13 +371,13 @@
 </div>
 <p class="v-caption">图1｜道路实测。两图均从0秒起、使用相同刻度，测试任务不同。四缸 CB650R 在左图最快，在右图最慢。来源 <a href="#ref-1">[1]</a>；无逐次记录可供估计置信区间。</p>
 </div>
-<p>起步时可以一路升挡，让发动机留在合适的转速区；最高挡再加速则把挡位固定住了，要比较此刻能传到轮胎的推力。两项成绩的次序不同，并不奇怪。</p>
-<p>问“谁加速快”之前，得先决定愿不愿意降挡。</p>
-<div class="note primary"><p><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> <strong>先记住这个区别：</strong>最高挡再加速反映少换挡时的便利；允许换挡的加速，反映能调用多少性能。两种需求都很实际。</p></div>
-<p>这组差别，要从发动机的输出和变速箱一起解释。</p>
+<p>允许换挡时，发动机可以保持在适合输出的转速区间；固定最高挡时，可用推力受到当前转速和齿比共同约束。两项测试测量的是不同的性能条件。</p>
+<p>因此，加速比较需要明确挡位是否固定，而非直接归因于缸数。</p>
+<div class="note primary"><p><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> <strong> 比较条件：</strong> 最高挡再加速反映少换挡条件下的动力可用性；允许换挡的加速，则反映整套动力系统可以调用的性能。两者不能相互替代。</p></div>
+<p>其机制需要联合考察发动机输出和传动放大。</p>
 <p><span id="2-同排量下，平均扭矩为什么常常接近？"></span></p>
-<h2 id="2-排量相近，扭矩为什么也常常相近？">2. 排量相近，扭矩为什么也常常相近？</h2>
-<p>四款2024年车型的厂商参数里，最大扭矩挤在63–67 N·m，最大功率却从54到70 kW。单缸698 Mono 和四缸 CB650R 都在其中。<sup class="cite"><a href="#ref-2">2</a>,<a href="#ref-3">3</a>,<a href="#ref-4">4</a>,<a href="#ref-5">5</a></sup></p>
+<h2 id="2-总排量、BMEP-与平均扭矩">2. 总排量、BMEP 与平均扭矩</h2>
+<p>四款 2024 年车型的厂商最大扭矩为 63–67 N·m，而最大功率为 54–70 kW，样本覆盖单缸 698 Mono 至四缸 CB650R。峰值扭矩集中而功率分散，提示需要进一步分析转速条件。<sup class="cite"><a href="#ref-2">2</a>,<a href="#ref-3">3</a>,<a href="#ref-4">4</a>,<a href="#ref-5">5</a></sup></p>
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">横向滑动查看完整图表</p>
 <div class="v-chart-viewport" tabindex="0" role="region" aria-label="扭矩相近，峰值功率仍有差距">
@@ -611,19 +611,19 @@
 </div>
 <p class="v-caption">图2｜厂商参数，2024年全功率版。左右两图单位不同；63–67 N·m 是各车在各自转速的峰值，不代表同转速输出相同。来源 <a href="#ref-2">[2]</a>–<a href="#ref-5">[5]</a>。</p>
 </div>
-<p>单缸把排量集中在一个气缸里，一次做功的份额大；多缸把总排量分开，每次份额小，但两圈曲轴转下来，做功次数更多。</p>
+<p>单缸将总排量集中在一次做功中，多缸则减小每次做功份额，并增加同一四冲程循环内的做功次数。单次脉动与循环平均输出因此需要分别讨论。</p>
 <p>对于四冲程发动机，如果总排量相同、每个工作循环从单位排量得到的有效功也相同，平均扭矩就相同。工程上用“制动平均有效压力”，简称 BMEP，衡量后一个条件。上面四台发动机在各自扭矩峰值处的 BMEP 约为12.0–12.2 bar，确实很接近。<sup class="cite"><a href="#ref-6">6</a></sup></p>
-<p>峰值相近，不等于常用转速下也相近。63 N·m 要到8,000 rpm才出现，67 N·m 在6,500 rpm就出现，三四千转时的差别还得查各自曲线。</p>
-<p>功率看每秒做了多少功。扭矩相同，转速更高，每秒做功就更多：</p>
+<p>63 N·m 出现在 8,000 rpm，与 67 N·m 出现在 6,500 rpm，不代表常用转速输出相近。三四千转的动力比较仍需对应转速下的曲线，不能由两个峰值代替。</p>
+<p>功率表示单位时间内的做功。平均扭矩相同时，提高转速即提高功率：</p>
 <div><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-mstyle><mjx-mspace style="width: 0.278em;"></mjx-mspace></mjx-mstyle><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c6B"></mjx-c><mjx-c class="mjx-c57"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mstyle><mjx-mspace style="width: 0.278em;"></mjx-mspace></mjx-mstyle><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-mstyle><mjx-mspace style="width: 0.278em;"></mjx-mspace></mjx-mstyle><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4E"></mjx-c></mjx-mi><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-n"><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c36"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>P</mi><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">kW</mi></mrow><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn>2</mn><mi>π</mi><mi>n</mi><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">rpm</mi></mrow><mo stretchy="false">)</mo><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi>T</mi><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">N</mi><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi mathvariant="normal">m</mi></mrow><mo stretchy="false">)</mo></mrow><mn>60000</mn></mfrac></math></mjx-assistive-mml></mjx-container></div>
-<p>这组车在最大功率转速下的扭矩，算出来仍都在约56–59 N·m。真正拉开差距的，是谁能把这份扭矩保持到更高转速：MT-07 的功率峰值在8,750 rpm，CB650R 在12,000 rpm。</p>
-<p>不过，发动机转速高，还要通过合适的挡位才能变成加速时的推力。</p>
+<p>按最大功率及其转速反算，这组车型对应扭矩仍约为 56–59 N·m。功率差异主要表现为扭矩维持到的转速不同：MT-07 的功率峰值为 8,750 rpm，CB650R 为 12,000 rpm。</p>
+<p>发动机侧的高转输出还需要经过传动比，才能转化为给定车速下的轮胎推力。</p>
 <p><span id="6-齿比怎样把高转功率变成推力？"></span></p>
-<h2 id="3-变速箱，把转速换成轮胎上的推力">3. 变速箱，把转速换成轮胎上的推力</h2>
-<p>低挡让发动机在同一车速下转得更快，也把发动机扭矩放大得更多。骑手降挡时，同时改变了这两件事。</p>
-<p>用一个简单算例就能看清。假设在同一车速、相同轮胎和传动效率下，有两种发动机与挡位组合：</p>
+<h2 id="3-齿比与轮胎牵引力">3. 齿比与轮胎牵引力</h2>
+<p>在相同车速下，较低挡位同时提高发动机转速和扭矩放大倍数。降挡因此改变了输出工作点，也改变了传至车轮的比例。</p>
+<p>以下固定车速、轮胎与传动效率，仅比较两组发动机和挡位组合：</p>
 <div class="table-container"><table>
 <thead>
 <tr>
@@ -649,14 +649,14 @@ P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 </tbody>
 </table></div>
 <p>B 的发动机扭矩少了8.3%，但乘上齿比后，轮胎推力却多了37.5%：<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="55\times1.5/60=1.375"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c35"></mjx-c><mjx-c class="mjx-c35"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c35"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c36"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c33"></mjx-c><mjx-c class="mjx-c37"></mjx-c><mjx-c class="mjx-c35"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>55</mn><mo>×</mo><mn>1.5</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>60</mn><mo>=</mo><mn>1.375</mn></math></mjx-assistive-mml></mjx-container>。对应的功率是37.7与51.8 kW。这里是解释传动关系的假想算例，不对应某辆实车。<sup class="cite"><a href="#ref-6">6</a></sup></p>
-<p>CB650R 也是如此。降挡进入高转区，才能用到更大的功率；最高挡那一项测试没有给它这个条件。</p>
-<p>换挡后转速会掉下来，因此追求加速时，最佳换挡点也未必就在最大扭矩转速。需要比较的是同一车速下，继续留在当前挡与换到下一挡，哪一个给后轮的推力更大。</p>
-<p>实际骑起来，还有重量、风阻、轮胎附着和抬头限制。功率能解释推力从哪里来，却不能单独给出加速成绩。完整关系和这个算例的条件放在附录。</p>
-<p>多缸常见的功率优势，接下来就落到一个具体问题：为什么它更容易维持高转速？</p>
+<p>这解释了 CB650R 的任务差异：降挡进入高转区可以使用更高功率，而最高挡再加速未必处于该区间。</p>
+<p>理想换挡点需要比较同一车速下相邻挡位的后轮推力。换挡会降低转速，因此最大扭矩转速本身不足以确定最佳加速换挡时刻。</p>
+<p>实际加速还受到质量、风阻、附着和抬头限制。功率与齿比描述牵引力来源，不能单独预测道路成绩；完整关系及算例假设见附录。</p>
+<p>多缸更常具有高转输出，还需要从单缸尺寸和机械约束解释。</p>
 <p><span id="3-同为399-cc，双缸与四缸差在哪里？"></span><br>
 <span id="4-多缸为什么更容易做高转发动机？单缸又能走多远？"></span></p>
-<h2 id="4-多缸多出来的，常常是高转的余地">4. 多缸多出来的，常常是高转的余地</h2>
-<p>同样的总排量分给更多气缸，每个气缸可以更小。设计者因此更容易采用较短的行程，让活塞每转一圈少跑一点距离。</p>
+<h2 id="4-单缸尺寸与高转速设计">4. 单缸尺寸与高转速设计</h2>
+<p>总排量分配到更多气缸后，单缸尺寸可以减小，设计上更容易采用短行程，降低每转活塞运动距离，为提高转速提供条件。</p>
 <p>Ninja 400 和 ZX-4RR 是个直观的例子。两台发动机都标为399 cc，前者双缸、后者四缸。这里固定采用2023年欧规 Ninja 400 和2024年欧规 ZX-4RR，避免把不同市场的限功率版本混进来。<sup class="cite"><a href="#ref-7">7</a>,<a href="#ref-8">8</a></sup></p>
 <div class="table-container"><table>
 <thead>
@@ -825,18 +825,18 @@ P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 </div>
 <p class="v-caption">图3｜由欧规厂商参数计算。两车均为399 cc；Ninja 400 为2023年款，ZX-4RR 为2024年款，后者采用不含 RAM air 增益的57 kW。不同年款与设计目标仍会影响结果。来源 <a href="#ref-7">[7]</a><a href="#ref-8">[8]</a>。</p>
 </div>
-<p>短行程给了转速余地，但发动机还得吸进足够的空气。气门面积、配气正时、进排气调谐，以及气门机构能否承受高转，都在决定扭矩会不会提前掉下去。只把限转往上提，并不会凭空长出功率。<sup class="cite"><a href="#ref-10">10</a></sup></p>
-<p>大单缸也能走这条路。Ducati 698 Mono 的缸径达116 mm，行程却只有62.4 mm；配合钛进气门和 Desmodromic 配气，功率峰值到了9,750 rpm。它比这组 MT-07 的峰值功率还高5.6%。<sup class="cite"><a href="#ref-2">2</a></sup><sup class="cite"><a href="#ref-11">11</a></sup></p>
+<p>短行程只解决部分机械约束。气门面积、配气正时、进排气调谐和机构高转能力还需维持充气，否则增加限转并不保证扭矩保持或功率提高。<sup class="cite"><a href="#ref-10">10</a></sup></p>
+<p>Ducati 698 Mono 表明大单缸也可以采用高转设计：116 mm 缸径、62.4 mm 行程，结合钛进气门和 Desmodromic 配气，功率峰值达到 9,750 rpm，比这组 MT-07 的峰值功率高 5.6%。<sup class="cite"><a href="#ref-2">2</a></sup><sup class="cite"><a href="#ref-11">11</a></sup></p>
 <div class="v-figure">
 <img alt="Ducati Superquadro Mono 的活塞与连杆，活塞顶有气门避让凹槽" loading="lazy" decoding="async" src="/2026/11/01/motorcycle-cylinders-displacement-vibration/assets/ducati-piston.jpg" width="655" height="410">
 <p class="v-caption">图 A｜116 mm 的活塞，配合62.4 mm短行程。大单缸也可以围绕高转设计。图片：Ducati 官方技术页，版权归 Ducati；不是本文绘制的结构图。<a href="#ref-11">[11]</a></p>
 </div>
-<p>连排量和缸数都相同，输出也会不同。2024 Daytona 660 的厂商功率为70 kW，Trident 660 为60 kW，两台都是660 cc三缸。调校与用途不能省略，只凭“单缸低转、四缸高转”还判断不了具体发动机。<sup class="cite"><a href="#ref-4">4</a></sup><sup class="cite"><a href="#ref-12">12</a></sup></p>
-<p>转速和齿比解释了加速，手上觉得绵密还是一下一下，则还与做功间隔有关。</p>
+<p>相同缸数和排量也不能排除调校差异。2024 Daytona 660 与 Trident 660 同为 660 cc 三缸，厂商功率分别为 70 kW 与 60 kW。因此，“单缸低转、四缸高转”只能描述常见取向，不能替代具体发动机分析。<sup class="cite"><a href="#ref-4">4</a></sup><sup class="cite"><a href="#ref-12">12</a></sup></p>
+<p>平均性能之外，输出的时间分布和控制响应还会影响骑手感受。</p>
 <p><span id="7-油门响应、脉动和发动机制动，也不能只数气缸"></span></p>
-<h2 id="5-每一下做功，怎样变成手腕里的“性格”？">5. 每一下做功，怎样变成手腕里的“性格”？</h2>
+<h2 id="5-做功时序、油门响应与发动机制动">5. 做功时序、油门响应与发动机制动</h2>
 <p>在4,000 rpm时，四冲程单缸每隔30毫秒做功一次；均匀点火四缸则每隔7.5毫秒就有一次做功。排量相近，分配到每次做功的份额和时间间隔都变了。</p>
-<p>双缸内部也有不同节奏。360°、180°和270°曲轴，在一个完整循环里都有两次做功，但两次之间的间隔不同。下面只画事件发生的时刻，不把它冒充成扭矩波形。<sup class="cite"><a href="#ref-17">17</a></sup><sup class="cite"><a href="#ref-26">26</a></sup></p>
+<p>360°、180°与 270°双缸在一个循环内均有两次做功，事件间隔却不同。下图仅表示时刻，不含瞬时扭矩幅值，不能作为扭矩波形解读。<sup class="cite"><a href="#ref-17">17</a></sup><sup class="cite"><a href="#ref-26">26</a></sup></p>
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">横向滑动查看完整图表</p>
 <div class="v-chart-viewport" tabindex="0" role="region" aria-label="做功事件的节奏">
@@ -1018,12 +1018,12 @@ P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 </div>
 <p class="v-caption">图4｜理论时序，不是实测扭矩波形。竖线只表示事件时刻，线高没有振幅含义；30 ms处为下一循环起点。依四冲程运动学计算，构型参照 <a href="#ref-17">[17]</a><a href="#ref-26">[26]</a>。</p>
 </div>
-<p>做功事件更密集，通常更容易把输出接得平顺一些。至于手腕一动，车会不会立刻往前蹿，还要看油门映射、飞轮与传动系统惯量、传动间隙，以及当时的挡位。Daytona 660 的骑行模式就会改变油门响应与牵引力控制设定。<sup class="cite"><a href="#ref-12">12</a></sup></p>
-<p>试车时，我会把“低扭好”继续拆开：低转输出大、不容易顿挫、不降挡也能提速，是三件事。只用“有劲”概括，反而不容易比较。</p>
-<p>收油后的拖拽感同样要经过整套传动。泵气损失、摩擦、控制策略、挡位和滑动离合器，都会改变发动机制动。698 本身就有滑动离合器；缸数并不能直接给出谁的反拖最强。<sup class="cite"><a href="#ref-2">2</a></sup><sup class="cite"><a href="#ref-23">23</a></sup></p>
-<p>平均输出、做功节奏和油门控制叠在一起，才形成所谓发动机“性格”。这些输出还要推动整车，车重不能漏看。</p>
+<p>更密集的做功有利于平顺输出，但油门响应还取决于映射、飞轮与传动惯量、间隙和当前挡位。Daytona 660 的骑行模式会调整油门与牵引力控制，说明控制策略也参与这种差异。<sup class="cite"><a href="#ref-12">12</a></sup></p>
+<p>“低扭好”可能分别指低转扭矩较大、低速过渡平顺，或不降挡再加速便利。三者需要不同指标评价，试车与测量时应分别记录。</p>
+<p>发动机制动同样经过整套传动，泵气、摩擦、控制策略、挡位与滑动离合器均会影响反拖。698 配有滑动离合器，不能仅按缸数排列其制动强弱。<sup class="cite"><a href="#ref-2">2</a></sup><sup class="cite"><a href="#ref-23">23</a></sup></p>
+<p>发动机感受由平均输出、时间脉动和控制响应共同形成，转化为整车加速时还需要纳入质量。</p>
 <p><span id="8-轻量化、油耗与保养：高转能力的另一面"></span></p>
-<h2 id="6-大单缸的吸引力，还在整辆车上">6. 大单缸的吸引力，还在整辆车上</h2>
+<h2 id="6-整车质量、油耗与维护成本">6. 整车质量、油耗与维护成本</h2>
 <p>698 Mono 与 CB650R 的差别，拿功率表看很明显：57与70 kW，Honda 高了22.8%。</p>
 <p>但698官方给出的151 kg，是不含燃油的湿重。按12 L油箱、燃油密度0.75 kg/L估算，满油约160 kg；CB650R 普通离合版的厂商整备质量为205 kg。两车都加上85 kg骑手，功率质量比的差距就缩到了3.8%。<sup class="cite"><a href="#ref-2">2</a></sup><sup class="cite"><a href="#ref-5">5</a></sup></p>
 <div class="v-figure v-chart-scroll">
@@ -1202,20 +1202,20 @@ P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 </div>
 <p class="v-caption">图5｜整车算例。CB650R 的功率高22.8%，加入骑手后功率质量比高3.8%。698按151 kg不含燃油湿重＋12 L×0.75 kg/L估算；这不是加速成绩预测。来源 <a href="#ref-2">[2]</a><a href="#ref-5">[5]</a>。</p>
 </div>
-<p>功率质量比接近，不代表加速只差3.8%，但确实说明单看功率不够。两辆车一个滑胎、一个街车，车架、油箱、座椅和装备都不同，45 kg差距不能全算成少了三个缸的收益。</p>
-<p>油耗就更不按缸数排队。这组2024年厂商数据里，MT-07 是4.2 L/100 km，698 是4.8，Trident 是4.7，CB650R 是4.9。单缸并没有自动排到最低。<sup class="cite"><a href="#ref-2">2</a>,<a href="#ref-3">3</a>,<a href="#ref-4">4</a>,<a href="#ref-5">5</a></sup></p>
-<p>养车成本也需要落到车型。少几个气缸通常少一些缸内零件，账单却还受平衡轴、配气、拆装、检查周期和零件价格影响。没有同口径工时费用，既排不出成本，也排不出可靠性。</p>
-<p>轻量和响应可以构成选择大单缸的理由；到了长途，发动机的往复运动最终怎样传到身体上，还需要另看。</p>
+<p>3.8% 是功率质量比差异，不是道路加速差异。滑胎与街车的车架、油箱、座椅和装备不同，45 kg 质量差也不能全部归因于气缸数量。</p>
+<p>油耗亦不随缸数单调变化。这组 2024 年厂商数据中，MT-07 为 4.2 L/100 km，698 为 4.8，Trident 为 4.7，CB650R 为 4.9，单缸并非最低。<sup class="cite"><a href="#ref-2">2</a>,<a href="#ref-3">3</a>,<a href="#ref-4">4</a>,<a href="#ref-5">5</a></sup></p>
+<p>维护成本需要车型级证据。气缸减少通常减少缸内零件，但平衡轴、配气结构、拆装难度、周期与价格也影响工时费用。缺少同口径记录，无法由缸数推导成本或可靠性排名。</p>
+<p>轻量化与响应构成具体取舍；长途评价则还需分析发动机激励到骑手接触点的传递。</p>
 <p><span id="9-回到振动：结构劣势真实存在，长途结论仍要测整车"></span><br>
 <span id="10-该怎样把这些取舍用在选车上？"></span></p>
-<h2 id="7-长途舒不舒服，要一直追到手、脚和座垫">7. 长途舒不舒服，要一直追到手、脚和座垫</h2>
+<h2 id="7-惯性激励、整车传递与长途暴露">7. 惯性激励、整车传递与长途暴露</h2>
 <p>单缸没有其他气缸帮助抵消往复惯性激励，这个结构条件真实存在。同一机构转得越快，部分惯性激励还会近似随转速平方增加。</p>
 <p>现代大单缸会用平衡轴处理其中一些分量。Ducati 的 Superquadro Mono 使用两根平衡轴，厂商说明它们用于平衡一阶惯性力。<sup class="cite"><a href="#ref-11">11</a></sup></p>
 <div class="v-figure">
 <img alt="Ducati Superquadro Mono 的两根平衡轴，可见用于产生平衡力的偏心质量" loading="lazy" decoding="async" src="/2026/11/01/motorcycle-cylinders-displacement-vibration/assets/ducati-balance-shafts.jpg" width="655" height="410">
 <p class="v-caption">图 B｜平衡轴用旋转的偏心质量处理特定惯性激励。它不会同时抹去燃烧扭矩脉动、所有高阶分量和整车共振。图片：Ducati 官方技术页，版权归 Ducati。<a href="#ref-11">[11]</a></p>
 </div>
-<p>发动机产生的激励，还要经过安装点、车架、车把、脚踏和座垫，才到骑手身上。这个过程会放大某些频率，也会衰减另一些。四缸同样有需要处理的分量，例如常规平面曲轴直列四缸的二阶惯性合力。<sup class="cite"><a href="#ref-17">17</a>,<a href="#ref-18">18</a></sup></p>
+<p>发动机激励经安装点、车架、车把、脚踏和座垫传递，会在不同频率放大或衰减。常规平面曲轴直列四缸也有二阶惯性合力，增加气缸不能消除全部振动来源。<sup class="cite"><a href="#ref-17">17</a>,<a href="#ref-18">18</a></sup></p>
 <p>Adamek 与 Schröter 把测量放到了骑手接触点：27辆摩托、23名骑手，共约2,500 km。图6摘出其中五辆样车的车把结果。<sup class="cite"><a href="#ref-19">19</a></sup></p>
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">横向滑动查看完整图表</p>
@@ -1447,12 +1447,12 @@ P\;(\mathrm{kW})=\frac{2\pi n\;(\mathrm{rpm})\,T\;(\mathrm{N\,m})}{60000}
 <p class="v-caption">图6｜2016年研究中的五辆旧样车，不能据此给今天的车型排名。圆点为90 km/h，三角为130 km/h；连线仅配对同一辆车。F650GS Twin 为798 cc且改过车把。来源 <a href="#ref-19">[19]</a><a href="#ref-22">[22]</a>，未添加通用误差条。</p>
 </div>
 <p>两辆单缸在90 km/h时的测量值相差2.46倍。BMW 单缸在这个速度下低于四缸 ZXR400；到130 km/h，两者的排序又反过来。</p>
-<p>旧车的年代、状态和改装不同，不能拿这组数据预测今天的690或698。它显示的是，同属一种缸数，整车振动仍可能差很多。</p>
-<p>Usamah 等人的实验则保留了一辆70 cc单缸车的发动机，只改车把橡胶支承。在特定巡航区间，最佳方案让两轴振动指标由8.276降至4.082 m/s²，下降50.7%。比例不能推广到别的车，却能看到传递路径本身的影响。<sup class="cite"><a href="#ref-21">21</a></sup></p>
-<p>长途还多了持续时间。按手臂振动常用的暴露量关系，加权振动幅值翻倍，达到同一暴露量所需的时间会缩到四分之一。它说明持续承受振动为什么值得在意；舒适度、路面冲击、风压和骑姿，则要另外考虑。本文不把这些实验换算成个人的“安全骑行分钟数”。<sup class="cite"><a href="#ref-24">24</a>,<a href="#ref-25">25</a></sup></p>
-<div class="note primary"><p><i class="fa-solid fa-route" aria-hidden="true"></i> <strong>把试车落到你会用的速度上：</strong>记录车速、挡位和转速，分别感受手、脚与座垫。你喜欢的低速节奏，到了常用巡航转速，未必还是同一种感受。</p></div>
-<p>选车时，可以先按自己的用法试。少换挡的需求，查常用车速下的再加速和油门过渡；愿意拉转，就看高转输出与挡位衔接，再把车重算进去。长途则要在实际巡航工况感受手、脚和座垫。</p>
-<p>喜欢某种节奏，是选择它的充分理由，不必再替它争一个加速冠军。缸数能解释一些设计条件，最终喜欢哪辆，仍要自己试。</p>
+<p>车型年代、状态和改装不一致，限制了数据对当前 690 或 698 的预测能力。这些结果能说明同类缸数存在较大整车差异，不能据此给新车排序。</p>
+<p>Usamah 等人在一辆 70 cc 单缸车上保持发动机不变，调整车把橡胶支承。最佳方案在特定巡航区间使两轴振动从 8.276 降至 4.082 m/s²，下降 50.7%。该比例仅适用于样车和工况，但提供了传递路径影响接触点响应的直接案例。<sup class="cite"><a href="#ref-21">21</a></sup></p>
+<p>持续时间也参与振动暴露。按手臂振动关系，加权幅值翻倍，达到相同暴露量的时间缩至四分之一。舒适度仍另受冲击、风压和骑姿影响，职业暴露关系不能直接换算为个人安全骑行分钟数。<sup class="cite"><a href="#ref-24">24</a>,<a href="#ref-25">25</a></sup></p>
+<div class="note primary"><p><i class="fa-solid fa-route" aria-hidden="true"></i> <strong> 试车条件：</strong> 在常用巡航工况下记录车速、挡位和转速，分别评价手、脚与座垫的响应。低速时偏好的做功节奏，不能直接代表巡航时的振动体验。</p></div>
+<p>选择时应使评价任务与使用需求一致：少换挡关注常用车速的再加速和油门过渡，高转驾驶关注输出、挡位衔接与质量，长途则关注对应工况的接触点振动。</p>
+<p>缸数提供机械设计的部分解释，主观偏好和性能判断仍需分别保留。偏好的做功节奏可以成为选择理由，但不构成整车加速或长途舒适度的普遍结论。</p>
 <hr>
 <p><span id="5-测功机告诉了我们什么，又漏掉了什么？"></span><br>
 <span id="附录-A：比较与测量该怎样设计？"></span><br>
@@ -1791,7 +1791,7 @@ T&amp;=\frac{\mathrm{BMEP}\,V_d}{4\pi} \\
 </table></div>
 <p>399 cc案例中，Ninja 400和ZX-4RR的对应活塞速度为17.27与18.90 m/s，功率峰值处扭矩为31.89与37.54 N·m。</p>
 <p>若固定总排量，假定气缸几何相似，则缸径、行程随 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="N^{-1/3}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.054em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>N</mi><mrow data-mjx-texclass="ORD"><mo>−</mo><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>3</mn></mrow></msup></math></mjx-assistive-mml></mjx-container> 缩小；相同平均活塞速度下，允许转速随 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="N^{1/3}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.054em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>N</mi><mrow data-mjx-texclass="ORD"><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>3</mn></mrow></msup></math></mjx-assistive-mml></mjx-container> 增加。一缸到四缸的比例为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="4^{1/3}\approx1.587"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mn class="mjx-n"><mjx-c class="mjx-c34"></mjx-c></mjx-mn><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2248"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c35"></mjx-c><mjx-c class="mjx-c38"></mjx-c><mjx-c class="mjx-c37"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>4</mn><mrow data-mjx-texclass="ORD"><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>3</mn></mrow></msup><mo>≈</mo><mn>1.587</mn></math></mjx-assistive-mml></mjx-container>。这是几何缩放模型，不是实车转速预测。气缸顶面总面积也按 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="N^{1/3}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.054em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>N</mi><mrow data-mjx-texclass="ORD"><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>3</mn></mrow></msup></math></mjx-assistive-mml></mjx-container> 缩放，但它不等于真实气门流通面积或充气效率。连杆比、活塞加速度、摩擦与配气限制也没有被这个简化模型覆盖。[6][10]</p>
-<h3 id="从发动机到后轮">从发动机到后轮</h3>
+<h3 id="传动比与后轮牵引力">传动比与后轮牵引力</h3>
 <p>离合器接合、忽略轮胎滑移的准稳态下：</p>
 <div><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 \begin{aligned}
@@ -1980,7 +1980,7 @@ F\approx mr\omega^2\left(\cos\theta+\frac{r}{l}\cos2\theta\right)
   </li>
   <li class="post-copyright-link">
       <strong>本文链接:</strong>
-      <a href="https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/" title="从油门到后轮：同样的排量，几缸才适合你？">https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/</a>
+      <a href="https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/" title="摩托车缸数、动力特性与振动">https://leecdiang.com/2026/11/01/motorcycle-cylinders-displacement-vibration/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！

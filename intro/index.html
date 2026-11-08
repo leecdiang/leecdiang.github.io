@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css">
   
   
     <meta name="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
@@ -43,7 +43,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -94,7 +94,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/11/08/llm-inference-from-token-to-cluster/" class="post-title-link" itemprop="url">大模型推理到底在忙什么：从一个 token 到多机集群</a>
+          <a href="/2026/11/08/llm-inference-from-token-to-cluster/" class="post-title-link" itemprop="url">大模型推理的执行机制与性能约束</a>
         </h2>
 
         <div class="post-meta-container">
@@ -181,7 +181,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 Roofline、Amdahl 定律、CPU 时间方程、AMAT 与 Little 定律出发，讨论性能模型的形式、假设、适用边界及其在 CPU、GPU 与存储层次中的结构对应关系。</p>
+          <p>分析 Roofline、Amdahl、CPU 时间方程、AMAT 与 Little 定律的参数口径和适用假设，并将性能约束对应到 CPU、GPU、存储层次及并发资源。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/06/architecture-performance-equations/">
@@ -234,7 +234,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/11/05/flow-control-from-pfc-to-backpressure/" class="post-title-link" itemprop="url">从 PFC 到 ready/valid：流控到底在控制什么？</a>
+          <a href="/2026/11/05/flow-control-from-pfc-to-backpressure/" class="post-title-link" itemprop="url">PFC、Credit 与 ready/valid：流控机制比较</a>
         </h2>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从有限缓冲区与反馈延迟出发，串起 PAUSE、PFC、ECN/DCQCN、credit、ready/valid、TCP 接收窗口与流量整形，理解每种机制控制什么、在哪里生效，以及为什么不能互相替代。</p>
+          <p>有限缓冲与反馈延迟决定流控的作用边界。本文比较 PAUSE、PFC、ECN/DCQCN、credit、ready/valid、TCP 接收窗口与流量整形的控制对象和生效范围。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/05/flow-control-from-pfc-to-backpressure/">
@@ -321,7 +321,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从不规则指令编码、历史兼容性和 x86S 提案的搁置，谈 x86 的真实工程代价，以及世界转向多架构的可能。</p>
+          <p>不规则编码与历史兼容性增加了 x86 前端实现的复杂度。结合 x86S 提案的搁置，讨论这些工程代价及多架构发展的条件。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/04/why-x86-is-a-mess/">
@@ -391,7 +391,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 Python 与 C 的矩阵乘法出发，沿着循环顺序、缓存分块、Roofline 和 FMA，分析同一计算在不同硬件上的性能差异。</p>
+          <p>矩阵乘法的性能差异来自语言执行开销、循环顺序、缓存复用与硬件映射。结合分块、Roofline 和 FMA，分析同一计算如何受到不同资源约束。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/03/gemm-languages-to-architecture/">
@@ -444,7 +444,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/11/01/film-emulation-pipelines/" class="post-title-link" itemprop="url">手机里的底片，电脑里的暗房：胶片模拟究竟在模拟什么？</a>
+          <a href="/2026/11/01/film-emulation-pipelines/" class="post-title-link" itemprop="url">胶片模拟的输入处理与材料建模</a>
         </h2>
 
         <div class="post-meta-container">
@@ -461,7 +461,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 Gloam、Dazz、No Fusion 到 Indigo 与 SpektraLab，沿着输入、显影、光谱模型和空间效果，理解胶片模拟改变了什么，以及模型复杂度为什么不直接决定成片偏好。</p>
+          <p>比较 Gloam、Dazz、No Fusion、Indigo 与 SpektraLab 的胶片模拟链路，区分输入处理、显影、光谱建模和空间效果，并讨论模型复杂度与成片偏好的关系。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/01/film-emulation-pipelines/">
@@ -514,7 +514,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/11/01/motorcycle-cylinders-displacement-vibration/" class="post-title-link" itemprop="url">从油门到后轮：同样的排量，几缸才适合你？</a>
+          <a href="/2026/11/01/motorcycle-cylinders-displacement-vibration/" class="post-title-link" itemprop="url">摩托车缸数、动力特性与振动</a>
         </h2>
 
         <div class="post-meta-container">
@@ -531,7 +531,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>四缸马力更大，为什么不降挡超车反而慢？从真实加速测试出发，沿着发动机、变速箱和骑手接触点，看看缸数怎样改变动力、节奏与长途体验。</p>
+          <p>结合道路加速测试、发动机参数与振动研究，分析总排量、缸数、转速和齿比怎样共同影响动力表现，并区分机械激励与骑手接触点的振动。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/01/motorcycle-cylinders-displacement-vibration/">
@@ -584,7 +584,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/" class="post-title-link" itemprop="url">从 RTL 到 GDSII：数字芯片开发的 MCP 适配到了哪一步？</a>
+          <a href="/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/" class="post-title-link" itemprop="url">数字芯片开发中的 AI Agent 与 MCP 适配</a>
         </h2>
 
         <div class="post-meta-container">
@@ -601,7 +601,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 Apple、NVIDIA、Qualcomm、Intel 和 AMD 的芯片研发实践出发，审视 Cadence、Synopsys、Siemens、AMD Ross 与 OpenROAD 的 AI Agent 和 MCP 适配现状。AI 正在进入数字芯片开发全流程，但从工具调用走向可信的工程闭环，还有很长的路。</p>
+          <p>梳理数字芯片研发中的 AI Agent 与 MCP 适配，比较 Cadence、Synopsys、Siemens、AMD Ross 和 OpenROAD 的公开能力，并区分工具调用、流程编排与工程验收。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/10/18/rtl-to-gdsii-digital-ic-mcp-20261018/">
@@ -671,7 +671,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>Why the same frozen agent step can receive opposite reward signs across evaluation channels, and how a matched audit can locate and test that sensitivity.</p>
+          <p>A matched audit of how evaluation channels assign value to the same frozen agent step, separating channel sensitivity from causal effects of changing the step.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/10/14/agent-step-value/">
@@ -741,7 +741,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>记录 EdgeControl 从零到 v1.7.3 的开发全过程：私有 API 逆向、手势状态机、两周十五个版本，以及完整技术栈。</p>
+          <p>EdgeControl 从原型到 v1.7.3 的开发记录：私有触控接口解析、边缘手势状态机、触觉反馈、误触防御与分发维护，并说明验证机结果的适用范围。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/08/30/edgecontrol-trackpad-edge-gestures/">

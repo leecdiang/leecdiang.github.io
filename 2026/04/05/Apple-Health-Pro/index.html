@@ -9,18 +9,18 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP/XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。">
+    <meta name="description" content="Apple Health Pro 将健康 App 导出的 ZIP/XML 记录转换为可按来源和日期筛选的 CSV。本文介绍数据分类、流式清洗、重复字符串存储与分卷导出的实现。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式">
+<meta property="og:title" content="Apple Health Pro：XML 数据解析与 CSV 转换">
 <meta property="og:url" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP/XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。">
+<meta property="og:description" content="Apple Health Pro 将健康 App 导出的 ZIP/XML 记录转换为可按来源和日期筛选的 CSV。本文介绍数据分类、流式清洗、重复字符串存储与分卷导出的实现。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260405-2.jpg">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260503.png">
@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260407.png">
 <meta property="og:image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260407-1.jpg">
 <meta property="article:published_time" content="2026-04-05T12:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-08T04:41:00.159Z">
+<meta property="article:modified_time" content="2026-11-08T08:50:09.311Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="Apple">
@@ -46,10 +46,10 @@
 <link rel="canonical" href="https://leecdiang.com/2026/04/05/Apple-Health-Pro/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/04/05/Apple-Health-Pro/","path":"2026/04/05/Apple-Health-Pro/","title":"打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/04/05/Apple-Health-Pro/","path":"2026/04/05/Apple-Health-Pro/","title":"Apple Health Pro：XML 数据解析与 CSV 转换"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式 | Beyond the Clock</title>
+<title>Apple Health Pro：XML 数据解析与 CSV 转换 | Beyond the Clock</title>
   
 
 
@@ -62,7 +62,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -87,7 +87,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-%E5%AF%BC%E5%87%BA%E4%BB%A5%E5%90%8E%EF%BC%8C%E6%95%B0%E6%8D%AE%E4%BB%8D%E7%84%B6%E4%B8%8D%E5%A5%BD%E7%94%A8"><span class="toc-text">01. 导出以后，数据仍然不好用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E4%BB%8E-iPhone-%E5%AF%BC%E5%87%BA%E5%88%B0-CSV"><span class="toc-text">02. 从 iPhone 导出到 CSV</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9AiPhone-%E7%AB%AF%E7%9A%84%E5%8E%9F%E5%A7%8B%E5%AF%BC%E5%87%BA"><span class="toc-text">第一步：iPhone 端的原始导出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E7%AD%9B%E9%80%89%E6%9D%A5%E6%BA%90%E4%B8%8E%E6%97%A5%E6%9C%9F"><span class="toc-text">第二步：筛选来源与日期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%9F%A5%E7%9C%8B%E5%88%86%E7%B1%BB%E5%90%8E%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-text">第三步：查看分类后的文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-15GB-XML-%E6%80%8E%E6%A0%B7%E5%A4%84%E7%90%86"><span class="toc-text">03. 15GB+ XML 怎样处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E5%BC%80%E6%BA%90%E4%B8%8E%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92"><span class="toc-text">04. 开源与后续计划</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-Apple-Health-%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%84%E7%90%86%E9%99%90%E5%88%B6"><span class="toc-text">01. Apple Health 导出数据的处理限制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA%E3%80%81%E6%9D%A5%E6%BA%90%E7%AD%9B%E9%80%89%E4%B8%8E%E5%88%86%E7%B1%BB%E7%BB%93%E6%9E%9C"><span class="toc-text">02. 数据导出、来源筛选与分类结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9AiPhone-%E7%AB%AF%E7%9A%84%E5%8E%9F%E5%A7%8B%E5%AF%BC%E5%87%BA"><span class="toc-text">第一步：iPhone 端的原始导出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E7%AD%9B%E9%80%89%E6%9D%A5%E6%BA%90%E4%B8%8E%E6%97%A5%E6%9C%9F"><span class="toc-text">第二步：筛选来源与日期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%9F%A5%E7%9C%8B%E5%88%86%E7%B1%BB%E5%90%8E%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-text">第三步：查看分类后的文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-15GB-XML-%E7%9A%84%E6%B5%81%E5%BC%8F%E5%A4%84%E7%90%86%E4%B8%8E%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6"><span class="toc-text">03. 15GB+ XML 的流式处理与内存控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E5%BC%80%E6%BA%90%E4%B8%8E%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92"><span class="toc-text">04. 开源与后续计划</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -95,7 +95,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260405-2.jpg"><meta itemprop="dateModified" content="2026-11-08T04:41:00.159Z"><meta itemprop="datePublished" content="2026-04-05T12:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/04/05/Apple-Health-Pro/Apple-Health-Pro-20260405-2.jpg"><meta itemprop="dateModified" content="2026-11-08T08:50:09.311Z"><meta itemprop="datePublished" content="2026-04-05T12:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/04/05/Apple-Health-Pro/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -114,7 +114,7 @@
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Everyday-Anatomy/">Everyday Anatomy</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
-          打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式
+          Apple Health Pro：XML 数据解析与 CSV 转换
         </h1>
 
         <div class="post-meta-container">
@@ -123,7 +123,7 @@
   
 </div>
 
-            <div class="post-description">Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP/XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。</div>
+            <div class="post-description">Apple Health Pro 将健康 App 导出的 ZIP/XML 记录转换为可按来源和日期筛选的 CSV。本文介绍数据分类、流式清洗、重复字符串存储与分卷导出的实现。</div>
         </div>
         
         <div class="reading-byline">
@@ -136,26 +136,26 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="01-导出以后，数据仍然不好用">01. 导出以后，数据仍然不好用</h2>
-<p>Apple 健康可以导出全部记录，但得到 ZIP 并不意味着可以开始分析。</p>
-<p><code>导出.xml</code> 可能达到数 GB，记事本难以打开，Excel 也可能耗尽内存。</p>
-<p>即使交给大模型，冗长的 XML 层级也不方便分析长期趋势，还可能诱发幻觉。</p>
-<p>我开发 Apple Health Pro🍎，就是想先把这些记录整理成能筛选、能打开的 CSV。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="01-Apple-Health-导出数据的处理限制">01. Apple Health 导出数据的处理限制</h2>
+<p>Apple 健康允许导出全部记录，但原始归档仍需经过解析、来源筛选和结构化转换，才能用于后续分析。</p>
+<p><code>导出.xml</code> 可能达到数 GB，超出常用文本编辑器的有效处理范围，也可能使 Excel 面临内存压力。数据可导出与数据便于处理，是两个不同条件。</p>
+<p>直接将层级冗长的 XML 交给大模型，也不利于核查长期趋势；模型还可能产生缺少记录依据的解释。</p>
+<p>我开发 Apple Health Pro🍎，主要解决这一数据准备环节：将原始记录转换为可筛选、按维度归类的 CSV，降低后续读取与分析的成本。</p>
 <p>安装包：<a href="https://github.com/leecdiang/Apple-Health-Pro/releases" target="_blank" class="glass-pill download-btn"><i class="fab fa-github"></i> 前往 GitHub 下载安装包</a></p>
 <hr>
-<h2 id="02-从-iPhone-导出到-CSV">02. 从 iPhone 导出到 CSV</h2>
+<h2 id="02-数据导出、来源筛选与分类结果">02. 数据导出、来源筛选与分类结果</h2>
 <h3 id="第一步：iPhone-端的原始导出">第一步：iPhone 端的原始导出</h3>
-<p>在健康 App 中点击头像 -&gt; <strong>“导出所有健康数据”</strong>。这一步你将得到一个 <code>导出.zip</code>。</p>
+<p>在健康 App 中点击头像，选择“导出所有健康数据”，保存生成的 <code>导出.zip</code>。</p>
 <p><img alt="" src="Apple-Health-Pro-20260405-2.jpg" decoding="async" loading="lazy" width="1179" height="563"></p>
 <h3 id="第二步：筛选来源与日期">第二步：筛选来源与日期</h3>
 <p>启动应用，macOS、Windows 和 Linux 均支持。</p>
 <p>点击 <code>SELECT DATA ARCHIVE</code>，选择刚导出的 ZIP。</p>
-<p>在 <code>IDENTIFIED SOURCES</code> 中勾选需要的来源，排除不想保留的第三方 App 记录。</p>
-<p>在 <code>Date range</code> 填起止日期。也可以隐藏设备名，导出时统一替换成 <code>AppleHealthPro_device</code>。</p>
+<p>在 <code>IDENTIFIED SOURCES</code> 中选择保留的来源，以排除不需要的第三方 App 记录。来源筛选决定后续统计实际包含哪些数据。</p>
+<p>在 <code>Date range</code> 设置起止日期；设备名可按需匿名化，导出时统一替换为 <code>AppleHealthPro_device</code>。</p>
 <p>点击 <code>EXECUTE EXPORT</code> 开始转换。</p>
 <p><img alt="" src="Apple-Health-Pro-20260503.png" decoding="async" loading="lazy" width="1600" height="1120"></p>
 <h3 id="第三步：查看分类后的文件">第三步：查看分类后的文件</h3>
-<p>v8.6.0 按 15 个医疗与运动维度归类输出，具体见下表。某类没有记录，就不生成对应文件。</p>
+<p>v8.6.0 将结果按 15 个医疗与运动维度组织，分类见下表。没有提取到记录的类别不生成文件，因此文件集合取决于输入数据。</p>
 <div class="table-container"><table>
 <thead>
 <tr>
@@ -258,7 +258,7 @@
 </tr>
 </tbody>
 </table></div>
-<p>这些 CSV 也可以交给 ChatGPT 或 Gemini 整理趋势。我推荐的提示词如下：</p>
+<p>分类后的 CSV 可以用于 ChatGPT、Gemini 等工具的趋势整理，输入时应明确数据来源和时间范围。下面示例中的“体检级别”和强制健康分级要求，超出了格式转换工具能够验证的范围；模型生成的分析不能替代专业医学判断。Apple 对手表健康功能也有相应的<a target="_blank" rel="noopener" href="https://www.apple.com/legal/sla/docs/watchOS26.pdf">使用限制</a>。提示词示例如下：</p>
 <blockquote>
 <p><strong>[你是一名具备运动生理学、 心血管医学 和健康数据建模能力的专业分析师。我将提供Apple Health原始数据（CSV），请基于数据进行接近专业体检级别的分析，并严格按照以下结构输出：首先给出【一句话结论】，直接判断整体健康状态（健康 / 亚健康 / 风险状态），不得模糊；然后进行【生理系统拆解分析】，从心血管系统（心率、HRV、静息心率）、神经系统（基于HRV分析交感/副交感平衡）、睡眠恢复系统、代谢与活动水平四个层面分析，必须解释背后的生理机制而非表象；接着进行【趋势建模】，基于时间序列判断是否存在周期性波动、长期改善或恶化趋势]</strong></p>
 </blockquote>
@@ -268,16 +268,16 @@
 <svg viewBox="0 0 1000 360" role="img" aria-label="Apple Health Pro 数据处理管道"><defs><marker id="aA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"></path></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">APPLE HEALTH PRO · CLEANSTREAM</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">从十几 GB 的 XML 到可分析的 15 类 CSV：每一步都避免把全量数据读进内存</text><ellipse cx="109" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="25,146 185,146 167,128 7,128" fill="#7aa6c6"></polygon><polygon points="25,146 185,146 185,240 25,240" fill="#3f6f96"></polygon><polygon points="185,146 167,128 167,222 185,240" fill="#2b5578"></polygon><line x1="25" y1="146" x2="185" y2="146" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="45" cy="166" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="45" y="170" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">iPhone 导出 ZIP</text><text x="105" y="209" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Health 全量数据</text><path d="M189,214 L211,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#aA)"></path><ellipse cx="299" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="215,146 375,146 357,128 197,128" fill="#78b7ae"></polygon><polygon points="215,146 375,146 375,240 215,240" fill="#2f7f7a"></polygon><polygon points="375,146 357,128 357,222 375,240" fill="#1f5f5b"></polygon><line x1="215" y1="146" x2="375" y2="146" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="235" cy="166" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="235" y="170" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">O(1) 流式清洗</text><text x="295" y="209" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">逐块读取 · 低内存</text><path d="M379,214 L401,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#aA)"></path><ellipse cx="489" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="405,146 565,146 547,128 387,128" fill="#78b7ae"></polygon><polygon points="405,146 565,146 565,240 405,240" fill="#2f7f7a"></polygon><polygon points="565,146 547,128 547,222 565,240" fill="#1f5f5b"></polygon><line x1="405" y1="146" x2="565" y2="146" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="425" cy="166" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="425" y="170" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">字符串去重</text><text x="485" y="209" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">sys.intern 共享地址</text><path d="M569,214 L591,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#aA)"></path><ellipse cx="679" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="595,146 755,146 737,128 577,128" fill="#d2ad72"></polygon><polygon points="595,146 755,146 755,240 595,240" fill="#9a7434"></polygon><polygon points="755,146 737,128 737,222 755,240" fill="#77551f"></polygon><line x1="595" y1="146" x2="755" y2="146" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="615" cy="166" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="615" y="170" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">智能分卷</text><text x="675" y="209" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">88 万行 / 约 90MB</text><path d="M759,214 L781,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#aA)"></path><ellipse cx="869" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="785,146 945,146 927,128 767,128" fill="#8fc0a9"></polygon><polygon points="785,146 945,146 945,240 785,240" fill="#4f8a6f"></polygon><polygon points="945,146 927,128 927,222 945,240" fill="#356a51"></polygon><line x1="785" y1="146" x2="945" y2="146" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="805" cy="166" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="805" y="170" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">15 类 CSV</text><text x="865" y="209" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">喂给 LLM 分析</text><text x="25" y="330" font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">流式清洗把内存从 O(N) 降到 O(1)；去重和分卷保证大文件不会撑爆 Python 或 Excel。</text></svg>
 <p style="font-size:.78rem;line-height:1.7;color:var(--text-muted);text-align:center;margin:.55rem 0 0">图 1：Apple Health Pro 的 CleanStream 管道。流式清洗、去重和分卷是处理十几 GB XML 的关键。</p>
 </div>
-<h2 id="03-15GB-XML-怎样处理">03. 15GB+ XML 怎样处理</h2>
-<p>部分用户的 <code>导出.xml</code> 超过 13GB，全量读取很容易耗尽内存。v8.4.0 我重构了解析引擎，主要改了清洗、字符串复用和导出分卷。</p>
+<h2 id="03-15GB-XML-的流式处理与内存控制">03. 15GB+ XML 的流式处理与内存控制</h2>
+<p>部分用户的 <code>导出.xml</code> 超过 13GB，全量读取会产生较高内存占用。v8.4.0 的解析引擎重构围绕三个对象展开：异常字符清洗、重复字符串存储与导出文件规模。</p>
 <p><img alt="697" src="Apple-Health-Pro-20260407.png" decoding="async" loading="lazy" width="1124" height="298"></p>
 <p><img alt="" src="Apple-Health-Pro-20260407-1.jpg" decoding="async" loading="lazy" width="1596" height="378"></p>
-<p>XML 偶尔带有 <code>\x0b</code> 等异常字符。用 <code>f.read().replace()</code> 清洗，要先把十几 GB 全部读入内存。我改成按块读取的 CleanStream 代理，让这一步的内存消耗由 O(N) 变成 O(1)，处理这类文件时不再依赖一次装下全部内容。</p>
-<p>3000 万条健康记录里的 <code>type</code>、<code>unit</code> 大量重复。我用 <code>sys.intern()</code> 让相同字符串共享内存，再配合 <code>gc.collect()</code> 回收对象，减少 Python 字典记录占用。</p>
-<p>CSV 太大，Excel 也不好加载。我在压力测试后把分卷阈值设为 88 万行，单文件约 90MB，在保留记录连续性和加载稳定性之间做了取舍。</p>
+<p>XML 偶尔包含 <code>\x0b</code> 等异常字符。全量 <code>f.read().replace()</code> 需要先载入完整内容，因此清洗内存随文件规模增长。CleanStream 改为按块读取，使这一清洗环节的空间消耗由 O(N) 转为 O(1)；该复杂度描述限于流式清洗，不代表整个应用的全部内存占用。</p>
+<p>3000 万条记录中的 <code>type</code> 与 <code>unit</code> 存在大量重复。<code>sys.intern()</code> 使相同字符串共享存储，再结合 <code>gc.collect()</code> 回收对象，以减少记录结构的重复分配。该策略针对字符串占用，不改变原始记录的含义。</p>
+<p>为控制 CSV 的加载规模，导出采用自动分卷。压力测试后设定阈值为 88 万行，单文件约 90MB，使文件规模与常用表格软件的加载稳定性相适应；这是一项实现参数选择，并非所有环境通用的最优阈值。</p>
 <hr>
 <h2 id="04-开源与后续计划">04. 开源与后续计划</h2>
-<p>项目已在 GitHub 开源。后续想支持更多运动指标提取，并用图表展示数据。</p>
+<p>项目已在 GitHub 开源。后续计划包括扩展运动指标提取，并以图表展示数据。</p>
 <p>源码：<a href="https://github.com/leecdiang/Apple-Health-Pro" target="_blank" class="glass-pill"><i class="fab fa-github"></i> leecdiang/Apple-Health-Pro</a></p>
 
     </div>
@@ -310,7 +310,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接:</strong>
-      <a href="https://leecdiang.com/2026/04/05/Apple-Health-Pro/" title="打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式">https://leecdiang.com/2026/04/05/Apple-Health-Pro/</a>
+      <a href="https://leecdiang.com/2026/04/05/Apple-Health-Pro/" title="Apple Health Pro：XML 数据解析与 CSV 转换">https://leecdiang.com/2026/04/05/Apple-Health-Pro/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！

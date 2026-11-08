@@ -2,41 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   
-  <url>
-    <loc>https://leecdiang.com/2026/11/08/llm-inference-from-token-to-cluster/</loc>
-    
-    <lastmod>2026-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
   
   
   <url>
-    <loc>https://leecdiang.com/2026/04/05/Apple-Health-Pro/</loc>
-    
-    <lastmod>2026-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
-    
-    <lastmod>2026-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/10/14/agent-step-value/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
     
     <lastmod>2026-11-08</lastmod>
     
@@ -58,18 +27,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/03/18/silicon-roadmap/</loc>
-    
-    <lastmod>2026-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</loc>
+    <loc>https://leecdiang.com/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/</loc>
     
     <lastmod>2026-11-08</lastmod>
     
@@ -102,7 +60,62 @@
   
   
   <url>
+    <loc>https://leecdiang.com/2026/11/06/architecture-performance-equations/</loc>
+    
+    <lastmod>2026-11-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/03/18/silicon-roadmap/</loc>
+    
+    <lastmod>2026-11-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/04/05/Apple-Health-Pro/</loc>
+    
+    <lastmod>2026-11-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/11/08/llm-inference-from-token-to-cluster/</loc>
+    
+    <lastmod>2026-11-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/</loc>
+    
+    <lastmod>2026-11-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://leecdiang.com/2026/11/03/gemm-languages-to-architecture/</loc>
     
     <lastmod>2026-11-08</lastmod>
     
@@ -124,18 +137,7 @@
   
   
   <url>
-    <loc>https://leecdiang.com/2026/11/06/architecture-performance-equations/</loc>
-    
-    <lastmod>2026-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://leecdiang.com/2026/11/03/gemm-languages-to-architecture/</loc>
+    <loc>https://leecdiang.com/2026/10/14/agent-step-value/</loc>
     
     <lastmod>2026-11-08</lastmod>
     
@@ -278,8 +280,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  
   
   
   

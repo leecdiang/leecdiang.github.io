@@ -9,22 +9,22 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。">
+    <meta name="description" content="多维并行改变消息尺寸、同步频率与依赖关系。本文联系 MFU、集合通信、网络拓扑和尾延迟，分析理论算力为何未必转化为有效训练吞吐。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐">
+<meta property="og:title" content="智算互联（上）：训练吞吐与通信瓶颈">
 <meta property="og:url" content="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。">
+<meta property="og:description" content="多维并行改变消息尺寸、同步频率与依赖关系。本文联系 MFU、集合通信、网络拓扑和尾延迟，分析理论算力为何未必转化为有效训练吞吐。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://leecdiang.com/images/social/9808a7fa9d3d.png">
+<meta property="og:image" content="https://leecdiang.com/images/social/ed968c65500b.png">
 <meta property="article:published_time" content="2026-06-28T14:39:30.000Z">
-<meta property="article:modified_time" content="2026-11-08T04:41:00.157Z">
+<meta property="article:modified_time" content="2026-11-08T09:03:37.022Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI-Infrastructure">
 <meta property="article:tag" content="AI集群">
@@ -39,16 +39,16 @@
 <meta property="article:tag" content="网络拓扑">
 <meta property="article:tag" content="集合通信">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://leecdiang.com/images/social/9808a7fa9d3d.png">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/ed968c65500b.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/","path":"2026/06/28/ai-compute-interconnect-part1-communication-wall/","title":"智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/","path":"2026/06/28/ai-compute-interconnect-part1-communication-wall/","title":"智算互联（上）：训练吞吐与通信瓶颈"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐 | Beyond the Clock</title>
+<title>智算互联（上）：训练吞吐与通信瓶颈 | Beyond the Clock</title>
   
 
 
@@ -66,7 +66,7 @@
   <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer=""></script>
 
   
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -91,7 +91,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%B3%B0%E5%80%BC%E7%AE%97%E5%8A%9B%E4%B8%8D%E7%AD%89%E4%BA%8E%E6%9C%89%E6%95%88%E5%90%9E%E5%90%90"><span class="toc-text">一、峰值算力不等于有效吞吐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%8E-FLOPS-%E5%88%B0-MFU"><span class="toc-text">1. 从 FLOPS 到 MFU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8D%95%E6%AD%A5%E6%97%B6%E9%97%B4%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E6%8B%86%E8%A7%A3"><span class="toc-text">2. 单步时间应该怎样拆解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Amdahl-%E5%AE%9A%E5%BE%8B%E5%9C%A8-AI-%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%8F%98%E4%BD%93"><span class="toc-text">3. Amdahl 定律在 AI 集群中的变体</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%B9%B6%E8%A1%8C%E6%96%B9%E5%BC%8F%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E6%B5%81%E9%87%8F"><span class="toc-text">二、并行方式怎样改变流量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Data-Parallelism%EF%BC%9A%E5%91%A8%E6%9C%9F%E6%80%A7%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%BD%92%E7%BA%A6"><span class="toc-text">1. Data Parallelism：周期性的大规模归约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Tensor-Parallelism%EF%BC%9A%E6%AF%8F%E5%B1%82%E9%83%BD%E5%8F%AF%E8%83%BD%E7%AD%89%E5%BE%85%E7%BD%91%E7%BB%9C"><span class="toc-text">2. Tensor Parallelism：每层都可能等待网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Pipeline-Parallelism%EF%BC%9A%E5%B8%A6%E5%AE%BD%E4%B9%8B%E5%A4%96%E8%BF%98%E6%9C%89-Bubble"><span class="toc-text">3. Pipeline Parallelism：带宽之外还有 Bubble</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Expert-Parallelism%EF%BC%9AAll-to-All-%E4%B8%8E-Incast"><span class="toc-text">4. Expert Parallelism：All-to-All 与 Incast</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Context-Parallelism%EF%BC%9A%E9%95%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E6%8A%8A%E5%BA%8F%E5%88%97%E7%BB%B4%E5%BA%A6%E5%8F%98%E6%88%90%E4%BA%92%E8%81%94%E9%97%AE%E9%A2%98"><span class="toc-text">5. Context Parallelism：长上下文把序列维度变成互联问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%90%84%E7%A7%8D%E5%B9%B6%E8%A1%8C%E6%96%B9%E5%BC%8F%E7%9A%84%E6%B5%81%E9%87%8F%E5%AF%B9%E7%85%A7"><span class="toc-text">6. 各种并行方式的流量对照</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E4%B8%8D%E6%98%AF%E2%80%9C%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E5%8C%85%E2%80%9D"><span class="toc-text">三、集合通信不是“发一个大包”</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Ring-AllReduce%EF%BC%9A%E5%B8%A6%E5%AE%BD%E6%95%88%E7%8E%87%E9%AB%98%EF%BC%8C%E4%BD%86%E6%AD%A5%E6%95%B0%E5%A4%9A"><span class="toc-text">1. Ring AllReduce：带宽效率高，但步数多</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Tree%EF%BC%9A%E5%87%8F%E5%B0%91%E6%AD%A5%E6%95%B0%EF%BC%8C%E4%BD%86%E6%9B%B4%E4%BE%9D%E8%B5%96%E6%8B%93%E6%89%91%E4%B8%8E%E4%B8%8A%E5%B1%82%E9%93%BE%E8%B7%AF"><span class="toc-text">2. Tree：减少步数，但更依赖拓扑与上层链路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Hierarchical-Collective%EF%BC%9A%E5%85%88%E8%8A%82%E7%82%B9%E5%86%85%EF%BC%8C%E5%86%8D%E8%8A%82%E7%82%B9%E9%97%B4"><span class="toc-text">3. Hierarchical Collective：先节点内，再节点间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%BF%85%E9%A1%BB%E5%85%88%E5%8C%BA%E5%88%86-Scale-up-%E4%B8%8E-Scale-out"><span class="toc-text">四、必须先区分 Scale-up 与 Scale-out</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Scale-up%EF%BC%9A%E6%8A%8A%E4%B8%80%E4%B8%AA-Pod-%E7%9C%8B%E6%88%90%E6%9B%B4%E5%A4%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9"><span class="toc-text">1. Scale-up：把一个 Pod 看成更大的计算节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Scale-out%EF%BC%9A%E6%8A%8A%E5%A4%A7%E9%87%8F%E8%8A%82%E7%82%B9%E7%BB%84%E6%88%90%E5%8F%AF%E8%B7%AF%E7%94%B1%E9%9B%86%E7%BE%A4"><span class="toc-text">2. Scale-out：把大量节点组成可路由集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PCIe-%E4%B8%8E-CXL%EF%BC%9A%E4%B8%BB%E6%9C%BA-I-O-%E5%92%8C%E5%86%85%E5%AD%98%E6%89%A9%E5%B1%95%E5%B1%82"><span class="toc-text">3. PCIe 与 CXL：主机 I/O 和内存扩展层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%AB%AF%E5%8F%A3%E6%A0%87%E7%A7%B0%E9%80%9F%E7%8E%87%E4%B9%8B%E5%A4%96%EF%BC%8C%E8%BF%98%E8%A6%81%E7%9C%8B%E6%8B%93%E6%89%91"><span class="toc-text">五、端口标称速率之外，还要看拓扑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Clos-Fat-tree%EF%BC%9A%E7%94%A8%E5%A4%9A%E7%BA%A7%E4%BA%A4%E6%8D%A2%E6%8D%A2%E5%8F%96%E8%A7%84%E6%A8%A1"><span class="toc-text">1. Clos / Fat-tree：用多级交换换取规模</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Oversubscription%EF%BC%9A%E7%AB%AF%E5%8F%A3%E9%80%9F%E7%8E%87%E6%B2%A1%E6%9C%89%E6%B6%88%E5%A4%B1%EF%BC%8C%E4%BA%8C%E5%88%86%E5%B8%A6%E5%AE%BD%E6%89%8D%E6%98%AF%E4%B8%8A%E9%99%90"><span class="toc-text">2. Oversubscription：端口速率没有消失，二分带宽才是上限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Rail-optimized%EF%BC%9A%E8%AE%A9%E5%B9%B6%E8%A1%8C%E7%BB%B4%E5%BA%A6%E4%B8%8E%E7%89%A9%E7%90%86%E7%BD%91%E7%BB%9C%E5%AF%B9%E9%BD%90"><span class="toc-text">3. Rail-optimized：让并行维度与物理网络对齐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88-400G-800G-%E4%BB%8D%E7%84%B6%E4%BC%9A%E9%81%87%E5%88%B0%E9%80%9A%E4%BF%A1%E5%A2%99"><span class="toc-text">六、为什么 400G / 800G 仍然会遇到通信墙</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BA%8F%E5%88%97%E5%8C%96%E6%97%B6%E9%97%B4%E5%8F%AA%E6%98%AF%E6%9C%80%E4%BD%8E%E4%B8%8B%E9%99%90"><span class="toc-text">1. 序列化时间只是最低下限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B0%8F%E6%B6%88%E6%81%AF%E7%9C%8B%E6%97%B6%E5%BB%B6%EF%BC%8C%E5%A4%A7%E6%B6%88%E6%81%AF%E7%9C%8B%E5%B8%A6%E5%AE%BD%EF%BC%8C%E6%B7%B7%E5%90%88%E6%B6%88%E6%81%AF%E7%9C%8B%E8%B0%83%E5%BA%A6"><span class="toc-text">2. 小消息看时延，大消息看带宽，混合消息看调度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%8C%E6%AD%A5%E7%82%B9%E5%9C%A8%E7%AD%89%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA-Rank"><span class="toc-text">3. 同步点在等最后一个 Rank</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%BA%94%E7%94%A8%E6%9C%80%E7%BB%88%E5%BE%97%E5%88%B0%E4%BA%86%E5%A4%9A%E5%B0%91-Goodput"><span class="toc-text">4. 应用最终得到了多少 Goodput</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%BB%8E%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E5%88%B0%E7%BD%91%E7%BB%9C%E9%9C%80%E6%B1%82"><span class="toc-text">七、从工作负载到网络需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%AF%84%E4%BB%B7%E4%B8%80%E5%A5%97%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C%EF%BC%8C%E5%BA%94%E8%AF%A5%E7%9C%8B%E4%BB%80%E4%B9%88"><span class="toc-text">八、评价一套智算网络，应该看什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E4%B8%80%E6%AD%A5%E8%AE%A1%E7%AE%97%E4%BD%95%E6%97%B6%E8%83%BD%E5%BC%80%E5%A7%8B"><span class="toc-text">下一步计算何时能开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%B3%B0%E5%80%BC%E7%AE%97%E5%8A%9B%E3%80%81MFU-%E4%B8%8E%E8%AE%AD%E7%BB%83%E5%90%9E%E5%90%90"><span class="toc-text">一、峰值算力、MFU 与训练吞吐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MFU-%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%BD%B1%E5%93%8D%E5%9B%A0%E7%B4%A0"><span class="toc-text">1. MFU 的定义与影响因素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8D%95%E6%AD%A5%E6%97%B6%E9%97%B4%E4%B8%8E%E6%9A%B4%E9%9C%B2%E9%80%9A%E4%BF%A1%E5%BC%80%E9%94%80"><span class="toc-text">2. 单步时间与暴露通信开销</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%A9%E5%B1%95%E6%95%88%E7%8E%87%E4%B8%8E%E8%A7%84%E6%A8%A1%E7%9B%B8%E5%85%B3%E7%9A%84%E5%90%8C%E6%AD%A5%E5%BC%80%E9%94%80"><span class="toc-text">3. 扩展效率与规模相关的同步开销</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5%E4%B8%8E%E9%80%9A%E4%BF%A1%E6%A8%A1%E5%BC%8F"><span class="toc-text">二、并行策略与通信模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Data-Parallelism%EF%BC%9A%E5%91%A8%E6%9C%9F%E6%80%A7%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%BD%92%E7%BA%A6"><span class="toc-text">1. Data Parallelism：周期性的大规模归约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Tensor-Parallelism%EF%BC%9A%E5%B1%82%E5%86%85%E5%90%8C%E6%AD%A5%E4%B8%8E%E6%97%B6%E5%BB%B6%E6%95%8F%E6%84%9F%E6%80%A7"><span class="toc-text">2. Tensor Parallelism：层内同步与时延敏感性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Pipeline-Parallelism%EF%BC%9A%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%80%9A%E4%BF%A1%E4%B8%8E-Bubble"><span class="toc-text">3. Pipeline Parallelism：流水线通信与 Bubble</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Expert-Parallelism%EF%BC%9AAll-to-All-%E4%B8%8E-Incast"><span class="toc-text">4. Expert Parallelism：All-to-All 与 Incast</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Context-Parallelism%EF%BC%9A%E5%BA%8F%E5%88%97%E5%88%87%E5%88%86%E4%B8%8E%E9%95%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E9%80%9A%E4%BF%A1"><span class="toc-text">5. Context Parallelism：序列切分与长上下文通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%90%84%E7%A7%8D%E5%B9%B6%E8%A1%8C%E6%96%B9%E5%BC%8F%E7%9A%84%E6%B5%81%E9%87%8F%E5%AF%B9%E7%85%A7"><span class="toc-text">6. 各种并行方式的流量对照</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E7%AE%97%E6%B3%95%E4%B8%8E%E6%8B%93%E6%89%91%E6%98%A0%E5%B0%84"><span class="toc-text">三、集合通信算法与拓扑映射</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Ring-AllReduce-%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%B8%8E%E5%BB%B6%E8%BF%9F"><span class="toc-text">1. Ring AllReduce 的带宽与延迟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Tree-%E7%AE%97%E6%B3%95%E7%9A%84%E6%AD%A5%E6%95%B0%E4%B8%8E%E6%8B%93%E6%89%91%E7%BA%A6%E6%9D%9F"><span class="toc-text">2. Tree 算法的步数与拓扑约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Hierarchical-Collective%EF%BC%9A%E8%8A%82%E7%82%B9%E5%86%85%E4%B8%8E%E8%8A%82%E7%82%B9%E9%97%B4%E5%BD%92%E7%BA%A6"><span class="toc-text">3. Hierarchical Collective：节点内与节点间归约</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Scale-up%E3%80%81Scale-out-%E4%B8%8E%E4%B8%BB%E6%9C%BA%E4%BA%92%E8%81%94%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-text">四、Scale-up、Scale-out 与主机互联的边界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Scale-up%EF%BC%9A%E7%B4%A7%E8%80%A6%E5%90%88%E5%8A%A0%E9%80%9F%E5%99%A8%E4%BA%92%E8%81%94"><span class="toc-text">1. Scale-up：紧耦合加速器互联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Scale-out%EF%BC%9A%E8%B7%A8%E8%8A%82%E7%82%B9%E5%8F%AF%E8%B7%AF%E7%94%B1%E7%BD%91%E7%BB%9C"><span class="toc-text">2. Scale-out：跨节点可路由网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PCIe-%E4%B8%8E-CXL%EF%BC%9A%E4%B8%BB%E6%9C%BA-I-O-%E5%92%8C%E5%86%85%E5%AD%98%E6%89%A9%E5%B1%95%E5%B1%82"><span class="toc-text">3. PCIe 与 CXL：主机 I/O 和内存扩展层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%8B%93%E6%89%91%E7%BA%A6%E6%9D%9F%E4%B8%8E%E9%9B%86%E7%BE%A4%E5%8F%AF%E7%94%A8%E5%B8%A6%E5%AE%BD"><span class="toc-text">五、拓扑约束与集群可用带宽</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Clos-Fat-tree-%E7%9A%84%E8%B7%AF%E5%BE%84%E4%B8%8E%E6%89%A9%E5%B1%95%E8%83%BD%E5%8A%9B"><span class="toc-text">1. Clos / Fat-tree 的路径与扩展能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Oversubscription%EF%BC%9A%E5%85%B1%E4%BA%AB%E4%B8%8A%E8%A1%8C%E4%B8%8E%E4%BA%8C%E5%88%86%E5%B8%A6%E5%AE%BD"><span class="toc-text">2. Oversubscription：共享上行与二分带宽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Rail-optimized%EF%BC%9A%E8%AE%A9%E5%B9%B6%E8%A1%8C%E7%BB%B4%E5%BA%A6%E4%B8%8E%E7%89%A9%E7%90%86%E7%BD%91%E7%BB%9C%E5%AF%B9%E9%BD%90"><span class="toc-text">3. Rail-optimized：让并行维度与物理网络对齐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81400G-800G-%E4%B8%8B%E7%9A%84%E9%80%9A%E4%BF%A1%E5%A2%99%E4%B8%8E%E6%80%A7%E8%83%BD%E5%8F%A3%E5%BE%84"><span class="toc-text">六、400G / 800G 下的通信墙与性能口径</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BA%8F%E5%88%97%E5%8C%96%E6%97%B6%E9%97%B4%E4%B8%8E%E7%AB%AF%E5%88%B0%E7%AB%AF%E5%BB%B6%E8%BF%9F%E4%B8%8B%E9%99%90"><span class="toc-text">1. 序列化时间与端到端延迟下限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B6%88%E6%81%AF%E5%B0%BA%E5%AF%B8%E4%B8%8E%E6%97%B6%E5%BB%B6%E3%80%81%E5%B8%A6%E5%AE%BD%E9%9C%80%E6%B1%82"><span class="toc-text">2. 消息尺寸与时延、带宽需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%8C%E6%AD%A5%E5%AE%8C%E6%88%90%E6%97%B6%E9%97%B4%E7%94%B1%E5%B0%BE%E9%83%A8-Rank-%E5%86%B3%E5%AE%9A"><span class="toc-text">3. 同步完成时间由尾部 Rank 决定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Line-Rate-%E4%B8%8E%E5%BA%94%E7%94%A8-Goodput"><span class="toc-text">4. Line Rate 与应用 Goodput</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%BB%8E%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E6%8E%A8%E5%AF%BC%E7%BD%91%E7%BB%9C%E9%9C%80%E6%B1%82"><span class="toc-text">七、从工作负载推导网络需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%99%BA%E7%AE%97%E7%BD%91%E7%BB%9C%E7%9A%84%E8%AF%84%E4%BC%B0%E7%BB%B4%E5%BA%A6"><span class="toc-text">八、智算网络的评估维度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1%E5%B0%B1%E7%BB%AA%E6%97%B6%E9%97%B4%E4%B8%8E%E6%9C%89%E6%95%88%E8%AE%A1%E7%AE%97%E5%90%9E%E5%90%90"><span class="toc-text">通信就绪时间与有效计算吞吐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -99,7 +99,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/9808a7fa9d3d.png"><meta itemprop="dateModified" content="2026-11-08T04:41:00.157Z"><meta itemprop="datePublished" content="2026-06-28T14:39:30.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/ed968c65500b.png"><meta itemprop="dateModified" content="2026-11-08T09:03:37.022Z"><meta itemprop="datePublished" content="2026-06-28T14:39:30.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -118,7 +118,7 @@
         <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
         
         <h1 class="post-title" itemprop="name headline">
-          智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐
+          智算互联（上）：训练吞吐与通信瓶颈
         </h1>
 
         <div class="post-meta-container">
@@ -127,7 +127,7 @@
   
 </div>
 
-            <div class="post-description">从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。</div>
+            <div class="post-description">多维并行改变消息尺寸、同步频率与依赖关系。本文联系 MFU、集合通信、网络拓扑和尾延迟，分析理论算力为何未必转化为有效训练吞吐。</div>
         </div>
         
         <div class="reading-byline">
@@ -142,7 +142,7 @@
     
     <div class="post-body" itemprop="articleBody" data-math-prerendered="19"><blockquote>
 <p><strong>Abstract - Part 1</strong><br><br>
-Adding accelerators increases peak compute, but synchronization can leave them waiting for data. This article follows the traffic created by data, tensor, pipeline, expert, and context parallelism, then examines how collectives, topology, and tail latency affect training throughput.</p>
+Increasing accelerator count raises peak compute capacity, but training throughput also depends on when data becomes available at synchronization points. This article examines the communication patterns induced by data, tensor, pipeline, expert, and context parallelism, and relates them to collective algorithms, topology, exposed communication time, and tail latency. The analysis distinguishes port line rate from application goodput and identifies the conditions under which interconnect constraints limit scaling efficiency.</p>
 </blockquote>
 <div class="note info"><p>本文是「智算互联」系列上篇。<a href="/series/ai-interconnect/">查看系列目录 →</a></p>
 </div>
@@ -155,9 +155,9 @@ Adding accelerators increases peak compute, but synchronization can leave them w
   </a>
 </div>
 <hr>
-<h2 id="一、峰值算力不等于有效吞吐">一、峰值算力不等于有效吞吐</h2>
-<h3 id="1-从-FLOPS-到-MFU">1. 从 FLOPS 到 MFU</h3>
-<p>规格表给出 Peak FLOPS，训练时却还要看其中多少真的用于模型计算。</p>
+<h2 id="一、峰值算力、MFU-与训练吞吐">一、峰值算力、MFU 与训练吞吐</h2>
+<h3 id="1-MFU-的定义与影响因素">1. MFU 的定义与影响因素</h3>
+<p>硬件规格通常以 Peak FLOPS 描述计算上限，训练性能评估则需要进一步区分：其中多少吞吐实际用于模型所需的有效计算。</p>
 <p>模型 FLOPs 利用率（Model FLOPs Utilization, MFU）可以写成：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
@@ -166,8 +166,8 @@ Adding accelerators increases peak compute, but synchronization can leave them w
 \frac{\text{模型每步所需 FLOPs}}{\text{单步时间}\times\text{加速器数量}\times\text{单卡峰值 FLOPS}}
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4D"></mjx-c><mjx-c class="mjx-c46"></mjx-c><mjx-c class="mjx-c55"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mtext class="mjx-n"><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">模</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">型</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">每</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">步</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">所</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">需</mjx-utext><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c46"></mjx-c><mjx-c class="mjx-c4C"></mjx-c><mjx-c class="mjx-c4F"></mjx-c><mjx-c class="mjx-c50"></mjx-c><mjx-c class="mjx-c73"></mjx-c></mjx-mtext></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mtext class="mjx-n"><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">单</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">步</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">时</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">间</mjx-utext></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">加</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">速</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">器</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">数</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">量</mjx-utext></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">单</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">卡</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">峰</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">值</mjx-utext><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c46"></mjx-c><mjx-c class="mjx-c4C"></mjx-c><mjx-c class="mjx-c4F"></mjx-c><mjx-c class="mjx-c50"></mjx-c><mjx-c class="mjx-c53"></mjx-c></mjx-mtext></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">MFU</mi></mrow><mo>=</mo><mfrac><mtext>模型每步所需 FLOPs</mtext><mrow><mtext>单步时间</mtext><mo>×</mo><mtext>加速器数量</mtext><mo>×</mo><mtext>单卡峰值 FLOPS</mtext></mrow></mfrac></math></mjx-assistive-mml></mjx-container></p>
-<p>PaLM 用模型有效计算吞吐除以硬件理论峰值，定义 MFU。通信、访存、重计算和系统等待不计入分子的“有用模型 FLOPs”，这些开销会反映在利用率里。<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2204.02311">PaLM: Scaling Language Modeling with Pathways</a></p>
-<p>但不能看到 MFU 低，就认定网络慢。原因还可能是：</p>
+<p>PaLM 将模型有效计算吞吐与硬件理论峰值之比定义为 MFU。通信、访存、重计算及系统等待不计入分子的“有用模型 FLOPs”；这些开销占用执行时间时，会反映为利用率下降。<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2204.02311">PaLM: Scaling Language Modeling with Pathways</a></p>
+<p>MFU 是整体执行效率指标，不能仅凭其偏低就将瓶颈归因于网络。可能原因还包括：</p>
 <ul>
 <li>GPU 内核没有充分利用 Tensor Core</li>
 <li>HBM 带宽或访存模式成为瓶颈</li>
@@ -177,9 +177,9 @@ Adding accelerators increases peak compute, but synchronization can leave them w
 <li>数据加载、Checkpoint 或故障恢复打断训练</li>
 <li>某个 Rank 变成 Straggler，迫使其余设备等待</li>
 </ul>
-<p>网络需要与这些因素一起排查。</p>
-<p>加速器越快、同步规模越大，通信就越不容易藏在计算后面。</p>
-<h3 id="2-单步时间应该怎样拆解">2. 单步时间应该怎样拆解</h3>
+<p>网络性能需要与计算内核、存储访问和执行调度共同诊断，才能确定其对利用率下降的实际贡献。</p>
+<p>当加速器计算速度提高、同步参与规模扩大时，原本能够与计算重叠的通信也更容易暴露在关键路径上。</p>
+<h3 id="2-单步时间与暴露通信开销">2. 单步时间与暴露通信开销</h3>
 <p>一个训练 Step 可以近似拆成：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
@@ -194,9 +194,9 @@ T_{\mathrm{sync}} +
 T_{\mathrm{I/O}}
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c64"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c62"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c62"></mjx-c><mjx-c class="mjx-c62"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c79"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.177em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c49"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-n"><mjx-c class="mjx-c4F"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">step</mi></mrow></mrow></msub><mo>=</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">compute</mi></mrow></mrow></msub><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">exposed</mi><mtext>&nbsp;</mtext><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">bubble</mi></mrow></mrow></msub><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">sync</mi></mrow></mrow></msub><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">I</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi mathvariant="normal">O</mi></mrow></mrow></msub></math></mjx-assistive-mml></mjx-container></p>
-<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{exposed\ comm}}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c64"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">exposed</mi><mtext>&nbsp;</mtext><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub></math></mjx-assistive-mml></mjx-container> 只算没有被计算覆盖、落在关键路径上的通信，不能用总通信时间代替。</p>
-<p>梯度 AllReduce 可以分桶，在反向传播尚未结束时提前启动。后续层计算得足够久，就能盖住这部分通信；若最后一桶迟迟未完成，优化器仍得等。于是某个临界点前只是网络慢一点，越过后却可能明显拖长 Step。</p>
-<p>定位等待，要把消息放回 Step 的位置：</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{exposed\ comm}}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c64"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">exposed</mi><mtext>&nbsp;</mtext><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub></math></mjx-assistive-mml></mjx-container> 仅表示未被计算覆盖、实际落在关键路径上的通信时间。它与总通信时间并不等价，评估优化收益时需要保持这一口径。</p>
+<p>例如，梯度 AllReduce 可以通过分桶在反向传播尚未结束时提前启动。后续层的计算若足够长，部分通信开销可以被覆盖；最后一桶若未及时完成，优化器仍需等待。因此，网络时延增加对 Step 时间的影响可能具有临界性，取决于计算与通信之间尚余多少重叠空间。</p>
+<p>定位这类等待，需要将消息传输放回 Step 的依赖关系中分析：</p>
 <ul>
 <li>通信发生在 Step 的什么位置？</li>
 <li>是否位于依赖链关键路径？</li>
@@ -204,29 +204,29 @@ T_{\mathrm{I/O}}
 <li>通信库是否理解实际拓扑？</li>
 <li>发送端、交换网络和接收端是否同时可用？</li>
 </ul>
-<h3 id="3-Amdahl-定律在-AI-集群中的变体">3. Amdahl 定律在 AI 集群中的变体</h3>
+<h3 id="3-扩展效率与规模相关的同步开销">3. 扩展效率与规模相关的同步开销</h3>
 <p>经典 Amdahl 定律说明，无法并行化的串行部分会限制整体加速比：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
 S(N)=\frac{1}{(1-P)+\frac{P}{N}}
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mfrac space="3"><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>S</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>P</mi><mo stretchy="false">)</mo><mo>+</mo><mfrac><mi>P</mi><mi>N</mi></mfrac></mrow></mfrac></math></mjx-assistive-mml></mjx-container></p>
-<p>训练里的“串行部分”会随卡数改变，通信范围、同步参与者和拓扑跨度都不是常量。可以进一步写成：</p>
+<p>训练中的不可并行开销并非固定比例。随着卡数增加，通信范围、同步参与者和拓扑跨度都会变化，因此可以进一步写成：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
 S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{sync}}(N)+T_{\mathrm{imbalance}}(N)}
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-msub size="s"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c79"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c62"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>S</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><msub><mi>T</mi><mn>1</mn></msub><mrow><mfrac><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">compute</mi></mrow></mrow></msub><mi>N</mi></mfrac><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">sync</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">imbalance</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow></mfrac></math></mjx-assistive-mml></mjx-container></p>
-<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{comm}}(N)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> 与 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{sync}}(N)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c79"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">sync</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> 可能随规模上升。加 GPU 分摊了计算，也可能增加集合通信与等待。</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{comm}}(N)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">comm</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> 与 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T_{\mathrm{sync}}(N)"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c79"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">sync</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> 可能随规模增长。增加 GPU 在分摊计算的同时，也可能提高集合通信与同步等待的成本。</p>
 <p>这时可以检查扩展效率（Scaling Efficiency）：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
 \eta(N)=\frac{\text{使用 }N\text{ 张卡的实际加速比}}{N}
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mtext class="mjx-n"><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">使</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">用</mjx-utext><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">张</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">卡</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">的</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">实</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">际</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">加</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">速</mjx-utext><mjx-utext style="font-size: 88.4%; padding: 0.848em 0 0.226em 0; font-family: MJXZERO, serif;" variant="normal">比</mjx-utext></mjx-mtext></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>η</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mtext>使用&nbsp;</mtext><mi>N</mi><mtext>&nbsp;张卡的实际加速比</mtext></mrow><mi>N</mi></mfrac></math></mjx-assistive-mml></mjx-container></p>
-<p>1024 张卡若只有单卡的 600 倍速度，扩展效率约 58.6%。其余时间要按瓶颈拆解，不能全算给网络，也不能再把卡数直接当有效算力。</p>
-<h2 id="二、并行方式怎样改变流量">二、并行方式怎样改变流量</h2>
-<p>DP、TP、PP、EP 和 CP 切分的维度不同，产生的消息大小、频率与依赖也不同。“AI 流量”这个名字不足以描述它们。</p>
+<p>若 1024 张卡只达到单卡的 600 倍速度，扩展效率约为 58.6%。这部分效率损失需要按实际瓶颈分解，既不能全部归因于网络，也不能忽略它而直接以卡数估计有效算力。</p>
+<h2 id="二、并行策略与通信模式">二、并行策略与通信模式</h2>
+<p>DP、TP、PP、EP 与 CP 沿不同维度划分计算与数据，对应的消息尺寸、调用频率和依赖关系也不同。网络需求必须从具体并行策略推导，笼统的“AI 流量”无法表达这些差异。</p>
 <p>NVIDIA Megatron Core 也把这些策略视为可以组合的不同维度：数据并行（DP）、张量并行（TP）、流水线并行（PP）、上下文并行（CP）与专家并行（EP）。<a target="_blank" rel="noopener" href="https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html">Megatron Core Parallelism Strategies Guide</a></p>
 <h3 id="1-Data-Parallelism：周期性的大规模归约">1. Data Parallelism：周期性的大规模归约</h3>
 <p>数据并行（Data Parallelism, DP）让不同设备持有相同模型副本，各自处理不同 Mini-batch，然后同步梯度。</p>
@@ -244,8 +244,8 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>最慢 Rank 会拖住整个同步点；</li>
 <li>梯度分桶后可以与反向计算重叠。</li>
 </ul>
-<p>梯度分桶以后，DP 通常是一串带依赖的中、大消息。持续带宽重要，最后几桶的尾延迟也重要。</p>
-<h3 id="2-Tensor-Parallelism：每层都可能等待网络">2. Tensor Parallelism：每层都可能等待网络</h3>
+<p>梯度分桶使 DP 通信表现为一组具有依赖关系的中、大消息。因此，持续带宽影响整体同步效率，末尾几个 Bucket 的尾延迟则可能直接延长 Step。</p>
+<h3 id="2-Tensor-Parallelism：层内同步与时延敏感性">2. Tensor Parallelism：层内同步与时延敏感性</h3>
 <p>张量并行（Tensor Parallelism, TP）把同一层的矩阵或张量切分到多张 GPU。它解决单卡显存与单卡计算容量不足的问题，但代价是层内频繁同步。</p>
 <p>常见通信包括：</p>
 <ul>
@@ -254,7 +254,7 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>ReduceScatter；</li>
 <li>点对点交换局部结果。</li>
 </ul>
-<p>TP 往往在每个 Transformer Layer 内同步，频率比 DP 高。消息即使较小，下一步矩阵计算也可能要等它返回，因此难以隐藏。</p>
+<p>TP 往往需要在每个 Transformer Layer 内同步，其通信频率高于 DP。即使消息较小，后续矩阵计算也可能依赖其完成，使固定时延难以被其他计算覆盖。</p>
 <p>需要重点看：</p>
 <ul>
 <li>单跳与端到端时延；</li>
@@ -262,8 +262,8 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>拥塞下的 P99/P999 延迟；</li>
 <li>节点内与跨节点拓扑边界。</li>
 </ul>
-<p>工程上通常优先把 TP 放在高带宽、低时延的 Scale-up 域内，而不是轻易跨越普通数据中心网络。</p>
-<h3 id="3-Pipeline-Parallelism：带宽之外还有-Bubble">3. Pipeline Parallelism：带宽之外还有 Bubble</h3>
+<p>这也是工程上通常优先将 TP 放置在高带宽、低时延 Scale-up 域内的原因。跨越普通数据中心网络时，必须重新评估层内同步的时延预算。</p>
+<h3 id="3-Pipeline-Parallelism：流水线通信与-Bubble">3. Pipeline Parallelism：流水线通信与 Bubble</h3>
 <p>流水线并行（Pipeline Parallelism, PP）把模型的不同层分配到不同 Stage，并将 Mini-batch 切成多个 Micro-batch，在 Stage 之间流水执行。</p>
 <p>它的网络流量主要是：</p>
 <ul>
@@ -271,7 +271,7 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>Backward 阶段传递 Activation Gradient；</li>
 <li>相邻 Stage 间的点对点通信。</li>
 </ul>
-<p>PP 还受流水线 Bubble 影响。Stage 计算量不均、延迟波动、Micro-batch 太少，都会留出设备空等的区间。Megatron-LM 的交错调度就是为减少这些空泡。<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2104.04473">Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM</a></p>
+<p>PP 的执行效率还受流水线 Bubble 约束。Stage 计算量不均、通信时延波动或 Micro-batch 数量不足，都会形成设备空闲区间。Megatron-LM 的交错调度正是用于减少这类空泡。<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2104.04473">Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM</a></p>
 <h3 id="4-Expert-Parallelism：All-to-All-与-Incast">4. Expert Parallelism：All-to-All 与 Incast</h3>
 <p>Mixture-of-Experts（MoE）模型只激活部分专家，但不同 Token 会被路由到不同设备上的专家。专家并行（Expert Parallelism, EP）通常需要：</p>
 <ol>
@@ -289,8 +289,8 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>小消息与大消息混杂；</li>
 <li>尾延迟直接传导到下一层。</li>
 </ul>
-<p>Token 路由会改变热点，不像规则对称的 Ring AllReduce 那样容易安排。只靠静态 ECMP 哈希，未必能均衡 MoE 流量。</p>
-<h3 id="5-Context-Parallelism：长上下文把序列维度变成互联问题">5. Context Parallelism：长上下文把序列维度变成互联问题</h3>
+<p>EP 的热点随 Token 路由变化，通信分布不具备规则 Ring AllReduce 那样的对称性。因此，静态 ECMP 哈希未必能够随 MoE 负载变化维持均衡。</p>
+<h3 id="5-Context-Parallelism：序列切分与长上下文通信">5. Context Parallelism：序列切分与长上下文通信</h3>
 <p>上下文并行（Context Parallelism, CP）沿序列长度切分输入。它主要服务于长上下文训练，减轻单卡 Activation 与 Attention 计算的内存压力。</p>
 <p>上下文从数千增长到数十万甚至更长时，Attention 的 KV、Query 或中间状态需要跨设备交换。CP 还能与 TP、PP、DP 组合，因此长上下文流量会叠加在已有通信上。<a target="_blank" rel="noopener" href="https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html">Megatron Core Context Parallelism</a></p>
 <h3 id="6-各种并行方式的流量对照">6. 各种并行方式的流量对照</h3>
@@ -356,9 +356,9 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 </tr>
 </tbody>
 </table></div>
-<h2 id="三、集合通信不是“发一个大包”">三、集合通信不是“发一个大包”</h2>
+<h2 id="三、集合通信算法与拓扑映射">三、集合通信算法与拓扑映射</h2>
 <p>NVIDIA Collective Communications Library（NCCL）提供 AllReduce、Broadcast、Reduce、AllGather、ReduceScatter 等 GPU 集合通信原语，并根据拓扑选择算法和路径。<a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">NCCL Collective Operations</a></p>
-<h3 id="1-Ring-AllReduce：带宽效率高，但步数多">1. Ring AllReduce：带宽效率高，但步数多</h3>
+<h3 id="1-Ring-AllReduce-的带宽与延迟">1. Ring AllReduce 的带宽与延迟</h3>
 <p>Ring AllReduce 通常由 ReduceScatter 和 AllGather 两阶段组成。每个 Rank 只与相邻 Rank 通信，能够较好利用链路带宽，并避免中心节点成为瓶颈。</p>
 <p>对于 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="N"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math></mjx-assistive-mml></mjx-container> 个 Rank、每个 Rank 数据量为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="M"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>M</mi></math></mjx-assistive-mml></mjx-container> 的情形，每个 Rank 传输的数据量近似为：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
@@ -366,10 +366,10 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 2\frac{N-1}{N}M
 
 "><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mn>2</mn><mfrac><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow><mi>N</mi></mfrac><mi>M</mi></math></mjx-assistive-mml></mjx-container></p>
-<p>Ring 大消息通常能较好用满带宽，Rank 增多却也增加通信步数和延迟项。小消息由固定开销主导时，未必适合它。</p>
-<h3 id="2-Tree：减少步数，但更依赖拓扑与上层链路">2. Tree：减少步数，但更依赖拓扑与上层链路</h3>
-<p>Tree、Double Binary Tree 把步数降到对数级，更适合小消息与低延迟需求。不过上层节点和链路承担的聚合流量更大，逻辑树与物理拓扑没对齐，仍可能堵在少数位置。</p>
-<h3 id="3-Hierarchical-Collective：先节点内，再节点间">3. Hierarchical Collective：先节点内，再节点间</h3>
+<p>Ring 对大消息通常具有较高的带宽利用率，但 Rank 增多也会增加通信步数及相应延迟项。若消息较小、固定启动开销占主导，其优势便未必成立。</p>
+<h3 id="2-Tree-算法的步数与拓扑约束">2. Tree 算法的步数与拓扑约束</h3>
+<p>Tree 与 Double Binary Tree 将通信步数降低到对数级，更适合对启动时延敏感的小消息。不过，上层节点及链路承担更集中的聚合流量；逻辑树若与物理拓扑不匹配，仍可能在少数位置形成瓶颈。</p>
+<h3 id="3-Hierarchical-Collective：节点内与节点间归约">3. Hierarchical Collective：节点内与节点间归约</h3>
 <p>现代 GPU 服务器通常同时存在多层互联：</p>
 <ul>
 <li>GPU 封装或板内互联；</li>
@@ -377,10 +377,10 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>PCIe 与 CPU/网卡路径；</li>
 <li>跨节点 Ethernet 或 InfiniBand Scale-out Fabric。</li>
 </ul>
-<p>分层集合通信先做节点内归约，再由各节点代表参与跨节点归约，最后向节点内广播。它减少穿过较慢或较拥塞层级的数据量。</p>
-<h2 id="四、必须先区分-Scale-up-与-Scale-out">四、必须先区分 Scale-up 与 Scale-out</h2>
-<p>NVLink、UALink、PCIe、RoCE 和 UET 都能连接加速器，但不能只凭这一点互相比较，它们的控制范围与语义不同。</p>
-<h3 id="1-Scale-up：把一个-Pod-看成更大的计算节点">1. Scale-up：把一个 Pod 看成更大的计算节点</h3>
+<p>分层集合通信利用这些带宽与时延差异，先在节点内归约，再由各节点代表执行跨节点归约，最后向节点内广播，从而减少穿越较慢或较拥塞层级的数据量。</p>
+<h2 id="四、Scale-up、Scale-out-与主机互联的边界">四、Scale-up、Scale-out 与主机互联的边界</h2>
+<p>NVLink、UALink、PCIe、RoCE 与 UET 都参与加速器之间的数据交换，但服务的控制范围与访问语义不同。比较其性能之前，应先明确各自承担的系统角色。</p>
+<h3 id="1-Scale-up：紧耦合加速器互联">1. Scale-up：紧耦合加速器互联</h3>
 <p>Scale-up 面向服务器、机架或 Pod 内的紧耦合加速器，追求：</p>
 <ul>
 <li>极低时延；</li>
@@ -390,7 +390,7 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>较小的故障与管理域。</li>
 </ul>
 <p>UALink 200G 1.0 就是一个开放的 Scale-up 互联规范，定义加速器与交换机之间的低时延、高带宽连接，并支持 Read、Write 和 Atomic Transaction。<a target="_blank" rel="noopener" href="https://ualinkconsortium.org/blog/ualink-200g-1-0-specification-overview-802/">UALink 200G 1.0 Specification Overview</a></p>
-<h3 id="2-Scale-out：把大量节点组成可路由集群">2. Scale-out：把大量节点组成可路由集群</h3>
+<h3 id="2-Scale-out：跨节点可路由网络">2. Scale-out：跨节点可路由网络</h3>
 <p>Scale-out 面向跨服务器、跨机架甚至跨园区的集群，优先考虑：</p>
 <ul>
 <li>可路由与可扩展；</li>
@@ -400,16 +400,16 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>多租户与运维；</li>
 <li>成本和生态兼容。</li>
 </ul>
-<p>RoCEv2、InfiniBand 与 Ultra Ethernet Transport（UET）主要处于这一层。Scale-out 不会被 Scale-up 完全取代：即使一个 Pod 内部拥有高速内存语义互联，多个 Pod 之间仍需要可扩展网络。</p>
+<p>RoCEv2、InfiniBand 与 Ultra Ethernet Transport（UET）主要服务于这一层。即使 Pod 内部采用高速内存语义互联，多个 Pod 之间仍需可扩展网络，因此 Scale-up 与 Scale-out 通常是不同范围内的互补设计。</p>
 <h3 id="3-PCIe-与-CXL：主机-I-O-和内存扩展层">3. PCIe 与 CXL：主机 I/O 和内存扩展层</h3>
 <p>PCI Express（PCIe）首先是主机与设备之间的 I/O 互联。CXL 建立在 PCIe 物理层之上，为缓存与内存扩展提供更丰富语义。它们与 Scale-out 网络之间存在交汇，但不能简单视作同一种 Fabric。</p>
 <div style="margin:1.8rem 0;padding:1rem 1.1rem;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:14px">
 <svg viewBox="0 0 1000 260" role="img" aria-label="SCALE-UP vs SCALE-OUT"><defs><marker id="pA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"></path></marker></defs><text x="30" y="40" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">SCALE-UP vs SCALE-OUT</text><text x="30" y="64" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">每一层的延迟预算、可靠性语义与可扩展范围不同</text><ellipse cx="93" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="14,120 164,120 146,102 -4,102" fill="#7aa6c6"></polygon><polygon points="14,120 164,120 164,220 14,220" fill="#3f6f96"></polygon><polygon points="164,120 146,102 146,202 164,220" fill="#2b5578"></polygon><line x1="14" y1="120" x2="164" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="34" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="34" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="89" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">GPU / 加速器</text><text x="89" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">计算与显存</text><ellipse cx="257" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="178,120 328,120 310,102 160,102" fill="#78b7ae"></polygon><polygon points="178,120 328,120 328,220 178,220" fill="#2f7f7a"></polygon><polygon points="328,120 310,102 310,202 328,220" fill="#1f5f5b"></polygon><line x1="178" y1="120" x2="328" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="198" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="198" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="253" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Scale-up Fabric</text><text x="253" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">NVLink / UALink 类</text><ellipse cx="421" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="342,120 492,120 474,102 324,102" fill="#8fa7b6"></polygon><polygon points="342,120 492,120 492,220 342,220" fill="#5c7383"></polygon><polygon points="492,120 474,102 474,202 492,220" fill="#455c6c"></polygon><line x1="342" y1="120" x2="492" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="362" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="362" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="417" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">PCIe / CXL</text><text x="417" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">主机 I/O 与内存扩展</text><ellipse cx="585" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="506,120 656,120 638,102 488,102" fill="#d2ad72"></polygon><polygon points="506,120 656,120 656,220 506,220" fill="#9a7434"></polygon><polygon points="656,120 638,102 638,202 656,220" fill="#77551f"></polygon><line x1="506" y1="120" x2="656" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="526" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="526" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="581" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">SmartNIC / RNIC</text><text x="581" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">协议卸载与拥塞控制</text><ellipse cx="749" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="670,120 820,120 802,102 652,102" fill="#c59a9a"></polygon><polygon points="670,120 820,120 820,220 670,220" fill="#8a4a4a"></polygon><polygon points="820,120 802,102 802,202 820,220" fill="#6a3434"></polygon><line x1="670" y1="120" x2="820" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="690" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="690" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="745" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">Scale-out Fabric</text><text x="745" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">RoCE / UET / InfiniBand</text><ellipse cx="913" cy="230" rx="81" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="834,120 984,120 966,102 816,102" fill="#8fc0a9"></polygon><polygon points="834,120 984,120 984,220 834,220" fill="#4f8a6f"></polygon><polygon points="984,120 966,102 966,202 984,220" fill="#356a51"></polygon><line x1="834" y1="120" x2="984" y2="120" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="854" cy="140" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="854" y="144" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">06</text><text x="909" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">其他服务器 / Pod</text><text x="909" y="183" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">存储与 Checkpoint</text><path d="M168,194 Q171,184 174,194" fill="none" stroke="#5d7f96" stroke-width="2" stroke-linecap="round" marker-end="url(#pA)"></path><path d="M332,194 Q335,184 338,194" fill="none" stroke="#5d7f96" stroke-width="2" stroke-linecap="round" marker-end="url(#pA)"></path><path d="M496,194 Q499,184 502,194" fill="none" stroke="#5d7f96" stroke-width="2" stroke-linecap="round" marker-end="url(#pA)"></path><path d="M660,194 Q663,184 666,194" fill="none" stroke="#5d7f96" stroke-width="2" stroke-linecap="round" marker-end="url(#pA)"></path><path d="M824,194 Q827,184 830,194" fill="none" stroke="#5d7f96" stroke-width="2" stroke-linecap="round" marker-end="url(#pA)"></path></svg>
 <p style="font-size:.78rem;line-height:1.7;color:var(--text-muted);text-align:center;margin:.55rem 0 0">图 1：Scale-up 与 Scale-out 的工程边界。它们不是同一层的替代关系。</p>
 </div>
-<p>图中的边界按工程需求划分，各层延迟预算、可靠性语义和扩展范围不同，并非协议分层图。</p>
-<h2 id="五、端口标称速率之外，还要看拓扑">五、端口标称速率之外，还要看拓扑</h2>
-<h3 id="1-Clos-Fat-tree：用多级交换换取规模">1. Clos / Fat-tree：用多级交换换取规模</h3>
+<p>图中边界按工程需求划分，体现不同的延迟预算、可靠性语义与扩展范围，不应将其理解为严格的协议分层图。</p>
+<h2 id="五、拓扑约束与集群可用带宽">五、拓扑约束与集群可用带宽</h2>
+<h3 id="1-Clos-Fat-tree-的路径与扩展能力">1. Clos / Fat-tree 的路径与扩展能力</h3>
 <p>Clos、Fat-tree 通过 Leaf 接入服务器，再用 Spine 互联，提供多条等价路径和扩展空间。实际带宽还受以下配置影响：</p>
 <ul>
 <li>上行带宽是否与下行带宽匹配；</li>
@@ -418,16 +418,16 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 <li>跨 Rail 通信是否穿越额外层级；</li>
 <li>故障后剩余路径是否出现新的热点。</li>
 </ul>
-<h3 id="2-Oversubscription：端口速率没有消失，二分带宽才是上限">2. Oversubscription：端口速率没有消失，二分带宽才是上限</h3>
+<h3 id="2-Oversubscription：共享上行与二分带宽">2. Oversubscription：共享上行与二分带宽</h3>
 <p>假设一个 Leaf 交换机有 32 个 400G 下行端口，却只有 16 个 400G 上行端口，那么下行总带宽为 12.8 Tbps，上行只有 6.4 Tbps，过订阅比为 2:1。</p>
-<p>一台服务器点对点跑满 400G，不能说明大量服务器跨 Leaf 时也都能跑满。共享上行会压低平均可用带宽。</p>
-<p>单端口速率、交换芯片容量和单链路延迟，只能说明一部分：</p>
+<p>单台服务器点对点达到 400G，只能验证该路径在相应条件下的能力。大量服务器同时跨 Leaf 通信时，共享上行仍会限制平均可用带宽。</p>
+<p>设备规格通常给出以下局部能力：</p>
 <ul>
 <li>单端口速率；</li>
 <li>交换芯片总容量；</li>
 <li>单条链路延迟。</li>
 </ul>
-<p>放到集群里还要查：</p>
+<p>集群层面的评估还需要纳入：</p>
 <ul>
 <li>Bisection Bandwidth（二分带宽）；</li>
 <li>Oversubscription Ratio（过订阅比）；</li>
@@ -437,7 +437,7 @@ S(N)=\frac{T_1}{\frac{T_{\mathrm{compute}}}{N}+T_{\mathrm{comm}}(N)+T_{\mathrm{s
 </ul>
 <h3 id="3-Rail-optimized：让并行维度与物理网络对齐">3. Rail-optimized：让并行维度与物理网络对齐</h3>
 <p>AI 集群常把每台服务器内相同编号的 GPU 或网卡连接到同一条 Rail。这样，跨节点 Collective 可以尽量沿固定 Rail 进行，减少不必要的横向跳转。</p>
-<p>Rail 是否被用好，要同时看训练框架、NCCL 发现、容器调度、GPU/NIC NUMA 亲和性和布线。硬件铺了多条路，软件若没对齐，流量仍会挤到少数路径。</p>
+<p>Rail 的实际利用取决于训练框架、NCCL 拓扑发现、容器调度、GPU/NIC NUMA 亲和性与物理布线的共同配合。多条物理路径若未与软件映射对齐，仍可能出现局部路径集中。</p>
 <pre><code class="mermaid">
 
 flowchart TB
@@ -461,8 +461,8 @@ flowchart TB
     N32 --&gt; R1
 </code>
 </pre>
-<h2 id="六、为什么-400G-800G-仍然会遇到通信墙">六、为什么 400G / 800G 仍然会遇到通信墙</h2>
-<h3 id="1-序列化时间只是最低下限">1. 序列化时间只是最低下限</h3>
+<h2 id="六、400G-800G-下的通信墙与性能口径">六、400G / 800G 下的通信墙与性能口径</h2>
+<h3 id="1-序列化时间与端到端延迟下限">1. 序列化时间与端到端延迟下限</h3>
 <p>在理想情况下，400 Gbit/s 链路发送 1 MiB 数据的纯序列化时间约为 21 微秒，发送 4 MiB 约为 84 微秒。现实中还要加入：</p>
 <ul>
 <li>Ethernet、IP、UDP、RoCE 等头部开销；</li>
@@ -473,8 +473,8 @@ flowchart TB
 <li>路径竞争；</li>
 <li>接收端处理与完成队列更新。</li>
 </ul>
-<p>多阶段、多跳和全局同步叠加以后，有效通信延迟会高于这里的单链路序列化下限。</p>
-<h3 id="2-小消息看时延，大消息看带宽，混合消息看调度">2. 小消息看时延，大消息看带宽，混合消息看调度</h3>
+<p>上述开销经过多阶段、多跳和全局同步叠加后，应用观察到的通信时间会高于单链路的纯序列化下限。</p>
+<h3 id="2-消息尺寸与时延、带宽需求">2. 消息尺寸与时延、带宽需求</h3>
 <p>用经典的 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\alpha"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></mjx-assistive-mml></mjx-container>-<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\beta"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi></math></mjx-assistive-mml></mjx-container> 模型表示一次消息传输：</p>
 <p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
 
@@ -487,10 +487,10 @@ T(M)=\alpha+\beta M
 <li><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\beta"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi></math></mjx-assistive-mml></mjx-container> 是每字节传输时间；</li>
 <li><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="M"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>M</mi></math></mjx-assistive-mml></mjx-container> 是消息大小。</li>
 </ul>
-<p>小消息主要受 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\alpha"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></mjx-assistive-mml></mjx-container> 影响，只加线速收益不大；大消息主要受 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\beta M"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi><mi>M</mi></math></mjx-assistive-mml></mjx-container> 影响，更快 SerDes、更多 Lane 才更直接。集群往往同时有 Doorbell、Completion、小 Bucket 和大 Activation/Gradient，共享 Fabric 还要靠调度协调。</p>
-<h3 id="3-同步点在等最后一个-Rank">3. 同步点在等最后一个 Rank</h3>
-<p>999 个 Rank 已完成，第 1000 个因拥塞晚 200 微秒，Collective 仍得等这 200 微秒。平均值会把这段等待藏掉。</p>
-<p>因此除了平均吞吐，还要看：</p>
+<p>小消息主要受 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\alpha"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></mjx-assistive-mml></mjx-container> 约束，仅提高线速通常收益有限；大消息主要受 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\beta M"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi><mi>M</mi></math></mjx-assistive-mml></mjx-container> 影响，更快 SerDes 与更多 Lane 才能直接缩短传输时间。实际集群还同时承载 Doorbell、Completion、小 Bucket 和大 Activation/Gradient，需要通过调度协调它们对共享 Fabric 的竞争。</p>
+<h3 id="3-同步完成时间由尾部-Rank-决定">3. 同步完成时间由尾部 Rank 决定</h3>
+<p>例如，999 个 Rank 已完成，第 1000 个因拥塞延迟 200 微秒，Collective 仍需等待这 200 微秒。平均时延可能掩盖这部分代价，但同步完成时间会完整承受它。</p>
+<p>因此，平均吞吐之外还需要关注以下特征：</p>
 <ul>
 <li>低抖动；</li>
 <li>低 P99/P999；</li>
@@ -499,8 +499,8 @@ T(M)=\alpha+\beta M
 <li>Incast 下的队列可控；</li>
 <li>避免无关流量污染训练关键路径。</li>
 </ul>
-<h3 id="4-应用最终得到了多少-Goodput">4. 应用最终得到了多少 Goodput</h3>
-<p>Line Rate 表示端口能够处理的物理线速；Goodput 表示应用最终获得的有效数据吞吐。两者之间可能损失在：</p>
+<h3 id="4-Line-Rate-与应用-Goodput">4. Line Rate 与应用 Goodput</h3>
+<p>Line Rate 描述端口的物理线速，Goodput 描述应用最终取得的有效数据吞吐。两者之间的差额可能来自：</p>
 <ul>
 <li>协议头与 FEC；</li>
 <li>重传；</li>
@@ -510,9 +510,9 @@ T(M)=\alpha+\beta M
 <li>拥塞与路径不均；</li>
 <li>Collective 算法本身。</li>
 </ul>
-<p>“400G 网卡”给出端口能力。千卡、万卡训练能否持续利用，还要在实际拓扑和负载下测。</p>
-<h2 id="七、从工作负载到网络需求">七、从工作负载到网络需求</h2>
-<p>前面这些依赖可以连成下图：</p>
+<p>“400G 网卡”说明端口能力，却不足以推定千卡、万卡训练下的持续有效吞吐；后者必须结合实际拓扑、工作负载和故障状态测量。</p>
+<h2 id="七、从工作负载推导网络需求">七、从工作负载推导网络需求</h2>
+<p>模型切分、通信依赖与执行效率之间的关系可表示如下：</p>
 <pre><code class="mermaid">
 
 flowchart LR
@@ -524,7 +524,7 @@ flowchart LR
     F --&gt; G[MFU 与扩展效率下降]
 </code>
 </pre>
-<p>要减少暴露的通信时间，可以从这些位置逐项检查：</p>
+<p>减少暴露通信时间，需要沿这些依赖逐层检查：</p>
 <ul>
 <li>模型切分；</li>
 <li>Collective 算法；</li>
@@ -535,7 +535,7 @@ flowchart LR
 <li>网卡和交换机实现；</li>
 <li>光电物理层。</li>
 </ul>
-<h2 id="八、评价一套智算网络，应该看什么">八、评价一套智算网络，应该看什么</h2>
+<h2 id="八、智算网络的评估维度">八、智算网络的评估维度</h2>
 <div class="table-container"><table>
 <thead>
 <tr>
@@ -577,10 +577,10 @@ flowchart LR
 </tr>
 </tbody>
 </table></div>
-<h2 id="下一步计算何时能开始">下一步计算何时能开始</h2>
-<p>多维并行下，网络决定数据什么时候就绪，也就参与决定下一步计算什么时候开始。</p>
-<p>更多 GPU 提高理论算力，通信、拓扑和调度跟上以后，才有机会变成更高训练吞吐。</p>
-<p>中篇继续查这条路径上的可靠性：RoCE 为什么依赖 PFC，逐跳暂停有什么代价，又能否把丢包恢复更多交给端点。</p>
+<h2 id="通信就绪时间与有效计算吞吐">通信就绪时间与有效计算吞吐</h2>
+<p>在多维并行训练中，网络参与决定数据何时就绪，并通过计算依赖影响下一步任务的启动时间。其作用不能仅用端口带宽概括。</p>
+<p>增加 GPU 提高了理论计算容量；实际吞吐能否随之增长，还取决于通信算法、拓扑与调度能否控制关键路径上的等待。</p>
+<p>中篇将沿可靠性机制继续分析：RoCE 为何依赖 PFC，逐跳暂停引入哪些代价，以及将丢包恢复更多交由端点承担的条件。</p>
 <link rel="stylesheet" href="/css/series-page.css">
 <div class="series-nav series-nav--single">
   <a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="series-nav__link">下一篇：重构可靠性 →</a>
@@ -625,7 +625,7 @@ flowchart LR
   </li>
   <li class="post-copyright-link">
       <strong>本文链接:</strong>
-      <a href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/" title="智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐">https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</a>
+      <a href="https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/" title="智算互联（上）：训练吞吐与通信瓶颈">https://leecdiang.com/2026/06/28/ai-compute-interconnect-part1-communication-wall/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！

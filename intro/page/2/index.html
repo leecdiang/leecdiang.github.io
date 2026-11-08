@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css">
   
   
     <meta name="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
@@ -43,7 +43,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -94,7 +94,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/08/03/silemetry-from-zero-to-one/" class="post-title-link" itemprop="url">从散热测试想法到原生 macOS 应用：Silemetry 开发记录</a>
+          <a href="/2026/08/03/silemetry-from-zero-to-one/" class="post-title-link" itemprop="url">Silemetry：Apple Silicon 持续负载测量工具的开发记录</a>
         </h2>
 
         <div class="post-meta-container">
@@ -111,7 +111,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 7 月 28 日第一个 commit 到 8 月 3 日 v0.2.1 发布，Silemetry 的完整开发记录：动机、四语言混合架构、Apple Silicon 遥测、CPU/GPU 负载、数据可信度、八个真实 Bug，以及从本地构建到 GitHub Release 的工程化过程。</p>
+          <p>Silemetry 从 7 月 28 日首次提交到 8 月 3 日 v0.2.1 的开发记录，重点讨论四语言架构、Apple Silicon 遥测、负载控制、并发缺陷、数据完整性与发布验证。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/08/03/silemetry-from-zero-to-one/">
@@ -164,7 +164,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/" class="post-title-link" itemprop="url">智算互联（上）：通信墙——为什么更多 GPU 不等于更高吞吐</a>
+          <a href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/" class="post-title-link" itemprop="url">智算互联（上）：训练吞吐与通信瓶颈</a>
         </h2>
 
         <div class="post-meta-container">
@@ -181,7 +181,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 MFU、并行策略、集合通信与网络拓扑出发，解释 AI 集群为什么会从计算密集型系统走向通信受限系统，以及为什么 400G、800G 链路并不自动等于更高的有效吞吐。</p>
+          <p>多维并行改变消息尺寸、同步频率与依赖关系。本文联系 MFU、集合通信、网络拓扑和尾延迟，分析理论算力为何未必转化为有效训练吞吐。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/">
@@ -234,7 +234,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="post-title-link" itemprop="url">智算互联(中):重构可靠性--从强制无损到端网协同</a>
+          <a href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/" class="post-title-link" itemprop="url">智算互联（中）：RDMA 可靠性与拥塞控制</a>
         </h2>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从 RoCE、PFC、ECN 与 DCQCN 出发,拆解无损以太网的收益和代价,并比较 IRN、TTPoE 与 Ultra Ethernet 如何把可靠性、拥塞控制和多路径能力重新分配给端点、交换机与控制平面。</p>
+          <p>区分 Fabric 容损、端到端可靠性与排序语义，分析 PFC、ECN、DCQCN 的职责，并比较 IRN、TTPoE 与 Ultra Ethernet 对恢复和拥塞控制的不同安排。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/06/28/ai-compute-interconnect-part2-reliability-rethink/">
@@ -304,7 +304,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" class="post-title-link" itemprop="url">智算互联（下）：一颗智算网卡如何被造出来——高速接口、数据通路与光互联</a>
+          <a href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/" class="post-title-link" itemprop="url">智算互联（下）：高性能网卡的芯片架构</a>
         </h2>
 
         <div class="post-meta-container">
@@ -321,7 +321,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从一颗智算网卡的内部数据通路出发，分析 PCIe、DMA、RDMA Transport、片上 NoC、SRAM、112G/224G SerDes、FEC、可编程处理器与光互联，讨论一张高速网卡如何真正成为 AI 集群中的互联端点。</p>
+          <p>沿 RNIC 数据路径分析 PCIe、DMA、Transport 状态、NoC 与 SRAM 的吞吐约束，进一步讨论 112G/224G SerDes、FEC、软件栈和光互联的工程取舍。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">
@@ -374,7 +374,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/19/openclaw-reliable-search/" class="post-title-link" itemprop="url">让 Agent 正确地失败：从 OpenClaw 搜索治理到 reliable-web-search</a>
+          <a href="/2026/06/19/openclaw-reliable-search/" class="post-title-link" itemprop="url">reliable-web-search：Agent 搜索调用的可靠性设计</a>
         </h2>
 
         <div class="post-meta-container">
@@ -391,7 +391,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>从一次 OpenClaw 搜索故障出发,记录如何把参数治理、错误分类、有限重试、权限隔离和审计日志,逐步抽象为一个支持多 Provider、多凭据、真实取消、熔断、CLI 与 MCP 接入的搜索可靠性运行时。</p>
+          <p>OpenClaw 搜索治理演进为 reliable-web-search 的实现记录，涵盖失败分类、参数治理、取消、熔断、多 Provider 与凭据路由，以及 CLI、MCP 的执行契约验证。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/06/19/openclaw-reliable-search/">
@@ -461,7 +461,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。</p>
+          <p>记录 Main Agent 与 Code Lab 的职责划分，以及证据、审批、校验器和 Obsidian 视图的协作方式；通过实际失败案例分析长期任务中的状态与执行约束。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/06/11/not-an-agent-but-a-workflow/">
@@ -654,7 +654,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/05/Apple-Health-Pro/" class="post-title-link" itemprop="url">打破围城：将 Apple Health 导出的 XML数据转换为友好的 CSV 格式</a>
+          <a href="/2026/04/05/Apple-Health-Pro/" class="post-title-link" itemprop="url">Apple Health Pro：XML 数据解析与 CSV 转换</a>
         </h2>
 
         <div class="post-meta-container">
@@ -671,7 +671,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>Apple Health 导出的 XML 文件庞大且难以直接读取。本文介绍如何利用我开发的转换工具，将复杂的 ZIP/XML 数据瞬间转换为 AI 可读的清爽 CSV 格式，助力你的个人健康数据分析。</p>
+          <p>Apple Health Pro 将健康 App 导出的 ZIP/XML 记录转换为可按来源和日期筛选的 CSV。本文介绍数据分类、流式清洗、重复字符串存储与分卷导出的实现。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/04/05/Apple-Health-Pro/">
@@ -724,7 +724,7 @@
       <header class="post-header">
         
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/03/18/silicon-roadmap/" class="post-title-link" itemprop="url">从Intel Binary Optimisation Tool (IBOT) 看高性能计算发展方向</a>
+          <a href="/2026/03/18/silicon-roadmap/" class="post-title-link" itemprop="url">Intel IBOT 与 Arrow Lake Refresh 的软硬件优化</a>
         </h2>
 
         <div class="post-meta-container">
@@ -741,7 +741,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。</p>
+          <p>围绕 Intel Binary Optimisation Tool（IBOT）与 Arrow Lake Refresh 的互连调整，分析二进制优化、数据供给和资源争用的关系，区分公开说明、机制推导与实测收益。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/03/18/silicon-roadmap/">

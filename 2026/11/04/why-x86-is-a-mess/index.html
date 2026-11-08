@@ -9,18 +9,18 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.c94088f671a9.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="从不规则指令编码、历史兼容性和 x86S 提案的搁置，谈 x86 的真实工程代价，以及世界转向多架构的可能。">
+    <meta name="description" content="不规则编码与历史兼容性增加了 x86 前端实现的复杂度。结合 x86S 提案的搁置，讨论这些工程代价及多架构发展的条件。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为什么我觉得 X86 指令集 就是一坨狗屎">
 <meta property="og:url" content="https://leecdiang.com/2026/11/04/why-x86-is-a-mess/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="从不规则指令编码、历史兼容性和 x86S 提案的搁置，谈 x86 的真实工程代价，以及世界转向多架构的可能。">
+<meta property="og:description" content="不规则编码与历史兼容性增加了 x86 前端实现的复杂度。结合 x86S 提案的搁置，讨论这些工程代价及多架构发展的条件。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/66afe6ee1ae3.png">
 <meta property="article:published_time" content="2026-11-04T10:30:00.000Z">
@@ -56,7 +56,7 @@
 
   
   <script defer="" src="/js/visual-diagrams.js"></script>
-  <script defer="" src="/assets/studio/core.436a5ba09573.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
   
   
 
@@ -81,7 +81,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E5%9B%9B%E4%B8%AA%E5%AD%97%E8%8A%82%E5%BC%80%E5%A7%8B%EF%BC%8C%E7%90%86%E8%A7%A3-x86-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9A%BE%E4%BC%BA%E5%80%99"><span class="toc-text">从四个字节开始，理解 x86 为什么难伺候</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E4%B8%AA%E5%AD%97%E8%8A%82%E9%87%8C%E8%A3%85%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-text">四个字节里装了什么</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BA%BB%E7%83%A6%E4%B8%8D%E5%8F%AA%E5%9C%A8%E8%AF%91%E7%A0%81%E5%99%A8%EF%BC%8C%E8%BF%98%E6%9C%89%E9%82%A3%E4%BA%9B%E8%88%8D%E4%B8%8D%E5%BE%97%E5%88%A0%E7%9A%84%E5%8E%86%E5%8F%B2"><span class="toc-text">麻烦不只在译码器，还有那些舍不得删的历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Intel-%E5%92%8C-AMD-%E5%88%B0%E5%BA%95%E4%B8%BA%E8%BF%99%E5%A5%97%E5%8C%85%E8%A2%B1%E8%8A%B1%E4%BA%86%E5%A4%9A%E5%B0%91%E9%92%B1%EF%BC%9F"><span class="toc-text">Intel 和 AMD 到底为这套包袱花了多少钱？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%80%97%E4%B8%8A%E5%80%92%E6%98%AF%E6%9C%89%E4%B8%80%E4%BB%BD%E5%80%BC%E5%BE%97%E7%9C%8B%E7%9A%84%E5%AE%9E%E9%AA%8C"><span class="toc-text">功耗上倒是有一份值得看的实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3-ARM-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9C%8B%E8%B5%B7%E6%9D%A5%E9%82%A3%E4%B9%88%E9%A6%99%EF%BC%9F"><span class="toc-text">那 ARM 为什么看起来那么香？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E5%85%A8%E4%B8%96%E7%95%8C%E7%BA%A6%E5%A5%BD%E4%B8%8D%E5%86%8D%E7%94%A8-x86%EF%BC%8C%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7%EF%BC%9F"><span class="toc-text">假设全世界约好不再用 x86，会怎么样？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E4%BA%BA%E5%92%8C%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%8C%E5%88%B0%E5%BA%95%E7%94%A8%E5%88%B0%E4%BA%86%E5%A4%9A%E5%B0%91%E5%85%BC%E5%AE%B9%E6%80%A7%EF%BC%9F"><span class="toc-text">普通人和工程师，到底用到了多少兼容性？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%83%B3%E8%AE%A9%E4%BB%8A%E5%A4%A9%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%80%85%E8%BF%98%E8%83%BD%E9%80%89"><span class="toc-text">我想让今天的设计者还能选</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E6%9D%A5%E6%BA%90%E4%B8%8E%E5%9B%BE%E8%A1%A8%E5%8F%A3%E5%BE%84"><span class="toc-text">资料来源与图表口径</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E8%BE%B9%E7%95%8C%E4%B8%8E%E5%89%8D%E7%AB%AF%E8%AF%91%E7%A0%81%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-text">指令边界与前端译码复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E8%AF%BB%E6%94%B9%E5%86%99%E6%8C%87%E4%BB%A4%E7%9A%84%E7%BC%96%E7%A0%81%E5%8F%96%E8%88%8D"><span class="toc-text">内存读改写指令的编码取舍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%97%E7%95%99%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%9E%B6%E6%9E%84%E7%8A%B6%E6%80%81%E7%9A%84%E7%BB%B4%E6%8A%A4"><span class="toc-text">遗留模式与架构状态的维护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%BC%E5%AE%B9%E6%88%90%E6%9C%AC%E7%9A%84%E9%87%8F%E5%8C%96%E8%AF%81%E6%8D%AE"><span class="toc-text">兼容成本的量化证据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E7%A0%81%E5%8A%9F%E8%80%97%E7%A0%94%E7%A9%B6%E7%9A%84%E9%80%82%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-text">解码功耗研究的适用条件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Arm-%E4%BA%A7%E5%93%81%E8%A1%A8%E7%8E%B0%E4%B8%8E-ISA-%E5%BD%92%E5%9B%A0%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-text">Arm 产品表现与 ISA 归因的边界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%9E%B6%E6%9E%84%E8%BF%81%E7%A7%BB%E7%9A%84%E6%94%B6%E7%9B%8A%E4%B8%8E%E7%8E%B0%E5%AE%9E%E7%BA%A6%E6%9D%9F"><span class="toc-text">多架构迁移的收益与现实约束</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E4%BE%9D%E8%B5%96%E4%B8%8E%E6%95%B4%E6%9C%BA%E5%85%BC%E5%AE%B9%E7%9A%84%E7%BB%9F%E8%AE%A1%E8%8C%83%E5%9B%B4"><span class="toc-text">应用依赖与整机兼容的统计范围</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%BC%E5%AE%B9%E6%94%B6%E7%9B%8A%E4%B8%8E%E6%96%B0%E6%9E%B6%E6%9E%84%E9%80%89%E6%8B%A9"><span class="toc-text">兼容收益与新架构选择</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E6%9D%A5%E6%BA%90%E4%B8%8E%E5%9B%BE%E8%A1%A8%E5%8F%A3%E5%BE%84"><span class="toc-text">资料来源与图表口径</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -117,7 +117,7 @@
   
 </div>
 
-            <div class="post-description">从不规则指令编码、历史兼容性和 x86S 提案的搁置，谈 x86 的真实工程代价，以及世界转向多架构的可能。</div>
+            <div class="post-description">不规则编码与历史兼容性增加了 x86 前端实现的复杂度。结合 x86S 提案的搁置，讨论这些工程代价及多架构发展的条件。</div>
         </div>
         
         <div class="reading-byline">
@@ -130,21 +130,21 @@
     
     
     
-    <div class="post-body" itemprop="articleBody" data-math-prerendered="0"><div class="note primary"><p>假如你接手了一个迭代四十多年的 RTL 仓库，每次升级都不敢删除旧逻辑，状态机、旁路条件和兼容分支越堆越多，你会怎么评价它？</p>
-<p>我大概会说：这玩意儿早该重构了。</p>
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="0"><div class="note primary"><p>x86 的争议不仅涉及指令编码，还涉及长期兼容契约如何约束新一代实现。若一个持续迭代四十多年的 RTL 系统必须保留旧状态和兼容分支，其重构成本便不能只按当前代码规模衡量。</p>
+<p>本文据此讨论 x86 的前端复杂度、遗留模式与迁移成本，并区分可识别的工程负担和公开资料尚无法量化的部分。</p>
 </div>
-<p>x86 从 1978 年的 Intel 8086 一路走到 PC、服务器和工作站，软件生态越成功，架构就越难重构。今天的高性能 x86 芯片有宽大的乱序后端、复杂的分支预测、向量计算和先进封装，早已不是当年那颗处理器。但新设计仍须兑现那份不断续写的兼容契约。<a href="#x86-ref-S01">S01</a> <a href="#x86-ref-S05">S05</a></p>
-<p>Intel 也试过删减它。2023 年提出的 x86S 后来停止推进；2024 年，Intel、AMD 和产业伙伴又成立 x86 生态咨询组，协商 ISA 的后续发展。连精简架构这件事，都得把生态拉到一起谈。<a href="#x86-ref-S05">S05</a> <a href="#x86-ref-S06">S06</a></p>
-<p>我佩服把 x86 做快的工程师。标题里骂的，是每一代新设计都得背上旧兼容承诺这件事。它到底耗掉多少工程资源？已经有更简单替代办法的约束，又为什么迟迟退不掉？</p>
-<p>我说 x86 落后，指的是它让今天的设计者仍须兑现几十年前的承诺。最直观的例子就在按下电源键之后。现代系统最终要在 64 位模式下运行，处理器却得先按 8086 的规矩醒来，再靠启动代码切过去。Intel 提议过让新处理器直接从 64 位状态启动，后来根据生态反馈收回了方案。<a href="#x86-ref-S05">S05</a></p>
+<p>x86 自 1978 年 Intel 8086 发展至 PC、服务器和工作站，形成了大规模软件生态。现代高性能实现已经采用宽乱序后端、复杂预测、向量计算与先进封装，但对软件可见的架构契约仍需要延续。生态规模因此同时构成竞争优势和架构重构的约束。<a href="#x86-ref-S01">S01</a> <a href="#x86-ref-S05">S05</a></p>
+<p>Intel 曾在 2023 年提出 x86S 精简方案，随后停止推进；2024 年，Intel、AMD 与产业伙伴成立 x86 生态咨询组。这些事件说明，ISA 调整还依赖软件、固件及平台参与者之间的协调。<a href="#x86-ref-S05">S05</a> <a href="#x86-ref-S06">S06</a></p>
+<p>我对 x86 的批评集中于持续兼容的工程代价，而非否定其微架构设计能力。需要讨论的是：哪些历史约束仍然有效，维护它们消耗哪些资源，以及已有更简单方案的机制为何难以退出。</p>
+<p>启动路径提供了一个例子。现代系统最终进入 64 位模式，现有处理器仍须从 8086 遗留启动状态过渡。Intel 曾提议直接以 64 位状态启动，后根据生态反馈撤回。因此，兼容约束并不只存在于旧应用，也存在于系统启动所依赖的平台契约。<a href="#x86-ref-S05">S05</a></p>
 <span id="more"></span>
 
 <div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="现有 Intel 64 和 x86S 提案的启动路径"><svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="现有 Intel 64 和 x86S 提案的启动路径" viewBox="0 0 800 350"><text x="24" y="36" font-size="25" class="v-ink">开机之后，谁还需要旧模式？</text><text x="24" y="68" font-size="15" class="v-sub">同一个目标：让现代 64 位系统开始运行。只画复位与模式切换。</text><text x="24" y="102" font-size="17" class="v-ink">现有 Intel 64</text><rect x="24" y="119" width="190" height="58" rx="8" fill="var(--surface-card)" stroke="var(--chart-amber)"></rect><text x="36" y="154.0" font-size="17" class="v-ink">8086 式复位状态</text><text x="225" y="154" font-size="24" class="v-sub">→</text><rect x="256" y="119" width="260" height="58" rx="8" fill="var(--surface-card)" stroke="var(--chart-amber)"></rect><text x="268" y="154.0" font-size="17" class="v-ink">启动代码切换模式</text><text x="527" y="154" font-size="24" class="v-sub">→</text><rect x="558" y="119" width="164" height="58" rx="8" fill="var(--surface-card)" stroke="var(--chart-amber)"></rect><text x="570" y="154.0" font-size="17" class="v-ink">64 位运行</text><text x="24" y="215" font-size="17" class="v-ink">x86S 提案</text><rect x="24" y="232" width="465" height="58" rx="8" fill="var(--surface-card)" stroke="var(--chart-teal)"></rect><text x="36" y="267.0" font-size="17" class="v-ink">直接进入 64 位复位状态</text><text x="500" y="267" font-size="24" class="v-sub">→</text><rect x="531" y="232" width="164" height="58" rx="8" fill="var(--surface-card)" stroke="var(--chart-teal)"></rect><text x="543" y="267.0" font-size="17" class="v-ink">64 位运行</text><text x="24" y="326" font-size="16" class="v-sub">提案仍保留 64 位系统运行 32 位应用的能力。Intel 后来停止推进 x86S。</text></svg></div><p class="v-caption">图 1 · Intel 提案给出了一个具体的简化机会：从 64 位状态复位，省去进入 64 位模式的过渡步骤。下排是提案。<a href="#x86-ref-S05">[S05]</a></p></div>
 
-<h2 id="从四个字节开始，理解-x86-为什么难伺候">从四个字节开始，理解 x86 为什么难伺候</h2>
-<p>x86 译码有一层很直接的麻烦：想知道下一条指令从哪里开始，得先解析当前这一条。</p>
+<h2 id="指令边界与前端译码复杂度">指令边界与前端译码复杂度</h2>
+<p>x86 变长编码使指令边界识别依赖当前指令的解析结果，增加了前端并行译码的组织难度。</p>
 <p>x86-64 的指令可以长 1 到 15 Byte。它可能带有传统前缀、REX 前缀，也可能采用 VEX、EVEX 等扩展编码；寻址与操作数又可能需要 ModR/M、SIB、位移量和立即数。APX 还引入了 REX2。字段的位置和长度由指令类别与执行模式决定。<a href="#x86-ref-S02">S02</a></p>
-<p>AArch64 的 A64 指令则统一是 32 bit，也就是 4 Byte。处理器沿着指令流取出四个字节，天然就知道下一条从哪里开始。RISC-V 的基础指令为 32 bit，常见的 RV64GC 又引入 16 bit 压缩指令：需要判断 2 Byte 还是 4 Byte，但它从一开始就为这种长度变化留好了编码结构。严格说，RISC-V 规范还允许更长的格式，不能把整个 RISC-V 家族说成永远只有两种长度。<a href="#x86-ref-S03">S03</a> <a href="#x86-ref-S04">S04</a> <a href="#x86-ref-S18">S18</a></p>
+<p>AArch64 的 A64 指令统一为 32 bit，即 4 Byte，边界可由定长规则确定。RISC-V 的基础指令为 32 bit，常见 RV64GC 同时支持 16 bit 压缩指令，需要区分 2 Byte 与 4 Byte；其编码结构预留了长度判定。规范还允许更长格式，因此不能将整个 RISC-V 家族限定为两种长度。<a href="#x86-ref-S03">S03</a> <a href="#x86-ref-S04">S04</a> <a href="#x86-ref-S18">S18</a></p>
 
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p>
@@ -156,14 +156,14 @@
 <p class="v-caption">图 2 · 按 Intel XED、Arm 官方文档与 RISC-V 规范绘制的指令长度。x86 为定义的范围，RISC-V 显示 RV64GC 常见的 2/4 Byte，并不表示整体复杂度倍数。<a href="#x86-ref-S02">[S02]</a> <a href="#x86-ref-S03">[S03]</a> <a href="#x86-ref-S18">[S18]</a></p>
 </div>
 
-<p>图里比较的是指令边界规则。A64 的定长编码直接给出边界，x86 则要一并解释长度、前缀和操作数。不能拿 15 Byte 对 4 Byte，就算出解码器门数或功耗的比例。</p>
-<p>前端从缓存取回一批字节后，要先划分指令边界，处理跨界的指令，再解释编码和操作数。前端越宽，同时处理这些不规则边界的压力就越大。长度预译码、复杂解码器、微操作缓存能缓解问题，各家还有自己的实现技巧。不过，这些额外机制也都要设计、验证和维护。<a href="#x86-ref-S02">S02</a></p>
-<h3 id="四个字节里装了什么">四个字节里装了什么</h3>
-<p>给 <code>p</code> 指向的 64 位整数加一就能看到这种取舍。这里比较单线程下的普通读改写，不涉及并发原子性，也不要求最后的条件标志位相同。</p>
+<p>图中比较的是边界识别规则。A64 的定长边界与 x86 的长度、前缀和操作数联合解析，确实具有不同的设计条件；但 15 Byte 与 4 Byte 的长度范围不能用于推导门数或功耗比例。</p>
+<p>前端需要对取回的字节流划分指令边界、处理跨界，并解释编码与操作数。随着译码宽度增加，不规则边界的并行处理也增加。长度预译码、复杂解码器和微操作缓存可以缓解限制，但相应机制仍需设计、验证和维护。<a href="#x86-ref-S02">S02</a></p>
+<h3 id="内存读改写指令的编码取舍">内存读改写指令的编码取舍</h3>
+<p>以 <code>p</code> 指向的 64 位整数加一为例，可比较紧凑编码与显式访存的取舍。以下仅讨论单线程普通读改写，不涉及并发原子性，也不要求最终条件标志位相同。</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">increment</span><span class="params">(<span class="type">uint64_t</span> *p)</span> {</span><br><span class="line">    *p += <span class="number">1</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>x86-64 可以用一条合法的机器指令完成这件事：</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add QWORD PTR [rdi], 1   ; 48 83 07 01</span><br></pre></td></tr></tbody></table></figure>
-<p>我用 GNU <code>as</code> 和 <code>objdump</code> 核对了这组机器码。它一共四个字节，已经把内存寻址、读改写操作和立即数塞进去了。但 <code>48</code> 是 REX.W，<code>83</code> 是操作码，<code>07</code> 是 ModR/M，<code>01</code> 才是真正要加的数。处理器必须知道这些字段如何相互约束，才能弄明白这条指令要求做什么。</p>
+<p>我用 GNU <code>as</code> 与 <code>objdump</code> 核对了这组机器码。四个字节同时编码了内存寻址、读改写和立即数：<code>48</code> 为 REX.W，<code>83</code> 为操作码，<code>07</code> 为 ModR/M，<code>01</code> 为立即数。译码必须识别这些字段及其约束，才能得到完整操作语义。</p>
 
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p>
@@ -177,13 +177,13 @@
 
 <p>同一操作若用 A64 的普通 load/store 指令表达，可以写成：</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ldr x8, [x0]</span><br><span class="line">add x8, x8, #1</span><br><span class="line">str x8, [x0]</span><br></pre></td></tr></tbody></table></figure>
-<p>RISC-V RV64I 也很直白：</p>
+<p>对应的 RISC-V RV64I 实现为：</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ld   t0, 0(a0)</span><br><span class="line">addi t0, t0, 1</span><br><span class="line">sd   t0, 0(a0)</span><br></pre></td></tr></tbody></table></figure>
-<p>这个例子里，x86 的代码确实紧凑：一条、四字节；A64 和 RV64I 的写法都是三条基础指令、十二字节。真实编译结果会受上下文影响，RISC-V 压缩扩展也可能改变字节数。这还说明不了谁执行得快，但把 CISC 的一项收益摆出来了：复杂的机器语义，可以换来紧凑的代码。</p>
+<p>在这个限定示例中，x86 使用一条、四字节指令，A64 与 RV64I 各使用三条基础指令、十二字节。实际编译结果仍取决于上下文，压缩扩展也可能改变字节数。这说明复杂语义能够提高编码密度，但尚不足以比较执行速度。</p>
 <p>而且，x86 的一条机器指令并不保证在核心内部只是一项操作。复杂的内存操作可能被拆解成加载、运算、存储相关的内部操作。不同微架构如何拆解、融合、执行，没有统一答案。A64 和 RISC-V 的高性能核心同样可能采用内部操作、投机执行和复杂调度。<a href="#x86-ref-S10">S10</a></p>
-<h2 id="麻烦不只在译码器，还有那些舍不得删的历史">麻烦不只在译码器，还有那些舍不得删的历史</h2>
-<p>如果只有变长编码，我还不至于用这个标题。更让我介意的，是 8086、286、386 留下的运行模式与架构状态，到今天仍要逐一兑现。</p>
-<p>早年的 16 位实模式、分段寻址、保护模式、32 位兼容性，再到后来的 x86-64 long mode，让 x86 形成了一张层层叠加的历史地图。x87 浮点栈、各代 SIMD 扩展、不同的前缀语义，又让这张地图不断向外扩张。注意，这不等于“Windows 11 现在还可以直接运行所有 DOS 程序”：操作系统能运行什么，与硬件保留了哪些历史机制，是两回事。<a href="#x86-ref-S05">S05</a></p>
+<h2 id="遗留模式与架构状态的维护">遗留模式与架构状态的维护</h2>
+<p>变长编码并非全部负担。8086、286、386 延续下来的运行模式与架构状态，还要求当前实现保持相应的可观察行为。</p>
+<p>16 位实模式、分段、保护模式、32 位兼容与 x86-64 long mode 逐步叠加，x87 浮点栈、SIMD 扩展和前缀语义继续扩大状态与交互范围。这是硬件兼容机制的问题，不能由此推断 Windows 11 能直接运行全部 DOS 程序；操作系统支持范围与硬件保留机制需要分别判断。<a href="#x86-ref-S05">S05</a></p>
 
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p>
@@ -195,26 +195,26 @@
 <p class="v-caption">图 4 · 选取 8086、386、AMD64 与 x86S 的主要历史节点。为保证可读性，节点等间距排列，不按真实年份间隔缩放。<a href="#x86-ref-S16">[S16]</a> <a href="#x86-ref-S15">[S15]</a> <a href="#x86-ref-S05">[S05]</a></p>
 </div>
 
-<p>Intel 当年提出 x86S，理由已经够说明问题了：64 位操作系统成为主流后，一部分遗留模式在现代系统中几乎只用于启动过渡，值得考虑移除。它的草案想删掉部分 16/32 位特权与运行模式，同时<strong>保留 long mode 下的 32 位应用兼容子模式</strong>。也就是说，Intel 提议的都不是“立刻砸碎全部旧软件”，而是一次相当克制的清理。<a href="#x86-ref-S05">S05</a></p>
-<p>可连这一步都没走成。Intel 最终宣布不继续推进 x86S，并强调继续维护软件兼容性。大约同一阶段，Intel、AMD 和产业伙伴开始通过 x86 生态咨询组讨论更一致的架构接口。<a href="#x86-ref-S05">S05</a> <a href="#x86-ref-S06">S06</a></p>
-<p>删除功能不是只改 RTL。固件、企业虚拟化环境、依赖老二进制的业务，都可能还在使用它。厂商卖的是能接住这些软件的芯片，不能因为内部设计想简化，就单方面撤销外部承诺。</p>
-<p>清掉仓库里的死逻辑容易一些；证明整个软件生态都不再依赖某个行为，困难得多。</p>
-<h2 id="Intel-和-AMD-到底为这套包袱花了多少钱？">Intel 和 AMD 到底为这套包袱花了多少钱？</h2>
-<p>维护兼容性一年花多少钱？两家的年报只能给出很粗的边界。</p>
+<p>x86S 的出发点是，64 位系统普及后，一部分旧模式主要用于启动过渡。草案尝试移除部分 16/32 位特权和运行模式，同时保留 long mode 下的 32 位应用兼容子模式。它因此属于有限范围的架构精简，并非取消全部旧软件兼容。<a href="#x86-ref-S05">S05</a></p>
+<p>Intel 最终停止推进，并继续强调软件兼容。大致同期，Intel、AMD 与产业伙伴开始通过咨询组协调架构接口，说明即使有限精简也受到生态约束。<a href="#x86-ref-S05">S05</a> <a href="#x86-ref-S06">S06</a></p>
+<p>删除硬件功能还需要确认固件、企业虚拟化和旧二进制业务是否依赖它。内部实现的简化收益，与外部兼容承诺的撤销成本，属于不同主体承担的成本。</p>
+<p>因此，识别 RTL 死逻辑与证明全球软件不再依赖某项行为，是规模和证据要求均不同的问题。</p>
+<h2 id="兼容成本的量化证据">兼容成本的量化证据</h2>
+<p>Intel 与 AMD 的年报提供总研发开支，不能直接分离 x86 兼容性维护的成本。</p>
 <p>Intel 的 2025 年报写明，当年的研发费用为 <strong>138 亿美元</strong>；AMD 的同期研发费用为 <strong>80.91 亿美元</strong>。加起来约 <strong>218.91 亿美元</strong>。这笔钱涵盖了制程、封装、CPU、GPU、AI 加速器、FPGA、软件以及其他研究方向。财报没有把“维护 x86 旧模式、旧指令和相关验证”单独拆出来。<a href="#x86-ref-S07">S07</a> <a href="#x86-ref-S08">S08</a></p>
 
 <div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="公司总研发费用与未披露的兼容成本"><svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="公司总研发费用与未披露的兼容成本" viewBox="0 0 800 285"><text x="24" y="38" font-size="25" class="v-ink">财报能回答哪一栏？</text><text x="24" y="70" font-size="15" class="v-sub">2025 财年，单位：十亿美元</text><text x="24" y="126" font-size="17" class="v-sub">公司</text><text x="185" y="126" font-size="17" class="v-sub">公司总研发费用</text><text x="430" y="126" font-size="17" class="v-sub">其中：维护 x86 兼容性</text><path d="M24 147 L770 147" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="184" font-size="22" class="v-ink">Intel</text><text x="185" y="184" font-size="24" class="v-ink">13.8</text><text x="430" y="184" font-size="22" class="v-ink">未单独披露</text><path d="M24 212 L770 212" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="249" font-size="22" class="v-ink">AMD</text><text x="185" y="249" font-size="24" class="v-ink">8.091</text><text x="430" y="249" font-size="22" class="v-ink">未单独披露</text></svg></div><p class="v-caption">图 5 · 财报能给出左栏金额。右栏缺少单独披露，无法据此估算兼容成本或潜在节省额。<a href="#x86-ref-S07">[S07]</a> <a href="#x86-ref-S08">[S08]</a></p></div>
 
-<p>所以我不会拿这约 219 亿美元当作“x86 的浪费”。Intel 的工艺节点和晶圆厂投入，AMD 的 GPU、AI 与软件投入，都不能算到 ISA 兼容性的账上。</p>
-<p>公开资料虽然算不出总价，却能看出工作落在哪里：</p>
+<p>约 219 亿美元不能作为 x86 浪费额。工艺、晶圆厂、GPU、AI 与软件研发等支出，均不能未经分摊就归因于 ISA 兼容。</p>
+<p>可以明确指出的，是以下持续存在的工程工作：</p>
 <ul>
 <li><strong>指令前端。</strong> 处理变长指令、前缀、跨界和罕见编码，还要在高吞吐、低延迟与低功耗之间做设计选择。</li>
 <li><strong>功能验证。</strong> 旧模式、异常、特权切换、虚拟化、指令扩展之间的交互，需要规格、测试与回归；软件可以观察到的行为，不能随便改。</li>
 <li><strong>固件与操作系统。</strong> 启动路径、特性枚举、微码更新、ABI 及虚拟化兼容，都需要厂商和系统软件合作。</li>
 <li><strong>产品迭代。</strong> 一部分工程人力持续用于确保“旧程序还是对的”，而不是完全投入新指令、新执行模型或更简单的硬件接口。</li>
 </ul>
-<p>这些成本有具体的工程内容，公开信息却不足以估出可信总额。换用 A64 也仍需要微架构、工具链、验证和操作系统团队，原有前端成本不会因此全部省掉。</p>
-<h3 id="功耗上倒是有一份值得看的实验">功耗上倒是有一份值得看的实验</h3>
+<p>这些工作具有可识别的成本来源，公开资料却不足以给出可信总额。即使改用 A64，仍需要微架构、工具链、验证和操作系统团队，也不能将现有前端成本全部视为可节省项。</p>
+<h3 id="解码功耗研究的适用条件">解码功耗研究的适用条件</h3>
 <p>2016 年的 USENIX CoolDC 论文试着专门激活 x86-64 的解码路径。在微基准超出已解码指令缓存容量的条件下，作者通过封装 RAPL 功耗测量与回归模型，估计解码器消耗了封装功耗的 <strong>3%–10%</strong>。<a href="#x86-ref-S09">S09</a></p>
 
 <div class="v-figure v-chart-scroll">
@@ -227,12 +227,12 @@
 <p class="v-caption">图 6 · 2016 年 CoolDC 论文估计，当 decoded-instruction cache 被突破时解码器占封装功耗约 3%–10%。不是现代芯片的通用范围，也不能据此计算换 ISA 的节能率。<a href="#x86-ref-S09">[S09]</a></p>
 </div>
 
-<p>这份实验值得看，是因为它真的测了。但 3%–10% 只属于 2016 年那个平台和负载，也没有保持其余核心设计不变、只更换 ISA。不能据此承诺“换成 ARM，整机立刻省 10% 的电”。</p>
-<p>我更想看到的实验是：减少旧模式和不规则指令以后，前端究竟能简化多少，验证矩阵能缩小多少，取指译码又能做多宽。这些都需要具体设计和测量，ISA 的名字回答不了。</p>
-<h2 id="那-ARM-为什么看起来那么香？">那 ARM 为什么看起来那么香？</h2>
+<p>3%–10% 对应 2016 年特定平台与微基准条件，研究没有保持其余核心设计不变而只替换 ISA。因此，该结果不能解释为改用 Arm 后整机必然节省 10% 功耗。</p>
+<p>更有针对性的比较应量化精简模式与编码后，前端结构、验证矩阵及取指译码吞吐如何变化。这些结果依赖具体设计与测量，无法仅由 ISA 名称推定。</p>
+<h2 id="Arm-产品表现与-ISA-归因的边界">Arm 产品表现与 ISA 归因的边界</h2>
 <p>Apple Silicon 的出现，显然让这件事有了很强的现实感。Apple 在 2020 年正式启动 Mac 从 Intel 到自研 Arm 架构芯片的迁移，连编译器、通用二进制和翻译层的过渡方案都一起准备好了。用户后来看到的则是出色的性能、能效和整机体验。云服务器也已经可以在 x86 以外选择 Arm 平台。<a href="#x86-ref-S20">S20</a></p>
-<p>Apple 的结果很容易让人归因到 RISC，但《ISA Wars》对 ARM、MIPS 与 x86 的比较已经提醒过：这些平台处在不同的工程设计点，RISC/CISC 分类本身预测不了性能和能效。<a href="#x86-ref-S10">S10</a></p>
-<p>缓存、分支预测、执行单元、乱序窗口、内存系统和互连，都会消耗大量晶体管和功耗。制程、频率、电压、核心规模，再加上系统调度、内存和 SoC 集成，也都影响结果。Apple 的整机表现包含这些选择，不能只归功于 A64 的 32 位定长编码。</p>
+<p>《ISA Wars》对 ARM、MIPS 和 x86 的比较指出，各平台处于不同的工程设计点，RISC/CISC 分类不足以预测性能和能效。这也限制了仅凭 Apple 产品表现推断 ISA 因果作用的解释。<a href="#x86-ref-S10">S10</a></p>
+<p>缓存、预测、乱序窗口、执行单元、内存与互连占用大量晶体管和功耗。制程、频率、电压、核心规模及系统集成也共同影响结果，A64 的 32 位定长编码只能作为其中一项设计条件。</p>
 
 <div class="v-figure v-chart-scroll">
 <p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p>
@@ -244,33 +244,33 @@
 <p class="v-caption">图 7 · 高层功能路径。并非任何 Intel、AMD、Apple 或 RISC-V 实现的真实 RTL 框图；现代高性能核心的后端复杂性同样重要。<a href="#x86-ref-S10">[S10]</a></p>
 </div>
 
-<p>AArch64 自身当然也不是一本永远保持极简的教科书。SVE、SME、虚拟化、安全特性和各种系统寄存器都在扩充它的架构规模。RISC-V 也并非不用付扩展兼容的账；模块化让它易于定制，同时要求软件与硬件对支持哪些扩展达成一致。<a href="#x86-ref-S18">S18</a> <a href="#x86-ref-S19">S19</a></p>
-<p>即便如此，如果今天开始一项新设计，我仍更愿意从 A64 或 RISC-V 出发。至少有机会重新划定保留哪些功能，而不必默认四十年前的选择都要继续承担。</p>
-<h2 id="假设全世界约好不再用-x86，会怎么样？">假设全世界约好不再用 x86，会怎么样？</h2>
-<p>我当然希望看到这个平行宇宙。全世界的操作系统、编译器、云厂商、游戏工作室、芯片公司一起宣布：以后主力通用计算转向 AArch64 和成熟的 RISC-V 配置，新软件默认多架构发布，x86 留在隔离的兼容环境里慢慢退役。</p>
-<p>我期待的是产业有机会重新商定软硬件接口。CPU 的新设计可以少围绕一些历史状态打转，软件也可以把 x86-64 之外的平台视作常规目标。Arm 设计者能围绕各自 SoC 优化，RISC-V 实现者能基于开放 ISA 探索微架构和专用扩展。不过，这不会让明天的电脑自动快一倍。<a href="#x86-ref-S13">S13</a></p>
+<p>AArch64 也在通过 SVE、SME、虚拟化、安全机制和系统寄存器扩展架构规模。RISC-V 的模块化提供定制空间，同时要求软硬件就扩展组合达成一致，因此仍有兼容和配置管理成本。<a href="#x86-ref-S18">S18</a> <a href="#x86-ref-S19">S19</a></p>
+<p>对于新设计，我仍倾向于 A64 或 RISC-V，理由是可以重新评估历史功能的边界，而不必完整继承既有 x86 状态。这是对设计起点的偏好，并非对所有实现性能的断言。</p>
+<h2 id="多架构迁移的收益与现实约束">多架构迁移的收益与现实约束</h2>
+<p>可以设想主流软件默认支持 AArch64 和成熟 RISC-V 配置，x86 负载逐步转入独立兼容环境。这个假设用于分析迁移条件，并不意味着全球平台能够同时切换。</p>
+<p>潜在收益在于重新界定软硬件接口，使新 CPU 不必围绕相同遗留状态设计。Arm 厂商可围绕各自 SoC 优化，RISC-V 实现者可探索开放 ISA 上的微架构和扩展；但接口自由度增加本身不等于性能自动翻倍。<a href="#x86-ref-S13">S13</a></p>
 <p>这里也有一个微妙的选择：如果目标是摆脱架构锁定，<strong>“全世界统一改用 Arm”并不等于最自由的结局</strong>。Arm 的架构与核心 IP 有商业授权模式，RISC-V 的基础 ISA 与标准扩展则是开放、免版税规范。开放 ISA 不等于免费获得先进 CPU 核心、EDA、验证 IP 或量产能力，但它把指令集本身从专有授权中独立了出来。<a href="#x86-ref-S13">S13</a> <a href="#x86-ref-S17">S17</a></p>
 <p>RISC-V 眼下也没有成熟到能直接接管全球的高端 PC。2026 年一项面向实际硬件与软件栈的研究指出，现有实现的性能与系统集成水平仍然参差，尤其在通用高性能领域还需要继续追赶。<a href="#x86-ref-S21">S21</a> 我愿意看到更多 RISC-V 方案进场，但不会把一张开放 ISA 规范误当成已经完工的桌面平台。</p>
-<p>迁移的困难，往往出在不能随手重新编译的部分。</p>
+<p>迁移成本主要集中在无法直接重新编译或缺乏原生替代的组件。</p>
 <p>Windows on Arm 已经能通过 Prism 翻译运行不少 x86/x64 用户态程序，但微软明确说明：<strong>内核驱动不能靠这种翻译运行，必须提供原生 Arm64 版本。</strong> 游戏里的反作弊、专业设备驱动、闭源插件、企业虚拟机镜像、特定 ISA 的手写汇编和性能库，都可能成为真正的障碍。<a href="#x86-ref-S14">S14</a></p>
-<h3 id="普通人和工程师，到底用到了多少兼容性？">普通人和工程师，到底用到了多少兼容性？</h3>
-<p>统计“用了多少兼容性”，要先定分母。浏览器看视频不会直接用到 16 位实模式，可在现有 Intel 64 平台上，开机已经经过了旧启动路径。对应用是零次直接调用，对整机却仍是启动所需。只盘点应用，会漏掉固件。<a href="#x86-ref-S05">S05</a></p>
-<p>评估自己的迁移，我会列出非做不可的任务，逐项查现有软件和设备在 Windows on Arm 上是否还依赖 x86 二进制。这个清单回答迁移是否可行，数不出“用过多少条 x86 指令”。</p>
+<h3 id="应用依赖与整机兼容的统计范围">应用依赖与整机兼容的统计范围</h3>
+<p>浏览器工作负载通常不直接使用 16 位实模式，但现有 Intel 64 平台仍经过旧启动路径。因此，应用层的零次调用不能证明整机不再依赖该机制，兼容使用率需要先定义统计边界。<a href="#x86-ref-S05">S05</a></p>
+<p>对个人或实验室，更可执行的评估是建立必要任务清单，逐项验证现有软件与设备在 Windows on Arm 上是否依赖 x86 二进制。它衡量迁移依赖，不等同于统计使用过的指令比例。</p>
 
 <div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="六项假设任务的迁移依赖"><svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="六项假设任务的迁移依赖" viewBox="0 0 800 400"><text x="24" y="35" font-size="25" class="v-ink">换到 Windows on Arm：逐项查依赖</text><text x="24" y="66" font-size="15" class="v-sub">下面是六项假设任务，每项只计一次。颜色和文字共同表示处理方式。</text><text x="24" y="109" font-size="17" class="v-sub">场景</text><text x="150" y="109" font-size="17" class="v-sub">手头的任务</text><text x="500" y="109" font-size="17" class="v-sub">迁移条件</text><path d="M24 122 L777 122" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="147" font-size="17" class="v-ink">日常</text><text x="150" y="147" font-size="17" class="v-ink">用原生 Arm64 浏览器看网页</text><path d="M486 132 L486 149" stroke="var(--chart-teal)" stroke-width="2"></path><text x="500" y="147" font-size="17" class="v-ink">原生应用</text><path d="M24 166 L777 166" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="191" font-size="17" class="v-ink">日常</text><text x="150" y="191" font-size="17" class="v-ink">用原生文档软件编辑文档</text><path d="M486 176 L486 193" stroke="var(--chart-teal)" stroke-width="2"></path><text x="500" y="191" font-size="17" class="v-ink">原生应用</text><path d="M24 210 L777 210" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="235" font-size="17" class="v-ink">日常</text><text x="150" y="235" font-size="17" class="v-ink">用原生播放器看视频</text><path d="M486 220 L486 237" stroke="var(--chart-teal)" stroke-width="2"></path><text x="500" y="235" font-size="17" class="v-ink">原生应用</text><path d="M24 254 L777 254" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="279" font-size="17" class="v-ink">工程</text><text x="150" y="279" font-size="17" class="v-ink">用原生工具链编译可移植源码</text><path d="M486 264 L486 281" stroke="var(--chart-teal)" stroke-width="2"></path><text x="500" y="279" font-size="17" class="v-ink">原生工具链</text><path d="M24 298 L777 298" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="323" font-size="17" class="v-ink">工程</text><text x="150" y="323" font-size="17" class="v-ink">运行仅发 x64 版的用户态工具</text><path d="M486 308 L486 325" stroke="var(--chart-amber)" stroke-width="2"></path><text x="500" y="323" font-size="17" class="v-ink">可尝试翻译，须验证</text><path d="M24 342 L777 342" stroke="var(--divider)" stroke-width="2"></path><text x="24" y="367" font-size="17" class="v-ink">工程</text><text x="150" y="367" font-size="17" class="v-ink">连接仅有 x64 内核驱动的仪器</text><path d="M486 352 L486 369" stroke="var(--chart-red)" stroke-width="2"></path><text x="500" y="367" font-size="17" class="v-ink">缺原生驱动，受阻</text></svg></div><p class="v-caption">图 8 · 假设系统与应用都满足所列条件。Prism 可以翻译受支持的用户态代码，内核驱动必须有 Arm64 版。<a href="#x86-ref-S14">[S14]</a></p></div>
 
 <p>按图中的假设，日常组有 <strong>0/3（0%）</strong> 项任务依赖 x86 二进制。工程组有 <strong>2/3（约 67%）</strong>：用户态工具可以尝试翻译，仪器驱动却必须另找 Arm64 版本。如果测量必须用这台仪器，哪怕其他工作全能迁走，少这一个驱动也交不了实验报告。<a href="#x86-ref-S14">S14</a></p>
-<p>这两个比例只适用于图里的六项假设任务。网页若依赖旧插件，或仪器已经有 Arm64 驱动，结果就会变。实验室要盘点真实的工具、插件、驱动和仪器，并逐项验证。至于哪些 CPU 逻辑可以删，还得另查启动、虚拟化和异常行为，不能从旧应用有没有被打开来推断。</p>
+<p>这两个比例仅描述图中六项假设任务。插件和驱动条件改变，结果也会改变。真实迁移需要核验工具、插件、驱动和仪器；判断可删除的 CPU 机制，则还需要独立分析启动、虚拟化及异常行为。</p>
 <p>Apple 给出了一条现实路线。它在 2020 年开启 Mac 向 Apple Silicon 的转换，用 Rosetta 为 x86-64 应用提供过渡。到 2026 年 9 月，Apple 已明确宣布 macOS 27 是通用 Rosetta 支持的最后一个大版本；未来只为某些依赖 Intel 框架的老游戏保留有限支持。<a href="#x86-ref-S11">S11</a> <a href="#x86-ref-S12">S12</a></p>
-<p>Apple 证明迁移可以完成，也说明这需要多年。它能协调自己的硬件、操作系统和分发体系；企业机房、DIY PC、科研仪器、工业控制和游戏则分散得多。即使共同推进，闭源软件和外设驱动的适配也仍要有人付账。</p>
-<p>可行的转型要从持续支持多架构开始：软件在 x86-64、AArch64 和 RISC-V 上构建、自动测试，主流组件维护共同基线；新项目少绑定某一家 SIMD intrinsic 或二进制插件，硬件厂商提供长期可验证的驱动和系统接口。难迁的闭源负载先留在翻译器或旧平台上，等到确实有理由迁移。</p>
-<p>这条路不必从说服 Intel 和 AMD 开始。先让软件不再把 x86 当成唯一默认平台，芯片厂商才有足够多的客户愿意试新架构。</p>
-<h2 id="我想让今天的设计者还能选">我想让今天的设计者还能选</h2>
-<p>x86 内部的缓存、分支预测和乱序执行，有很多值得学的设计。我的不满始终是：这些工程能力为什么必须一次次花在维持旧架构行为上。</p>
-<p>我宁愿看到更多精力用于尝试更简单的接口。当然，做芯片的人无法独自决定这件事。</p>
-<p>旧程序能继续运行，对用户和厂商都有实际价值。兼容性曾帮助 PC 产业扩张，如今也省去了许多公司的系统重写。代价则留给了后续芯片和开发工具。谁先退出兼容，谁先承担迁移成本；继续支持，反而更容易留住客户。单靠一家公司的决定，很难改变这个局面。</p>
-<p>我希望新高性能 CPU 的竞争，能更多落在缓存、预测、执行宽度和计算单元上。Intel、AMD 可以有机会采用更干净的架构，Arm 与 RISC-V 也能让更多设计者进场，而用户不必永远替 1978 年的选择续费。</p>
-<p>如果真走到那一天，x86 留给我的，大概会是对那段工程历史的佩服，而不是今天这句骂。</p>
+<p>Apple 案例支持跨 ISA 迁移的可行性，同时显示其需要多年协调。企业机房、DIY PC、科研设备、工业控制与游戏生态更分散，闭源组件和外设驱动的适配成本不会因共同迁移而消失。</p>
+<p>较可行的路径是持续维护多架构构建与自动测试，减少新项目对专有 SIMD intrinsic 和二进制插件的绑定，并提供长期可验证的驱动与系统接口。难以迁移的负载继续使用翻译器或旧平台，直到替代收益足以支持适配。</p>
+<p>先建立软件的多架构基线，可以降低客户采用新芯片的门槛，也减少迁移完全依赖单家厂商决策的程度。</p>
+<h2 id="兼容收益与新架构选择">兼容收益与新架构选择</h2>
+<p>x86 高性能实现中有大量值得研究的缓存、分支预测和乱序执行设计。我的批评指向兼容契约占用的持续工程资源，而非这些实现工作的技术价值。</p>
+<p>重新设计接口可能释放一部分空间，但采用新架构的决定还取决于软件迁移成本及承担方式。</p>
+<p>旧程序持续可用，为用户提供明确价值，也使维护兼容的厂商更容易保留客户。率先退出者则需要承担迁移成本，收益和成本分布不对称，因而很难由一家企业单独完成架构转换。</p>
+<p>我希望 Intel、AMD 能在更简洁的接口上竞争缓存、预测和执行资源，也希望 Arm 与 RISC-V 为新设计者保留进入空间。其前提是迁移方案足以承接 1978 年以来不断积累的软件依赖。</p>
+<p>在这些条件逐步具备以前，对 x86 的评价需要同时承认其历史兼容价值，以及这种价值对新设计施加的限制。</p>
 <hr>
 <h2 id="资料来源与图表口径">资料来源与图表口径</h2>
 <p>下列链接是本篇写作与图表的数据来源。文中所有 2025 年财务数据均为公司披露的 <strong>总研发费用</strong>；2016 年解码器功耗数字是有条件的研究结果；没有用未经验证的数据拼出“x86 的总浪费额”。</p>

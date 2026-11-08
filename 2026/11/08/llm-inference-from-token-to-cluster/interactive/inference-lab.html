@@ -2,7 +2,7 @@
   <meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' ; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>推理估算实验室 · 批量与 KV 预算</title>
+  <title>推理性能估算 · 批量与 KV 预算</title>
   <!--
     Self-contained, offline teaching component. No telemetry or external assets.
     Batch equations match the batching calculation in reproduce/make_figures.py.
@@ -218,8 +218,8 @@
     <header class="inf-header">
       <div>
         <p class="inf-eyebrow">交互附录 / 解析估算</p>
-        <h1 id="lab-title">推理估算实验室</h1>
-        <p class="inf-intro">改动参数，看批量、上下文和内存预算怎样互相牵动。</p>
+        <h1 id="lab-title">推理性能估算</h1>
+        <p class="inf-intro">调整批量、上下文长度和内存配置，估算吞吐与容量需求。</p>
       </div>
       <button class="inf-theme" id="theme-toggle" type="button" disabled="" aria-label="切换主题，当前跟随系统">主题：跟随系统</button>
     </header>
@@ -235,7 +235,7 @@
 
     <section id="panel-batch" class="inf-panel" role="tabpanel" aria-labelledby="tab-batch" tabindex="0">
       <div class="inf-panel-head">
-        <h2>总吞吐上升，每条序列却可能更慢</h2>
+        <h2>批量大小与推理吞吐</h2>
         <p>每条活跃序列每步输出 1 个 token。固定上下文长度，增加 B，观察总吞吐与每序列速率的区别。</p>
       </div>
       <fieldset id="batch-controls" disabled="">
@@ -319,7 +319,7 @@
 
     <section id="panel-memory" class="inf-panel" role="tabpanel" aria-labelledby="tab-memory" tabindex="0">
       <div class="inf-panel-head">
-        <h2>权重放得下，还要留出 KV 的位置</h2>
+        <h2>权重与 KV Cache 容量预算</h2>
         <p>先算原始数据容量，再加上你设置的余量。层数 L = 32、头维度 d<sub>h</sub> = 128 固定；GiB = 2<sup>30</sup> byte。</p>
       </div>
       <fieldset id="memory-controls" disabled="">

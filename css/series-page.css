@@ -44,6 +44,32 @@
 }
 
 /* --- Series article cards --- */
+.btc-card {
+  display: block;
+  padding: 24px 0;
+  text-decoration: none !important;
+  border-bottom: 0 !important;
+}
+
+.btc-card + .btc-card {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.btc-card-kicker,
+.btc-card-date {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.82em;
+}
+
+.btc-card-title {
+  margin: 8px 0;
+}
+
+.btc-card:hover .btc-card-title {
+  text-decoration: underline;
+}
+
 .series-btn {
   display: inline-flex;
   align-items: center;
