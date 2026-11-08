@@ -1,0 +1,5 @@
+platform,version,status,release_date_if_verified,minimum_environment,implementation_scope,pricing_status,currency_region,monthly,yearly,lifetime,source_ids,checked_date
+macOS,1.3.7,stable,2026-11-07,macOS 15+; Apple silicon,C++/Metal; SwiftUI,免费开源,,,,,S82;S84,2026-11-08
+iOS/iPadOS,1.2.1,App Store,,iOS/iPadOS 17+; HDR 另需 iOS 18 与相应屏幕,移动引擎重新实现；不推定与 Mac 数值相同,免费下载＋Plus 内购,CNY (China mainland),9.90,98,268,S84;S85,2026-11-08
+Windows,1.3.4,pre-release,,x64; Vulkan 驱动; WebView2; 官方未明确最低系统版本,Windows 预发布；不推定与 Mac 功能对等,可免费下载预发布安装包,,,,,S84,2026-11-08
+Linux,,in development; no build published,,未发布构建，无可核实最低要求,开发中,无已发布二进制价格,,,,,S84,2026-11-08

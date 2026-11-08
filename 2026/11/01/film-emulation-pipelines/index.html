@@ -15,16 +15,16 @@
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
   <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
   
-    <meta name="description" content="从 Gloam、Dazz 和 No Fusion 到 Indigo 与桌面工具，沿着照片的输入、显影、颜色与空间效果，理解胶片模拟究竟改变了什么。">
+    <meta name="description" content="从 Gloam、Dazz、No Fusion 到 Indigo 与 SpektraLab，沿着输入、显影、光谱模型和空间效果，理解胶片模拟改变了什么，以及模型复杂度为什么不直接决定成片偏好。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="手机里的底片，电脑里的暗房：胶片模拟究竟在模拟什么？">
 <meta property="og:url" content="https://leecdiang.com/2026/11/01/film-emulation-pipelines/">
 <meta property="og:site_name" content="Beyond the Clock">
-<meta property="og:description" content="从 Gloam、Dazz 和 No Fusion 到 Indigo 与桌面工具，沿着照片的输入、显影、颜色与空间效果，理解胶片模拟究竟改变了什么。">
+<meta property="og:description" content="从 Gloam、Dazz、No Fusion 到 Indigo 与 SpektraLab，沿着输入、显影、光谱模型和空间效果，理解胶片模拟改变了什么，以及模型复杂度为什么不直接决定成片偏好。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/f388836684a5.png">
 <meta property="article:published_time" content="2026-11-01T13:38:00.000Z">
-<meta property="article:modified_time" content="2026-11-02T04:57:00.000Z">
+<meta property="article:modified_time" content="2026-11-08T03:24:00.000Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="摄影">
 <meta property="article:tag" content="胶片模拟">
@@ -79,7 +79,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%8E-Gloam-%E5%92%8C-Dazz-%E5%BC%80%E5%A7%8B%EF%BC%9A%E6%88%91%E4%BB%AC%E5%85%88%E8%A2%AB%E4%BB%80%E4%B9%88%E5%90%B8%E5%BC%95%EF%BC%9F"><span class="toc-text">1. 从 Gloam 和 Dazz 开始：我们先被什么吸引？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%85%A7%E7%89%87%E6%80%8E%E6%A0%B7%E6%8B%8D%E5%88%B0%EF%BC%8C%E5%92%8C%E6%80%8E%E6%A0%B7%E6%98%BE%E5%BD%B1%EF%BC%8C%E6%98%AF%E4%B8%A4%E6%AC%A1%E9%80%89%E6%8B%A9"><span class="toc-text">2. 照片怎样拍到，和怎样显影，是两次选择</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Indigo%EF%BC%9A%E5%A4%9A%E6%8B%8D%E5%87%A0%E5%B8%A7%EF%BC%8C%E8%83%BD%E7%BB%99%E5%90%8E%E6%9C%9F%E7%95%99%E4%B8%8B%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">3. Indigo：多拍几帧，能给后期留下什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%90%8C%E6%A0%B7%E5%8F%AB-Portra%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E9%A2%9C%E8%89%B2%E4%BC%9A%E4%B8%8D%E5%90%8C%EF%BC%9F"><span class="toc-text">4. 同样叫 Portra，为什么颜色会不同？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E9%A2%9C%E8%89%B2%E4%B9%8B%E5%A4%96%EF%BC%8C%E9%A2%97%E7%B2%92%E5%92%8C%E5%85%89%E6%99%95%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E7%85%A7%E7%89%87%EF%BC%9F"><span class="toc-text">5. 颜色之外，颗粒和光晕怎样改变照片？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%88%B0%E4%BA%86%E7%94%B5%E8%84%91%E4%B8%8A%EF%BC%8C%E9%A2%84%E8%AE%BE%E3%80%81LUT-%E5%92%8C%E6%8F%92%E4%BB%B6%E5%90%84%E6%8E%A5%E7%AE%A1%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">6. 到了电脑上，预设、LUT 和插件各接管什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LUT-%E4%BF%9D%E5%AD%98%E7%9A%84%E6%98%AF%E9%A2%9C%E8%89%B2%E5%85%B3%E7%B3%BB"><span class="toc-text">LUT 保存的是颜色关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E6%95%88%E6%9E%9C%E9%9C%80%E8%A6%81%E5%AE%8C%E6%95%B4%E7%9A%84%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-text">空间效果需要完整的处理工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%9B%9E%E5%88%B0%E6%8B%8D%E6%91%84%EF%BC%9A%E5%85%88%E6%89%BE%E5%87%BA%E8%87%AA%E5%B7%B1%E6%83%B3%E6%94%B9%E5%8F%98%E7%9A%84%E9%82%A3%E4%B8%80%E6%AD%A5"><span class="toc-text">7. 回到拍摄：先找出自己想改变的那一步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E4%B8%8E%E6%8A%80%E6%9C%AF%E9%99%84%E5%BD%95"><span class="toc-text">资料与技术附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E6%9C%BA%E5%BA%94%E7%94%A8"><span class="toc-text">手机应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%8C%E9%9D%A2%E5%B7%A5%E5%85%B7"><span class="toc-text">桌面工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%82%E5%9C%BA%E6%AD%A3%E5%9C%A8%E6%80%8E%E6%A0%B7%E5%8F%98%E5%8C%96"><span class="toc-text">市场正在怎样变化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%89%8B%E6%9C%BA%E5%BA%94%E7%94%A8%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-text">主要手机应用的版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E5%9B%BD%E5%8C%BA%E5%86%85%E8%B4%AD%EF%BC%8C%E4%BA%BA%E6%B0%91%E5%B8%81"><span class="toc-text">中国区内购，人民币</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%A7%BB%E5%8A%A8%E4%BA%A7%E5%93%81%EF%BC%8C%E7%BE%8E%E5%85%83"><span class="toc-text">其他移动产品，美元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%8C%E9%9D%A2%E4%BA%A7%E5%93%81%EF%BC%8C%E7%BE%8E%E5%85%83"><span class="toc-text">桌面产品，美元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C1-%E5%A4%9A%E5%B8%A7%E5%B9%B3%E5%9D%87%E7%9A%84%E7%90%86%E8%AE%BA%E6%94%B6%E7%9B%8A"><span class="toc-text">C1. 多帧平均的理论收益</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C2-%E6%9D%90%E6%96%99%E6%A8%A1%E5%9E%8B%E6%80%8E%E6%A0%B7%E4%BB%8E%E5%85%89%E8%B5%B0%E5%88%B0%E9%A2%9C%E8%89%B2"><span class="toc-text">C2. 材料模型怎样从光走到颜色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C3-PGI-%E6%95%B0%E6%8D%AE%E5%92%8C%E8%A7%82%E7%9C%8B%E6%9D%A1%E4%BB%B6"><span class="toc-text">C3. PGI 数据和观看条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C4-LUT-%E7%BD%91%E6%A0%BC%E5%8F%98%E5%AF%86%EF%BC%8C%E5%A2%9E%E5%8A%A0%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-text">C4. LUT 网格变密，增加了什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C5-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B0%83%E6%95%B4%E9%A1%BA%E5%BA%8F%E4%BC%9A%E6%94%B9%E5%8F%98%E7%BB%93%E6%9E%9C"><span class="toc-text">C5. 为什么调整顺序会改变结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C6-%E5%87%A0%E4%B8%AA%E4%BC%9A%E5%BD%B1%E5%93%8D%E8%BE%93%E5%85%A5%E8%A7%A3%E9%87%8A%E7%9A%84%E7%BB%86%E8%8A%82"><span class="toc-text">C6. 几个会影响输入解释的细节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E8%A6%86%E7%9B%96"><span class="toc-text">场景覆盖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E9%87%8F%E4%B8%8E%E4%B8%BB%E8%A7%82%E8%AF%84%E4%BB%B7"><span class="toc-text">测量与主观评价</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%8E-Gloam-%E5%92%8C-Dazz-%E5%BC%80%E5%A7%8B%EF%BC%9A%E6%88%91%E4%BB%AC%E5%85%88%E8%A2%AB%E4%BB%80%E4%B9%88%E5%90%B8%E5%BC%95%EF%BC%9F"><span class="toc-text">1. 从 Gloam 和 Dazz 开始：我们先被什么吸引？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%85%A7%E7%89%87%E6%80%8E%E6%A0%B7%E6%8B%8D%E5%88%B0%EF%BC%8C%E5%92%8C%E6%80%8E%E6%A0%B7%E6%98%BE%E5%BD%B1%EF%BC%8C%E6%98%AF%E4%B8%A4%E6%AC%A1%E9%80%89%E6%8B%A9"><span class="toc-text">2. 照片怎样拍到，和怎样显影，是两次选择</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Indigo%EF%BC%9A%E5%A4%9A%E6%8B%8D%E5%87%A0%E5%B8%A7%EF%BC%8C%E8%83%BD%E7%BB%99%E5%90%8E%E6%9C%9F%E7%95%99%E4%B8%8B%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">3. Indigo：多拍几帧，能给后期留下什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%90%8C%E6%A0%B7%E5%8F%AB-Portra%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E9%A2%9C%E8%89%B2%E4%BC%9A%E4%B8%8D%E5%90%8C%EF%BC%9F"><span class="toc-text">4. 同样叫 Portra，为什么颜色会不同？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-SpektraLab%EF%BC%9A%E6%9C%89%E4%BA%86%E5%85%89%E8%B0%B1%E6%A8%A1%E5%9E%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%AA%E5%BF%85%E6%9B%B4%E5%A5%BD%E7%9C%8B%EF%BC%9F"><span class="toc-text">5. SpektraLab：有了光谱模型，为什么未必更好看？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E7%9C%8B%E8%BE%93%E5%85%A5%EF%BC%8C%E5%86%8D%E7%9C%8B%E6%95%B4%E5%A5%97%E5%A4%84%E7%90%86"><span class="toc-text">先看输入，再看整套处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E4%B8%BB%E8%A6%81%E6%94%B9%E5%96%84%E7%AD%89%E5%BE%85%E6%97%B6%E9%97%B4"><span class="toc-text">并行计算主要改善等待时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%B8%8A%E9%99%90%EF%BC%8C%E5%92%8C%E7%85%A7%E7%89%87%E6%98%AF%E5%90%A6%E5%90%88%E5%8F%A3%E5%91%B3"><span class="toc-text">模型的上限，和照片是否合口味</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E9%A2%9C%E8%89%B2%E4%B9%8B%E5%A4%96%EF%BC%8C%E9%A2%97%E7%B2%92%E5%92%8C%E5%85%89%E6%99%95%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E7%85%A7%E7%89%87%EF%BC%9F"><span class="toc-text">6. 颜色之外，颗粒和光晕怎样改变照片？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%88%B0%E4%BA%86%E7%94%B5%E8%84%91%E4%B8%8A%EF%BC%8C%E9%A2%84%E8%AE%BE%E3%80%81LUT-%E5%92%8C%E6%8F%92%E4%BB%B6%E5%90%84%E6%8E%A5%E7%AE%A1%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">7. 到了电脑上，预设、LUT 和插件各接管什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LUT-%E4%BF%9D%E5%AD%98%E7%9A%84%E6%98%AF%E9%A2%9C%E8%89%B2%E5%85%B3%E7%B3%BB"><span class="toc-text">LUT 保存的是颜色关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E6%95%88%E6%9E%9C%E9%9C%80%E8%A6%81%E5%AE%8C%E6%95%B4%E7%9A%84%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-text">空间效果需要完整的处理工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%9B%9E%E5%88%B0%E6%8B%8D%E6%91%84%EF%BC%9A%E5%85%88%E6%89%BE%E5%87%BA%E8%87%AA%E5%B7%B1%E6%83%B3%E6%94%B9%E5%8F%98%E7%9A%84%E9%82%A3%E4%B8%80%E6%AD%A5"><span class="toc-text">8. 回到拍摄：先找出自己想改变的那一步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E4%B8%8E%E6%8A%80%E6%9C%AF%E9%99%84%E5%BD%95"><span class="toc-text">资料与技术附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E6%9C%BA%E5%BA%94%E7%94%A8"><span class="toc-text">手机应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%8C%E9%9D%A2%E5%B7%A5%E5%85%B7"><span class="toc-text">桌面工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%82%E5%9C%BA%E6%AD%A3%E5%9C%A8%E6%80%8E%E6%A0%B7%E5%8F%98%E5%8C%96"><span class="toc-text">市场正在怎样变化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%89%8B%E6%9C%BA%E5%BA%94%E7%94%A8%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-text">主要手机应用的版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E5%9B%BD%E5%8C%BA%E5%86%85%E8%B4%AD%EF%BC%8C%E4%BA%BA%E6%B0%91%E5%B8%81"><span class="toc-text">中国区内购，人民币</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%A7%BB%E5%8A%A8%E4%BA%A7%E5%93%81%EF%BC%8C%E7%BE%8E%E5%85%83"><span class="toc-text">其他移动产品，美元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%8C%E9%9D%A2%E4%BA%A7%E5%93%81%EF%BC%8C%E7%BE%8E%E5%85%83"><span class="toc-text">桌面产品，美元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpektraLab-%E5%B9%B3%E5%8F%B0%E4%B8%8E%E4%BB%B7%E6%A0%BC%EF%BC%8C2026-11-08-%E8%A1%A5%E5%85%85"><span class="toc-text">SpektraLab 平台与价格，2026-11-08 补充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C1-%E5%A4%9A%E5%B8%A7%E5%B9%B3%E5%9D%87%E7%9A%84%E7%90%86%E8%AE%BA%E6%94%B6%E7%9B%8A"><span class="toc-text">C1. 多帧平均的理论收益</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C2-%E6%9D%90%E6%96%99%E6%A8%A1%E5%9E%8B%E6%80%8E%E6%A0%B7%E4%BB%8E%E5%85%89%E8%B5%B0%E5%88%B0%E9%A2%9C%E8%89%B2"><span class="toc-text">C2. 材料模型怎样从光走到颜色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C3-PGI-%E6%95%B0%E6%8D%AE%E5%92%8C%E8%A7%82%E7%9C%8B%E6%9D%A1%E4%BB%B6"><span class="toc-text">C3. PGI 数据和观看条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C4-LUT-%E7%BD%91%E6%A0%BC%E5%8F%98%E5%AF%86%EF%BC%8C%E5%A2%9E%E5%8A%A0%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-text">C4. LUT 网格变密，增加了什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C5-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B0%83%E6%95%B4%E9%A1%BA%E5%BA%8F%E4%BC%9A%E6%94%B9%E5%8F%98%E7%BB%93%E6%9E%9C"><span class="toc-text">C5. 为什么调整顺序会改变结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C6-%E5%87%A0%E4%B8%AA%E4%BC%9A%E5%BD%B1%E5%93%8D%E8%BE%93%E5%85%A5%E8%A7%A3%E9%87%8A%E7%9A%84%E7%BB%86%E8%8A%82"><span class="toc-text">C6. 几个会影响输入解释的细节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C7-SpektraLab-%E7%9A%84%E5%85%89%E8%B0%B1%E8%AE%A1%E7%AE%97%E4%B8%8E%E5%8A%A0%E9%80%9F%E8%BE%B9%E7%95%8C"><span class="toc-text">C7. SpektraLab 的光谱计算与加速边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E7%BB%A7%E7%BB%AD%E6%AF%94%E8%BE%83-Gloam-%E4%B8%8E-SpektraLab"><span class="toc-text">如果继续比较 Gloam 与 SpektraLab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E8%A6%86%E7%9B%96"><span class="toc-text">场景覆盖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E9%87%8F%E4%B8%8E%E4%B8%BB%E8%A7%82%E8%AF%84%E4%BB%B7"><span class="toc-text">测量与主观评价</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpektraLab-%E8%A1%A5%E5%85%85%E6%9D%90%E6%96%99%EF%BC%8C2026-11-08"><span class="toc-text">SpektraLab 补充材料，2026-11-08</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SpektraLab-%E8%A1%A5%E5%85%85%E6%9D%A5%E6%BA%90%EF%BC%882026-11-08-%E6%A0%B8%E6%9F%A5%EF%BC%89"><span class="toc-text">SpektraLab 补充来源（2026-11-08 核查）</span></a></li></ol></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/f388836684a5.png"><meta itemprop="dateModified" content="2026-11-02T04:57:00.000Z"><meta itemprop="datePublished" content="2026-11-01T13:38:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/f388836684a5.png"><meta itemprop="dateModified" content="2026-11-08T03:24:00.000Z"><meta itemprop="datePublished" content="2026-11-01T13:38:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/01/film-emulation-pipelines/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -115,7 +115,7 @@
   
 </div>
 
-            <div class="post-description">从 Gloam、Dazz 和 No Fusion 到 Indigo 与桌面工具，沿着照片的输入、显影、颜色与空间效果，理解胶片模拟究竟改变了什么。</div>
+            <div class="post-description">从 Gloam、Dazz、No Fusion 到 Indigo 与 SpektraLab，沿着输入、显影、光谱模型和空间效果，理解胶片模拟改变了什么，以及模型复杂度为什么不直接决定成片偏好。</div>
         </div>
         
         <div class="reading-byline">
@@ -129,9 +129,9 @@
     
     
     <div class="post-body" itemprop="articleBody" data-math-prerendered="18"><p>最近用 Gloam 拍照，我想弄清一个问题：同样叫“胶片模拟”，这些应用到底在改变照片的哪一部分？</p>
-<p>Gloam 和 Dazz 把颜色、颗粒和画幅装进一台台虚拟相机；No Fusion 让用户选择拍摄和显影方式；Adobe 的 Project Indigo 则自己采集、合并多张 RAW。到了电脑上，Lightroom 预设、胶片插件和 spektrafilm 又提供了另一组选择。它们都可能让照片更接近自己喜欢的外观，却未必在做同一件事。</p>
+<p>Gloam 和 Dazz 把颜色、颗粒和画幅装进一台台虚拟相机；No Fusion 让用户选择拍摄和显影方式；Adobe 的 Project Indigo 则自己采集、合并多张 RAW。到了电脑上，Lightroom 预设、胶片插件，以及 spektrafilm 模型与 SpektraLab 应用，又提供了另一组选择。它们都可能让照片更接近自己喜欢的外观，却未必在做同一件事。</p>
 <p>要理解这些差别，可以沿着一张照片往下走：<strong>先看手机留下了什么，再看它怎样变成一张有胶片外观的照片，最后决定把哪些步骤交给什么工具。</strong></p>
-<p>以下资料截至 2026 年 11 月 1 日，依据官方文档、源码、论文和公开样片整理。文中的产品图片用于解释处理方式，尚未进行统一条件下的跨应用实拍。</p>
+<p>原有市场资料截至 2026 年 11 月 1 日；SpektraLab 专章及相关补充核查至 11 月 8 日，其他产品的版本与价格仍保留原快照。文章依据官方文档、源码、论文和公开样片整理，尚未进行统一条件下的跨应用实拍。</p>
 <span id="more"></span>
 <h2 id="1-从-Gloam-和-Dazz-开始：我们先被什么吸引？">1. 从 Gloam 和 Dazz 开始：我们先被什么吸引？</h2>
 <p>使用这类相机，最先遇到的通常是一种成片风格。选一台虚拟相机，再选一种颜色或胶卷，就可以开始拍摄。至于背后经过了多少处理，往往要用上一段时间才会关心。</p>
@@ -236,7 +236,7 @@
 <h2 id="4-同样叫-Portra，为什么颜色会不同？">4. 同样叫 Portra，为什么颜色会不同？</h2>
 <p>一卷彩色负片显影后，还没有规定最终正像的全部样子。扫描器怎样读取它、软件怎样反相，或它经过什么放大机与相纸，都会参与成片。直接扫描负片，与先做光学放相再观看，参考的终点本来就不同。<a href="#film-ref-S40">S40</a> <a href="#film-ref-S68">S68</a></p>
 <p>因此，软件中的“Portra 400”最好理解为一个需要补全的描述：用了什么曝光和显影条件，又以哪一种冲扫结果为参照？Mastin 明确使用指定胶片与 Frontier 扫描参考；Dehancer 介绍的负片参考链则包含光学放相。两套结果即使不同，也可能是在追求各自的目标。<a href="#film-ref-S40">S40</a> <a href="#film-ref-S73">S73</a></p>
-<p>建立这种外观，大致有两种思路。一种从真实胶片出发，拍摄、显影、扫描，再拟合颜色与颗粒响应，DxO FilmPack 属于公开说明了这套标定过程的产品。另一种把材料和处理步骤写成模型，计算光经过胶片、相纸后会变成什么。spektrafilm 适合用来理解后一种路线。<a href="#film-ref-S45">S45</a> <a href="#film-ref-S53">S53</a></p>
+<p>在有明确材料参照的工具里，可以看到两种常见做法。一种从真实胶片出发，拍摄、显影、扫描，再拟合颜色与颗粒响应，DxO FilmPack 属于公开说明了这套标定过程的产品。另一种把材料和处理步骤写成模型，计算光经过胶片、相纸后会变成什么。spektrafilm 适合用来理解后一种路线。<a href="#film-ref-S45">S45</a> <a href="#film-ref-S53">S53</a></p>
 <p>先看它的公开示例：</p>
 <div class="table-container"><table style="min-width:620px">
 <thead>
@@ -259,8 +259,57 @@
 <p>这也是过程模型最有意思的地方。用户可以沿着成片形成的过程调整，而不只是在最后修改 RGB。文末保留了 Portra 400 和 Portra Endura 的材料曲线，能看到不同感色层对波长和曝光的不同响应。</p>
 <p>模型同时依赖数据和假设。部分材料数据尚未公开，需要通用数据或拟合补足；普通 RGB 也无法唯一确定原场景光谱。面对 LED、霓虹等特殊光源时，重建方法的差别尤其值得检验。<a href="#film-ref-S53">S53</a> <a href="#film-ref-S58">S58</a> <a href="#film-ref-S66">S66</a></p>
 <p>因此，实物标定和过程建模有各自的价值：前者直接对准一个已知参考，后者便于解释和改变过程参数。<strong>能否接近某张目标照片，要看参考和验证；能够控制哪些过程，则可以从模型本身判断。</strong></p>
-<p>不过，即使颜色与影调已经接近参考，照片仍可能缺少胶片的质感。还需要看颗粒，以及强光怎样影响周围区域。</p>
-<h2 id="5-颜色之外，颗粒和光晕怎样改变照片？">5. 颜色之外，颗粒和光晕怎样改变照片？</h2>
+<p>模型说明了照片可以怎样形成。到了具体应用，还要决定怎样解释输入、采用什么默认设置，以及把多少调整交给使用者。SpektraLab 让我们可以继续看，这些选择最终怎样落到成片上。<a href="#film-ref-S82">S82</a></p>
+<h2 id="5-SpektraLab：有了光谱模型，为什么未必更好看？">5. SpektraLab：有了光谱模型，为什么未必更好看？</h2>
+<p>看过 SpektraLab 的公开样片后，我仍更喜欢 Gloam 的成片。这也让我想把“技术上限”说得更具体：光谱模型增加了哪些能力，这些能力又怎样变成一张自己喜欢的照片？</p>
+<p>SpektraLab 是围绕 spektrafilm 模型建立的独立应用；macOS 版把相关计算移植到 C++ 与 Metal，再加上原生界面、RAW 导入和编辑流程。它与前一节的材料模型属于同一条技术路线，补上的是让模型进入日常编辑的一层。以下实现细节以 2026 年 11 月 8 日核查的 macOS 1.3.7 为准；移动版与 Windows 版的实现和成熟度另列在附录。<a href="#film-ref-S82">S82</a> <a href="#film-ref-S84">S84</a></p>
+
+<div class="v-figure"><a href="/images/film-emulation-spektralab/spektralab_official_workspace.png"><img width="2560" height="1440" loading="lazy" decoding="async" alt="SpektraLab 官方工作区截图：夜景照片，左侧选中 Portra 160 胶片与 Vision 2383 材料，右侧为输入调整" src="/images/film-emulation-spektralab/spektralab_official_workspace.png"></a><p class="v-caption">SpektraLab 项目公开的界面示例，画面中选择 Portra 160＋Vision 2383。图片取自 1.3.7 标签对应的源码仓库，截图所示界面的版本未注明，历史控件不能当作当前功能清单。摄影及界面权利归各自权利人。<a href="#film-ref-S93">[S93]</a></p></div>
+
+<h3 id="先看输入，再看整套处理">先看输入，再看整套处理</h3>
+<p>一份 RAW 进入 SpektraLab，也要先变成模型可以使用的数值。macOS 版借助 Apple 的 RAW 解码器生成线性 ProPhoto RGB 输入，关闭若干亮度增强与局部影调映射；对照用的 Original 则另取 Apple 默认显示渲染。因此，界面里的左右比较应理解为<strong>同一份 RAW 经不同路径得到的显示结果</strong>，不能把左边那张显示图直接当成右边的计算起点。<a href="#film-ref-S86">S86</a></p>
+<p>这条流程仍然受输入限制。ProRAW 已经融合的信息不会在这里拆回单帧，JPEG 中被剪掉的高光也不会因增加光谱步骤重新出现。进入模型后，选择胶片、负片曝光、相纸与放相配光，才会逐步确定成片；后面的曝光、白平衡和曲线等 Post-Dev 调整，继续参与最终外观。<a href="#film-ref-S02">S02</a> <a href="#film-ref-S83">S83</a></p>
+
+<div class="v-figure"><a href="/images/film-emulation-spektralab/spektralab_official_halation.png"><img width="1386" height="1400" loading="lazy" decoding="async" alt="SpektraLab 官方城市景观 Before/After 分割图，左右的颜色、天空颗粒和建筑边缘均有变化" src="/images/film-emulation-spektralab/spektralab_official_halation.png"></a><p class="v-caption">官方 Before／After 分割示例。可见颜色、颗粒与边缘观感一起变化；原文件虽然名为 natural_halation，但没有配套 RAW 与完整参数，不能把全部差异归因于光晕，也不能据此判定当前默认效果。原图未改色，摄影及界面权利归各自权利人。<a href="#film-ref-S93">[S93]</a></p></div>
+
+<h3 id="并行计算主要改善等待时间">并行计算主要改善等待时间</h3>
+<p>SpektraLab 的 GPU 会同时处理许多像素，在相关步骤里计算不同波长下的材料响应。它还通过预计算、缓存已显影的负片和较小的交互预览减少重复工作。速度的意义很实际：修改放相参数时，可以更快看到结果，愿意尝试的组合也会更多。更快得到结果，方便的是编辑和比较，并没有增加原照片记录的信息。<a href="#film-ref-S87">S87</a> <a href="#film-ref-S89">S89</a> <a href="#film-ref-S94">S94</a></p>
+<p>SpektraLab 也使用预先计算的响应表和 LUT。<strong>光谱模型决定颜色关系怎样建立，查表与并行计算帮助它更快得到结果。</strong> 这些方法可以出现在同一套软件里；具体怎样预计算，放在附录 C7 展开。<a href="#film-ref-S88">S88</a> <a href="#film-ref-S95">S95</a></p>
+<h3 id="模型的上限，和照片是否合口味">模型的上限，和照片是否合口味</h3>
+<p>“理论上限更高”最好拆成三个可以分别判断的问题。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>想判断什么</th>
+<th>需要看什么</th>
+<th>目前可以怎样评价 SpektraLab</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>能控制多少成像过程</td>
+<td>模型、参数与它们所处的位置</td>
+<td>胶片、相纸、曝光、配光及空间效果可以分别调整，适合探索材料之间的关系</td>
+</tr>
+<tr>
+<td>能否接近指定胶片结果</td>
+<td>固定胶卷、曝光、显影与冲扫的实物参照</td>
+<td>需要验证；光谱模型本身不能代替这组证据</td>
+</tr>
+<tr>
+<td>是否更喜欢、是否容易出片</td>
+<td>自己的照片、默认结果和愿意投入的编辑时间</td>
+<td>由风格与使用体验决定，不存在由模型复杂度规定的名次</td>
+</tr>
+</tbody>
+</table></div>
+<p>这条路线扩大了可控制的过程；能否准确预测结果，仍取决于输入标定、材料数据与模型近似。当前实现包含拟合与假设：SpektraLab 自有的黑白相纸 Profile 明确标注了假定的银光谱和基底密度，指南也说明彩色胶片目前共享一个颗粒模型。参数可调，并不等于每个材料特征都已独立测量。<a href="#film-ref-S91">S91</a> <a href="#film-ref-S83">S83</a></p>
+<p>至于是否喜欢，默认选择就会带来很大影响。macOS 1.3.7 的前端初始设置为 Portra 400＋Supra Endura，并开启自动曝光；指南里的 Portra 400＋Portra Endura 则是练习配对。选择哪张相纸、曝光落在哪里、是否继续调色，都会改变读者看到的第一张照片。<a href="#film-ref-S90">S90</a> <a href="#film-ref-S83">S83</a></p>
+<p>Gloam 把颜色、颗粒和画幅整理成可以直接选用的相机风格。使用者从作者已经调好的外观开始拍摄，再判断这些组合是否适合自己的场景。对日常使用而言，默认风格是否合意，本来就是重要标准。<a href="#film-ref-S08">S08</a> <a href="#film-ref-S09">S09</a></p>
+<p>所以，就目前公开样片而言，我仍更喜欢 Gloam 的外观。SpektraLab 提供的另一种价值，是对负片与放相过程的控制。它能否在自己的照片上得到更合意的结果，需要分别比较默认出片和投入时间后的调整；本次调研没有完成这组实拍。</p>
+<p>颜色和影调之外，颗粒的大小、强光的扩散，也会改变一张照片的观感。</p>
+<p><span id="5-颜色之外，颗粒和光晕怎样改变照片？"></span></p>
+<h2 id="6-颜色之外，颗粒和光晕怎样改变照片？">6. 颜色之外，颗粒和光晕怎样改变照片？</h2>
 <p>胶片颗粒很容易被想成一层噪点，但它的观感与底片画幅、放大倍率和观看距离有关。把同一张底片放得更大，颗粒也更容易被看见。</p>
 <p>Kodak 的 Portra 400 资料给出了印相颗粒指数 PGI：在规定观看条件下，135 底片制作 4×6 英寸印相时为 37，放大到 16×20 英寸时为 89；120 底片达到同样印相尺寸，需要的放大倍率较小，对应指数也较低。<a href="#film-ref-S65">S65</a></p>
 <div class="v-figure film-chart"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="可横向滚动的图表"><svg viewBox="0 0 800 420" role="img" xmlns="http://www.w3.org/2000/svg" aria-label="Portra 400：画幅、放大与颗粒观感"><text x="28" y="32" font-size="20" class="v-ink" text-anchor="start">Portra 400：画幅、放大与颗粒观感</text><text x="74" y="64" font-size="13" class="v-sub" text-anchor="start">Print Grain Index（感知指标）</text><path d="M74 320.00H754" class="v-grid" fill="none"></path><text x="62" y="325.0" font-size="12" class="v-muted" text-anchor="end">0</text><path d="M74 262.50H754" class="v-grid" fill="none"></path><text x="62" y="267.5" font-size="12" class="v-muted" text-anchor="end">25</text><path d="M74 205.00H754" class="v-grid" fill="none"></path><text x="62" y="210.0" font-size="12" class="v-muted" text-anchor="end">50</text><path d="M74 147.50H754" class="v-grid" fill="none"></path><text x="62" y="152.5" font-size="12" class="v-muted" text-anchor="end">75</text><path d="M74 90.00H754" class="v-grid" fill="none"></path><text x="62" y="95.0" font-size="12" class="v-muted" text-anchor="end">100</text><text x="74.0" y="343" font-size="13" class="v-sub" text-anchor="middle">4×6</text><text x="414.0" y="343" font-size="13" class="v-sub" text-anchor="middle">8×10</text><text x="754.0" y="343" font-size="13" class="v-sub" text-anchor="middle">16×20</text><text x="414" y="370" font-size="13" class="v-sub" text-anchor="middle">印相尺寸（英寸） · 观看距离 14 英寸</text><path d="M74.00,234.90 L414.00,184.30 L754.00,115.30 " fill="none" stroke="var(--accent)" stroke-width="2.6"></path><circle cx="74.00" cy="234.90" r="4" fill="var(--accent)"></circle><circle cx="414.00" cy="184.30" r="4" fill="var(--accent)"></circle><circle cx="754.00" cy="115.30" r="4" fill="var(--accent)"></circle><path d="M80 397h24" stroke="var(--accent)" stroke-width="3"></path><text x="110" y="402" font-size="12" class="v-sub" text-anchor="start">135 · 24×36 mm</text><path d="M74.00,262.50 L414.00,234.90 L754.00,184.30 " fill="none" stroke="#b98245" stroke-width="2.6"></path><circle cx="74.00" cy="262.50" r="4" fill="#b98245"></circle><circle cx="414.00" cy="234.90" r="4" fill="#b98245"></circle><circle cx="754.00" cy="184.30" r="4" fill="#b98245"></circle><path d="M315 397h24" stroke="#b98245" stroke-width="3"></path><text x="345" y="402" font-size="12" class="v-sub" text-anchor="start">120 · 6×6 cm</text></svg></div><p class="v-caption">重绘 Kodak E-4050 的 PGI 表。测量条件包括约 14 英寸观看距离和漫射印相；约 25 是颗粒可见阈值。厂家将约 4 个指数单位作为 90% 观察者的一个可辨差异。图中只连接 135 与 120 的确切值；4×5 的 <code>&lt;25</code> 是范围值，未在图中连线，CSV 保留原值。<a href="#film-ref-S65">[S65]</a></p></div>
@@ -269,7 +318,8 @@
 <p>光晕则涉及像素之间的关系。Halation 参考的是光在感光材料及相关结构中返回、扩散后造成的额外曝光；Bloom／Diffusion 常用来描述强光向周围散射的外观。评估它们时，要观察光晕从多亮开始出现、扩散多远，以及小点光源和大面积亮区是否被合理区分。<a href="#film-ref-S28">S28</a> <a href="#film-ref-S38">S38</a> <a href="#film-ref-S58">S58</a></p>
 <p>处理位置也会影响结果。先让强光扩散，再经过材料的高光压缩，与给一张已经压缩好的 JPEG 加柔光，并不保证得到同样的边缘。颗粒与缩图、曝光与影调映射，也存在类似关系。</p>
 <p>这些效果把我们带到了工具选择：颜色可以逐个像素计算，光晕要知道附近有什么，颗粒还需要随机结构。Lightroom 预设、Profile、LUT 和插件，正是在这些任务上各有分工。</p>
-<h2 id="6-到了电脑上，预设、LUT-和插件各接管什么？">6. 到了电脑上，预设、LUT 和插件各接管什么？</h2>
+<p><span id="6-到了电脑上，预设、LUT-和插件各接管什么？"></span></p>
+<h2 id="7-到了电脑上，预设、LUT-和插件各接管什么？">7. 到了电脑上，预设、LUT 和插件各接管什么？</h2>
 <p>先从 Lightroom 里最常见的两个名字说起。<strong>预设保存一组开发设置</strong>，让曝光、曲线、色彩、颗粒或蒙版等参数快速复用；<strong>Profile 参与颜色与明暗的解释</strong>，可以提供更复杂的映射，而不必把常规滑块改成一套固定值。不同文件即使都以 XMP 保存，作用也未必相同。<a href="#film-ref-S34">S34</a> <a href="#film-ref-S35">S35</a> <a href="#film-ref-S36">S36</a></p>
 <p>RNI 主要以 Profile 组织胶片颜色；Mastin 提供围绕特定扫描参照调整曝光、白平衡的预设流程；Cobalt 则先使用相机专属标定数据，再选择目标渲染。这些产品适合把大量照片的编辑留在现有 RAW 宿主里。<a href="#film-ref-S48">S48</a> <a href="#film-ref-S49">S49</a> <a href="#film-ref-S50">S50</a></p>
 <h3 id="LUT-保存的是颜色关系">LUT 保存的是颜色关系</h3>
@@ -279,19 +329,21 @@
 <h3 id="空间效果需要完整的处理工具">空间效果需要完整的处理工具</h3>
 <p>DxO FilmPack、Dehancer 等工具将颜色与颗粒、光晕等处理组织在一起。选择时，除了外观，也要看接收什么输入：例如 FilmPack 的独立程序与 PhotoLab 集成可以处理支持的 RAW，Photoshop／Lightroom Classic 插件入口则是 JPEG 或 TIFF。<a href="#film-ref-S45">S45</a> <a href="#film-ref-S46">S46</a> <a href="#film-ref-S40">S40</a> <a href="#film-ref-S41">S41</a></p>
 <p>Adobe 自己也在扩展这部分能力。Camera Raw 18.6 已加入 Diffusion、Bloom、Halation；一次 Glow 选择一个 Style，蒙版可调整 Amount，其他相关参数仍全局共享。这让许多空间效果可以留在 ACR 内完成。其他 Lightroom 客户端是否支持，要按各自版本确认。<a href="#film-ref-S38">S38</a> <a href="#film-ref-S39">S39</a> <a href="#film-ref-S72">S72</a></p>
-<p>独立插件的价值因此要落到更具体的地方：材质响应是否合意，参数是否好用，能否匹配目标参考，以及批处理和导出是否顺畅。功能名称相同，并不保证处理位置和结果相同。</p>
+<p>SpektraLab 则提供独立应用入口，把输入准备、材料模型与放相编辑组织在一起；它与宿主插件的差别，也体现在照片怎样导入、怎样继续编辑。<a href="#film-ref-S82">S82</a> <a href="#film-ref-S83">S83</a></p>
+<p>这些工具的价值因此要落到更具体的地方：材质响应是否合意，参数是否好用，能否匹配目标参考，以及批处理和导出是否顺畅。功能名称相同，并不保证处理位置和结果相同。</p>
 <p>手机与桌面之间也有一条实用连接。No Fusion 支持导入 LUT，官方还提供从 Lightroom 调色生成 LUT 的方法。这可以迁移适合写入颜色表的部分；RAW 相机标定、蒙版、颗粒和光晕仍要由对应流程承担。<a href="#film-ref-S15">S15</a></p>
 <p>跨软件传递时，格式还不够，还要确认色彩空间与编码。16-bit TIFF 可以保存精细的颜色数值，但也可能已经完成显影；一张用于编码 sRGB 的 LUT，也不能直接按线性 RGB 来解释。把输入约定对齐，才有意义讨论两边的颜色是否一致。<a href="#film-ref-S42">S42</a> <a href="#film-ref-S43">S43</a> <a href="#film-ref-S54">S54</a> <a href="#film-ref-S70">S70</a></p>
-<h2 id="7-回到拍摄：先找出自己想改变的那一步">7. 回到拍摄：先找出自己想改变的那一步</h2>
+<p><span id="7-回到拍摄：先找出自己想改变的那一步"></span></p>
+<h2 id="8-回到拍摄：先找出自己想改变的那一步">8. 回到拍摄：先找出自己想改变的那一步</h2>
 <p>沿着这条过程看下来，工具选择可以从三个实际需求开始。</p>
 <p><strong>日常想要稳定、喜欢的直出，就从 Gloam 或 Dazz 的具体相机入手。</strong> 固定少数熟悉的风格，观察它们在日光、室内、人物和夜景中的表现。相机能否让人愿意继续拍摄，本身就是使用价值。Gloam 目前不支持任意相册导入，因此其他应用拍下的 DNG，需要交给兼容编辑器处理。<a href="#film-ref-S09">S09</a></p>
 <p><strong>想改变手机处理痕迹，先区分采集与显影。</strong> 希望减少跨帧时间混合，可以尝试单帧 RAW；希望保留融合信息、重新安排影调，可以尝试 ProRAW 的替代显影；静态暗光需要更充分的采样时，再观察 Indigo 的表现。同时确认原件能否保存和导出。<a href="#film-ref-S13">S13</a> <a href="#film-ref-S24">S24</a> <a href="#film-ref-S04">S04</a></p>
-<p><strong>想精调颜色和材质，再选择桌面流程。</strong> 批量统一照片，可以从宿主内的预设或 Profile 开始；需要独立控制颗粒与光晕，可以使用相应工具；对负片曝光、相纸和滤色关系感兴趣，则值得进一步研究 spektrafilm。</p>
+<p><strong>想精调颜色和材质，再选择桌面流程。</strong> 批量统一照片，可以从宿主内的预设或 Profile 开始；需要独立控制颗粒与光晕，可以使用相应工具；对负片曝光、相纸和滤色关系感兴趣，可以通过 SpektraLab 操作这些过程，再按需要研究 spektrafilm 的模型。是否值得增加这一步，也要看它在自己的照片上带来的改变。<a href="#film-ref-S82">S82</a></p>
 <p>做比较时，先固定一个问题。同一份 ProRAW 交给两种显影，回答的是“这份数据怎样呈现”；用两个 App 分别拍摄，比较的是各自完整的采集与处理。想判断是否接近某种真实胶片，还需要固定胶卷、曝光、显影与冲扫参考。</p>
 <p>看到一张喜欢的照片，可以继续观察：吸引自己的究竟是颜色、较克制的锐化、某种颗粒尺度，还是高光向周围扩散的方式？找到最想保留或改变的部分，再选择相机和后期工具，比较就有了明确的目标。</p>
 <hr>
 <h2 id="资料与技术附录">资料与技术附录</h2>
-<p>正文沿照片的形成过程展开。下面保留产品清单、价格快照、数学说明和测试方案，供需要时查阅；它们使用同一批截至 2026-11-01 的资料。</p>
+<p>正文沿照片的形成过程展开。下面保留产品清单、价格快照、数学说明和测试方案。原有资料仍以 2026-11-01 为准；标明 SpektraLab 的新增条目核查于 2026-11-08。</p>
 <details>
 <summary><strong>A. 产品速查：输入、风格和使用限制</strong></summary>
 <h3 id="手机应用">手机应用</h3>
@@ -364,6 +416,11 @@
 <td>Android 的 Camera2 RAW/DNG、手动控制、包围曝光与 HDR</td>
 <td>是开放采集工具，功能受设备支持限制 <a href="#film-ref-S80">S80</a></td>
 </tr>
+<tr>
+<td>SpektraLab 移动版（11-08 补充）</td>
+<td>围绕同一光谱材料路线重新实现的 iPhone／iPad 应用</td>
+<td>版本独立演进，免费下载并提供 Plus 内购；Mac 源码分析不等于移动端实现验证 <a href="#film-ref-S84">S84</a> <a href="#film-ref-S85">S85</a></td>
+</tr>
 </tbody>
 </table></div>
 <p>Indigo 在 2026 年 7 月还公开了面向受邀用户的 AI Playground 试验，可在拍后进行生成式修改。它与正常采集管线分开评价；是否改变画面内容，比笼统的“有没有 AI”更值得说明。<a href="#film-ref-S06">S06</a></p>
@@ -417,15 +474,20 @@
 <td>开放的光谱、材料与负片—相纸模型</td>
 <td>参考引擎、GUI、OFX 等移植和 LUT 集成要分别记录版本与输入约定 <a href="#film-ref-S53">S53</a> <a href="#film-ref-S54">S54</a> <a href="#film-ref-S58">S58</a> <a href="#film-ref-S59">S59</a> <a href="#film-ref-S60">S60</a></td>
 </tr>
+<tr>
+<td>SpektraLab（11-08 补充）</td>
+<td>基于 spektrafilm 的原生应用，Mac 为 C++／Metal 引擎</td>
+<td>提供 RAW 导入、配光与后续编辑；Windows 处于预发布阶段，各平台不可直接视为相同实现 <a href="#film-ref-S82">S82</a> <a href="#film-ref-S84">S84</a></td>
+</tr>
 </tbody>
 </table></div>
 <p>几个相邻领域也值得分清：RawTherapee 的 Hald CLUT 是把颜色表存成二维图像；darktable 的 filmic RGB 主要承担场景到显示的影调变换，AgX 也与 agx-emulsion 项目有不同含义。Fujifilm X RAW Studio 使用连接相机的机内处理器转换 RAW；Negative Lab Pro 则对真实胶片的数字扫描件反相与调色。<a href="#film-ref-S74">S74</a> <a href="#film-ref-S75">S75</a> <a href="#film-ref-S67">S67</a> <a href="#film-ref-S68">S68</a></p>
 <h3 id="市场正在怎样变化">市场正在怎样变化</h3>
-<p>从这些产品可以看到，胶片模拟的竞争正在延伸到整套使用体验。Gloam、Dazz 把审美组织成相机与风格选择，用户购买的也包括拍摄时的习惯和判断。<a href="#film-ref-S08">S08</a> <a href="#film-ref-S17">S17</a> ACR 原生加入空间效果后，独立插件更需要体现材质控制、参考一致性与效率的价值。<a href="#film-ref-S38">S38</a> <a href="#film-ref-S39">S39</a> spektrafilm 公开材料数据与处理逻辑，让模型开发与产品设计能够分别推进。<a href="#film-ref-S53">S53</a> <a href="#film-ref-S54">S54</a> <a href="#film-ref-S60">S60</a></p>
+<p>从这些产品可以看到，胶片模拟的竞争正在延伸到整套使用体验。Gloam、Dazz 把审美组织成相机与风格选择，用户购买的也包括拍摄时的习惯和判断。<a href="#film-ref-S08">S08</a> <a href="#film-ref-S17">S17</a> ACR 原生加入空间效果后，独立插件更需要体现材质控制、参考一致性与效率的价值。<a href="#film-ref-S38">S38</a> <a href="#film-ref-S39">S39</a> spektrafilm 公开材料数据与处理逻辑，让模型开发与产品设计能够分别推进；SpektraLab 展示了把同一模型做成原生编辑工具的方向。<a href="#film-ref-S53">S53</a> <a href="#film-ref-S54">S54</a> <a href="#film-ref-S60">S60</a> <a href="#film-ref-S82">S82</a></p>
 <p>据此推断，可靠的输入处理、恰当的默认值、批量照片的一致性，以及原片和参数能否顺畅流转，会越来越影响产品的长期价值。这是依据产品结构作出的判断；现有资料不足以计算统一口径的销量、收入或市场份额。</p>
 </details>
 <details>
-<summary><strong>B. 版本与价格：2026-11-01 快照</strong></summary>
+<summary><strong>B. 版本与价格：11-01 原快照，SpektraLab 于 11-08 补充</strong></summary>
 <h3 id="主要手机应用的版本">主要手机应用的版本</h3>
 <p>版本来自 Apple 官方 lookup，更新时间采用 UTC；最低系统仅表示安装门槛。三款应用的下载价格为零，高级功能另有内购。<a href="#film-ref-S77">S77</a> <a href="#film-ref-S78">S78</a> <a href="#film-ref-S79">S79</a></p>
 <div class="table-container"><table>
@@ -581,6 +643,40 @@
 </tbody>
 </table></div>
 <p>Dehancer 的 Photo 计划覆盖多个照片端入口，同时受席位数约束。Adobe Lightroom／Photoshop 另有宿主订阅费用，随地区和套装变化。<a href="#film-ref-S44">S44</a> 这些都是 2026-11-01 的公开价格，后续促销、税费与授权可能调整，购买时应查看对应地区的结算页。</p>
+<h3 id="SpektraLab-平台与价格，2026-11-08-补充">SpektraLab 平台与价格，2026-11-08 补充</h3>
+<p>各平台版本号独立演进，下表只更新 SpektraLab。<a href="#film-ref-S84">S84</a> <a href="#film-ref-S85">S85</a></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>平台与版本</th>
+<th>环境要求</th>
+<th>收费与状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS 1.3.7</td>
+<td>macOS 15+、Apple silicon</td>
+<td>免费开源；11 月 7 日发布。本文的 C++／Metal 源码核查针对此版本</td>
+</tr>
+<tr>
+<td>iOS／iPadOS 1.2.1</td>
+<td>iOS／iPadOS 17+；HDR 功能另需 iOS 18 及相应屏幕</td>
+<td>免费下载＋Plus；中国大陆商店为 <strong>¥9.90/月、¥98/年、¥268 永久</strong>。移动引擎重新实现</td>
+</tr>
+<tr>
+<td>Windows 1.3.4 预发布</td>
+<td>x64、Vulkan 驱动、WebView2 Runtime；下载页未明确最低 Windows 版本</td>
+<td>可免费下载早期构建；不推定与 Mac 完全功能对等</td>
+</tr>
+<tr>
+<td>Linux 开发中</td>
+<td>尚无可核实的已发布构建要求</td>
+<td>官方下载页尚未发布构建，不列为已经可用的版本</td>
+</tr>
+</tbody>
+</table></div>
+<p>移动端的长描述与 1.2.0 更新记录在部分 Plus 权益上有出入，因此这里仅记录可核实的收费方式与价格，不拼接一份可能过时的完整收费功能表。价格只对应本次核查的商店地区与日期。<a href="#film-ref-S85">S85</a></p>
 </details>
 <details>
 <summary><strong>C. 技术展开：多帧、材料曲线、颗粒与处理顺序</strong></summary>
@@ -714,6 +810,44 @@ D(\lambda)=D_{\mathrm{base}}(\lambda)+\sum_i d_i a_i(\lambda),
 <p>位深、动态范围和像素数描述不同属性。Apple 在 WWDC21 对 ProRAW 的说明包含 12-bit 压扩编码和最高约 14 档的设计表述，可用来理解编码与亮暗范围的区别，不能直接视作所有机型的实测。<a href="#film-ref-S02">S02</a></p>
 <p>同样，“关闭 HDR”可能指关闭融合、减少局部色调映射，或者改为 SDR 显示输出。采样与显示是不同环节，单帧可以输出 HDR，多帧也可以得到克制的 SDR 成片。<a href="#film-ref-S04">S04</a> <a href="#film-ref-S24">S24</a> <a href="#film-ref-S70">S70</a></p>
 <p>跨软件处理时，至少要确认色域／原色、传递函数、白点、场景或显示参照，以及输出观看条件。指派 ICC 标签与正确转换色彩空间是不同操作；16-bit TIFF 也不自动意味着线性或未经显影。<a href="#film-ref-S54">S54</a> <a href="#film-ref-S70">S70</a></p>
+<h3 id="C7-SpektraLab-的光谱计算与加速边界">C7. SpektraLab 的光谱计算与加速边界</h3>
+<p>以下是 macOS 1.3.7 固定提交的静态源码核查，不是运行应用得到的测量结果。固定版本与逐项文件链接见 S86–S97。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>计算位置</th>
+<th>源码可确认的做法</th>
+<th>应怎样理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>波长网格</td>
+<td>380–780 nm，以 5 nm 为间隔，共 81 个采样点</td>
+<td>这是模型的数值离散，不是相机测得的 81 个光谱通道 <a href="#film-ref-S96">S96</a></td>
+</tr>
+<tr>
+<td>输入 RGB 到胶片响应</td>
+<td>将 192×192×81 的光谱表与材料响应预先收缩成 192×192×3 的表，再插值并恢复亮度尺度</td>
+<td>查表承接了光谱模型的预计算，避免对每个像素重复相同积分 <a href="#film-ref-S87">S87</a> <a href="#film-ref-S88">S88</a> <a href="#film-ref-S89">S89</a></td>
+</tr>
+<tr>
+<td>负片与相纸计算</td>
+<td>GPU 按像素执行，相关 shader 内遍历波长做积分</td>
+<td>并行像素计算与波长积分同时存在；不等于每像素都长期保存一份完整光谱图像 <a href="#film-ref-S89">S89</a></td>
+</tr>
+<tr>
+<td>放相交互</td>
+<td>可复用负片缓存；程序随附八张 33³ 预览 LUT，快速相纸预览按所选相纸调用相应表</td>
+<td>修改后段参数可减少重复计算，预览与完整渲染仍需分别判断 <a href="#film-ref-S94">S94</a> <a href="#film-ref-S95">S95</a> <a href="#film-ref-S97">S97</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>这些网格与加速方法没有消除 RGB 到光谱重建的不唯一性：同一组 RGB 可能对应不同的光谱分布，重建仍依赖先验。计算采用更多波长采样，不等于补回原场景未被记录的信息。<a href="#film-ref-S66">S66</a></p>
+<p>源码中的 parity 测试以 Python 参考实现为比对对象，帮助检查移植后的数值一致性。它没有给出与真实胶片冲扫的统一误差，也没有测量观看者更喜欢哪张照片。<a href="#film-ref-S92">S92</a></p>
+
+<div class="v-figure"><a href="/images/film-emulation-spektralab/spektralab_official_grain.png"><img width="1226" height="1278" loading="lazy" decoding="async" alt="SpektraLab 官方颗粒局部示例，蓝色天空与岩石附近可见彩色纹理" src="/images/film-emulation-spektralab/spektralab_official_grain.png"></a><p class="v-caption">官方颗粒局部展示，未公开这张图的完整材料参数、截图倍率或捕获版本。文件名中的 physically_accurate 是项目命名，不能替代真实胶片颗粒的测量；本图也不标作 100% 同倍率对照。原图未改色，摄影及界面权利归各自权利人。<a href="#film-ref-S93">[S93]</a></p></div>
+
 </details>
 <details>
 <summary><strong>D. 后续怎样做受控比较</strong></summary>
@@ -743,6 +877,10 @@ D(\lambda)=D_{\mathrm{base}}(\lambda)+\sum_i d_i a_i(\lambda),
 </tbody>
 </table></div>
 <p>不提供任意照片导入的应用参加第二类。完整相机比较可分别设置锁定曝光的控制组、各 App 默认自动的使用组。若目标是匹配真实胶片，还要固定胶卷、曝光、显影、扫描或相纸和输出条件。</p>
+<h3 id="如果继续比较-Gloam-与-SpektraLab">如果继续比较 Gloam 与 SpektraLab</h3>
+<p>先看 Gloam 能否导出与该张成片对应、且能被 SpektraLab 正确读取的原片。若条件满足，保留 Gloam 成片，再由同一文件生成 SpektraLab 的默认版与限定编辑时间版；记录实际文件类型、材料、曝光、配光与导出条件。不能因政策提到保留 RAW，就假定一定能导出所需的 Bayer RAW。<a href="#film-ref-S09">S09</a> <a href="#film-ref-S86">S86</a></p>
+<p>如果拿不到这份输入，就在同一手机、镜头和静态场景下比较两套完整流程，并明确其中包含采集差异。Gloam 不提供任意外部照片导入，不能把“同一份外部 DNG 导入两款 App”写成已经可执行的方案。<a href="#film-ref-S09">S09</a></p>
+<p>两种情况都先统一裁切、输出大小与观看环境，分别评价默认出片和投入同样编辑时间后的偏好；不要把后者冒充前者。本段是后续实验设计，本轮未执行。</p>
 <h3 id="场景覆盖">场景覆盖</h3>
 <div class="table-container"><table>
 <thead>
@@ -842,6 +980,13 @@ D(\lambda)=D_{\mathrm{base}}(\lambda)+\sum_i d_i a_i(\lambda),
 </ul>
 <p>网页矢量图采用相同数据重绘，摄影样片保持原有颜色；复算脚本生成对应 PNG 图表。官方样片和作者展示图的来源、处理条件随图标注，照片权利归各自开发者或摄影者。</p>
 <p>spektrafilm 的代码为 GPLv3；本文所用 Profile、派生曲线与图表保留 Andrea Volpato 署名，按 CC BY-SA 4.0 提供。Profile 许可与示例照片的权利分别处理，最终用户照片不会因此被要求采用同一许可。<a href="#film-ref-S64">S64</a></p>
+<h3 id="SpektraLab-补充材料，2026-11-08">SpektraLab 补充材料，2026-11-08</h3>
+<ul>
+<li><a href="https://leecdiang.com/2026/11/01/film-emulation-pipelines/data/spektralab_sources_2026-11-08.csv">新增参考来源与核查范围</a></li>
+<li><a href="https://leecdiang.com/2026/11/01/film-emulation-pipelines/data/spektralab_platforms_2026-11-08.csv">平台、版本与中国区内购快照</a></li>
+<li><a href="https://leecdiang.com/2026/11/01/film-emulation-pipelines/data/spektralab_asset_manifest.json">三张新增原图的出处、尺寸、哈希与图注限制</a></li>
+</ul>
+<p>三张新增图片均取自 SpektraLab 1.3.7 标签对应的公开仓库，保留原始文件字节，图片出处与捕获版本分别记录。它们用于本文的界面与处理评论；照片及截图不因项目代码开源就自动采用 GPL 或 Profile 的 CC BY-SA 许可，权利仍归各自权利人。更多官方对照可在 <a target="_blank" rel="noopener" href="https://spektralab.app/#compare">SpektraLab 官网</a> 查看，其样片同样不构成本次跨产品实测。<a href="#film-ref-S81">S81</a> <a href="#film-ref-S93">S93</a></p>
 <p>主要事实依据包括官方规格、开发者技术说明、固定提交的源码和 Profile、厂家数据及论文。计算图表使用明确假设，产品未公开的算法保留为未知；图像示例的具体限制写在相应图注中。</p>
 </details>
 <h2 id="参考资料">参考资料</h2>
@@ -927,6 +1072,26 @@ D(\lambda)=D_{\mathrm{base}}(\lambda)+\sum_i d_i a_i(\lambda),
 <li><span id="film-ref-S78"></span><strong>S78</strong>｜<a target="_blank" rel="noopener" href="https://itunes.apple.com/lookup?id=6444706244&amp;country=cn">Apple lookup — No Fusion，中国区</a>。用于：版本、UTC更新时间、最低系统，随包保留JSON。</li>
 <li><span id="film-ref-S79"></span><strong>S79</strong>｜<a target="_blank" rel="noopener" href="https://itunes.apple.com/lookup?id=1422471180&amp;country=cn">Apple lookup — Dazz，中国区</a>。用于：版本、UTC更新时间、最低系统，随包保留JSON。</li>
 <li><span id="film-ref-S80"></span><strong>S80</strong>｜<a target="_blank" rel="noopener" href="https://opencamera.org.uk/">Open Camera — 官方项目</a>。用于：Android开放采集、Camera2/RAW与设备限制。</li>
+</ul>
+<h3 id="SpektraLab-补充来源（2026-11-08-核查）">SpektraLab 补充来源（2026-11-08 核查）</h3>
+<ul>
+<li><span id="film-ref-S81"></span><strong>S81</strong>｜<a target="_blank" rel="noopener" href="https://spektralab.app/">SpektraLab 官网与 Compare</a>。用于：产品定位与额外官方演示；未作同输入横测。</li>
+<li><span id="film-ref-S82"></span><strong>S82</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/README.md">SpektraLab 1.3.7 README</a>。用于：原生应用、spektrafilm 继承关系、移植与界面。</li>
+<li><span id="film-ref-S83"></span><strong>S83</strong>｜<a target="_blank" rel="noopener" href="https://spektralab.app/user_guide/">SpektraLab User Guide</a>。用于：输入、配光、Post-Dev、练习配对、共享颗粒模型和预览。</li>
+<li><span id="film-ref-S84"></span><strong>S84</strong>｜<a target="_blank" rel="noopener" href="https://spektralab.app/download/">SpektraLab Download</a>。用于：平台版本、最低环境、移动版重新实现、Windows 预发布与 Linux 状态。</li>
+<li><span id="film-ref-S85"></span><strong>S85</strong>｜<a target="_blank" rel="noopener" href="https://apps.apple.com/cn/app/spektralab/id6820950508">SpektraLab 中国大陆 App Store</a>。用于：移动版版本、系统门槛、Plus 内购价格；不将旧长描述当现行完整权益表。</li>
+<li><span id="film-ref-S86"></span><strong>S86</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/modern_UI/Spektrafilm/Spektrafilm/Import/ImageDecoder.swift">ImageDecoder.swift</a>。用于：RAW 的线性模型输入与 Original 显示路径。</li>
+<li><span id="film-ref-S87"></span><strong>S87</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/ARCHITECTURE.md">ARCHITECTURE.md</a>。用于：原生引擎、缓存、光谱计算与性能口径；未独立复测性能。</li>
+<li><span id="film-ref-S88"></span><strong>S88</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/hanatos.cpp">hanatos.cpp</a>。用于：光谱上采样表预收缩成胶片响应表、逐像素插值。</li>
+<li><span id="film-ref-S89"></span><strong>S89</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/shaders/nodes.metal">nodes.metal</a>。用于：GPU 按像素计算与相关节点内的波长积分。</li>
+<li><span id="film-ref-S90"></span><strong>S90</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/modern_UI/Spektrafilm/Spektrafilm/Model/Params.swift">macOS 前端 Params.swift</a>。用于：Portra 400＋Supra Endura、自动曝光和 balanced 测光初始值及重置值。</li>
+<li><span id="film-ref-S91"></span><strong>S91</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/resources_product/profiles/ilford_multigrade_iv_rc.json">ilford_multigrade_iv_rc.json</a>。用于：自有黑白相纸资料中的假定银光谱、基底密度及拟合。</li>
+<li><span id="film-ref-S92"></span><strong>S92</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/tests/parity_render.py">parity_render.py</a>。用于：C++ 与 Python 参考实现的一致性校核；不是实物胶片或审美测试。</li>
+<li><span id="film-ref-S93"></span><strong>S93</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/tree/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots">SpektraLab 官方展示图目录</a>。用于：三张原始 PNG 的出处；截图捕获版本与完整配方未披露。</li>
+<li><span id="film-ref-S94"></span><strong>S94</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/pipeline/pipeline.cpp">pipeline.cpp</a>。用于：负片缓存、放相重算与完整处理管线。</li>
+<li><span id="film-ref-S95"></span><strong>S95</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/print_lut.cpp">print_lut.cpp</a>。用于：相纸快速预览所用 LUT；光谱模型与查表可共存。</li>
+<li><span id="film-ref-S96"></span><strong>S96</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/colour.hpp">colour.hpp</a>。用于：380–780 nm、5 nm 步长的 81 点光谱数值网格约定。</li>
+<li><span id="film-ref-S97"></span><strong>S97</strong>｜<a target="_blank" rel="noopener" href="https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/resources/print_luts.json">print_luts.json</a>。用于：随附相纸预览表恰有八个条目，网格尺寸均为 33；与运行时读取选择分别核查。</li>
 </ul>
 
     </div>

@@ -1,0 +1,18 @@
+source_id,title,url,retrieved_date,evidence_scope,evidence_type,version_or_commit
+S81,SpektraLab 官网与 Compare,https://spektralab.app/,2026-11-08,产品定位与额外官方演示；未作同输入横测,官方网页,
+S82,SpektraLab 1.3.7 README,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/README.md,2026-11-08,原生应用、spektrafilm 继承关系、移植与界面,固定版本源码文档,12d75e60a02281e4b470329b4ac2ac14947caa37
+S83,SpektraLab User Guide,https://spektralab.app/user_guide/,2026-11-08,输入、配光、Post-Dev、练习配对、共享颗粒模型和预览,官方动态指南,macOS 1.3.7 指南
+S84,SpektraLab Download,https://spektralab.app/download/,2026-11-08,平台版本、最低环境、移动版重新实现、Windows 预发布与 Linux 状态,官方动态下载页,
+S85,SpektraLab 中国大陆 App Store,https://apps.apple.com/cn/app/spektralab/id6820950508,2026-11-08,移动版版本、系统门槛、Plus 内购价格；不将旧长描述当现行完整权益表,官方商店,iOS/iPadOS 1.2.1
+S86,ImageDecoder.swift,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/modern_UI/Spektrafilm/Spektrafilm/Import/ImageDecoder.swift,2026-11-08,RAW 的线性模型输入与 Original 显示路径,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S87,ARCHITECTURE.md,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/ARCHITECTURE.md,2026-11-08,原生引擎、缓存、光谱计算与性能口径；未独立复测性能,固定版本源码文档,12d75e60a02281e4b470329b4ac2ac14947caa37
+S88,hanatos.cpp,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/hanatos.cpp,2026-11-08,光谱上采样表预收缩成胶片响应表、逐像素插值,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S89,nodes.metal,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/shaders/nodes.metal,2026-11-08,GPU 按像素计算与相关节点内的波长积分,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S90,macOS 前端 Params.swift,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/modern_UI/Spektrafilm/Spektrafilm/Model/Params.swift,2026-11-08,Portra 400＋Supra Endura、自动曝光和 balanced 测光初始值及重置值,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S91,ilford_multigrade_iv_rc.json,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/resources_product/profiles/ilford_multigrade_iv_rc.json,2026-11-08,自有黑白相纸资料中的假定银光谱、基底密度及拟合,固定版本材料数据,12d75e60a02281e4b470329b4ac2ac14947caa37
+S92,parity_render.py,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/tests/parity_render.py,2026-11-08,C++ 与 Python 参考实现的一致性校核；不是实物胶片或审美测试,固定版本测试源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S93,SpektraLab 官方展示图目录,https://github.com/JamesQiu2005/SpektraLab/tree/12d75e60a02281e4b470329b4ac2ac14947caa37/screenshots,2026-11-08,三张原始 PNG 的出处；截图捕获版本与完整配方未披露,固定版本图像目录,12d75e60a02281e4b470329b4ac2ac14947caa37
+S94,pipeline.cpp,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/pipeline/pipeline.cpp,2026-11-08,负片缓存、放相重算与完整处理管线,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S95,print_lut.cpp,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/print_lut.cpp,2026-11-08,相纸快速预览所用 LUT；光谱模型与查表可共存,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S96,colour.hpp,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/src/core/colour.hpp,2026-11-08,380–780 nm、5 nm 步长的 81 点光谱数值网格约定,固定版本源码,12d75e60a02281e4b470329b4ac2ac14947caa37
+S97,print_luts.json,https://github.com/JamesQiu2005/SpektraLab/blob/12d75e60a02281e4b470329b4ac2ac14947caa37/engine/resources/print_luts.json,2026-11-08,随附相纸预览表恰有八个条目，网格尺寸均为 33；与运行时读取选择分别核查,固定版本预计算数据,12d75e60a02281e4b470329b4ac2ac14947caa37
