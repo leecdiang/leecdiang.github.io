@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/908ca7d74c2d.png">
 <meta property="article:published_time" content="2026-08-30T04:54:00.000Z">
-<meta property="article:modified_time" content="2026-11-01T11:18:10.957Z">
+<meta property="article:modified_time" content="2026-11-08T04:39:54.121Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="Swift">
 <meta property="article:tag" content="macOS">
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/908ca7d74c2d.png"><meta itemprop="dateModified" content="2026-11-01T11:18:10.957Z"><meta itemprop="datePublished" content="2026-08-30T04:54:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/908ca7d74c2d.png"><meta itemprop="dateModified" content="2026-11-08T04:39:54.121Z"><meta itemprop="datePublished" content="2026-08-30T04:54:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/08/30/edgecontrol-trackpad-edge-gestures/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -145,9 +145,9 @@
 .v-figure{padding:.6rem .7rem .45rem}
 </style>
 <h2 id="从一块-Windows-触控板说起">从一块 Windows 触控板说起</h2>
-<p>小胡的小米 Book Pro14，可以从触控板边缘滑入调节音量和亮度。第一次用我就爱上了：手指从机身滑上触控板，上滑音量变大，下滑变小，每到一个刻度还有一下清脆的振动。那个感觉很像 EDC 玩具，拧一下、拨一下，咔嗒一声，东西就真的变了。物理直觉拉满。</p>
+<p>小胡的小米 Book Pro14 能从触控板边缘滑入，调音量和亮度。我第一次用就喜欢上了：手指从机身滑上去，向上音量变大，向下变小，每到一个刻度还有一下清脆振动。很像拨 EDC 玩具，手指有动作，东西有回应。</p>
 <p>我的看法很直接：<strong>没有振动反馈的机器，没必要做这个功能。</strong> 音量变了，手指却什么都没收到，边缘手势也就只是少按了几次键；有了振动，它才更像在拨一个看不见的实体旋钮。</p>
-<p>我后来才意识到，自己想搬过来的其实不只是“从边缘调参数”这件事，而是一个完整的反馈闭环：手指进入边缘，数值开始变化，指尖收到一个小脉冲，然后继续决定要不要往下推。少掉中间那一下，功能很容易退化成另一种键盘快捷键。我不想先做一个只能把音量改掉的 demo，再把触觉当成装饰补上，所以从第一轮原型开始，触觉就和手势是否成立放在同一张验证清单里。</p>
+<p>我要搬过来的也包括这一下触觉：进入边缘，改变数值，手指收到脉冲，再决定是否继续推。所以原型一开始就把触觉和手势放在一起验证，不能只确认音量改了就算做完。</p>
 <p>回到自己的 MacBook Air，这个功能却不存在。我搜了一圈，找到的方案要么收费、要么闭源，要么塞进了太多我用不到的东西。免费、开源、轻量、离线，这几个条件放在一起，没找到合适的。</p>
 <p>那就自己写。项目仓库：<a href="https://github.com/leecdiang/EdgeControl" target="_blank" class="glass-pill"><i class="fab fa-github"></i> leecdiang/EdgeControl</a></p>
 <h2 id="先把边界划清楚">先把边界划清楚</h2>
@@ -155,26 +155,26 @@
 <blockquote>
 <p>Two edges. Two controls. Nothing else.</p>
 </blockquote>
-<p>两条边缘，两个控制，没有别的。EdgeControl 从一开始就没打算做成一套触控板手势大全，边界一直很窄：</p>
+<p>两条边缘，两个控制。它的范围也一直按这句话来定：</p>
 <ul>
 <li>左边缘、右边缘各自独立指派：音量 / 亮度 / 关闭</li>
 <li>手势必须诞生在边缘：手指先落在触控板内部、再滑到边缘的，永不触发</li>
 <li>无账号、无遥测、没有自建后端；更新功能只会从 GitHub Releases 托管的签名 appcast 检查新版本，默认自动检查，也可手动触发</li>
 <li>菜单栏常驻（<code>LSUIElement</code>），没有 Dock 图标，不打扰</li>
 </ul>
-<p>“手势必须诞生在边缘”是最重要的一条。如果只看手指最后有没有来到边缘，日常移动光标、拖文件、打字时手掌蹭到触控板，都可能误触。EdgeControl 需要记住一次接触从哪里开始、往哪边走、何时形成明确的纵向意图，再决定要不要接管。</p>
-<p>这条规则既是整个软件的地基，也是后面大部分调试工作的来源。</p>
-<p>这几个约束写在 README 里很像产品口号，真正落到触控板上才知道它们有多具体。一次有效接触要从对应边缘开始，单指先沿着边缘进入，再在很短的时间内形成明确的上下方向；从中间开始的接触，即使后来一路滑到边缘，也要在整个生命周期里保持拒绝。多指、手掌和刚刚打字留下的接触同样不能因为“碰巧到了边上”就被接管。</p>
-<p>这也决定了 EdgeControl 不会试图猜用户的全部意图。它宁愿漏掉一次含糊的滑动，也不愿在拖文件、移动光标或敲字时突然改掉音量。对菜单栏工具来说，偶尔需要重新滑一次，通常比一次误触之后到处找声音为什么变小更容易接受。</p>
+<p>只看最后的位置，会把移动光标、拖文件和手掌接触也当成手势。程序必须记住接触起点、方向和明确的纵向意图，再决定接管。</p>
+<p>后面的大部分调试，都与这条规则有关。</p>
+<p>具体到一次接触，它必须由单指从对应边缘进入，再及时形成上下意图。内部起手后滑到边缘，整个接触周期都拒绝；多指、手掌和刚打字后的接触，也不能碰到边缘就触发。</p>
+<p>我宁愿含糊的滑动需要重来一次，也不想拖文件时突然把音量改了。这决定了准入阶段要保守。</p>
 <h2 id="两周十五个版本">两周十五个版本</h2>
-<p>整个项目的时间线短得有点不真实：</p>
+<p>从第一次提交到 v1.7.3，一共两周：</p>
 <ul>
 <li>8 月 16 日晚：第一次提交，P1-P8 原型期开始</li>
 <li>8 月 17 日凌晨：v1.0.0 发布，一个晚上</li>
 <li>8 月 30 日：v1.7.3 发布，前后十五个版本，两周</li>
 </ul>
 <p>v1.0.0 之前的提交按 P1-P8 编号，最不确定的部分被一关一关跑通：能不能读到触点，坐标方向对不对，音量和亮度能不能连续变化，触觉有没有反馈。设置窗口反而排在最后。</p>
-<p>这个顺序不是为了把功能拆得好看，而是因为每一层都依赖上一层的证据。原始触点的步长不对，状态机拿到的就是假坐标；状态机没有稳定的激活和取消边界，映射公式越顺滑，误触时改出来的数值越危险；音量和亮度没有在真机上跑通，HUD 做得再像系统组件也只是截图。设置界面可以晚一点出现，底层行为却不能靠想象往后补。</p>
+<p>先确认触点步长和坐标，再确认状态机的激活、取消边界，随后才验证音量、亮度与 HUD。底层输入错了，上层映射再顺滑也没有用。设置界面可以稍后做，这些行为需要逐层拿到证据。</p>
 <div class="table-container"><table>
 <thead>
 <tr>
@@ -209,8 +209,7 @@
 </tr>
 </tbody>
 </table></div>
-<p>那个晚上大部分时间其实花在 P1/P2 上。只要原始触点读错，后面的状态机、映射和 UI 做得再完整也没有意义。</p>
-<p>那一段调试还有一个很不起眼、但很容易误导人的问题：探针把结果打印到标准输出时，重定向环境会缓冲 stdout。程序明明读到了数据，终端里却像什么都没有。后来给探针设置了无缓冲输出，或者在关键位置主动 <code>fflush</code>，才把“没有回调”和“输出还没刷出来”区分开。类似的小问题不会出现在版本说明里，却经常占掉真正调试时间。</p>
+<p>那个晚上多数时间花在 P1/P2，原始触点是后续工作的前提。</p>
 <p>首发之后的节奏也很明确：每个版本只处理一类问题，不趁机大改结构。</p>
 <div class="table-container"><table>
 <thead>
@@ -278,18 +277,18 @@
 </tr>
 </tbody>
 </table></div>
-<p>看提交记录像是在一路加功能，其实多数版本都在缩小误触、修正边界条件，或者把已经能用的东西变得稳定一点。功能本身不复杂，难的是让它每天挂在菜单栏里，又不在不该出现的时候冒出来。</p>
-<p>从 1.1.0 到 1.3.1，版本号看起来在往前走，手势的核心其实一直被反复收紧：方向性判定用来挡住手掌抖动，过零取消用来处理激活后的反向滑动，下半屏模式则要解决“从哪里进入就从哪里跳值”的问题。到了 1.4.0 之后，才有余力把速度预设、触觉强度、HUD 和分发链路逐一补齐。每次只动一类问题，回归测试和真机轨迹才看得出到底是哪一处改变了体验。</p>
+<p>多数版本没有扩张功能，而是在修误触和边界条件。这个工具要一直挂在菜单栏里，难处正是该出现时出现，其余时间别接管。</p>
+<p>1.1.0 到 1.3.1 主要收紧识别：方向判断挡住手掌抖动，过零取消处理反向滑动，下半区模式避免入口位置导致跳值。1.4.0 后才补速度、触觉、HUD 与分发。每轮只改一类，回归与真机轨迹才容易对应到实际变化。</p>
 <h2 id="私有-API、调参与系统怪脾气">私有 API、调参与系统怪脾气</h2>
 <p>第一道坎是 96 字节。</p>
-<p>macOS 的触控板原始数据藏在私有框架 MultitouchSupport 里，没有公开文档。最开始按 80 字节的步长遍历 contact 结构体，读出来的数据全是乱的。最后只能做原始字节探针，把缓冲区逐字节打印，再和已知的触点坐标比对，才确认这台机器上的真实步长是 96 字节。这里错一个数字，后面的手势识别就是空中楼阁。</p>
-<p>96 字节这个结论只对当前验证机的 ABI 证据负责，并不是可以写进所有 Mac 的常量。私有框架没有公开契约，硬件和系统更新都可能改变布局，所以 bridge 里只做动态加载和最小解析，Swift 侧继续使用稳定的数据契约。这样遇到框架不存在、符号变了或初始化失败时，功能会安全地失效，而不是把一块错误的内存继续当成触点坐标。</p>
+<p>MultitouchSupport 是没有公开文档的私有框架。最初按 80 字节步长遍历 contact，数据全乱了。用探针逐字节打印，再对照已知触点坐标，才确认验证机上的步长为 96 字节。</p>
+<p>96 字节只描述当前验证机的 ABI。私有布局可能随硬件和系统变化，因此 C bridge 负责动态加载与最小解析，Swift 侧使用稳定契约。框架、符号或初始化出问题时，就把功能置为不可用，不能继续解释未知内存。</p>
 <p>探针本身还遇到过一个很容易误判的细节：把结果重定向到标准输出时，stdout 可能被缓冲。程序明明读到了触点，终端里却像什么都没有。后来给探针设置无缓冲输出，或者在关键位置主动 <code>fflush</code>，才把“没有回调”和“输出还没刷出来”区分开。这样的细节不会出现在功能列表里，却经常占掉真正调试时间。</p>
-<p>私有 API 更麻烦的地方在于它随系统和硬件变化。EdgeControl 没有把这些符号当成理所当然，而是通过 <code>dlopen</code> / <code>dlsym</code> 动态查找；框架不存在、符号缺失或者初始化失败，就把对应功能视为不可用。与其在未知环境里硬跑，不如直接失败并退出这条路径。</p>
+<p>动态加载使用 <code>dlopen</code> / <code>dlsym</code>。这一层遇到未知环境就退出，不把私有符号当成永久契约。</p>
 <p>数据读对之后，才轮到手势本身。边缘入口宽度、意图判定窗口（entryTimeout）、候选走廊、方向阈值，这些参数都没有标准答案。手指并不会沿着一条笔直的数学曲线移动，同一个人快滑、慢滑、先停一下再推，轨迹都不一样。原型期因此做了一套 A-K 手势矩阵：边缘诞生、向上和向下这些正例必须触发；内部起手、多指、手掌等负例必须拒绝。后来每次改识别语义，都先补回归测试，再动参数。</p>
 <p>当前这套参数来自验证机上的实测轨迹：左侧入口条是 0.008，右侧是 0.015，候选阶段只能在距离边缘 3% 的走廊里移动，激活后放宽到 8%；450ms 内要完成至少 1.5% 的纵向移动，而且方向一致性要达到 0.80。右侧入口条刻意比左侧宽一点，是因为这台机器上右侧的有效边缘接触分布更靠外，放宽后能补回自然滑入的样本，又不会把候选阶段变成一条大面积的触发区。每个数字都不是“看起来舒服”就留下，而是要和正例、负例轨迹一起看。</p>
-<p>激活之后的映射反而简单一些：以手势开始时的音量或亮度为基准，叠加累计纵向位移、基础增益和速度倍率，最后钳制在 0 到 1。下半区模式也采用相对映射，因此从不同高度进入时不会突然跳值。让数值变化不难，确认用户有没有这个意图才难。</p>
-<p>这也是为什么我把“激活前”和“激活后”分成两套规则。激活前要尽量保守，宁可在 450ms 内没有形成明显的上下意图就结束；一旦进入 Active，用户需要的是连续、可预期的控制，8% 的活动走廊和固定在激活瞬间的速度倍率会让后续移动保持稳定。方向反转超过 0.5% 的死区时，本次手势取消，避免一次缓慢回拉把前面已经确认的方向悄悄改掉。</p>
+<p>激活后，以起始音量或亮度叠加累计纵向位移、基础增益和速度倍率，再钳制到 0–1。下半区也用相对映射，避免不同高度进入时跳值。相比怎样变更数值，确认用户是否想变更更费功夫。</p>
+<p>激活前后因此用不同规则：450ms 内没有明确上下意图就结束；进入 Active 后，活动走廊放宽到 8%，速度倍率固定，保证连续控制。反向滑动越过 0.5% 死区时取消本次手势，避免缓慢回拉悄悄改掉已确认的方向。</p>
 <h3 id="防误触不是一个开关">防误触不是一个开关</h3>
 <p>设置里的误触保护有 Light、Standard、Strong 三档。它们不去改 450ms 的判定期限、3% 的候选走廊、8% 的活动走廊、1.5% 的纵向意图和 0.80 的方向一致性；这些是所有档位共享的底线。三档只控制两件更贴近日常使用的事：刚按过键之后暂缓多长时间接管触控板，以及手指必须离边缘多近才算“从边缘出生”。</p>
 <div class="table-container"><table>
@@ -331,27 +330,27 @@
 <li>原先设想的私有 MTActuator 在 macOS 26.5 上不存在。验证机最终使用 AppKit 公共触觉后端：激活时给一个提示，滑动过程中按刻度反馈；触觉后端不可用时，数值控制仍会继续，只是不提供振动</li>
 </ul>
 <p>外接显示器亮度则是另一类问题。它走 DDC/CI 的 VCP <code>0x10</code> 命令，1.6.1 修过一次回复字段偏移：只错一个字节，读出的最大亮度和当前亮度就可能差一个数量级。多显示器时，写入还必须复用成功返回初始值的那条连接，否则读的是一台，写的可能是另一台。不同显示器、转接器和扩展坞的实现差异太大，所以 DDC 到现在仍是实验功能，默认关闭。</p>
-<p>到了 1.7.x，问题已经从“能不能用”变成了“别出幺蛾子”。磨砂设置窗口曾经因为 SwiftUI 材质挂错层级而透底；连续更新 HUD 时，反复调整窗口会让颜色和明暗跳变；重复启动两个实例还可能争用触控板服务。1.7.3 最后把 HUD 展示复用、用户级 <code>flock</code> 单实例锁和音量输出设备会话固定补齐。音量手势开始后会固定当时的输出设备，如果设备中途消失，本次手势直接结束，不把旧设备算出的值写到新设备上。</p>
+<p>1.7.x 主要处理持续使用时的状态错误：设置窗口材质挂错层级会透底，HUD 连续调窗会跳色，两个实例会争触控板服务。1.7.3 补了 HUD 复用、用户级 <code>flock</code> 锁和音量会话设备固定。手势开始后输出设备不再变；它若中途消失，就结束手势，不能把旧设备的值写到新设备。</p>
 <p>还有一批平时看不见、出问题时才会被想起的收尾逻辑。成功进入控制状态之后才会冻结指针；无论正常抬手、取消、控制后端报错、睡眠还是唤醒恢复，都会结束会话并恢复指针。设备选择也不是启动后就定死：设置里可以选自动、内置或外接 Magic Trackpad，并在连接或断开设备后手动 Rescan。这里的“外接”仍只是实验性选择路径，文章不把它写成已验证支持。</p>
 <p>蓝牙断开时，私有触控板回调可能不会留下最后一帧“所有手指已抬起”。因此程序会盯住回调静默时间，连续 750ms 没有新帧就收掉当前会话、取消尚未发出的强脉冲并重置手势状态；即使旧触点后来又来了一帧，也要等它真的抬手。睡眠唤醒则会主动刷新亮度后端、重启触控板输入。内置亮度始终优先；只有用户明确打开实验性的 DDC，才会把外接显示器当作候选后端。</p>
 <p>触觉也不是简单地“有或没有”。Light 每跨过 4% 给一次较疏的定位反馈，Standard 和 Strong 是 2%；边界回差 0.008 避免在同一刻度来回抖动，30ms 的限速避免快速滑动变成一串嗡鸣。Strong 用更有力的公共系统模式，并在 12ms 后补一记脉冲；手势结束或睡眠恢复时，这个尚未发出的第二下会被取消。触觉档位和速度一样，在一次手势开始时固定，设置窗口不会在半程改变手感。</p>
-<p>这些修复都没有改变手势的基本语义，处理的是“已经能工作之后，怎样少一点偶发状态”。HUD 复用解决的是连续更新时的窗口状态，单实例锁解决的是两个进程同时抢同一套触控板回调，音量会话固定则把一次手势的起点和目标设备绑在一起。它们看起来不像新功能，却决定了这个工具能不能一直放在菜单栏里而不让人担心下一次滑动会发生什么。</p>
+<p>这些修改处理的是已能工作之后的偶发状态。HUD、进程实例和音频设备，各自都需要在一次操作期间保持一致。</p>
 <h2 id="技术栈和分发">技术栈和分发</h2>
-<p>EdgeControl 的功能不多，但从触点到屏幕上的 HUD，中间还是分了几层：</p>
+<p>触点到 HUD，按下面几层连接：</p>
 <div class="v-figure">
 <svg class="v-arch" viewBox="0 0 880 500" role="img" aria-label="EDGECONTROL · LAYERED ARCHITECTURE"><text x="40" y="34" font-size="10.5" font-weight="600" fill="var(--a-sub)" letter-spacing="1.6" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">EDGECONTROL · LAYERED ARCHITECTURE</text><text x="40" y="56" font-size="11" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">从私有触点回调到 HUD：每一层只暴露稳定的数据契约</text><line class="a-spine" x1="48" y1="84" x2="48" y2="466"></line><rect class="a-front" x="80" y="84" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="98" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="115" r="4"></circle><circle class="a-chip" cx="110" cy="115" r="14"></circle><text class="a-title" x="110" y="119" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">01</text><text class="a-title" x="136" y="110" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">UI 层</text><text class="a-sub" x="136" y="129" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">菜单栏 · 设置窗口 · HUD</text><rect class="a-chip" x="670" y="102" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="119" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">SwiftUI + AppKit</text><rect class="a-front" x="80" y="164" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="178" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="195" r="4"></circle><circle class="a-chip" cx="110" cy="195" r="14"></circle><text class="a-title" x="110" y="199" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">02</text><text class="a-title" x="136" y="190" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">手势层</text><text class="a-sub" x="136" y="209" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">MultitouchSupport · 状态机</text><rect class="a-chip" x="670" y="182" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="199" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">私有 API 隔离</text><rect class="a-front" x="80" y="244" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="258" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="275" r="4"></circle><circle class="a-chip" cx="110" cy="275" r="14"></circle><text class="a-title" x="110" y="279" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">03</text><text class="a-title" x="136" y="270" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">控制层</text><text class="a-sub" x="136" y="289" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">CoreAudio · DisplayServices · DDC</text><rect class="a-chip" x="670" y="262" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="279" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">音量 / 亮度</text><rect class="a-front" x="80" y="324" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="338" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="355" r="4"></circle><circle class="a-chip" cx="110" cy="355" r="14"></circle><text class="a-title" x="110" y="359" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">04</text><text class="a-title" x="136" y="350" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">反馈层</text><text class="a-sub" x="136" y="369" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">AppKit 触觉 · OSLog</text><rect class="a-chip" x="670" y="342" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="359" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">触觉与日志</text><rect class="a-front" x="80" y="404" width="770" height="62" rx="14"></rect><rect class="a-accent" x="80" y="418" width="3" height="34" rx="1.5"></rect><circle class="a-dot" cx="48" cy="435" r="4"></circle><circle class="a-chip" cx="110" cy="435" r="14"></circle><text class="a-title" x="110" y="439" text-anchor="middle" font-size="9.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">05</text><text class="a-title" x="136" y="430" font-size="14.5" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">基础设施</text><text class="a-sub" x="136" y="449" font-size="10.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">launchd · Sparkle · Homebrew</text><rect class="a-chip" x="670" y="422" width="160" height="26" rx="13"></rect><text class="a-chip-text" x="750" y="439" text-anchor="middle" font-size="9.5" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">分发与更新</text><text x="40" y="486" font-size="9.5" fill="var(--a-sub)" font-family="-apple-system,BlinkMacSystemFont,SF Pro Text,Segoe UI,sans-serif">2D 分层：层级只由顺序和缩进表达，不用透视和阴影。</text></svg>
 <p class="v-caption">图 1：EdgeControl 的分层架构。私有 API 只出现在手势层，UI 与控制层使用稳定契约。</p>
 </div>
 <p>UI 主要用 SwiftUI，窗口层级、材质和 <code>LSUIElement</code> 下的设置窗口由 AppKit 兜底。触点从 MultitouchSupport 进入 C bridge，再交给 Swift 手势状态机。音量走 CoreAudio，内置亮度走 DisplayServices，外接亮度才会在用户明确开启后尝试 DDC/CI。触觉使用 AppKit，日志使用 OSLog。</p>
-<p>SwiftUI 负责的是菜单栏 Popover、设置内容和状态展示，AppKit 负责那些必须精确控制生命周期的部分：窗口什么时候创建、显示在哪个屏幕、材质挂在哪一层，以及菜单栏应用没有常规主菜单时怎样稳定打开设置。两者混用并不是为了堆技术栈，而是因为 <code>LSUIElement</code> 这个运行形态本身就绕开了 SwiftUI 默认假设的应用窗口流程。</p>
-<p>基础设施部分包括 <code>flock</code> 单实例锁、Sparkle 更新和 76 个 XCTest 测试方法。手势识别的大部分测试使用合成触点，不需要每次都在真机上划，但触觉、睡眠唤醒、设备切换和私有 API 行为仍然必须回到硬件上验证。合成测试能守住状态机，代替不了手指和机器。</p>
+<p>SwiftUI 处理 Popover、设置内容和状态，AppKit 管窗口创建、屏幕位置与材质层级。<code>LSUIElement</code> 没有常规主菜单，无法完全沿用 SwiftUI 默认的设置窗口流程，手动托管窗口就是为了解决这个差别。</p>
+<p>基础设施还有 <code>flock</code>、Sparkle 更新和 76 个 XCTest 方法。合成触点能检查状态机，触觉、睡眠唤醒、切设备和私有 API 则还要真机验证。两部分证据各管一段。</p>
 <p>分发链路比写完 app 多了不少步骤。当前版本没有 Developer ID 证书，只做完整的 ad-hoc bundle 签名，也不宣称公证；首次启动仍可能遇到 Gatekeeper，需要右键打开，或者通过 Homebrew 的 <code>--no-quarantine</code> 安装。Release 同时构建 arm64 和 x86_64，打包 DMG、ZIP 与签名 appcast，再同步 GitHub Releases 和 Homebrew cask。现在一条命令就能装好：</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install --cask leecdiang/edgecontrol/edgecontrol</span><br></pre></td></tr></tbody></table></figure>
 <h2 id="到-1-7-3">到 1.7.3</h2>
 <p>当前版本是 v1.7.3，验证机上 76/76 个 XCTest 方法通过，仓库检查、Universal 2 Release 构建和完整 ad-hoc 签名校验也都通过。这里的 Universal 2 只表示构建产物包含 arm64 与 x86_64，不等于已经在 Intel 真机上验证。</p>
 <p>还有几条边界需要继续摆在明面上：外接显示器 DDC 仍是实验功能；物理音频设备切换、登录项并发、Sparkle 重启和睡眠唤醒仍需要更多本地流程验证；外接触控板、Intel、其他 macOS 版本以及全新机器上的 Gatekeeper 行为，也都没有足够的硬件证据。能构建、能通过合成测试，和在所有机器上都可靠，是两回事。</p>
-<p>我会把“已经验证”和“理论上应该可以”分开写。当前验证机是 Apple Silicon 的 MacBook Air，76/76 的测试覆盖了状态机和不少边界条件，但触觉反馈、设备切换、睡眠唤醒以及 DDC 的真实表现仍然受硬件和系统组合影响。Universal 2 让同一个发布包带上两种架构，不会自动替我完成 Intel 真机验证；构建成功也不能替代那一次真实的触控板滑动。</p>
-<p>十四天，十五个版本。最开始只是想把小米触控板上的一个手势搬到 Mac，做着做着却碰到了私有 ABI、状态机、CoreAudio、显示器协议、窗口材质、签名和分发。我现在再看这段提交记录，记住的是两件很具体的事：私有 API 没有文档，但字节不会骗人；调参没有捷径，但一套完整的正负例矩阵，至少能让每次改动都有底。</p>
+<p>当前验证机是 Apple Silicon MacBook Air。76/76 主要支撑状态机和边界条件，不能延伸为其他硬件组合都可靠。尤其是触觉和触控板行为，仍需要一次次回到机器上试。</p>
+<p>两周十五个版本，最初的边缘手势牵出了 ABI、状态机、CoreAudio、显示器协议和分发。回看这些提交，我最想保留的是两种调试办法：布局不清楚就打印字节，比对实际触点；参数要改就带着正负例矩阵，确认修好的轨迹没有放进新的误触。</p>
 <p>项目开源，有问题提 issue，想改代码直接 PR。最新版本：<a href="https://github.com/leecdiang/EdgeControl/releases/latest" target="_blank" class="glass-pill"><i class="fab fa-apple"></i> EdgeControl 最新 Release</a></p>
 
     </div>

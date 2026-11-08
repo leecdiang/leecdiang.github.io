@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png">
 <meta property="article:published_time" content="2026-03-18T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-18T16:15:12.117Z">
+<meta property="article:modified_time" content="2026-11-08T04:41:00.158Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="ArrowLake">
 <meta property="article:tag" content="CPU">
@@ -79,7 +79,7 @@
   <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
     
 
-  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Arrow-Lake-%E7%9A%84%E2%80%9C%E4%BA%8C%E6%AC%A1%E8%BF%9B%E5%8C%96%E2%80%9D"><span class="toc-text">Arrow Lake 的“二次进化”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIBOT%EF%BC%9F"><span class="toc-text">什么是IBOT？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8-1%EF%BC%9A%E7%BC%96%E8%AF%91%E5%99%A8%E4%BC%98%E5%8C%96%E4%B8%8E-Intel-iBot-%E6%8A%80%E6%9C%AF%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%AF%B9%E6%AF%94"><span class="toc-text">表 1：编译器优化与 Intel iBot 技术的深度对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IBOT-%E7%9A%84%E6%A0%B8%E5%BF%83%E8%BF%90%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-text">IBOT 的核心运作机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#D2D-%E6%8F%90%E9%A2%91%E6%98%AF-IBOT-%E7%9A%84%E5%85%88%E5%86%B3%E6%9D%A1%E4%BB%B6"><span class="toc-text">D2D 提频是 IBOT 的先决条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E9%A2%84%E6%9C%9F-IPC%E7%9A%84%E7%BA%AF%E7%B2%B9%E6%8F%90%E5%8D%87"><span class="toc-text">性能预期: IPC的纯粹提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F%E8%A1%A8%E7%8E%B0%EF%BC%9A"><span class="toc-text">游戏表现：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%93%E4%B8%9A%E8%B4%9F%E8%BD%BD%EF%BC%9A"><span class="toc-text">专业负载：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9AIntel-%E7%9A%84%E2%80%9C%E8%BD%AF%E7%A1%AC%E5%8D%8F%E5%90%8C%E2%80%9D%E8%BF%9B%E5%8C%96%E8%AE%BA"><span class="toc-text">总结：Intel 的“软硬协同”进化论</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Arrow-Lake-Refresh-%E6%94%B9%E4%BA%86%E5%93%AA%E9%87%8C"><span class="toc-text">Arrow Lake Refresh 改了哪里</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIBOT%EF%BC%9F"><span class="toc-text">什么是IBOT？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8-1%EF%BC%9A%E7%BC%96%E8%AF%91%E5%99%A8%E4%BC%98%E5%8C%96%E4%B8%8E-IBOT-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">表 1：编译器优化与 IBOT 的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IBOT-%E7%9A%84%E6%A0%B8%E5%BF%83%E8%BF%90%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-text">IBOT 的核心运作机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#D2D-%E5%B8%A6%E5%AE%BD%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%E8%BF%90%E8%A1%8C%E6%97%B6%E4%BC%98%E5%8C%96"><span class="toc-text">D2D 带宽为什么影响运行时优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%94%B6%E7%9B%8A%E5%BA%94%E8%AF%A5%E7%9C%8B%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="toc-text">性能收益应该看在哪里</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F"><span class="toc-text">游戏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%93%E4%B8%9A%E8%B4%9F%E8%BD%BD"><span class="toc-text">专业负载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%9B%B4%E6%83%B3%E7%9C%8B%E6%89%A7%E8%A1%8C%E6%95%88%E7%8E%87%EF%BC%8C%E8%80%8C%E9%9D%9E%E6%A0%87%E7%A7%B0%E9%A2%91%E7%8E%87"><span class="toc-text">我更想看执行效率，而非标称频率</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
   
 
 
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png"><meta itemprop="dateModified" content="2026-10-18T16:15:12.117Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png"><meta itemprop="dateModified" content="2026-11-08T04:41:00.158Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/03/18/silicon-roadmap/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -128,16 +128,16 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="Arrow-Lake-的“二次进化”">Arrow Lake 的“二次进化”</h2>
-<p>intel 发布了Arrow Lake Refresh 的<a target="_blank" rel="noopener" href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/"><strong>Core Ultra 200S PLUS CPUs</strong></a>，核心架构不变，频率微调，通过优化总线连接在 D2D 频率上提升了最多 900 MHz， 同时内存频率支持到 DDR5-7200，除此之外，Intel 在这代 CPU 上搭载了新的二进制优化工具，也就是<strong>Intel Binary Optimisation Tool （IBOT)。</strong></p>
-<p>IBOT旨在优化新 CPU 架构的应用，提高负载 IPC。本文将聚焦这一技术展开讨论。<br>
+    <div class="post-body" itemprop="articleBody"><h2 id="Arrow-Lake-Refresh-改了哪里">Arrow Lake Refresh 改了哪里</h2>
+<p>Intel 的 Arrow Lake Refresh，也就是 <a target="_blank" rel="noopener" href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/">Core Ultra 200S PLUS CPUs</a>，保留核心架构，微调频率，把 D2D 互连频率最多提高 900 MHz，并支持 DDR5-7200。除此之外，这一代还加入了 Intel Binary Optimisation Tool（IBOT）。</p>
+<p>相比频率变化，我更关心 IBOT 怎样改善指令执行、提高负载 IPC。<br>
 <img alt="" src="silicon-roadmap-20260318.jpg" decoding="async" loading="lazy" width="1115" height="628"></p>
 <hr>
 <h2 id="什么是IBOT？">什么是IBOT？</h2>
-<p>在高性能计算的发展历程中，半导体行业长期通过微缩制程与增加物理核心来获取性能增长。但物理极限的逼近以及异构架构复杂性的提升使得单纯堆料难以应对现代复杂工作负载。同时，AI 浪潮下的能源危机和 AI 终端的个人普及使企业开始重视能效比，在这个大背景下，计算终端<strong>软硬件协同设计</strong>变得尤为重要。</p>
-<p><strong>IBOT</strong>正是这种软硬件协同理念下的产物。简单来说，它是一个动态二进制优化层。</p>
-<p>与传统的编译器优化是在程序运行前完成不同，IBOT 运行在系统底层，它实时监控应用程序的指令流，识别出那些执行效率低下的代码段，并针对 <strong>Arrow Lake</strong> 的微架构特性进行动态重写。</p>
-<h3 id="表-1：编译器优化与-Intel-iBot-技术的深度对比">表 1：编译器优化与 Intel iBot 技术的深度对比</h3>
+<p>制程微缩和增加核心数，无法独自解决异构架构里的执行低效。AI 负载带来的能源压力，以及 AI 进入个人终端的需求，也让能效成为更直接的约束。软件怎样使用现有硬件，值得单独看。</p>
+<p>IBOT 是动态二进制优化层，介入的是程序运行时。</p>
+<p>传统编译器在运行前优化；IBOT 则在系统底层观察指令流，定位低效代码，再按 Arrow Lake 微架构重写。</p>
+<h3 id="表-1：编译器优化与-IBOT-的区别">表 1：编译器优化与 IBOT 的区别</h3>
 <div class="table-container"><table>
 <thead>
 <tr>
@@ -174,78 +174,48 @@
 </tr>
 </tbody>
 </table></div>
-<p>这种技术的核心目的并非单纯提高频率，而是通过<strong>减少指令周期的浪费（Stalls）</strong>，让 CPU 在每个周期中都能完成更多的实质性工作。</p>
+<p>它要减少的是停顿（Stalls），让同样的周期完成更多工作。</p>
 <hr>
 <h2 id="IBOT-的核心运作机制">IBOT 的核心运作机制</h2>
-<p>为了实现 IPC 的提升，IBOT 主要在以下三个环节发挥作用：</p>
-<ol>
-<li>
-<p><strong>Profiling</strong>： 利用 CPU 内部集成的性能监控单元（PMU），IBOT 能够精准捕捉程序运行时的瓶颈：是分支预测失败？还是频繁的Cache Miss？它能识别出哪些代码导致了架构内部的交通拥堵。</p>
-</li>
-<li>
-<p><strong>Dynamic Transformation</strong>： 一旦锁定目标，IBOT 会在内存中对二进制指令进行调整。例如，将长串的低效指令序列替换为针对当前架构优化的专用指令集，或者重新排列数据读取顺序以匹配更快的总线带宽。</p>
-</li>
-<li>
-<p><strong>Contention Reduction</strong>： 在 Arrow Lake 的分 Tile 设计中，数据在不同逻辑单元间的往返往往产生延迟。IBOT 通过优化指令流，最大限度地减少了对架构资源的争用，确保核心始终处于高效负载的状态。</p>
-</li>
-</ol>
+<p>按运行过程，可以分为观测、变换和减少争用。</p>
+<p>Profiling 利用性能监控单元（PMU）定位瓶颈，区分分支预测失败、Cache Miss 等问题，再找出相关代码。</p>
+<p>Dynamic Transformation 在内存中调整二进制指令，例如替换低效序列，或重排读取次序，使它更适应当前架构与总线带宽。</p>
+<p>Contention Reduction 关注资源争用。Arrow Lake 分 Tile 后，数据要在不同逻辑单元间往返，优化指令流的目的之一，就是减少这种等待。</p>
 <hr>
-<h2 id="D2D-提频是-IBOT-的先决条件">D2D 提频是 IBOT 的先决条件</h2>
-<p><strong>Core Ultra 200S</strong> 由于采用了类似 AMD 的 Cheplet 设计，通过 Foveros 3D 封装将不同的 Tiles 组合在一起：<strong>Compute Tile</strong>负责算力，而<strong>SoC Tile</strong>负责内存控制。这导致了CPU 核心每读取一次内存数据，指令都必须跨越计算模块与 SoC 模块之间的物理边界。</p>
-<p>这个边界的通信效率由 D2D 频率决定。由于 D2D 频率较低，数据在模块间传输的时间大幅拉跨整体延迟。因此初代 200S 的内存延迟普遍在 <strong>80ns-100ns</strong>，远高于上一代的 <strong>60ns</strong> 级别。</p>
-<p>同时在 Intel 的设计中，Compute Tile内部的 Ring Bus 频率与 D2D 互连频率往往存在同步或比例关系，因此当 D2D 频率被限制在较低水平时，为了保证数据传输的稳定性，计算模块内部的环形总线频率也会受到牵制，这直接导致了 L3 缓存的带宽和响应速度下降。</p>
-<p>这种环境下，运行任何实时指令优化工具都会产生不可忽视的开销：因为优化器本身也需要占用宝贵的互连带宽去监测和重写指令。</p>
-<p><strong>900 MHz 的 D2D 提频，本质上是 Intel 为 IBOT 预付的“性能税”：</strong></p>
-<ul>
-<li>
-<p><strong>释放带宽</strong>：得益于 D2D 频率的激增，模块间通信大大加速。这降低了基础延迟，也为 IBOT 腾出了足够的运行空间。现在，IBOT 在后台实时分析并重构二进制指令时，其产生的数据交换可以白嫖这部分多出来的带宽，而不会拖累正常的计算任务。</p>
-</li>
-<li>
-<p><strong>消除架构碰撞</strong>：IBOT 的核心任务是减少 Architectural Contention。在分 Tile 设计中，程序往往会因为不适应“跨片取数”而产生大量的指令气泡。IBOT 通过实时重写指令流，提前排列好数据的进出顺序，确保在高频 D2D 链路的配合下，数据能以最完美的节奏填满每一个 CPU 周期。</p>
-</li>
-</ul>
+<h2 id="D2D-带宽为什么影响运行时优化">D2D 带宽为什么影响运行时优化</h2>
+<p>Core Ultra 200S 采用与 AMD Chiplet 相似的分块思路，通过 Foveros 3D 封装连接各 Tile。Compute Tile 负责计算，SoC Tile 负责内存控制，核心访问内存需要经过两者之间的边界。</p>
+<p>D2D 频率影响跨模块传输效率。初代 200S 的内存延迟在 80ns–100ns，而上一代约在 60ns 级别，跨 Tile 通信是这笔延迟账的一部分。</p>
+<p>Compute Tile 的 Ring Bus 与 D2D 频率存在同步或比例关系。较低的 D2D 频率也会牵制环形总线，影响 L3 带宽与响应。</p>
+<p>运行时优化器也要监测和重写指令，会占用互连带宽。若基础通信已经紧张，优化本身的开销就更难忽略。</p>
+<p>我把最多 900 MHz 的 D2D 提频理解为给 IBOT 留出运行空间：先改善基础通信，再处理指令层面的低效。</p>
+<p>一方面，跨模块传输更快，基础延迟下降，也增加了可供优化器使用的带宽。后台分析与重写，仍要靠这套互连完成数据交换。</p>
+<p>另一方面，IBOT 通过重排跨片取数相关指令，减少 Architectural Contention，让执行节奏更贴近 D2D 能提供数据的速度。</p>
 <hr>
 <div class="v-figure">
 <svg viewBox="0 0 1000 360" role="img" aria-label="IBOT 机制链"><defs><marker id="sA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5d7f96"></path></marker></defs><text x="25" y="38" font-size="11" fill="#7b8b99" letter-spacing="2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">INTEL IBOT · MECHANISM CHAIN</text><text x="25" y="62" font-size="11" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频先腾出带宽预算，IBOT 再在二进制层减少指令气泡</text><ellipse cx="109" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="25,144 185,144 167,126 7,126" fill="#7aa6c6"></polygon><polygon points="25,144 185,144 185,240 25,240" fill="#3f6f96"></polygon><polygon points="185,144 167,126 167,222 185,240" fill="#2b5578"></polygon><line x1="25" y1="144" x2="185" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="45" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="45" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">01</text><text x="105" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D +900MHz</text><text x="105" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">释放跨 Tile 带宽</text><path d="M189,214 L211,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="299" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="215,144 375,144 357,126 197,126" fill="#78b7ae"></polygon><polygon points="215,144 375,144 375,240 215,240" fill="#2f7f7a"></polygon><polygon points="375,144 357,126 357,222 375,240" fill="#1f5f5b"></polygon><line x1="215" y1="144" x2="375" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="235" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="235" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">02</text><text x="295" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">PMU Profiling</text><text x="295" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">定位分支与 Cache 瓶颈</text><path d="M379,214 L401,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="489" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="405,144 565,144 547,126 387,126" fill="#d2ad72"></polygon><polygon points="405,144 565,144 565,240 405,240" fill="#9a7434"></polygon><polygon points="565,144 547,126 547,222 565,240" fill="#77551f"></polygon><line x1="405" y1="144" x2="565" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="425" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="425" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">03</text><text x="485" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">动态重写</text><text x="485" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">内存中重排二进制</text><path d="M569,214 L591,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="679" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="595,144 755,144 737,126 577,126" fill="#8fa7b6"></polygon><polygon points="595,144 755,144 755,240 595,240" fill="#5c7383"></polygon><polygon points="755,144 737,126 737,222 755,240" fill="#455c6c"></polygon><line x1="595" y1="144" x2="755" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="615" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="615" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">04</text><text x="675" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">P/E 调度</text><text x="675" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">减少切换与争用</text><path d="M759,214 L781,214" fill="none" stroke="#5d7f96" stroke-width="2" marker-end="url(#sA)"></path><ellipse cx="869" cy="250" rx="86" ry="12" fill="rgba(25,52,72,.10)"></ellipse><polygon points="785,144 945,144 927,126 767,126" fill="#8fc0a9"></polygon><polygon points="785,144 945,144 945,240 785,240" fill="#4f8a6f"></polygon><polygon points="945,144 927,126 927,222 945,240" fill="#356a51"></polygon><line x1="785" y1="144" x2="945" y2="144" stroke="rgba(255,255,255,.45)" stroke-width="1.2"></line><circle cx="805" cy="164" r="10" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.35)"></circle><text x="805" y="168" text-anchor="middle" font-size="9" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">05</text><text x="865" y="188" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">IPC / 1% Low</text><text x="865" y="207" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.80)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">真实帧与执行确定性</text><text x="25" y="330" font-size="10" fill="#7b8b99" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">D2D 提频不是目的，而是为实时优化支付的性能税。</text></svg>
 <p class="v-caption">图 1：IBOT 的机制链。D2D 提频先释放带宽，PMU Profiling 定位瓶颈，动态重写减少指令气泡。</p>
 </div>
-<h2 id="性能预期-IPC的纯粹提升">性能预期: IPC的纯粹提升</h2>
-<p>在实际应用中，IBOT 的加入意味着：</p>
-<h3 id="游戏表现："><strong>游戏表现</strong>：</h3>
+<h2 id="性能收益应该看在哪里">性能收益应该看在哪里</h2>
+<p>我更关注帧时间和单位周期吞吐的变化。</p>
+<h3 id="游戏">游戏</h3>
 <p><a target="_blank" rel="noopener" href="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg"><img alt="" src="https://media.overclock3d.net/2026/03/Intel-Binary-Optimisation-IBOT-Gains.jpg" decoding="async" loading="lazy"></a><br>
-对于那些针对旧架构编写、对单核效率敏感的老旧游戏，或是从 Switch/PS5 上移植来的非原生游戏，IBOT 可以通过实时优化指令流，显著改善 1% Low FPS。</p>
-<p>这几年，我们已经习惯了各种<strong>Frame Generation</strong>或是<strong>Upscaling</strong>技术。尽管 DLSS 或 FSR 能够带来震撼的平均帧数，但它们本质上是基于算法的视觉补偿，在技术力上对我没什么吸引力。</p>
-<p><strong>IBOT 的逻辑则完全不同</strong>：它不生成任何虚假的像素，也不跳过任何必要的计算步骤。</p>
-<p>它的核心价值在于解决“指令卡顿”。在异构架构中，很多移植游戏或旧作并不理解如何高效地在核心间分配任务，导致 CPU 频繁出现无效周期。IBOT 在二进制层面实时重排这些指令，确保每一个时钟周期都在处理有意义的代码。</p>
-<p>其结果是显而易见的：传统的帧生成技术往往无法根治掉帧，因为底层逻辑卡顿依然存在。而 IBOT 从指令源头消除了气泡，让帧生成时间变得丝滑平均。同时，与 AI 补帧带来的输入延迟不同，IBOT 是原生的计算提速，你获得的每一帧都是真实的物理帧。</p>
+旧架构游戏、对单核效率敏感的游戏，以及 Switch/PS5 移植作，是这里关注的负载。IBOT 对指令流的优化，目标包括改善 1% Low FPS。</p>
+<p>DLSS、FSR 的 Frame Generation 和 Upscaling 可以提高呈现帧数，但我对这种视觉补偿的兴趣不大。相比之下，我更想看 CPU 能否缩短原生计算花掉的时间。</p>
+<p>IBOT 调整二进制执行，不增加生成帧，也不跳过原有必要计算。</p>
+<p>异构核心上，旧作和移植游戏可能无法高效分配任务，留下无效周期。IBOT 试图在二进制层面重排指令，减少这类停顿。</p>
+<p>帧生成仍会保留底层计算中的卡顿；IBOT 针对的正是这部分。我的期待是原生帧时间更均匀、响应随实际计算提速改善，而不只看画面最后显示了多少帧。</p>
 <hr>
-<h3 id="专业负载：">专业负载：</h3>
-<p>在复杂的生产力工具中，IBOT 的核心价值在于平滑 P-Core 与 E-Core 切换时的执行抖动。</p>
-<ul>
-<li>
-<p><strong>优化上下文切换</strong>： 生产力任务如代码编译、大型工程文件加载常涉及频繁的核心迁移。由于 P/E 核微架构不同，切换时易引发流水线清空。IBOT 在二进制层面实时预对齐指令流，将这种切换开销降至最低。</p>
-</li>
-<li>
-<p><strong>填补跨 Tile 指令气泡</strong>： 针对 Arrow Lake 的分 tile 设计，IBOT 能识别并重排那些可能导致跨片取数延迟的指令。它通过预取和指令重排序，填补了由于 D2D 通信产生的指令气泡，让 CPU 在处理非线性生产力任务时，单位周期内的吞吐量更稳定。</p>
-</li>
-<li>
-<p><strong>老旧工具的“实时翻译”</strong>： 大量未针对异构架构优化的专业软件，在 IBOT 的干预下，可能以更契合当前 Tile 架构的逻辑运行。它本质上是让老软件在新芯片上跑出了原生优化的高效感。</p>
-</li>
-</ul>
+<h3 id="专业负载">专业负载</h3>
+<p>生产力任务里，我关注 P-Core 与 E-Core 迁移时的抖动，以及跨 Tile 取数能否更稳定。</p>
+<p>代码编译和大型工程加载可能频繁迁移核心。P/E 核微架构不同，切换可能触发流水线清空；IBOT 通过二进制指令预对齐来减少相关开销。</p>
+<p>跨 Tile 访问则依靠预取和重排序，尽量用其他工作覆盖 D2D 等待，稳定非线性负载的单位周期吞吐。</p>
+<p>对没有针对异构架构优化的旧专业软件，这相当于在运行时补一层适配，让执行方式更接近当前 Tile 结构。</p>
 <hr>
-<h2 id="总结：Intel-的“软硬协同”进化论">总结：Intel 的“软硬协同”进化论</h2>
-<p><strong>Intel Binary Optimisation Tool (IBOT)</strong> 的出现，标志着半导体竞争进入了一个全新的维度。</p>
-<p>在摩尔定律放缓、异构架构日益复杂的今天，单纯堆砌晶体管和拉升频率已经难以满足玩家和专业用户的胃口。<strong>Core Ultra 200S PLUS</strong> 给出了一套新颖的组合拳：</p>
-<ol>
-<li>
-<p><strong>硬件层面</strong>：通过物理层面的 <strong>+900 MHz D2D 提频</strong>，Intel 终于化解了分离式 Tile 架构的延迟沉疴，为后续的优化留出了重要的带宽预算。</p>
-</li>
-<li>
-<p><strong>软件层面</strong>：<strong>IBOT</strong> 拒绝了当下流行的视觉补偿套路。它不跳过任何计算步骤，也不生成虚假的像素，而是通过二进制层面的动态重构，让每一行指令都能在最合适的时间、以最合适的顺序进入最合适的核心。</p>
-</li>
-</ol>
-<p>对于追求极致体感的玩家，这意味着实打实的 <strong>1% Low FPS</strong> 提升和零延迟的响应；对于专业创作者，这代表着在繁重的生产力洪流中，获得了前所未有的执行确定性。</p>
-<p><strong>当物理瓶颈被打破，真正的 IPC 潜力才被彻底释放。</strong></p>
+<h2 id="我更想看执行效率，而非标称频率">我更想看执行效率，而非标称频率</h2>
+<p>Core Ultra 200S PLUS 把 D2D 提频与运行时二进制优化放在了一起。</p>
+<p>前者改善模块间通信，后者重新安排软件使用资源的方式。硬件与软件分别处理一部分等待，才有机会让新增资源进入实际工作。</p>
+<p>对游戏，我会盯住 1% Low FPS 和原生帧的响应；对专业软件，则看吞吐与执行抖动。</p>
+<p>这些变化，比单独多出多少 MHz 更能说明这套方案的作用。</p>
 <p><img alt="" src="silicon-roadmap-20260318-2.jpg" decoding="async" loading="lazy" width="1600" height="873"></p>
 
     </div>
