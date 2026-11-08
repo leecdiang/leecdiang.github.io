@@ -72,7 +72,7 @@ jobs:
                 try {
                   const url = new URL(src, new URL(page, hexo.config.url + '/'));
                   if (url.origin !== new URL(hexo.config.url).origin) continue;
-                  rel = decodeURIComponent(url.pathname).replace(/^\\/+/, '');
+                  rel = decodeURIComponent(url.pathname).slice(1);
                 } catch { continue; }
                 if (route.get(rel)) continue;
                 const file = path.resolve(root, rel);
