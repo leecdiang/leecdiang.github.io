@@ -39,10 +39,52 @@ jobs:
       - name: Install exact locked dependencies
         working-directory: blog
         run: npm ci --no-audit --no-fund
-      - name: Restore historical media from published site before Hexo validation
+      - name: Restore historical media in Hexo's route registry
         run: |
-          mkdir -p blog/public
-          rsync -a --exclude='.git' --exclude='.github' deployed/ blog/public/
+          cat > blog/scripts/ci-hydrate-legacy-media.js <<'JS'
+          'use strict';
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const cheerio = require('cheerio');
+          async function bytesOf(route, name) {
+            const stream = route.get(name);
+            if (!stream) return null;
+            const chunks = [];
+            for await (const chunk of stream)
+              chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+            return Buffer.concat(chunks);
+          }
+          // The source repo intentionally excludes large media from older posts.
+          // Register only images referenced by rendered posts and already present
+          // in the previous published site. Run after watermark, before integrity check.
+          hexo.extend.filter.register('after_generate', async function () {
+            const root = path.resolve(__dirname, '../../deployed');
+            const route = this.route;
+            let restored = 0;
+            for (const page of route.list().filter(x => x.endsWith('.html'))) {
+              const html = await bytesOf(route, page);
+              if (!html) continue;
+              const $ = cheerio.load(html.toString(), {decodeEntities: false});
+              for (const img of $('.post-body img').toArray()) {
+                const src = $(img).attr('src') || $(img).attr('data-src');
+                if (!src) continue;
+                let rel;
+                try {
+                  const url = new URL(src, new URL(page, hexo.config.url + '/'));
+                  if (url.origin !== new URL(hexo.config.url).origin) continue;
+                  rel = decodeURIComponent(url.pathname).replace(/^\\/+/, '');
+                } catch { continue; }
+                if (route.get(rel)) continue;
+                const file = path.resolve(root, rel);
+                if (!file.startsWith(root + path.sep)) continue;
+                if (!fs.existsSync(file) || !fs.statSync(file).isFile()) continue;
+                route.set(rel, fs.readFileSync(file));
+                restored++;
+              }
+            }
+            hexo.log.info('[CI media hydration] Restored ' + restored + ' existing image routes');
+          }, 25);
+          JS
       - name: Build Hexo website
         working-directory: blog
         run: npm run build
