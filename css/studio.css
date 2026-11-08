@@ -371,6 +371,18 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
  :root[data-color=dark] .studio-halo:not(.studio-home) .ambient-art--light{opacity:0}
  :root[data-color=dark] .studio-halo:not(.studio-home) .ambient-art--dark.is-ready{opacity:.68;filter:brightness(1.05)}
 }
+@media(max-width:700px) and (orientation:portrait){
+ .studio-home{position:relative;--home-header-height:68px;--home-footer-height:44px;--home-bottom-space:clamp(44px,7svh,72px)}
+ .studio-home>.ambient-halo{display:block;position:absolute}
+ .studio-home .ambient-art--light.is-ready{opacity:.95}
+ :root[data-color=dark] .studio-home .ambient-art--light{opacity:0}
+ :root[data-color=dark] .studio-home .ambient-art--dark.is-ready{opacity:.68;filter:brightness(1.05)}
+}
+@media(max-width:700px) and (orientation:portrait) and (prefers-reduced-motion:no-preference){
+ .studio-home{--halo-scale:1.07;--halo-x:1.1%;--halo-y:-.9%;--halo-duration:12s}
+ :root[data-color=light] .studio-home .ambient-art--light.is-ready,
+ :root[data-color=dark] .studio-home .ambient-art--dark.is-ready{animation:studio-halo-drift var(--halo-duration) ease-in-out infinite alternate;animation-delay:var(--halo-phase,0ms);transform-origin:35% 50%}
+}
 
 /* Ambient breathing: visible on desktop landing pages, restrained while reading. */
 @media(min-width:701px) and (prefers-reduced-motion:no-preference){
@@ -776,3 +788,55 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
 /* Inset reading panels sit above the translucent article plane. */
 :root{--reading-inset:color-mix(in srgb,var(--paper) 78%,transparent)}
 @media(max-width:700px){.post-body blockquote,.post-body .note{padding:16px 18px}}
+
+/* Keep the map centered on the photograph's column at every desktop width. */
+.home-visitors{width:100%;max-width:1020px;margin:0 auto;color:var(--muted)}
+.home-visitors figure{width:216px;max-width:100%;margin:0 auto}
+.home-visitors figcaption{font-size:11px;line-height:1.6}
+.home-visitors-filters{position:absolute;pointer-events:none;overflow:hidden}
+.home-visitors-map{display:block;margin:7px 0 4px}
+/* The service rasterizes its controls too; omit that empty ocean corner. */
+.home-visitors-map img{display:block;width:100%;height:auto;aspect-ratio:216/106;filter:url(#visitor-map-paper);clip-path:polygon(0 0,100% 0,100% 100%,10px 100%,10px calc(100% - 17px),0 calc(100% - 17px))}
+:root[data-color=dark] .home-visitors-map img{filter:url(#visitor-map-paper) brightness(1.12)}
+@media(min-width:701px){
+ .studio-home{--home-columns:minmax(0,1fr) minmax(0,1.18fr);--home-column-gap:70px}
+ .studio-home .studio-main{flex-direction:column;justify-content:center;gap:22px}
+ .studio-home .home-intro,.home-visitors{grid-template-columns:var(--home-columns);column-gap:var(--home-column-gap)}
+ .studio-home .home-intro{margin:0 auto}
+ .home-visitors{display:grid}
+ .home-visitors figure{grid-column:2;justify-self:center}
+}
+@media(min-width:701px) and (max-width:1000px){.studio-home{--home-columns:minmax(0,1fr) minmax(0,1fr);--home-column-gap:35px}}
+@media(min-width:701px) and (max-height:800px){.studio-home .home-photo img{height:min(43svh,370px)}.studio-home .studio-main{padding-top:12px;padding-bottom:16px;gap:14px}}
+@media(max-width:700px){.home-visitors{margin:28px auto 24px}.studio-home .studio-main{padding-bottom:0}}
+
+/* Portrait home: a framed photograph, with the map inside and atmosphere below. */
+@media(max-width:700px) and (orientation:portrait){
+ .studio-home .studio-header{height:var(--home-header-height)}
+ .studio-home .studio-main{padding:0 16px var(--home-bottom-space);max-width:none}
+ .studio-home .home-intro{height:calc(100svh - var(--home-header-height) - var(--home-footer-height) - var(--home-bottom-space) - env(safe-area-inset-bottom,0px));min-height:480px;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+ .studio-home .home-intro::after{background:linear-gradient(0deg,rgba(16,28,44,.94),rgba(16,28,44,.76) 24%,rgba(16,28,44,.28) 48%,transparent 72%)}
+ .studio-home .home-copy{bottom:26px}
+ .studio-home .home-latest{max-width:calc(100% - 138px)}
+ .studio-home .home-latest-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+ .studio-home .home-visitors{position:absolute;right:calc(7% + 14px);bottom:calc(var(--home-bottom-space) + 24px);width:120px;margin:0;color:#dce5ee;z-index:2}
+ .studio-home .home-visitors figure{width:100%}
+ .studio-home .home-visitors figcaption{text-align:right;font-size:10px}
+ .studio-home .home-visitors-map{margin:4px 0 2px}
+ :root .studio-home .home-visitors-map img{filter:url(#visitor-map-paper) brightness(1.4)}
+ .studio-home .studio-footer{height:calc(var(--home-footer-height) + env(safe-area-inset-bottom,0px));padding-top:5px;padding-bottom:calc(5px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:700px) and (orientation:portrait) and (max-height:700px){
+ .studio-home .home-intro::after{background:linear-gradient(180deg,rgba(12,21,34,.48),rgba(16,28,44,.3) 32%,rgba(16,28,44,.72) 64%,rgba(12,21,34,.96))}
+ .studio-home .home-copy h1{font-size:clamp(40px,12vw,46px);margin:16px 0 14px}
+ .studio-home .home-hello{font-size:22px;margin-bottom:8px}
+ .studio-home .home-description{font-size:13px}
+ .studio-home .home-actions{margin-top:18px}
+ .studio-home .home-latest{margin-top:14px}
+}
+@media(max-width:360px) and (orientation:portrait){
+ .studio-home{--home-header-height:60px}
+ .studio-home .home-latest{max-width:calc(100% - 122px)}
+ .studio-home .home-visitors{width:104px}
+}
+@media(max-width:700px) and (orientation:portrait) and (max-height:620px){.studio-home .home-intro{min-height:460px}}

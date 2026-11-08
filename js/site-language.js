@@ -11,6 +11,7 @@
     ['跳到正文','Skip to content'],['LEEcDiang 首页','LEEcDiang home'],['主导航','Main navigation'],['首页入口','Homepage navigation'],
     ['你好，我是',"Hi, I’m"],['在电子科技大学学习微电子，','I study microelectronics at UESTC,'],['也用照片和文字，记录生活。','and document life through photos and writing.'],
     ['暖色餐厅里的童年照片，坐在餐桌前看向镜头','A childhood photograph at a restaurant table'],
+    ['访客位置','Visitor locations'],['查看访客位置统计（在新窗口打开）','View visitor statistics (opens in a new tab)'],['访客来源的世界地图','World map of visitor locations'],
     ['关于','About'],['文章','Writing'],['文章列表','Articles'],['摄影','Photography'],['摄影画廊','Photography'],['链接','Links'],['邮箱 ↗','Email ↗'],['邮箱','Email'],
     ['分类','Categories'],['标签','Tags'],['标签','tags'],['全部','All'],['技术与研究','Technology & research'],['日常与实践','Everyday & practice'],['影像与旅行','Photography & travel'],['其他','Other'],
     ['硅与电路','Silicon & Circuits'],['日常剖面','Everyday Anatomy'],['影像叙事','Visual Narrative'],['AI 基础设施','AI Infrastructure'],['AI 研究','AI Research'],['计算机体系结构','Computer architecture'],
