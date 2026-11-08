@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.f712770f7ad6.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.fa4d5691df54.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
@@ -130,9 +130,12 @@
     
     
     
-    <div class="post-body" itemprop="articleBody" data-math-prerendered="0"><div class="note primary"><p>假如你接手了一个迭代四十多年的 RTL 仓库，每次升级都不敢删除旧逻辑，状态机、旁路条件和兼容分支越堆越多，你会怎么评价它？</p>
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="0">
+<aside class="article-lead">
+<p>假如你接手了一个迭代四十多年的 RTL 仓库，每次升级都不敢删除旧逻辑，状态机、旁路条件和兼容分支越堆越多，你会怎么评价它？</p>
 <p>我大概会说：这玩意儿早该重构了。</p>
-</div>
+</aside>
+
 <p>x86 从 1978 年的 Intel 8086 一路走到 PC、服务器和工作站，软件生态越成功，架构就越难重构。今天的高性能 x86 芯片有宽大的乱序后端、复杂的分支预测、向量计算和先进封装，早已不是当年那颗处理器。但新设计仍须兑现那份不断续写的兼容契约。<a href="#x86-ref-S01">S01</a> <a href="#x86-ref-S05">S05</a></p>
 <p>Intel 也试过删减它。2023 年提出的 x86S 后来停止推进；2024 年，Intel、AMD 和产业伙伴又成立 x86 生态咨询组，协商 ISA 的后续发展。连精简架构这件事，都得把生态拉到一起谈。<a href="#x86-ref-S05">S05</a> <a href="#x86-ref-S06">S06</a></p>
 <p>我佩服把 x86 做快的工程师。标题里骂的，是每一代新设计都得背上旧兼容承诺这件事。它到底耗掉多少工程资源？已经有更简单替代办法的约束，又为什么迟迟退不掉？</p>

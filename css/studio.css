@@ -765,3 +765,9 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
 .post-body .highlight .copy-btn:hover,.post-body .highlight .copy-btn:focus-visible{background:var(--control-hover);border-color:var(--line);color:var(--ink)}
 .post-body .highlight .copy-btn:focus-visible{outline-offset:-2px}
 @media(max-width:700px){.post-body .highlight .code-container{grid-template-columns:minmax(0,1fr) 44px}.post-body .highlight .gutter pre{padding-left:12px;padding-right:8px}}
+
+/* Opening lead: establish hierarchy through type, without another container. */
+.post-body .article-lead{margin:0 0 2.5rem;padding:0;border:0;background:none}
+.post-body .article-lead>p{margin:0;color:var(--heading);font-size:22px;font-weight:500;line-height:1.85;letter-spacing:.01em}
+.post-body .article-lead>p+p{margin-top:18px;color:var(--muted);font-size:15px;font-weight:400;line-height:1.8;letter-spacing:0}
+@media(max-width:700px){.post-body .article-lead{margin-bottom:2rem}.post-body .article-lead>p{font-size:19px;line-height:1.9}.post-body .article-lead>p+p{font-size:14px;margin-top:14px}}
