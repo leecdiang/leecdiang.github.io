@@ -840,3 +840,35 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
  .studio-home .home-visitors{width:104px}
 }
 @media(max-width:700px) and (orientation:portrait) and (max-height:620px){.studio-home .home-intro{min-height:460px}}
+
+/* A firmer light reading surface; other page types retain their atmosphere. */
+:root[data-color=light] body.studio-reading .studio-content-plane{--reading-plane:rgba(255,255,255,.65)}
+
+/* Reclaim page space around Safari's browser controls, retaining readable type. */
+@media(max-width:700px) and (orientation:portrait){
+ :root body.studio-reading .studio-header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;height:60px;min-height:60px;padding:0 max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));flex-wrap:nowrap}
+ :root body.studio-reading .studio-header .studio-brand{font-size:15px}
+ :root body.studio-reading .studio-header nav{order:0;width:auto;min-width:0;margin:0;justify-content:center;gap:4px;font-size:11px}
+ :root body.studio-reading .studio-header nav a{min-width:28px;min-height:44px}
+ body.studio-reading .studio-main.post{padding-top:12px;padding-bottom:max(30px,env(safe-area-inset-bottom))}
+ body.studio-reading .reading-layout{gap:18px}
+ body.studio-reading .reading-toc{padding-bottom:0}
+ body.studio-reading .reading-toc summary{min-height:40px;padding:4px 0}
+ body.studio-reading .toc-scroll{max-height:50vh;max-height:50dvh}
+ body.studio-reading .reading-breadcrumb{margin-bottom:14px}
+ body.studio-reading .post-title{font-size:26px;line-height:1.4}
+ body.studio-reading .post-description{margin-top:12px;line-height:1.75}
+ body.studio-reading .reading-byline{margin-top:18px;min-height:44px;gap:8px}
+ body.studio-reading .reading-author{gap:9px}
+ body.studio-reading .reading-author img{width:34px;height:34px}
+ body.studio-reading .reading-author>span{gap:1px}
+ body.studio-reading .reading-main .post-header{padding-bottom:18px;margin-bottom:24px}
+ :root[data-color] body.studio-reading .reading-main .post-body{font-size:16px;line-height:1.8}
+ body.studio-reading .post-body>p{margin-bottom:1.2em}
+ body.studio-reading .post-body>.note:first-child{margin-top:0;padding:14px 16px}
+}
+@media(max-width:374px) and (orientation:portrait){
+ :root body.studio-reading .studio-header{grid-template-columns:1fr auto;height:auto;min-height:88px;row-gap:0;padding-top:4px;padding-bottom:4px}
+ :root body.studio-reading .studio-header nav{grid-column:1/-1;grid-row:2;gap:24px}
+ :root body.studio-reading .studio-header nav a{min-height:36px}
+}
