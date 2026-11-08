@@ -1,0 +1,104 @@
+name: Publish Beyond the Clock from Hexo source
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-blog-from-source.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-publication
+  cancel-in-progress: false
+
+jobs:
+  build-verify-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout current deployed site (preserve all existing media)
+        uses: actions/checkout@v4
+        with:
+          path: deployed
+          persist-credentials: true
+      - name: Checkout canonical Hexo source
+        uses: actions/checkout@v4
+        with:
+          repository: leecdiang/myblog-source
+          ref: 165a7e2c61f62ab9d65d5c94b646bf55d2df0379
+          path: blog
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: blog/package-lock.json
+      - name: Install exact locked dependencies
+        working-directory: blog
+        run: npm ci --no-audit --no-fund
+      - name: Build Hexo website
+        working-directory: blog
+        run: npm run build
+      - name: Verify generated content and loading
+        working-directory: blog
+        run: |
+          npm run check:content
+          npm run check:loading
+      - name: Assert article and media from this release
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.parse import urlsplit, unquote
+          site=Path('blog/public')
+          article=site/'2026/11/08/llm-inference-from-token-to-cluster/index.html'
+          if not article.is_file():
+              raise SystemExit(f'Expected Hexo article not generated: {article}')
+          s=article.read_text(encoding='utf-8')
+          for marker in ['大模型推理到底在忙什么','Prefill','decode','inference-lab.html','图 17']:
+              if marker not in s:
+                  raise SystemExit(f'Article content marker missing: {marker}')
+          class Images(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.images=[]; self.svgs=0
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs)
+                  if tag=='img':self.images.append(a.get('src',''))
+                  if tag=='svg':self.svgs+=1
+          doc=Images();doc.feed(s)
+          if doc.svgs<11:raise SystemExit(f'Only {doc.svgs} SVG elements; expected 11 scientific figures')
+          bad=[]
+          for src in doc.images:
+              if not src or src.startswith(('data:','https:','http:')):continue
+              path=unquote(urlsplit(src).path)
+              if path.startswith('/'):asset=site/path.lstrip('/')
+              else:asset=article.parent/path
+              if not asset.is_file():bad.append(str(asset))
+          if bad:raise SystemExit('Missing image files: '+', '.join(bad[:20]))
+          for asset in ['images/dgx-h100-official.jpg',
+                        'images/dgx-spark-official.jpg',
+                        'images/gqa-original-fig2.png',
+                        'images/speculative-original-fig1.png',
+                        'interactive/inference-lab.html',
+                        'interactive/article-bridge.js',
+                        'data/assumptions.json']:
+              if not (article.parent/asset).is_file():
+                  raise SystemExit('Missing accompanying asset: '+asset)
+          print(f'Article OK: {len(s):,} HTML characters, {doc.svgs} inline SVG, {len(doc.images)} img references')
+          PY
+      - name: Publish without deleting historical media
+        run: |
+          rsync -a --exclude='.git' --exclude='.github' blog/public/ deployed/
+          cd deployed
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Generated output identical to current deployment'
+            exit 0
+          fi
+          git commit -m 'Publish LLM inference article from validated Hexo source'
+          git push origin HEAD:main
