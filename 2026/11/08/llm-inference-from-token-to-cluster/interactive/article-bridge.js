@@ -7,7 +7,7 @@
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const frames = () => [...document.querySelectorAll('iframe[data-inference-lab]')];
   function theme() {
-    const value = document.documentElement.dataset.theme;
+    const value = document.documentElement.dataset.color;
     return value === 'light' || value === 'dark' ? value : media.matches ? 'dark' : 'light';
   }
   function send(frame) {
@@ -35,7 +35,7 @@
     } else if (event.data.type === 'inference-lab-ready') send(frame);
   });
   media.addEventListener('change', sync);
-  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['class','data-theme'] });
+  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-color'] });
   document.addEventListener('pjax:success', mount);
   window[key] = { mount };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, { once: true });

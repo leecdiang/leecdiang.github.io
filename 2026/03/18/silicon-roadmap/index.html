@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
@@ -22,9 +22,9 @@
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="本文深度解析 Intel 最新的 iBot (Binary Optimisation Tool) 技术，探讨其在 Arrow Lake Refresh 架构中如何通过二进制层面的实时重排，并从此分析 SOC 软硬件协同设计的未来。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://leecdiang.com/images/social/ff6ef863d8bc.png">
+<meta property="og:image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png">
 <meta property="article:published_time" content="2026-03-18T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-08T05:44:25.086Z">
+<meta property="article:modified_time" content="2026-11-08T04:41:00.158Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="ArrowLake">
 <meta property="article:tag" content="CPU">
@@ -32,7 +32,7 @@
 <meta property="article:tag" content="Intel">
 <meta property="article:tag" content="Silicon">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://leecdiang.com/images/social/ff6ef863d8bc.png">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/03/18/silicon-roadmap/">
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/ff6ef863d8bc.png"><meta itemprop="dateModified" content="2026-11-08T05:44:25.086Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/3d41c7e03f9c.png"><meta itemprop="dateModified" content="2026-11-08T04:41:00.158Z"><meta itemprop="datePublished" content="2026-03-18T04:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/03/18/silicon-roadmap/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -131,7 +131,7 @@
     <div class="post-body" itemprop="articleBody"><h2 id="Arrow-Lake-Refresh-改了哪里">Arrow Lake Refresh 改了哪里</h2>
 <p>Intel 的 Arrow Lake Refresh，也就是 <a target="_blank" rel="noopener" href="https://overclock3d.net/reviews/cpu_mainboard/intel-delivers-a-value-boost-with-its-core-ultra-200s-plus-cpus/">Core Ultra 200S PLUS CPUs</a>，保留核心架构，微调频率，把 D2D 互连频率最多提高 900 MHz，并支持 DDR5-7200。除此之外，这一代还加入了 Intel Binary Optimisation Tool（IBOT）。</p>
 <p>相比频率变化，我更关心 IBOT 怎样改善指令执行、提高负载 IPC。<br>
-<img alt="" src="/2026/03/18/silicon-roadmap/silicon-roadmap-20260318.jpg" decoding="async" loading="lazy" width="1115" height="628"></p>
+<img alt="" src="silicon-roadmap-20260318.jpg" decoding="async" loading="lazy" width="1115" height="628"></p>
 <hr>
 <h2 id="什么是IBOT？">什么是IBOT？</h2>
 <p>制程微缩和增加核心数，无法独自解决异构架构里的执行低效。AI 负载带来的能源压力，以及 AI 进入个人终端的需求，也让能效成为更直接的约束。软件怎样使用现有硬件，值得单独看。</p>
@@ -216,7 +216,7 @@
 <p>前者改善模块间通信，后者重新安排软件使用资源的方式。硬件与软件分别处理一部分等待，才有机会让新增资源进入实际工作。</p>
 <p>对游戏，我会盯住 1% Low FPS 和原生帧的响应；对专业软件，则看吞吐与执行抖动。</p>
 <p>这些变化，比单独多出多少 MHz 更能说明这套方案的作用。</p>
-<p><img alt="" src="/2026/03/18/silicon-roadmap/silicon-roadmap-20260318-2.jpg" decoding="async" loading="lazy" width="1600" height="873"></p>
+<p><img alt="" src="silicon-roadmap-20260318-2.jpg" decoding="async" loading="lazy" width="1600" height="873"></p>
 
     </div>
 

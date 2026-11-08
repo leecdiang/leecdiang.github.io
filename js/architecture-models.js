@@ -101,7 +101,7 @@
     function mapSelect(key){
       archMap.dataset.mapActive=key;
       var targets={roofline:'.am-gpu,.am-matrix,.am-mem,.am-cache',amdahl:'.am-cpu',cpi:'.am-cpu',bdp:'.am-mem,.am-noc'};
-      document.querySelectorAll('.arch-map .am-block,.arch-map .am-core,.arch-map .am-tag').forEach(function(el){el.style.opacity='.25';el.style.strokeWidth='1.2'});
+      document.querySelectorAll('.arch-map .am-block,.arch-map .am-core').forEach(function(el){el.style.opacity='.5';el.style.strokeWidth='1.2'});
       document.querySelectorAll(targets[key]||'').forEach(function(el){el.style.opacity='1';el.style.strokeWidth='2.5'});
       mapButtons.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.map===key))});
       var note=$('map-note');if(note)note.textContent=mapNotes[key]||'';

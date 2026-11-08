@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.14b05e6ce331.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.cff18ceedbcf.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
@@ -22,10 +22,10 @@
 <meta property="og:site_name" content="Beyond the Clock">
 <meta property="og:description" content="关于 Main Agent、Code Lab、证据链、审批流,以及如何让一个不完美的模型参与长期任务。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.png">
-<meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.png">
+<meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg">
+<meta property="og:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg">
 <meta property="article:published_time" content="2026-06-11T05:33:00.000Z">
-<meta property="article:modified_time" content="2026-11-08T05:44:25.086Z">
+<meta property="article:modified_time" content="2026-11-08T04:41:00.157Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="Agent">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="工作流">
 <meta property="article:tag" content="思考">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.png">
+<meta name="twitter:image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg">
 
 
 <link rel="canonical" href="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/">
@@ -89,7 +89,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.png"><meta itemprop="dateModified" content="2026-11-08T05:44:25.086Z"><meta itemprop="datePublished" content="2026-06-11T05:33:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg"><meta itemprop="dateModified" content="2026-11-08T04:41:00.157Z"><meta itemprop="datePublished" content="2026-06-11T05:33:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/06/11/not-an-agent-but-a-workflow/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -230,7 +230,7 @@ arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.02460"
 <p>Obsidian 让这些资料和任务可以一起查看。</p>
 <p>最终生成了这些页面：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Dashboard - Overview</span><br><span class="line">Dashboard - Timeline</span><br><span class="line">Dashboard - By Tier</span><br><span class="line">Dashboard - Pending Approval</span><br><span class="line">Board - Application Status</span><br><span class="line">Schools/</span><br></pre></td></tr></tbody></table></figure>
-<p><img alt="" src="/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg" decoding="async" loading="lazy" width="1600" height="775"></p>
+<p><img alt="" src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002150.jpg" decoding="async" loading="lazy" width="1600" height="775"></p>
 <p>Overview 汇总阶段、待审批、时间压力和下一步；Timeline 按 deadline 排序，By Tier 看选校梯度。Pending Approval 集中待确认事项，Kanban 按 Research、Needs Verification、Shortlist、Preparing、Applying、Submitted、Archived 展示流程，Schools 下则是一校一项目的页面。</p>
 <p>时间、选校和审批各有视图，没必要都塞进一个 Dashboard。</p>
 <p>Obsidian 与 Mac 备忘录保存的是生成视图、提醒副本。事实保留在 OpenClaw workspace 的 CSV、Markdown、JSONL、approval log 和 change log 中。</p>
@@ -240,7 +240,7 @@ arXiv: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.02460"
 <hr>
 <h2 id="5-模型会出错，文件更新要能验证">5. 模型会出错，文件更新要能验证</h2>
 <p>部署时的 API 价格对比如下。</p>
-<p><img alt="" src="/2026/06/11/not-an-agent-but-a-workflow/%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg" decoding="async" loading="lazy" width="1576" height="842"></p>
+<p><img alt="" src="%E6%88%91%E6%90%AD%E7%9A%84%E4%B8%8D%E6%98%AFAgent%E8%80%8C%E6%98%AF%E4%B8%80%E5%A5%97%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F-20260612-002215.jpg" decoding="async" loading="lazy" width="1576" height="842"></p>
 <p>DeepSeek V4 Flash 便宜、快、上下文长，日常能用；复杂流程常需要多改几轮。识图、记忆检索和联网搜索等场景接了 Gemini API，因为 DeepSeek 没有多模态能力，Gemini 免费额度在这些用法里基本够用。</p>
 <p>多步骤执行时，问题开始集中出现：</p>
 <figure class="highlight text"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">口头说完成，但实际没写 JSONL</span><br><span class="line">工具报错后仍然汇报"写入完成"</span><br><span class="line">把 rejected 当成 no_action_required</span><br><span class="line">忘记脚本路径</span><br><span class="line">用 fragile exact oldText 替换文件，结果失败</span><br><span class="line">同步看板时写出 \n 或 \u000 这类转义污染</span><br></pre></td></tr></tbody></table></figure>
