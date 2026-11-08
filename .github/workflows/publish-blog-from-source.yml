@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: leecdiang/myblog-source
-          ref: 165a7e2c61f62ab9d65d5c94b646bf55d2df0379
+          ref: a0ae2d453b273eafe1cf96b88a3d00519dc152cf
           path: blog
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -39,6 +39,10 @@ jobs:
       - name: Install exact locked dependencies
         working-directory: blog
         run: npm ci --no-audit --no-fund
+      - name: Restore historical media from published site before Hexo validation
+        run: |
+          mkdir -p blog/public
+          rsync -a --exclude='.git' --exclude='.github' deployed/ blog/public/
       - name: Build Hexo website
         working-directory: blog
         run: npm run build
@@ -80,8 +84,8 @@ jobs:
           if bad:raise SystemExit('Missing image files: '+', '.join(bad[:20]))
           for asset in ['images/dgx-h100-official.jpg',
                         'images/dgx-spark-official.jpg',
-                        'images/gqa-original-fig2.png',
-                        'images/speculative-original-fig1.png',
+                        'images/gqa-original-fig2.jpg',
+                        'images/speculative-original-fig1.jpg',
                         'interactive/inference-lab.html',
                         'interactive/article-bridge.js',
                         'data/assumptions.json']:
