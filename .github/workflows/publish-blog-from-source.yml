@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: leecdiang/myblog-source
-          ref: a0ae2d453b273eafe1cf96b88a3d00519dc152cf
+          ref: 621434340b8902f3e8f365334b5222e4976aaec2
           path: blog
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -116,6 +116,7 @@ jobs:
         run: |
           npm run check:content
           npm run check:loading
+          npm run check:security
       - name: Assert article and media from this release
         run: |
           python3 - <<'PY'
@@ -153,6 +154,7 @@ jobs:
                         'images/speculative-original-fig1.jpg',
                         'interactive/inference-lab.html',
                         'interactive/article-bridge.js',
+                        'interactive/inference-lab.js',
                         'data/assumptions.json']:
               if not (article.parent/asset).is_file():
                   raise SystemExit('Missing accompanying asset: '+asset)
