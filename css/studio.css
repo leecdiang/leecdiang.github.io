@@ -872,3 +872,32 @@ body.studio-reading .post-copyright a{overflow-wrap:anywhere;word-break:break-wo
  :root body.studio-reading .studio-header nav{grid-column:1/-1;grid-row:2;gap:24px}
  :root body.studio-reading .studio-header nav a{min-height:36px}
 }
+
+/* Selected B layout. Phone portrait retains its existing composition and type. */
+@media(min-width:701px), (orientation:landscape){
+ :root[data-color] body.studio-reading .reading-main .post-body{font-size:17px;line-height:1.9}
+ body.studio-reading .post-title{font-size:32px;line-height:1.45}
+ :root body.studio-reading .post-body>.note:first-child{margin:0 0 30px;padding:0 0 22px;font-size:16px;line-height:1.85;border:0;border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent);border-radius:0;background:transparent;box-shadow:none;color:var(--muted)}
+ :root body.studio-reading .post-body>.note:first-child p:last-child{margin-bottom:0}
+ .studio-home .home-copy h1{font-size:60px}
+ .studio-home .studio-main{display:grid;grid-template-rows:minmax(0,1fr) auto;align-items:center;gap:0;padding-top:0;padding-bottom:22px}
+ .studio-home .home-intro{margin:0 auto}
+ .studio-home .home-visitors{display:block;width:100%;max-width:1020px;margin:0 auto;padding:0}
+ .studio-home .home-visitors figure{width:180px;margin:0 0 0 auto}
+ .studio-home .home-visitors figcaption{text-align:left;font-size:11px;line-height:1.6;color:var(--muted)}
+ .studio-home .home-visitors-map{margin-top:7px}
+}
+@media(min-width:701px) and (max-height:540px){
+ .studio-home .studio-header{height:64px}
+ .studio-home .studio-main{padding:18px 30px 10px}
+ .studio-home .home-copy h1{font-size:40px;margin:12px 0 14px}
+ .studio-home .home-hello{font-size:20px;margin-bottom:8px}
+ .studio-home .home-eyebrow{font-size:12px}
+ .studio-home .home-description{font-size:14px;line-height:1.75}
+ .studio-home .home-actions{margin-top:14px;gap:20px}
+ .studio-home .home-actions span{margin-left:10px}
+ .studio-home .home-actions a{padding-top:9px;padding-bottom:9px}
+ .studio-home .home-latest{margin-top:14px;font-size:11px}
+ .studio-home .home-photo img{height:220px}
+ .studio-home .home-visitors figure{width:136px}
+}
