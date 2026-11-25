@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.843d545a6f8c.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.f0810c8a098a.css">
   
   
     <meta name="description" content="LEEcDiang   A final-year undergraduate student majoring in Microelectronics Science and Engineering at UESTC — University of Electronic Science and Technology of China.   My work and notes current">
@@ -46,7 +46,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.164c7d38077e.js"></script>
+  <script defer="" src="/assets/studio/core.e41d95e0cd09.js"></script>
   
   
 
@@ -62,11 +62,13 @@
       <a href="/archives/">文章</a>
       <a href="/about/" aria-current="page">关于</a>
     </nav>
-    <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
-    <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
-      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
-      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
-    </button></div>
+    <div class="header-controls">
+      <button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+      <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
+      </button>
+    </div>
   </header>
   <main id="main-content" tabindex="-1" class="studio-main main-inner page posts-expand about-page">
     
@@ -94,32 +96,35 @@
     </section>
     <section id="research" class="about-section">
       <h2>研究</h2>
-      <article class="research-feature research-feature--split">
-        <figure class="research-figure">
-          <a href="/images/research/asv-effect-anatomy.png" target="_blank" rel="noopener" aria-label="查看研究图大图"><img src="/images/research/asv-effect-anatomy.webp" width="1000" height="895" alt="ASV 附录散点图：直接增益与生成视图增益" loading="lazy"></a>
-          <figcaption><span>直接增益与生成视图增益</span><a href="/images/research/asv-effect-anatomy.png" target="_blank" rel="noopener">查看大图 ↗</a></figcaption>
-        </figure>
-        <div class="research-copy">
+      <article class="research-feature">
+        <header class="research-header">
           <p class="about-meta">REALM Workshop · EMNLP 2026</p>
-          <h3 translate="no">Agent Step Value</h3>
+          <h3 lang="en" translate="no">Agent Step Value: Auditing Evaluation-Channel Sensitivity in Black-Box Agent Traces</h3>
+        </header>
+        <div class="research-copy">
           <p class="about-role">共同第一作者 · Poster</p>
           <p>研究同一个智能体步骤在不同评估通道下，为什么会得到方向相反的奖励判断。</p>
           <div class="about-entry-links"><a href="https://doi.org/10.18653/2026.realm-1.12" target="_blank" rel="noopener">DOI ↗</a><a href="/2026/10/14/agent-step-value/">阅读研究介绍</a><a href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener">arXiv ↗</a></div>
         </div>
+        <figure class="research-figure">
+          <a href="/images/research/asv-effect-anatomy.png" target="_blank" rel="noopener" aria-label="查看研究图大图"><img src="/images/research/asv-effect-anatomy.webp" width="1000" height="895" alt="ASV 附录散点图：直接增益与生成视图增益" loading="lazy"></a>
+          <figcaption><span>直接增益与生成视图增益</span><a href="/images/research/asv-effect-anatomy.png" target="_blank" rel="noopener">查看大图 ↗</a></figcaption>
+        </figure>
       </article>
-      <article class="research-feature research-feature--split">
+      <article class="research-feature">
+        <header class="research-header">
+          <p class="about-meta">RefBound · arXiv:2610.03228v8</p>
+          <h3 id="heterospec-title" lang="en" translate="no">Recovering Parallelism under Fixed Numerical References in Quantized LLM Decoders</h3>
+        </header>
+        <div class="research-copy">
+          <p class="about-role">独著 · 预印本</p>
+          <p>LOCAL 按 KV 缓存的物理视图拆分注意力查询，同时保留符合固定数值参考的并行投影组。</p>
+          <div class="about-entry-links"><a href="https://arxiv.org/abs/2610.03228v8" target="_blank" rel="noopener">arXiv ↗</a><a href="https://github.com/leecdiang/RefBound/tree/de2192a5" target="_blank" rel="noopener">代码与实验材料 ↗</a></div>
+        </div>
         <figure class="research-figure">
           <a href="/images/research/refbound-v8-figure-2.png" target="_blank" rel="noopener"><img src="/images/research/refbound-v8-figure-2.webp" width="1808" height="1302" alt="SIMPLE 拆成两次解码调用。LOCAL 保留一次四列投影，在注意力内部按 3+1 拆分查询。图中也展示了状态提交和后续调用。" loading="lazy"></a>
           <figcaption><span>图 2 · LOCAL 跨视图执行</span><a href="/images/research/refbound-v8-figure-2.png" target="_blank" rel="noopener">查看大图 ↗</a></figcaption>
         </figure>
-        <div class="research-copy">
-          <p class="about-meta">RefBound · arXiv:2610.03228v8</p>
-          <h3 id="heterospec-title" lang="en" translate="no">Recovering Parallelism under Fixed Numerical References in Quantized LLM Decoders</h3>
-          <p class="about-role">独著 · 预印本</p>
-          <p>量化解码时，注意力所需的 KV 缓存视图可能在一组查询中发生变化。LOCAL 保留符合固定数值参考的并行投影组，在注意力内部按物理视图拆分查询，再按原顺序合并输出。</p>
-          <p>在 RTX A5000 上使用固定候选序列的 32B 视图跨界实验中，LOCAL 从验证到状态提交的耗时比整次调用拆分基线低 21.56%（95% 置信区间为 20.21%–22.83%）。非跨界主对照的估计降幅为 0.43%，95% 置信区间跨零。</p>
-          <div class="about-entry-links"><a href="https://arxiv.org/abs/2610.03228v8" target="_blank" rel="noopener">arXiv ↗</a><a href="https://github.com/leecdiang/RefBound/tree/de2192a5" target="_blank" rel="noopener">代码与实验材料 ↗</a></div>
-        </div>
       </article>
     </section>
     <section id="projects" class="about-section">
@@ -128,13 +133,15 @@
       <article class="about-entry"><h3>EdgeControl</h3><p class="about-meta">macOS / Swift / 触控板手势</p><p>用触控板边缘手势调节音量与亮度，结合触觉反馈，并通过手势状态机减少误触。</p><div class="about-entry-links"><a href="/2026/08/30/edgecontrol-trackpad-edge-gestures/">开发记录</a><a href="https://github.com/leecdiang/EdgeControl" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div></article>
       <article class="about-entry"><h3 translate="no">Apple Health Pro</h3><p class="about-meta">Python / macOS · Windows · Linux</p><p>Apple Health 导出数据转换工具，将 ZIP / XML 转为分类 CSV，支持来源与日期筛选、设备名隐藏及大文件分卷。</p><div class="about-entry-links"><a href="/2026/04/05/Apple-Health-Pro/">开发记录</a><a href="https://github.com/leecdiang/Apple-Health-Pro" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div></article>
     </section>
-    <section id="beyond-the-clock" class="about-section">
-      <h2>Beyond the Clock</h2>
-      <p>在数字系统里，时钟定义节奏、顺序与同步。这个网站记录时钟两侧的事：电路与计算、日常工具，以及摄影和旅行。</p>
-      <div class="about-entry-links"><a href="/archives/">文章列表</a><a href="/photography/">摄影画廊</a></div>
-    </section>
   </div>
 </div>
+<section id="beyond-the-clock" class="about-site" aria-labelledby="about-site-title">
+  <h2 id="about-site-title" lang="en" translate="no">Beyond the Clock</h2>
+  <div>
+    <p>在数字系统里，时钟定义节奏、顺序与同步。这个网站记录时钟两侧的事：电路与计算、日常工具，以及摄影和旅行。</p>
+    <div class="about-entry-links"><a href="/archives/">文章列表</a><a href="/photography/">摄影画廊</a></div>
+  </div>
+</section>
 
   
 

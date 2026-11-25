@@ -1,15 +1,16 @@
 <!DOCTYPE html><html lang="zh-CN" data-static-math="true"><head>
-  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI=' 'sha256-H3XqxO8lY++OlEYwS43hbdLeCq/KdGf0pWjPDzTONWI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
   <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+  <script>try{if(localStorage.getItem('studio-reading-width')==='wide')document.documentElement.setAttribute('data-reading-wide','')}catch(e){}</script>
 
   <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.612c7e967edd.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.f0810c8a098a.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d3358a247c88.css">
   
   
   <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script>
@@ -59,7 +60,7 @@
   <script src="/js/studio-mermaid-loader.js?v=20261106-performance" defer=""></script>
 
   
-  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
+  <script defer="" src="/assets/studio/core.e41d95e0cd09.js"></script>
   
   
 
@@ -76,6 +77,7 @@
       <a href="/about/">关于</a>
     </nav>
     <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+    <button type="button" class="reading-width-toggle" aria-pressed="false" hidden="">宽版阅读</button>
     <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
       <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
       <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
