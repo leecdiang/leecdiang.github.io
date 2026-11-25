@@ -11,7 +11,7 @@
   <rights>All rights reserved 2026, LEEcDiang</rights>
   <subtitle>Tracing systems inside and beyond the clock.</subtitle>
   <title>Beyond the Clock</title>
-  <updated>2026-11-25T12:02:00.000Z</updated>
+  <updated>2026-11-25T12:14:00.000Z</updated>
   <entry>
     <author>
       <name>LEEcDiang</name>
@@ -31,85 +31,86 @@
 
 &lt;div&gt;
 &lt;p class=&quot;rdma-term-action&quot;&gt;&lt;a href=&quot;https://leecdiang.com/2026/11/25/rdma-four-operations/#rdma-host-path&quot;&gt;&#x8df3;&#x5230;&#x56fe; 1 &#x548c;&#x6b63;&#x6587;&lt;/a&gt;&#x3000;&lt;/p&gt;
-&lt;div class=&quot;table-container&quot;&gt;&lt;table aria-label=&quot;RDMA &#x7f29;&#x5199;&#x3001;&#x4ee3;&#x7801;&#x540d;&#x4e0e;&#x4e2d;&#x6587;&#x542b;&#x4e49;&quot;&gt;
-&lt;thead&gt;&lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;&#x7f29;&#x5199;&#x6216;&#x4ee3;&#x7801;&#x540d;&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;&#x4e2d;&#x6587;&#x542b;&#x4e49;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;div class=&quot;table-container&quot;&gt;&lt;table aria-label=&quot;RDMA &#x7f29;&#x5199;&#x3001;&#x82f1;&#x6587;&#x5168;&#x79f0;&#x4e0e;&#x4e2d;&#x6587;&#x542b;&#x4e49;&quot;&gt;
+&lt;colgroup&gt;&lt;col&gt;&lt;col&gt;&lt;col&gt;&lt;/colgroup&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;&#x7f29;&#x5199;&#x6216;&#x4ee3;&#x7801;&#x540d;&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;&#x82f1;&#x6587;&#x5168;&#x79f0;&#x6216;&#x540d;&#x79f0;&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;&#x4e2d;&#x6587;&#x542b;&#x4e49;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RDMA&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x76f4;&#x63a5;&#x5185;&#x5b58;&#x8bbf;&#x95ee;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RNIC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x652f;&#x6301; RDMA &#x7684;&#x7f51;&#x5361;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SQ&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53d1;&#x9001;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RQ&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x63a5;&#x6536;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QP&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x961f;&#x5217;&#x5bf9;&#xff0c;&#x7531; SQ &#x548c; RQ &#x7ec4;&#x6210;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QPN&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x961f;&#x5217;&#x5bf9;&#x7f16;&#x53f7;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WR&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x8bf7;&#x6c42;&#xff0c;&#x5e94;&#x7528;&#x63d0;&#x4ea4;&#x7ed9;&#x7f51;&#x5361;&#x7684;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WQE&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x961f;&#x5217;&#x9879;&#xff0c;RNIC &#x4ece;&#x4e2d;&#x8bfb;&#x51fa;&#x8981;&#x6267;&#x884c;&#x7684;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MR&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5df2;&#x6ce8;&#x518c;&#x7684;&#x5185;&#x5b58;&#x533a;&#x57df;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SGE&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x6563;&#x5e03;&#xff0f;&#x805a;&#x96c6;&#x9879;&#xff0c;&#x63cf;&#x8ff0;&#x4e00;&#x6bb5;&#x672c;&#x5730;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CQ&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5b8c;&#x6210;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CQE&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5b8c;&#x6210;&#x961f;&#x5217;&#x9879;&#xff0c;&#x7531; RNIC &#x5199;&#x5165; CQ&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x5b8c;&#x6210;&#x8bb0;&#x5f55;&#xff0c;&#x5e94;&#x7528;&#x8f6e;&#x8be2; CQ &#x65f6;&#x5f97;&#x5230;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MMIO&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5185;&#x5b58;&#x6620;&#x5c04; I/O&#xff0c;CPU &#x7528;&#x5b83;&#x8bbf;&#x95ee;&#x8bbe;&#x5907;&#x5bc4;&#x5b58;&#x5668;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DMA&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x76f4;&#x63a5;&#x5185;&#x5b58;&#x8bbf;&#x95ee;&#xff0c;&#x8bbe;&#x5907;&#x53ef;&#x4ee5;&#x4e3b;&#x52a8;&#x8bfb;&#x5199;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RDMA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Remote Direct Memory Access&lt;/td&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x76f4;&#x63a5;&#x5185;&#x5b58;&#x8bbf;&#x95ee;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RNIC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA Network Interface Controller&lt;/td&gt;&lt;td&gt;&#x652f;&#x6301; RDMA &#x7684;&#x7f51;&#x5361;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SQ&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Send Queue&lt;/td&gt;&lt;td&gt;&#x53d1;&#x9001;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RQ&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Receive Queue&lt;/td&gt;&lt;td&gt;&#x63a5;&#x6536;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QP&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Queue Pair&lt;/td&gt;&lt;td&gt;&#x961f;&#x5217;&#x5bf9;&#xff0c;&#x7531; SQ &#x548c; RQ &#x7ec4;&#x6210;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QPN&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Queue Pair Number&lt;/td&gt;&lt;td&gt;&#x961f;&#x5217;&#x5bf9;&#x7f16;&#x53f7;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WR&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Work Request&lt;/td&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x8bf7;&#x6c42;&#xff0c;&#x5e94;&#x7528;&#x63d0;&#x4ea4;&#x7ed9;&#x7f51;&#x5361;&#x7684;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WQE&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Work Queue Element&lt;/td&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x961f;&#x5217;&#x9879;&#xff0c;RNIC &#x4ece;&#x4e2d;&#x8bfb;&#x51fa;&#x8981;&#x6267;&#x884c;&#x7684;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MR&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Memory Region&lt;/td&gt;&lt;td&gt;&#x5df2;&#x6ce8;&#x518c;&#x7684;&#x5185;&#x5b58;&#x533a;&#x57df;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SGE&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Scatter/Gather Element&lt;/td&gt;&lt;td&gt;&#x6563;&#x5e03;&#xff0f;&#x805a;&#x96c6;&#x9879;&#xff0c;&#x63cf;&#x8ff0;&#x4e00;&#x6bb5;&#x672c;&#x5730;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CQ&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Completion Queue&lt;/td&gt;&lt;td&gt;&#x5b8c;&#x6210;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CQE&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Completion Queue Entry&lt;/td&gt;&lt;td&gt;&#x5b8c;&#x6210;&#x961f;&#x5217;&#x9879;&#xff0c;&#x7531; RNIC &#x5199;&#x5165; CQ&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Work Completion&lt;/td&gt;&lt;td&gt;&#x5de5;&#x4f5c;&#x5b8c;&#x6210;&#x8bb0;&#x5f55;&#xff0c;&#x5e94;&#x7528;&#x8f6e;&#x8be2; CQ &#x65f6;&#x5f97;&#x5230;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MMIO&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Memory-Mapped Input/Output&lt;/td&gt;&lt;td&gt;&#x5185;&#x5b58;&#x6620;&#x5c04; I/O&#xff0c;CPU &#x7528;&#x5b83;&#x8bbf;&#x95ee;&#x8bbe;&#x5907;&#x5bc4;&#x5b58;&#x5668;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DMA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Direct Memory Access&lt;/td&gt;&lt;td&gt;&#x76f4;&#x63a5;&#x5185;&#x5b58;&#x8bbf;&#x95ee;&#xff0c;&#x8bbe;&#x5907;&#x53ef;&#x4ee5;&#x4e3b;&#x52a8;&#x8bfb;&#x5199;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;tbody&gt;
-&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;2&quot;&gt;&#x8bbf;&#x95ee;&#x6743;&#x9650;&#x4e0e;&#x63a5;&#x53e3;&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;lkey&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x672c;&#x5730;&#x8bbf;&#x95ee;&#x952e;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;rkey&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x8bbf;&#x95ee;&#x952e;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PD&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x4fdd;&#x62a4;&#x57df;&#xff0c;&#x5173;&#x8054; QP &#x548c; MR&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;wr_id&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5e94;&#x7528;&#x7ed9;&#x672c;&#x5730; WR &#x6307;&#x5b9a;&#x7684;&#x6807;&#x8bc6;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;imm_data&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x7acb;&#x5373;&#x6570;&#x7684;&#x5b57;&#x6bb5;&#x540d;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;verbs provider&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5c06; verbs &#x8c03;&#x7528;&#x9002;&#x914d;&#x5230;&#x5177;&#x4f53;&#x8bbe;&#x5907;&#x7684;&#x8f6f;&#x4ef6;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;doorbell&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x95e8;&#x94c3;&#xff0c;&#x8f6f;&#x4ef6;&#x7528;&#x5b83;&#x901a;&#x77e5; RNIC &#x6709;&#x65b0;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IBV_SEND_SIGNALED&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53d1;&#x9001;&#x6807;&#x5fd7;&#xff0c;&#x8981;&#x6c42;&#x5728; WR &#x6210;&#x529f;&#x65f6;&#x4e5f;&#x62a5;&#x544a;&#x5b8c;&#x6210;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;2&quot;&gt;&#x7f51;&#x7edc;&#x4e0e;&#x5206;&#x5305;&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53ef;&#x9760;&#x8fde;&#x63a5;&#xff0c;&#x4e00;&#x79cd; RDMA &#x4f20;&#x8f93;&#x670d;&#x52a1;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RoCEv2&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x57fa;&#x4e8e;&#x4ee5;&#x592a;&#x7f51;&#x7684; RDMA &#x7b2c; 2 &#x7248;&#xff0c;&#x4f7f;&#x7528; UDP/IP &#x5c01;&#x88c5;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;UDP&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x7528;&#x6237;&#x6570;&#x636e;&#x62a5;&#x534f;&#x8bae;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IP&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x7f51;&#x9645;&#x534f;&#x8bae;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IB&lt;/code&gt;&lt;/th&gt;&lt;td&gt;InfiniBand&#xff0c;&#x4e00;&#x79cd;&#x9ad8;&#x6027;&#x80fd;&#x4e92;&#x8fde;&#x6807;&#x51c6;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PMTU&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8def;&#x5f84;&#x6700;&#x5927;&#x4f20;&#x8f93;&#x5355;&#x5143;&#xff0c;&#x672c;&#x6587;&#x6307; RC &#x5206;&#x5305;&#x91c7;&#x7528;&#x7684;&#x8f7d;&#x8377;&#x4e0a;&#x9650;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MTU&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x6700;&#x5927;&#x4f20;&#x8f93;&#x5355;&#x5143;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PSN&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5305;&#x5e8f;&#x5217;&#x53f7;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;ACK&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x786e;&#x8ba4;&#x5e94;&#x7b54;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RNR&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x63a5;&#x6536;&#x7aef;&#x5c1a;&#x672a;&#x5c31;&#x7eea;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RETH&lt;/code&gt;&lt;/th&gt;&lt;td&gt;RDMA &#x6269;&#x5c55;&#x4f20;&#x8f93;&#x5934;&#xff0c;&#x542b;&#x8fdc;&#x7aef;&#x5730;&#x5740;&#x3001;rkey &#x548c;&#x957f;&#x5ea6;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;2&quot;&gt;&#x64cd;&#x4f5c;&#x4e0e;&#x56fe;&#x4e2d;&#x6807;&#x8bc6;&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SEND&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53d1;&#x9001;&#x6d88;&#x606f;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RECV&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x63a5;&#x6536;&#x6d88;&#x606f;&#xff0c;&#x7531;&#x63a5;&#x6536;&#x65b9;&#x9884;&#x5148;&#x63d0;&#x4ea4; WR&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WRITE&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x5199;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WRITE_WITH_IMM&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5e26;&#x7acb;&#x5373;&#x6570;&#x7684;&#x8fdc;&#x7a0b;&#x5199;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;READ&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x8bfb;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;Atomic&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x539f;&#x5b50;&#x64cd;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;FAA&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x539f;&#x5b50;&#x53d6;&#x503c;&#x5e76;&#x52a0;&#xff0c;&#x8fd4;&#x56de;&#x65e7;&#x503c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CAS&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x539f;&#x5b50;&#x6bd4;&#x8f83;&#x5e76;&#x4ea4;&#x6362;&#xff0c;&#x8fd4;&#x56de;&#x65e7;&#x503c;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;TX&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53d1;&#x9001;&#x7aef;&#x6216;&#x53d1;&#x9001;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RX&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x63a5;&#x6536;&#x7aef;&#x6216;&#x63a5;&#x6536;&#x7f13;&#x51b2;&#x533a;&#xff0c;RX7 &#x662f;&#x56fe;&#x4e2d;&#x7684;&#x7f13;&#x51b2;&#x533a;&#x540d;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DST&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x76ee;&#x7684;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;B&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5b57;&#x8282;&#xff08;&#x7528;&#x4e8e;&#x6807;&#x6ce8;&#x957f;&#x5ea6;&#xff09;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;KiB&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x4e8c;&#x8fdb;&#x5236;&#x5343;&#x5b57;&#x8282;&#xff0c;1 KiB = 1024 B&lt;/td&gt;&lt;/tr&gt;
-&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;2&quot;&gt;&#x4e3b;&#x673a;&#x4e0e; PCIe&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CPU&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x4e2d;&#x592e;&#x5904;&#x7406;&#x5668;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DRAM&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x52a8;&#x6001;&#x968f;&#x673a;&#x5b58;&#x53d6;&#x5b58;&#x50a8;&#x5668;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PCIe&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x9ad8;&#x901f;&#x5916;&#x8bbe;&#x4e92;&#x8fde;&#x603b;&#x7ebf;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MRRS&lt;/code&gt;&lt;/th&gt;&lt;td&gt;PCIe &#x6700;&#x5927;&#x8bfb;&#x8bf7;&#x6c42;&#x5927;&#x5c0f;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MPS&lt;/code&gt;&lt;/th&gt;&lt;td&gt;PCIe &#x6700;&#x5927;&#x8f7d;&#x8377;&#x5927;&#x5c0f;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MRd&lt;/code&gt;&lt;/th&gt;&lt;td&gt;PCIe &#x5185;&#x5b58;&#x8bfb;&#x8bf7;&#x6c42;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CplD&lt;/code&gt;&lt;/th&gt;&lt;td&gt;PCIe &#x5e26;&#x6570;&#x636e;&#x7684;&#x5b8c;&#x6210;&#x5305;&#xff0c;&#x7528;&#x4e8e;&#x8fd4;&#x56de;&#x8bfb;&#x5230;&#x7684;&#x6570;&#x636e;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MWr&lt;/code&gt;&lt;/th&gt;&lt;td&gt;PCIe &#x5185;&#x5b58;&#x5199;&#x8bf7;&#x6c42;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;2&quot;&gt;RecoNIC &#x4e0e; NCCL&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;GbE&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5409;&#x6bd4;&#x7279;&#x4ee5;&#x592a;&#x7f51;&#xff0c;&#x56fe;&#x4e2d;&#x7684; 100 GbE &#x8868;&#x793a; 100 Gbit/s&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MAC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x4ecb;&#x8d28;&#x8bbf;&#x95ee;&#x63a7;&#x5236;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CMAC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;RecoNIC &#x4f7f;&#x7528;&#x7684; AMD 100 GbE &#x4ee5;&#x592a;&#x7f51; MAC &#x6838;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IP &#x6838;&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53ef;&#x590d;&#x7528;&#x7684;&#x786c;&#x4ef6;&#x8bbe;&#x8ba1;&#x6a21;&#x5757;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;ERNIC&lt;/code&gt;&lt;/th&gt;&lt;td&gt;RecoNIC &#x4f7f;&#x7528;&#x7684;&#x5d4c;&#x5165;&#x5f0f; RDMA &#x7f51;&#x5361; IP &#x6838;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AXI&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x7247;&#x4e0a;&#x4e92;&#x8fde;&#x534f;&#x8bae;&#xff0c;ERNIC &#x901a;&#x8fc7;&#x5b83;&#x8bbf;&#x95ee;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QDMA&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x57fa;&#x4e8e;&#x961f;&#x5217;&#x7684; DMA &#x5b50;&#x7cfb;&#x7edf;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DDR&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x53cc;&#x500d;&#x6570;&#x636e;&#x901f;&#x7387;&#x5185;&#x5b58;&#xff0c;&#x56fe;&#x4e2d;&#x6307;&#x677f;&#x8f7d;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;FIFO&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5148;&#x8fdb;&#x5148;&#x51fa;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AllGather&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x5168;&#x6536;&#x96c6;&#xff0c;&#x6bcf;&#x4e2a;&#x53c2;&#x4e0e;&#x65b9;&#x5f97;&#x5230;&#x6240;&#x6709;&#x53c2;&#x4e0e;&#x65b9;&#x7684;&#x6570;&#x636e;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;NCCL&lt;/code&gt;&lt;/th&gt;&lt;td&gt;NVIDIA &#x96c6;&#x5408;&#x901a;&#x4fe1;&#x5e93;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AR&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x81ea;&#x9002;&#x5e94;&#x8def;&#x7531;&#xff0c;&#x51fa;&#x73b0;&#x5728; NCCL_IB_AR_THRESHOLD &#x4e2d;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;GPU&lt;/code&gt;&lt;/th&gt;&lt;td&gt;&#x56fe;&#x5f62;&#x5904;&#x7406;&#x5668;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CUDA&lt;/code&gt;&lt;/th&gt;&lt;td&gt;NVIDIA &#x7684; GPU &#x5e76;&#x884c;&#x8ba1;&#x7b97;&#x5e73;&#x53f0;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;3&quot;&gt;&#x8bbf;&#x95ee;&#x6743;&#x9650;&#x4e0e;&#x63a5;&#x53e3;&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;lkey&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Local Key&lt;/td&gt;&lt;td&gt;&#x672c;&#x5730;&#x8bbf;&#x95ee;&#x952e;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;rkey&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Remote Key&lt;/td&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x8bbf;&#x95ee;&#x952e;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PD&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Protection Domain&lt;/td&gt;&lt;td&gt;&#x4fdd;&#x62a4;&#x57df;&#xff0c;&#x5173;&#x8054; QP &#x548c; MR&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;wr_id&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Work Request Identifier&lt;/td&gt;&lt;td&gt;&#x5e94;&#x7528;&#x7ed9;&#x672c;&#x5730; WR &#x6307;&#x5b9a;&#x7684;&#x6807;&#x8bc6;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;imm_data&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Immediate Data&lt;/td&gt;&lt;td&gt;&#x7acb;&#x5373;&#x6570;&#x7684;&#x5b57;&#x6bb5;&#x540d;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;verbs provider&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Verbs provider&lt;/td&gt;&lt;td&gt;&#x5c06; verbs &#x8c03;&#x7528;&#x9002;&#x914d;&#x5230;&#x5177;&#x4f53;&#x8bbe;&#x5907;&#x7684;&#x8f6f;&#x4ef6;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;doorbell&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Doorbell&lt;/td&gt;&lt;td&gt;&#x95e8;&#x94c3;&#xff0c;&#x8f6f;&#x4ef6;&#x7528;&#x5b83;&#x901a;&#x77e5; RNIC &#x6709;&#x65b0;&#x5de5;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IBV_SEND_SIGNALED&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Signaled send flag&lt;/td&gt;&lt;td&gt;&#x53d1;&#x9001;&#x6807;&#x5fd7;&#xff0c;&#x8981;&#x6c42;&#x5728; WR &#x6210;&#x529f;&#x65f6;&#x4e5f;&#x62a5;&#x544a;&#x5b8c;&#x6210;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;3&quot;&gt;&#x7f51;&#x7edc;&#x4e0e;&#x5206;&#x5305;&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Reliable Connection&lt;/td&gt;&lt;td&gt;&#x53ef;&#x9760;&#x8fde;&#x63a5;&#xff0c;&#x4e00;&#x79cd; RDMA &#x4f20;&#x8f93;&#x670d;&#x52a1;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RoCEv2&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA over Converged Ethernet, version 2&lt;/td&gt;&lt;td&gt;&#x57fa;&#x4e8e;&#x4ee5;&#x592a;&#x7f51;&#x7684; RDMA &#x7b2c; 2 &#x7248;&#xff0c;&#x4f7f;&#x7528; UDP/IP &#x5c01;&#x88c5;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;UDP&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;User Datagram Protocol&lt;/td&gt;&lt;td&gt;&#x7528;&#x6237;&#x6570;&#x636e;&#x62a5;&#x534f;&#x8bae;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IP&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Internet Protocol&lt;/td&gt;&lt;td&gt;&#x7f51;&#x9645;&#x534f;&#x8bae;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IB&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;InfiniBand&lt;/td&gt;&lt;td&gt;InfiniBand&#xff0c;&#x4e00;&#x79cd;&#x9ad8;&#x6027;&#x80fd;&#x4e92;&#x8fde;&#x6807;&#x51c6;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PMTU&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Path Maximum Transmission Unit&lt;/td&gt;&lt;td&gt;&#x8def;&#x5f84;&#x6700;&#x5927;&#x4f20;&#x8f93;&#x5355;&#x5143;&#xff0c;&#x672c;&#x6587;&#x6307; RC &#x5206;&#x5305;&#x91c7;&#x7528;&#x7684;&#x8f7d;&#x8377;&#x4e0a;&#x9650;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MTU&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Maximum Transmission Unit&lt;/td&gt;&lt;td&gt;&#x6700;&#x5927;&#x4f20;&#x8f93;&#x5355;&#x5143;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PSN&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Packet Sequence Number&lt;/td&gt;&lt;td&gt;&#x5305;&#x5e8f;&#x5217;&#x53f7;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;ACK&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Acknowledgment&lt;/td&gt;&lt;td&gt;&#x786e;&#x8ba4;&#x5e94;&#x7b54;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RNR&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Receiver Not Ready&lt;/td&gt;&lt;td&gt;&#x63a5;&#x6536;&#x7aef;&#x5c1a;&#x672a;&#x5c31;&#x7eea;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RETH&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA Extended Transport Header&lt;/td&gt;&lt;td&gt;RDMA &#x6269;&#x5c55;&#x4f20;&#x8f93;&#x5934;&#xff0c;&#x542b;&#x8fdc;&#x7aef;&#x5730;&#x5740;&#x3001;rkey &#x548c;&#x957f;&#x5ea6;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;3&quot;&gt;&#x64cd;&#x4f5c;&#x4e0e;&#x56fe;&#x4e2d;&#x6807;&#x8bc6;&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;SEND&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Send&lt;/td&gt;&lt;td&gt;&#x53d1;&#x9001;&#x6d88;&#x606f;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RECV&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Receive&lt;/td&gt;&lt;td&gt;&#x63a5;&#x6536;&#x6d88;&#x606f;&#xff0c;&#x7531;&#x63a5;&#x6536;&#x65b9;&#x9884;&#x5148;&#x63d0;&#x4ea4; WR&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WRITE&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA Write&lt;/td&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x5199;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;WRITE_WITH_IMM&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA Write with Immediate&lt;/td&gt;&lt;td&gt;&#x5e26;&#x7acb;&#x5373;&#x6570;&#x7684;&#x8fdc;&#x7a0b;&#x5199;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;READ&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;RDMA Read&lt;/td&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x8bfb;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;Atomic&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Atomic operation&lt;/td&gt;&lt;td&gt;&#x8fdc;&#x7a0b;&#x539f;&#x5b50;&#x64cd;&#x4f5c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;FAA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Fetch-and-Add&lt;/td&gt;&lt;td&gt;&#x539f;&#x5b50;&#x53d6;&#x503c;&#x5e76;&#x52a0;&#xff0c;&#x8fd4;&#x56de;&#x65e7;&#x503c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CAS&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Compare-and-Swap&lt;/td&gt;&lt;td&gt;&#x539f;&#x5b50;&#x6bd4;&#x8f83;&#x5e76;&#x4ea4;&#x6362;&#xff0c;&#x8fd4;&#x56de;&#x65e7;&#x503c;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;TX&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Transmit&lt;/td&gt;&lt;td&gt;&#x53d1;&#x9001;&#x7aef;&#x6216;&#x53d1;&#x9001;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;RX&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Receive&lt;/td&gt;&lt;td&gt;&#x63a5;&#x6536;&#x7aef;&#x6216;&#x63a5;&#x6536;&#x7f13;&#x51b2;&#x533a;&#xff0c;RX7 &#x662f;&#x56fe;&#x4e2d;&#x7684;&#x7f13;&#x51b2;&#x533a;&#x540d;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DST&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Destination&lt;/td&gt;&lt;td&gt;&#x76ee;&#x7684;&#x7f13;&#x51b2;&#x533a;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;B&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;byte&lt;/td&gt;&lt;td&gt;&#x5b57;&#x8282;&#xff08;&#x7528;&#x4e8e;&#x6807;&#x6ce8;&#x957f;&#x5ea6;&#xff09;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;KiB&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;kibibyte&lt;/td&gt;&lt;td&gt;&#x4e8c;&#x8fdb;&#x5236;&#x5343;&#x5b57;&#x8282;&#xff0c;1 KiB = 1024 B&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;3&quot;&gt;&#x4e3b;&#x673a;&#x4e0e; PCIe&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CPU&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Central Processing Unit&lt;/td&gt;&lt;td&gt;&#x4e2d;&#x592e;&#x5904;&#x7406;&#x5668;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DRAM&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Dynamic Random-Access Memory&lt;/td&gt;&lt;td&gt;&#x52a8;&#x6001;&#x968f;&#x673a;&#x5b58;&#x53d6;&#x5b58;&#x50a8;&#x5668;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;PCIe&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Peripheral Component Interconnect Express&lt;/td&gt;&lt;td&gt;&#x9ad8;&#x901f;&#x5916;&#x8bbe;&#x4e92;&#x8fde;&#x603b;&#x7ebf;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MRRS&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Maximum Read Request Size&lt;/td&gt;&lt;td&gt;PCIe &#x6700;&#x5927;&#x8bfb;&#x8bf7;&#x6c42;&#x5927;&#x5c0f;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MPS&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Maximum Payload Size&lt;/td&gt;&lt;td&gt;PCIe &#x6700;&#x5927;&#x8f7d;&#x8377;&#x5927;&#x5c0f;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MRd&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Memory Read Request&lt;/td&gt;&lt;td&gt;PCIe &#x5185;&#x5b58;&#x8bfb;&#x8bf7;&#x6c42;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CplD&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Completion with Data&lt;/td&gt;&lt;td&gt;PCIe &#x5e26;&#x6570;&#x636e;&#x7684;&#x5b8c;&#x6210;&#x5305;&#xff0c;&#x7528;&#x4e8e;&#x8fd4;&#x56de;&#x8bfb;&#x5230;&#x7684;&#x6570;&#x636e;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MWr&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Memory Write Request&lt;/td&gt;&lt;td&gt;PCIe &#x5185;&#x5b58;&#x5199;&#x8bf7;&#x6c42;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;rdma-term-group&quot;&gt;&lt;th colspan=&quot;3&quot;&gt;RecoNIC &#x4e0e; NCCL&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;GbE&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Gigabit Ethernet&lt;/td&gt;&lt;td&gt;&#x5409;&#x6bd4;&#x7279;&#x4ee5;&#x592a;&#x7f51;&#xff0c;&#x56fe;&#x4e2d;&#x7684; 100 GbE &#x8868;&#x793a; 100 Gbit/s&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;MAC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Media Access Control&lt;/td&gt;&lt;td&gt;&#x4ecb;&#x8d28;&#x8bbf;&#x95ee;&#x63a7;&#x5236;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CMAC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Integrated 100G Ethernet MAC&lt;/td&gt;&lt;td&gt;RecoNIC &#x4f7f;&#x7528;&#x7684; AMD 100 GbE &#x4ee5;&#x592a;&#x7f51; MAC &#x6838;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;IP &#x6838;&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Intellectual Property Core&lt;/td&gt;&lt;td&gt;&#x53ef;&#x590d;&#x7528;&#x7684;&#x786c;&#x4ef6;&#x8bbe;&#x8ba1;&#x6a21;&#x5757;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;ERNIC&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Embedded RDMA Enabled NIC&lt;/td&gt;&lt;td&gt;RecoNIC &#x4f7f;&#x7528;&#x7684;&#x5d4c;&#x5165;&#x5f0f; RDMA &#x7f51;&#x5361; IP &#x6838;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AXI&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Advanced eXtensible Interface&lt;/td&gt;&lt;td&gt;&#x7247;&#x4e0a;&#x4e92;&#x8fde;&#x534f;&#x8bae;&#xff0c;ERNIC &#x901a;&#x8fc7;&#x5b83;&#x8bbf;&#x95ee;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;QDMA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Queue-based Direct Memory Access&lt;/td&gt;&lt;td&gt;&#x57fa;&#x4e8e;&#x961f;&#x5217;&#x7684; DMA &#x5b50;&#x7cfb;&#x7edf;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;DDR&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Double Data Rate&lt;/td&gt;&lt;td&gt;&#x53cc;&#x500d;&#x6570;&#x636e;&#x901f;&#x7387;&#x5185;&#x5b58;&#xff0c;&#x56fe;&#x4e2d;&#x6307;&#x677f;&#x8f7d;&#x5185;&#x5b58;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;FIFO&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;First In, First Out&lt;/td&gt;&lt;td&gt;&#x5148;&#x8fdb;&#x5148;&#x51fa;&#x961f;&#x5217;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AllGather&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;All-Gather&lt;/td&gt;&lt;td&gt;&#x5168;&#x6536;&#x96c6;&#xff0c;&#x6bcf;&#x4e2a;&#x53c2;&#x4e0e;&#x65b9;&#x5f97;&#x5230;&#x6240;&#x6709;&#x53c2;&#x4e0e;&#x65b9;&#x7684;&#x6570;&#x636e;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;NCCL&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;NVIDIA Collective Communications Library&lt;/td&gt;&lt;td&gt;NVIDIA &#x96c6;&#x5408;&#x901a;&#x4fe1;&#x5e93;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;AR&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Adaptive Routing&lt;/td&gt;&lt;td&gt;&#x81ea;&#x9002;&#x5e94;&#x8def;&#x7531;&#xff0c;&#x51fa;&#x73b0;&#x5728; NCCL_IB_AR_THRESHOLD &#x4e2d;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;GPU&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Graphics Processing Unit&lt;/td&gt;&lt;td&gt;&#x56fe;&#x5f62;&#x5904;&#x7406;&#x5668;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CUDA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Compute Unified Device Architecture&lt;/td&gt;&lt;td&gt;NVIDIA &#x7684; GPU &#x5e76;&#x884c;&#x8ba1;&#x7b97;&#x5e73;&#x53f0;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -365,7 +366,7 @@
     <published>2026-11-25T10:00:00.000Z</published>
     <summary type="text">&#x8ddf;&#x8e2a;&#x4e00;&#x6761; 4 KiB &#x6d88;&#x606f;&#x7684;&#x961f;&#x5217;&#x9879;&#x3001;PCIe &#x4e8b;&#x52a1;&#x548c;&#x7f51;&#x7edc;&#x5305;&#xff0c;&#x5bf9;&#x7167; SEND&#x3001;WRITE&#x3001;READ &#x548c; Atomic&#xff0c;&#x518d;&#x4ece; RecoNIC &#x548c; NCCL &#x6e90;&#x7801;&#x770b;&#x63a5;&#x6536;&#x5730;&#x5740;&#x4e0e;&#x5b8c;&#x6210;&#x901a;&#x77e5;&#x600e;&#x6837;&#x4f20;&#x9012;&#x3002;</summary>
     <title>&#x901a;&#x4fe1;&#x539f;&#x8bed;&#x80cc;&#x540e;&#x7684; RDMA &#x2014;&#x2014;&#x7406;&#x89e3;&#x56db;&#x79cd; RDMA &#x64cd;&#x4f5c;</title>
-    <updated>2026-11-25T12:02:00.000Z</updated>
+    <updated>2026-11-25T12:14:00.000Z</updated>
   </entry>
   <entry>
     <author>

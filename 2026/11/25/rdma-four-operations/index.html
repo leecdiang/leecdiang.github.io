@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/20a43b995ef7.png">
 <meta property="article:published_time" content="2026-11-25T10:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-25T12:02:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T12:14:00.000Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI Infrastructure">
 <meta property="article:tag" content="PCIe">
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/20a43b995ef7.png"><meta itemprop="dateModified" content="2026-11-25T12:02:00.000Z"><meta itemprop="datePublished" content="2026-11-25T10:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/20a43b995ef7.png"><meta itemprop="dateModified" content="2026-11-25T12:14:00.000Z"><meta itemprop="datePublished" content="2026-11-25T10:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/25/rdma-four-operations/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -135,97 +135,101 @@
 <h2 id="缩写速查">缩写速查</h2>
 
 <style>
-#rdma-glossary table { width: 100%; display: table; font-size: .92em; }
-#rdma-glossary th, #rdma-glossary td { padding: .28em .65em; text-align: start; vertical-align: top; }
-#rdma-glossary th[scope="row"] { width: 20%; font-weight: 500; }
-#rdma-glossary code { white-space: normal; overflow-wrap: anywhere; }
+#rdma-glossary { --rdma-table-font: .8125rem; }
+#rdma-glossary table { display: table; width: 100%; table-layout: fixed; font-size: var(--rdma-table-font); line-height: 1.5; }
+#rdma-glossary th, #rdma-glossary td { min-width: 0; padding: .28em .55em; text-align: start; vertical-align: top; overflow-wrap: anywhere; }
+#rdma-glossary col:first-child { width: 21%; }
+#rdma-glossary col:nth-child(2) { width: 39%; }
+#rdma-glossary th[scope="row"] { font-weight: 500; }
+#rdma-glossary code { font-size: 1em; white-space: normal; overflow-wrap: anywhere; }
 #rdma-glossary [hidden] { display: none !important; }
-#rdma-glossary .rdma-term-action { text-align: start; margin: .3em 0; }
+#rdma-glossary .rdma-term-action { font-size: var(--rdma-table-font); text-align: start; margin: .3em 0; }
 #rdma-term-toggle { font: inherit; padding: .18em .6em; background: transparent; border: 1px solid currentColor; border-radius: .25em; color: inherit; cursor: pointer; }
 #rdma-term-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 #rdma-glossary tbody .rdma-term-group th { padding-top: .75em; }
 </style>
 <div id="rdma-glossary">
 <p class="rdma-term-action"><a href="#rdma-host-path">跳到图 1 和正文</a>　<button type="button" id="rdma-term-toggle" aria-controls="rdma-term-extra" aria-expanded="true" hidden="">收起其余术语</button></p>
-<div class="table-container"><table aria-label="RDMA 缩写、代码名与中文含义">
-<thead><tr><th scope="col">缩写或代码名</th><th scope="col">中文含义</th></tr></thead>
+<div class="table-container"><table aria-label="RDMA 缩写、英文全称与中文含义">
+<colgroup><col><col><col></colgroup>
+<thead><tr><th scope="col">缩写或代码名</th><th scope="col">英文全称或名称</th><th scope="col">中文含义</th></tr></thead>
 <tbody>
-<tr><th scope="row"><code>RDMA</code></th><td>远程直接内存访问</td></tr>
-<tr><th scope="row"><code>RNIC</code></th><td>支持 RDMA 的网卡</td></tr>
-<tr><th scope="row"><code>SQ</code></th><td>发送队列</td></tr>
-<tr><th scope="row"><code>RQ</code></th><td>接收队列</td></tr>
-<tr><th scope="row"><code>QP</code></th><td>队列对，由 SQ 和 RQ 组成</td></tr>
-<tr><th scope="row"><code>QPN</code></th><td>队列对编号</td></tr>
-<tr><th scope="row"><code>WR</code></th><td>工作请求，应用提交给网卡的工作</td></tr>
-<tr><th scope="row"><code>WQE</code></th><td>工作队列项，RNIC 从中读出要执行的工作</td></tr>
-<tr><th scope="row"><code>MR</code></th><td>已注册的内存区域</td></tr>
-<tr><th scope="row"><code>SGE</code></th><td>散布／聚集项，描述一段本地缓冲区</td></tr>
-<tr><th scope="row"><code>CQ</code></th><td>完成队列</td></tr>
-<tr><th scope="row"><code>CQE</code></th><td>完成队列项，由 RNIC 写入 CQ</td></tr>
-<tr><th scope="row"><code>WC</code></th><td>工作完成记录，应用轮询 CQ 时得到</td></tr>
-<tr><th scope="row"><code>MMIO</code></th><td>内存映射 I/O，CPU 用它访问设备寄存器</td></tr>
-<tr><th scope="row"><code>DMA</code></th><td>直接内存访问，设备可以主动读写内存</td></tr>
+<tr><th scope="row"><code>RDMA</code></th><td lang="en">Remote Direct Memory Access</td><td>远程直接内存访问</td></tr>
+<tr><th scope="row"><code>RNIC</code></th><td lang="en">RDMA Network Interface Controller</td><td>支持 RDMA 的网卡</td></tr>
+<tr><th scope="row"><code>SQ</code></th><td lang="en">Send Queue</td><td>发送队列</td></tr>
+<tr><th scope="row"><code>RQ</code></th><td lang="en">Receive Queue</td><td>接收队列</td></tr>
+<tr><th scope="row"><code>QP</code></th><td lang="en">Queue Pair</td><td>队列对，由 SQ 和 RQ 组成</td></tr>
+<tr><th scope="row"><code>QPN</code></th><td lang="en">Queue Pair Number</td><td>队列对编号</td></tr>
+<tr><th scope="row"><code>WR</code></th><td lang="en">Work Request</td><td>工作请求，应用提交给网卡的工作</td></tr>
+<tr><th scope="row"><code>WQE</code></th><td lang="en">Work Queue Element</td><td>工作队列项，RNIC 从中读出要执行的工作</td></tr>
+<tr><th scope="row"><code>MR</code></th><td lang="en">Memory Region</td><td>已注册的内存区域</td></tr>
+<tr><th scope="row"><code>SGE</code></th><td lang="en">Scatter/Gather Element</td><td>散布／聚集项，描述一段本地缓冲区</td></tr>
+<tr><th scope="row"><code>CQ</code></th><td lang="en">Completion Queue</td><td>完成队列</td></tr>
+<tr><th scope="row"><code>CQE</code></th><td lang="en">Completion Queue Entry</td><td>完成队列项，由 RNIC 写入 CQ</td></tr>
+<tr><th scope="row"><code>WC</code></th><td lang="en">Work Completion</td><td>工作完成记录，应用轮询 CQ 时得到</td></tr>
+<tr><th scope="row"><code>MMIO</code></th><td lang="en">Memory-Mapped Input/Output</td><td>内存映射 I/O，CPU 用它访问设备寄存器</td></tr>
+<tr><th scope="row"><code>DMA</code></th><td lang="en">Direct Memory Access</td><td>直接内存访问，设备可以主动读写内存</td></tr>
 </tbody>
 <tbody id="rdma-term-extra">
-<tr class="rdma-term-group"><th colspan="2">访问权限与接口</th></tr>
-<tr><th scope="row"><code>lkey</code></th><td>本地访问键</td></tr>
-<tr><th scope="row"><code>rkey</code></th><td>远程访问键</td></tr>
-<tr><th scope="row"><code>PD</code></th><td>保护域，关联 QP 和 MR</td></tr>
-<tr><th scope="row"><code>wr_id</code></th><td>应用给本地 WR 指定的标识</td></tr>
-<tr><th scope="row"><code>imm_data</code></th><td>立即数的字段名</td></tr>
-<tr><th scope="row"><code>verbs provider</code></th><td>将 verbs 调用适配到具体设备的软件</td></tr>
-<tr><th scope="row"><code>doorbell</code></th><td>门铃，软件用它通知 RNIC 有新工作</td></tr>
-<tr><th scope="row"><code>IBV_SEND_SIGNALED</code></th><td>发送标志，要求在 WR 成功时也报告完成</td></tr>
-<tr class="rdma-term-group"><th colspan="2">网络与分包</th></tr>
-<tr><th scope="row"><code>RC</code></th><td>可靠连接，一种 RDMA 传输服务</td></tr>
-<tr><th scope="row"><code>RoCEv2</code></th><td>基于以太网的 RDMA 第 2 版，使用 UDP/IP 封装</td></tr>
-<tr><th scope="row"><code>UDP</code></th><td>用户数据报协议</td></tr>
-<tr><th scope="row"><code>IP</code></th><td>网际协议</td></tr>
-<tr><th scope="row"><code>IB</code></th><td>InfiniBand，一种高性能互连标准</td></tr>
-<tr><th scope="row"><code>PMTU</code></th><td>路径最大传输单元，本文指 RC 分包采用的载荷上限</td></tr>
-<tr><th scope="row"><code>MTU</code></th><td>最大传输单元</td></tr>
-<tr><th scope="row"><code>PSN</code></th><td>包序列号</td></tr>
-<tr><th scope="row"><code>ACK</code></th><td>确认应答</td></tr>
-<tr><th scope="row"><code>RNR</code></th><td>接收端尚未就绪</td></tr>
-<tr><th scope="row"><code>RETH</code></th><td>RDMA 扩展传输头，含远端地址、rkey 和长度</td></tr>
-<tr class="rdma-term-group"><th colspan="2">操作与图中标识</th></tr>
-<tr><th scope="row"><code>SEND</code></th><td>发送消息</td></tr>
-<tr><th scope="row"><code>RECV</code></th><td>接收消息，由接收方预先提交 WR</td></tr>
-<tr><th scope="row"><code>WRITE</code></th><td>远程写</td></tr>
-<tr><th scope="row"><code>WRITE_WITH_IMM</code></th><td>带立即数的远程写</td></tr>
-<tr><th scope="row"><code>READ</code></th><td>远程读</td></tr>
-<tr><th scope="row"><code>Atomic</code></th><td>远程原子操作</td></tr>
-<tr><th scope="row"><code>FAA</code></th><td>原子取值并加，返回旧值</td></tr>
-<tr><th scope="row"><code>CAS</code></th><td>原子比较并交换，返回旧值</td></tr>
-<tr><th scope="row"><code>TX</code></th><td>发送端或发送缓冲区</td></tr>
-<tr><th scope="row"><code>RX</code></th><td>接收端或接收缓冲区，RX7 是图中的缓冲区名</td></tr>
-<tr><th scope="row"><code>DST</code></th><td>目的缓冲区</td></tr>
-<tr><th scope="row"><code>B</code></th><td>字节（用于标注长度）</td></tr>
-<tr><th scope="row"><code>KiB</code></th><td>二进制千字节，1 KiB = 1024 B</td></tr>
-<tr class="rdma-term-group"><th colspan="2">主机与 PCIe</th></tr>
-<tr><th scope="row"><code>CPU</code></th><td>中央处理器</td></tr>
-<tr><th scope="row"><code>DRAM</code></th><td>动态随机存取存储器</td></tr>
-<tr><th scope="row"><code>PCIe</code></th><td>高速外设互连总线</td></tr>
-<tr><th scope="row"><code>MRRS</code></th><td>PCIe 最大读请求大小</td></tr>
-<tr><th scope="row"><code>MPS</code></th><td>PCIe 最大载荷大小</td></tr>
-<tr><th scope="row"><code>MRd</code></th><td>PCIe 内存读请求</td></tr>
-<tr><th scope="row"><code>CplD</code></th><td>PCIe 带数据的完成包，用于返回读到的数据</td></tr>
-<tr><th scope="row"><code>MWr</code></th><td>PCIe 内存写请求</td></tr>
-<tr class="rdma-term-group"><th colspan="2">RecoNIC 与 NCCL</th></tr>
-<tr><th scope="row"><code>GbE</code></th><td>吉比特以太网，图中的 100 GbE 表示 100 Gbit/s</td></tr>
-<tr><th scope="row"><code>MAC</code></th><td>介质访问控制</td></tr>
-<tr><th scope="row"><code>CMAC</code></th><td>RecoNIC 使用的 AMD 100 GbE 以太网 MAC 核</td></tr>
-<tr><th scope="row"><code>IP 核</code></th><td>可复用的硬件设计模块</td></tr>
-<tr><th scope="row"><code>ERNIC</code></th><td>RecoNIC 使用的嵌入式 RDMA 网卡 IP 核</td></tr>
-<tr><th scope="row"><code>AXI</code></th><td>片上互连协议，ERNIC 通过它访问内存</td></tr>
-<tr><th scope="row"><code>QDMA</code></th><td>基于队列的 DMA 子系统</td></tr>
-<tr><th scope="row"><code>DDR</code></th><td>双倍数据速率内存，图中指板载内存</td></tr>
-<tr><th scope="row"><code>FIFO</code></th><td>先进先出队列</td></tr>
-<tr><th scope="row"><code>AllGather</code></th><td>全收集，每个参与方得到所有参与方的数据</td></tr>
-<tr><th scope="row"><code>NCCL</code></th><td>NVIDIA 集合通信库</td></tr>
-<tr><th scope="row"><code>AR</code></th><td>自适应路由，出现在 NCCL_IB_AR_THRESHOLD 中</td></tr>
-<tr><th scope="row"><code>GPU</code></th><td>图形处理器</td></tr>
-<tr><th scope="row"><code>CUDA</code></th><td>NVIDIA 的 GPU 并行计算平台</td></tr>
+<tr class="rdma-term-group"><th colspan="3">访问权限与接口</th></tr>
+<tr><th scope="row"><code>lkey</code></th><td lang="en">Local Key</td><td>本地访问键</td></tr>
+<tr><th scope="row"><code>rkey</code></th><td lang="en">Remote Key</td><td>远程访问键</td></tr>
+<tr><th scope="row"><code>PD</code></th><td lang="en">Protection Domain</td><td>保护域，关联 QP 和 MR</td></tr>
+<tr><th scope="row"><code>wr_id</code></th><td lang="en">Work Request Identifier</td><td>应用给本地 WR 指定的标识</td></tr>
+<tr><th scope="row"><code>imm_data</code></th><td lang="en">Immediate Data</td><td>立即数的字段名</td></tr>
+<tr><th scope="row"><code>verbs provider</code></th><td lang="en">Verbs provider</td><td>将 verbs 调用适配到具体设备的软件</td></tr>
+<tr><th scope="row"><code>doorbell</code></th><td lang="en">Doorbell</td><td>门铃，软件用它通知 RNIC 有新工作</td></tr>
+<tr><th scope="row"><code>IBV_SEND_SIGNALED</code></th><td lang="en">Signaled send flag</td><td>发送标志，要求在 WR 成功时也报告完成</td></tr>
+<tr class="rdma-term-group"><th colspan="3">网络与分包</th></tr>
+<tr><th scope="row"><code>RC</code></th><td lang="en">Reliable Connection</td><td>可靠连接，一种 RDMA 传输服务</td></tr>
+<tr><th scope="row"><code>RoCEv2</code></th><td lang="en">RDMA over Converged Ethernet, version 2</td><td>基于以太网的 RDMA 第 2 版，使用 UDP/IP 封装</td></tr>
+<tr><th scope="row"><code>UDP</code></th><td lang="en">User Datagram Protocol</td><td>用户数据报协议</td></tr>
+<tr><th scope="row"><code>IP</code></th><td lang="en">Internet Protocol</td><td>网际协议</td></tr>
+<tr><th scope="row"><code>IB</code></th><td lang="en">InfiniBand</td><td>InfiniBand，一种高性能互连标准</td></tr>
+<tr><th scope="row"><code>PMTU</code></th><td lang="en">Path Maximum Transmission Unit</td><td>路径最大传输单元，本文指 RC 分包采用的载荷上限</td></tr>
+<tr><th scope="row"><code>MTU</code></th><td lang="en">Maximum Transmission Unit</td><td>最大传输单元</td></tr>
+<tr><th scope="row"><code>PSN</code></th><td lang="en">Packet Sequence Number</td><td>包序列号</td></tr>
+<tr><th scope="row"><code>ACK</code></th><td lang="en">Acknowledgment</td><td>确认应答</td></tr>
+<tr><th scope="row"><code>RNR</code></th><td lang="en">Receiver Not Ready</td><td>接收端尚未就绪</td></tr>
+<tr><th scope="row"><code>RETH</code></th><td lang="en">RDMA Extended Transport Header</td><td>RDMA 扩展传输头，含远端地址、rkey 和长度</td></tr>
+<tr class="rdma-term-group"><th colspan="3">操作与图中标识</th></tr>
+<tr><th scope="row"><code>SEND</code></th><td lang="en">Send</td><td>发送消息</td></tr>
+<tr><th scope="row"><code>RECV</code></th><td lang="en">Receive</td><td>接收消息，由接收方预先提交 WR</td></tr>
+<tr><th scope="row"><code>WRITE</code></th><td lang="en">RDMA Write</td><td>远程写</td></tr>
+<tr><th scope="row"><code>WRITE_WITH_IMM</code></th><td lang="en">RDMA Write with Immediate</td><td>带立即数的远程写</td></tr>
+<tr><th scope="row"><code>READ</code></th><td lang="en">RDMA Read</td><td>远程读</td></tr>
+<tr><th scope="row"><code>Atomic</code></th><td lang="en">Atomic operation</td><td>远程原子操作</td></tr>
+<tr><th scope="row"><code>FAA</code></th><td lang="en">Fetch-and-Add</td><td>原子取值并加，返回旧值</td></tr>
+<tr><th scope="row"><code>CAS</code></th><td lang="en">Compare-and-Swap</td><td>原子比较并交换，返回旧值</td></tr>
+<tr><th scope="row"><code>TX</code></th><td lang="en">Transmit</td><td>发送端或发送缓冲区</td></tr>
+<tr><th scope="row"><code>RX</code></th><td lang="en">Receive</td><td>接收端或接收缓冲区，RX7 是图中的缓冲区名</td></tr>
+<tr><th scope="row"><code>DST</code></th><td lang="en">Destination</td><td>目的缓冲区</td></tr>
+<tr><th scope="row"><code>B</code></th><td lang="en">byte</td><td>字节（用于标注长度）</td></tr>
+<tr><th scope="row"><code>KiB</code></th><td lang="en">kibibyte</td><td>二进制千字节，1 KiB = 1024 B</td></tr>
+<tr class="rdma-term-group"><th colspan="3">主机与 PCIe</th></tr>
+<tr><th scope="row"><code>CPU</code></th><td lang="en">Central Processing Unit</td><td>中央处理器</td></tr>
+<tr><th scope="row"><code>DRAM</code></th><td lang="en">Dynamic Random-Access Memory</td><td>动态随机存取存储器</td></tr>
+<tr><th scope="row"><code>PCIe</code></th><td lang="en">Peripheral Component Interconnect Express</td><td>高速外设互连总线</td></tr>
+<tr><th scope="row"><code>MRRS</code></th><td lang="en">Maximum Read Request Size</td><td>PCIe 最大读请求大小</td></tr>
+<tr><th scope="row"><code>MPS</code></th><td lang="en">Maximum Payload Size</td><td>PCIe 最大载荷大小</td></tr>
+<tr><th scope="row"><code>MRd</code></th><td lang="en">Memory Read Request</td><td>PCIe 内存读请求</td></tr>
+<tr><th scope="row"><code>CplD</code></th><td lang="en">Completion with Data</td><td>PCIe 带数据的完成包，用于返回读到的数据</td></tr>
+<tr><th scope="row"><code>MWr</code></th><td lang="en">Memory Write Request</td><td>PCIe 内存写请求</td></tr>
+<tr class="rdma-term-group"><th colspan="3">RecoNIC 与 NCCL</th></tr>
+<tr><th scope="row"><code>GbE</code></th><td lang="en">Gigabit Ethernet</td><td>吉比特以太网，图中的 100 GbE 表示 100 Gbit/s</td></tr>
+<tr><th scope="row"><code>MAC</code></th><td lang="en">Media Access Control</td><td>介质访问控制</td></tr>
+<tr><th scope="row"><code>CMAC</code></th><td lang="en">Integrated 100G Ethernet MAC</td><td>RecoNIC 使用的 AMD 100 GbE 以太网 MAC 核</td></tr>
+<tr><th scope="row"><code>IP 核</code></th><td lang="en">Intellectual Property Core</td><td>可复用的硬件设计模块</td></tr>
+<tr><th scope="row"><code>ERNIC</code></th><td lang="en">Embedded RDMA Enabled NIC</td><td>RecoNIC 使用的嵌入式 RDMA 网卡 IP 核</td></tr>
+<tr><th scope="row"><code>AXI</code></th><td lang="en">Advanced eXtensible Interface</td><td>片上互连协议，ERNIC 通过它访问内存</td></tr>
+<tr><th scope="row"><code>QDMA</code></th><td lang="en">Queue-based Direct Memory Access</td><td>基于队列的 DMA 子系统</td></tr>
+<tr><th scope="row"><code>DDR</code></th><td lang="en">Double Data Rate</td><td>双倍数据速率内存，图中指板载内存</td></tr>
+<tr><th scope="row"><code>FIFO</code></th><td lang="en">First In, First Out</td><td>先进先出队列</td></tr>
+<tr><th scope="row"><code>AllGather</code></th><td lang="en">All-Gather</td><td>全收集，每个参与方得到所有参与方的数据</td></tr>
+<tr><th scope="row"><code>NCCL</code></th><td lang="en">NVIDIA Collective Communications Library</td><td>NVIDIA 集合通信库</td></tr>
+<tr><th scope="row"><code>AR</code></th><td lang="en">Adaptive Routing</td><td>自适应路由，出现在 NCCL_IB_AR_THRESHOLD 中</td></tr>
+<tr><th scope="row"><code>GPU</code></th><td lang="en">Graphics Processing Unit</td><td>图形处理器</td></tr>
+<tr><th scope="row"><code>CUDA</code></th><td lang="en">Compute Unified Device Architecture</td><td>NVIDIA 的 GPU 并行计算平台</td></tr>
 </tbody>
 </table></div>
 </div>
