@@ -111,7 +111,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>用张量在 GPU 之间的分布解释 AllReduce、AllGather、ReduceScatter 和 All-to-All，再对照 DDP、FSDP、张量并行、MoE 专家并行与分离式推理的消息大小和同步位置。</p>
+          <p>两张 GPU 各算一批样本，怎么用梯度更新同一个模型？用同一组梯度对照 DDP 和 FSDP，再看张量并行和 MoE 分别要传什么，以及生成一个 token 要等哪些通信。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/11/25/llm-training-inference-communication/">
