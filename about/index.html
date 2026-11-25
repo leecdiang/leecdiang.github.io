@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.612c7e967edd.css">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.843d545a6f8c.css">
   
   
     <meta name="description" content="LEEcDiang   A final-year undergraduate student majoring in Microelectronics Science and Engineering at UESTC — University of Electronic Science and Technology of China.   My work and notes current">
@@ -46,7 +46,7 @@
   
   
   
-  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
+  <script defer="" src="/assets/studio/core.164c7d38077e.js"></script>
   
   
 
@@ -107,17 +107,19 @@
           <div class="about-entry-links"><a href="https://doi.org/10.18653/2026.realm-1.12" target="_blank" rel="noopener">DOI ↗</a><a href="/2026/10/14/agent-step-value/">阅读研究介绍</a><a href="https://arxiv.org/abs/2607.04419v5" target="_blank" rel="noopener">arXiv ↗</a></div>
         </div>
       </article>
-      <article class="research-feature research-feature--wide">
-        <div class="research-copy">
-          <p class="about-meta">HeteroSpec · arXiv:2610.03228</p>
-          <h3 id="heterospec-title" translate="no">Reference-Compatible Parallel Execution for Quantized LLM Inference</h3>
-          <p>研究量化语言模型并行执行的数值一致性，以及 CUDA / Vulkan 上执行布局与完整服务开销的关系。</p>
-          <div class="about-entry-links"><a href="https://arxiv.org/abs/2610.03228" target="_blank" rel="noopener">arXiv ↗</a></div>
-        </div>
+      <article class="research-feature research-feature--split">
         <figure class="research-figure">
-          <a href="/images/research/heterospec-reference-execution.png" target="_blank" rel="noopener" aria-label="查看研究图大图"><img src="/images/research/heterospec-reference-execution.webp" width="1960" height="560" alt="HeteroSpec 方法图：参考约束、独立归约与局部执行分组" loading="lazy"></a>
-          <figcaption><span>保持参考数值行为的并行执行</span><a href="/images/research/heterospec-reference-execution.png" target="_blank" rel="noopener">查看大图 ↗</a></figcaption>
+          <a href="/images/research/refbound-v8-figure-2.png" target="_blank" rel="noopener"><img src="/images/research/refbound-v8-figure-2.webp" width="1808" height="1302" alt="SIMPLE 拆成两次解码调用。LOCAL 保留一次四列投影，在注意力内部按 3+1 拆分查询。图中也展示了状态提交和后续调用。" loading="lazy"></a>
+          <figcaption><span>图 2 · LOCAL 跨视图执行</span><a href="/images/research/refbound-v8-figure-2.png" target="_blank" rel="noopener">查看大图 ↗</a></figcaption>
         </figure>
+        <div class="research-copy">
+          <p class="about-meta">RefBound · arXiv:2610.03228v8</p>
+          <h3 id="heterospec-title" lang="en" translate="no">Recovering Parallelism under Fixed Numerical References in Quantized LLM Decoders</h3>
+          <p class="about-role">独著 · 预印本</p>
+          <p>量化解码时，注意力所需的 KV 缓存视图可能在一组查询中发生变化。LOCAL 保留符合固定数值参考的并行投影组，在注意力内部按物理视图拆分查询，再按原顺序合并输出。</p>
+          <p>在 RTX A5000 上使用固定候选序列的 32B 视图跨界实验中，LOCAL 从验证到状态提交的耗时比整次调用拆分基线低 21.56%（95% 置信区间为 20.21%–22.83%）。非跨界主对照的估计降幅为 0.43%，95% 置信区间跨零。</p>
+          <div class="about-entry-links"><a href="https://arxiv.org/abs/2610.03228v8" target="_blank" rel="noopener">arXiv ↗</a><a href="https://github.com/leecdiang/RefBound/tree/de2192a5" target="_blank" rel="noopener">代码与实验材料 ↗</a></div>
+        </div>
       </article>
     </section>
     <section id="projects" class="about-section">
