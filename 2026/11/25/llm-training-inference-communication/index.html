@@ -1,0 +1,1055 @@
+<!DOCTYPE html><html lang="zh-CN" data-static-math="true"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
+  <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.612c7e967edd.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.d313a625e0ba.css">
+  
+  
+  <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  
+    <meta name="description" content="用张量在 GPU 之间的分布解释 AllReduce、AllGather、ReduceScatter 和 All-to-All，再对照 DDP、FSDP、张量并行、MoE 专家并行与分离式推理的消息大小和同步位置。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型训练和推理中的通信">
+<meta property="og:url" content="https://leecdiang.com/2026/11/25/llm-training-inference-communication/">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="用张量在 GPU 之间的分布解释 AllReduce、AllGather、ReduceScatter 和 All-to-All，再对照 DDP、FSDP、张量并行、MoE 专家并行与分离式推理的消息大小和同步位置。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leecdiang.com/images/social/6e109e8ec8bc.png">
+<meta property="article:published_time" content="2026-11-25T05:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T06:01:32.044Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="AI Infrastructure">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="RDMA">
+<meta property="article:tag" content="分布式训练">
+<meta property="article:tag" content="大模型推理">
+<meta property="article:tag" content="集合通信">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/6e109e8ec8bc.png">
+
+
+<link rel="canonical" href="https://leecdiang.com/2026/11/25/llm-training-inference-communication/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/25/llm-training-inference-communication/","path":"2026/11/25/llm-training-inference-communication/","title":"大模型训练和推理中的通信"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>大模型训练和推理中的通信 | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script>
+
+
+  
+  <script defer="" src="/js/visual-diagrams.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
+  
+  
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
+<body class="studio-site studio-halo studio-reading">
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="studio-header">
+    <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="/photography/">摄影</a>
+      <a href="/archives/" aria-current="page">文章</a>
+      <a href="/about/">关于</a>
+    </nav>
+    <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+    <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
+    </button></div>
+  </header>
+  <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
+    
+
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9B%9B%E5%BC%A0%E5%8D%A1%E6%80%8E%E4%B9%88%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE"><span class="toc-text">一、四张卡怎么交换数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E5%BC%A0%E5%8D%A1%E6%90%AC%E5%A4%9A%E5%B0%91%E5%AD%97%E8%8A%82"><span class="toc-text">每张卡搬多少字节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ring-AllReduce-%E7%9A%84%E8%80%97%E6%97%B6"><span class="toc-text">Ring AllReduce 的耗时</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%AE%AD%E7%BB%83%E4%B8%AD%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="toc-text">二、训练中的通信</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DDP-%E4%B8%8E-FSDP-%E4%BA%A4%E6%8D%A2%E7%9A%84%E6%98%AF%E6%A2%AF%E5%BA%A6%E8%BF%98%E6%98%AF%E5%8F%82%E6%95%B0"><span class="toc-text">DDP 与 FSDP 交换的是梯度还是参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%A0%E9%87%8F%E5%B9%B6%E8%A1%8C%E5%9C%A8%E4%B8%80%E5%B1%82%E9%87%8C%E9%9D%A2%E4%BA%A4%E6%8D%A2%E9%83%A8%E5%88%86%E5%92%8C"><span class="toc-text">张量并行在一层里面交换部分和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%B9%B6%E8%A1%8C%E5%9C%A8%E9%98%B6%E6%AE%B5%E8%BE%B9%E7%95%8C%E4%BC%A0%E6%BF%80%E6%B4%BB"><span class="toc-text">流水线并行在阶段边界传激活</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MoE-%E4%B8%93%E5%AE%B6%E5%B9%B6%E8%A1%8C%E6%8C%89-token-%E7%9A%84%E5%8E%BB%E5%90%91%E5%8F%91%E6%B6%88%E6%81%AF"><span class="toc-text">MoE 专家并行按 token 的去向发消息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8E%A8%E7%90%86%E8%A6%81%E4%BC%A0%E4%BB%80%E4%B9%88"><span class="toc-text">三、推理要传什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%89%AF%E6%9C%AC%E5%88%86%E8%AF%B7%E6%B1%82%EF%BC%8CTP-%E5%89%AF%E6%9C%AC%E5%9C%A8%E5%B1%82%E5%86%85%E5%BD%92%E7%BA%A6"><span class="toc-text">完整副本分请求，TP 副本在层内归约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prefill-%E4%B8%8E-Decode-%E5%88%86%E7%A6%BB%E6%97%B6%EF%BC%8C%E8%BD%AC%E7%A7%BB%E7%9A%84%E6%98%AF-KV"><span class="toc-text">Prefill 与 Decode 分离时，转移的是 KV</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%BB%8E-collective-%E5%88%B0%E7%BD%91%E5%8D%A1"><span class="toc-text">四、从 collective 到网卡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/6e109e8ec8bc.png"><meta itemprop="dateModified" content="2026-11-25T06:01:32.044Z"><meta itemprop="datePublished" content="2026-11-25T05:00:00.000Z">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/25/llm-training-inference-communication/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar-snow.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    
+      <header class="post-header">
+        
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
+        
+        <h1 class="post-title" itemprop="name headline">
+          大模型训练和推理中的通信
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">用张量在 GPU 之间的分布解释 AllReduce、AllGather、ReduceScatter 和 All-to-All，再对照 DDP、FSDP、张量并行、MoE 专家并行与分离式推理的消息大小和同步位置。</div>
+        </div>
+        
+        <div class="reading-byline">
+          <a class="reading-author" href="/about/"><img src="/images/avatar-snow.jpg" width="44" height="44" alt="LEEcDiang 的头像"><span><strong>LEEcDiang</strong><span>Chengzhan Li</span></span></a>
+          <time datetime="2026-11-25T13:00:00+08:00">2026.11.25 发布</time>
+        </div>
+        
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="37"><div class="note primary"><p>四张 GPU 分别存着 1、5、9、13。做一次 AllGather，每张卡都会拿齐这四个数。</p>
+</div>
+<span id="more"></span>
+<h2 id="一、四张卡怎么交换数据">一、四张卡怎么交换数据</h2>
+
+<style>
+#llm-collectives {
+  --cl-line: var(--figure-line, #b8c4d2);
+  --cl-tile: var(--figure-node, #f0f4f8);
+  --cl-ink: var(--text-primary, var(--ink, #243549));
+  --cl-muted: var(--text-muted, var(--muted, #526071));
+  --cl-strong: var(--chart-blue, #376b9f);
+  color: var(--cl-ink);
+}
+#llm-collectives :is(.llm-cl-ops, .llm-cl-tools) {
+  display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+}
+#llm-collectives .llm-cl-ops { margin-bottom:.6rem; }
+#llm-collectives .llm-cl-tools { margin-top:.8rem; }
+#llm-collectives button {
+  border:1px solid var(--cl-line); border-radius:.4rem;
+  padding:.25rem .58rem; min-height:36px; background:transparent;
+  color:inherit; font:inherit; font-size:.84rem; cursor:pointer;
+}
+#llm-collectives button[aria-pressed="true"] {
+  border-color:var(--cl-strong); box-shadow:inset 0 -2px var(--cl-strong); font-weight:700;
+}
+#llm-collectives button[aria-disabled="true"] { opacity:.43; cursor:default; }
+#llm-collectives button:focus-visible { outline:2px solid var(--cl-strong); outline-offset:2px; }
+#llm-collectives [data-collectives-step] {
+  color:var(--cl-muted); font-size:.84rem; font-variant-numeric:tabular-nums;
+}
+#llm-collectives .llm-cl-board {
+  display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(.4rem, 2vw, 1.2rem);
+  margin:.7rem 0 0;
+}
+#llm-collectives .llm-cl-board table {
+  display:table; width:100%; min-width:0; max-width:100%; margin:0;
+  table-layout:fixed; border-collapse:separate; border-spacing:clamp(1px, .35vw, 4px); border:0;
+  background:transparent; font-variant-numeric:tabular-nums;
+}
+#llm-collectives caption {
+  text-align:left; color:var(--cl-muted); font-size:.85rem;
+}
+#llm-collectives .llm-cl-board :is(th, td) {
+  line-height:1; padding:.35rem .12rem; height:1.9rem; text-align:center;
+  font-size:clamp(.73rem, 2.5vw, .95rem); white-space:nowrap;
+}
+#llm-collectives .llm-cl-board th {
+  width:2ch; border:0; background:transparent; color:var(--cl-muted); font-weight:500;
+}
+#llm-collectives .llm-cl-board td {
+  border:1px solid transparent; border-radius:.28rem; background:var(--cl-tile);
+  color:var(--cl-ink);
+}
+#llm-collectives td[aria-label="待填入"] { color:var(--cl-muted); }
+#llm-collectives td[data-collectives-focus] {
+  border-color:var(--cl-strong); color:var(--cl-strong); font-weight:700;
+  background:color-mix(in srgb, var(--cl-strong) 14%, var(--cl-tile));
+  animation:llm-collectives-in .26s ease-out both;
+}
+#llm-collectives[data-collectives-mode="allgather"] table[data-collectives-input],
+#llm-collectives[data-collectives-mode="reducescatter"] table[data-collectives-output] {
+  width:48%;
+}
+#llm-collectives [data-collectives-status] {
+  margin:.65rem 0 0; color:var(--cl-ink); font-size:.92rem; line-height:1.55; min-block-size:2.9em;
+}
+#llm-collectives figcaption { margin-top:.65rem; }
+@keyframes llm-collectives-in {
+  from { opacity:.48; transform:translateY(2px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@media (prefers-reduced-motion:reduce) {
+  #llm-collectives td[data-collectives-focus] { animation:none; }
+}
+</style>
+<figure id="llm-collectives" class="v-figure" data-collectives-mode="allgather" aria-label="四卡集合通信演示">
+  <div data-collectives-controls="" hidden="">
+    <div class="llm-cl-ops" role="group" aria-label="选择通信操作">
+      <button type="button" data-collectives-op="allgather" aria-pressed="true">AllGather</button>
+      <button type="button" data-collectives-op="allreduce" aria-pressed="false">AllReduce</button>
+      <button type="button" data-collectives-op="reducescatter" aria-pressed="false">ReduceScatter</button>
+      <button type="button" data-collectives-op="alltoall" aria-pressed="false">All-to-All</button>
+    </div>
+    <div class="llm-cl-tools" role="group" aria-label="演示进度">
+      <button type="button" data-collectives-action="prev" aria-disabled="true">上一步</button>
+      <button type="button" data-collectives-action="next">下一步</button>
+      <button type="button" data-collectives-action="play">播放</button>
+      <span data-collectives-step="" aria-label="当前步骤">0 / 4</span>
+    </div>
+  </div>
+  <p data-collectives-status="" role="status" aria-live="polite" aria-atomic="true">AllGather 把四个输入按 rank 排好，每张卡都得到 1、5、9、13。</p>
+  <div class="llm-cl-board">
+    <div class="table-container"><table data-collectives-input="">
+      <caption>各卡输入</caption>
+      <tbody>
+        <tr><th scope="row" aria-label="rank 0">r0</th><td>1</td></tr>
+        <tr><th scope="row" aria-label="rank 1">r1</th><td>5</td></tr>
+        <tr><th scope="row" aria-label="rank 2">r2</th><td>9</td></tr>
+        <tr><th scope="row" aria-label="rank 3">r3</th><td>13</td></tr>
+      </tbody>
+    </table></div>
+    <div class="table-container"><table data-collectives-output="">
+      <caption>各卡输出</caption>
+      <tbody>
+        <tr><th scope="row" aria-label="rank 0">r0</th><td>1</td><td>5</td><td>9</td><td>13</td></tr>
+        <tr><th scope="row" aria-label="rank 1">r1</th><td>1</td><td>5</td><td>9</td><td>13</td></tr>
+        <tr><th scope="row" aria-label="rank 2">r2</th><td>1</td><td>5</td><td>9</td><td>13</td></tr>
+        <tr><th scope="row" aria-label="rank 3">r3</th><td>1</td><td>5</td><td>9</td><td>13</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <figcaption class="v-caption">高亮格子表示当前步骤的输入和输出。演示按位置展开数据关系，通信库的传输轮次由算法决定。</figcaption>
+</figure>
+<script src="/js/llm-collectives.js" defer=""></script>
+
+
+<details class="collective-static-reference">
+<summary>查看四种操作的结果</summary>
+
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Four collective operations on four ranks（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 792 503" role="img" aria-label="Four collective operations on four ranks" font-family="system-ui, sans-serif" font-size="17">
+<desc>AllGather copies the rank-ordered first elements 1, 5, 9 and 13. ReduceScatter assigns the column sums 28, 32, 36 and 40. All-to-All sends each input column to its destination. AllReduce replicates the column sums.</desc>
+<rect x="15" y="15" width="373" height="229" rx="9" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="30.00" y="45.00" class="v-ink" font-size="21" text-anchor="start" font-weight="650">A   AllGather</text>
+<text x="30.00" y="70.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">Rank-ordered copies</text>
+<text x="79.00" y="105.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Input</text>
+<text x="240.00" y="105.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Output</text>
+<line x1="211.00" y1="113.00" x2="211.00" y2="230.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="30.00" y="135.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r0</text>
+<rect x="77" y="117" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">1</text>
+<rect x="239" y="117" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">1</text>
+<rect x="271" y="117" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">5</text>
+<rect x="303" y="117" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">9</text>
+<rect x="335" y="117" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">13</text>
+<text x="30.00" y="164.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r1</text>
+<rect x="77" y="146" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">5</text>
+<rect x="239" y="146" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">1</text>
+<rect x="271" y="146" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">5</text>
+<rect x="303" y="146" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">9</text>
+<rect x="335" y="146" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">13</text>
+<text x="30.00" y="193.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r2</text>
+<rect x="77" y="175" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">9</text>
+<rect x="239" y="175" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">1</text>
+<rect x="271" y="175" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">5</text>
+<rect x="303" y="175" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">9</text>
+<rect x="335" y="175" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">13</text>
+<text x="30.00" y="222.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r3</text>
+<rect x="77" y="204" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">13</text>
+<rect x="239" y="204" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">1</text>
+<rect x="271" y="204" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">5</text>
+<rect x="303" y="204" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">9</text>
+<rect x="335" y="204" width="28" height="24" rx="5" fill="var(--chart-blue)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">13</text>
+<rect x="404" y="15" width="373" height="229" rx="9" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="419.00" y="45.00" class="v-ink" font-size="21" text-anchor="start" font-weight="650">B   ReduceScatter</text>
+<text x="419.00" y="70.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">Column sums, one per rank</text>
+<text x="468.00" y="105.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Input</text>
+<text x="629.00" y="105.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Output</text>
+<line x1="600.00" y1="113.00" x2="600.00" y2="230.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="419.00" y="135.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r0</text>
+<rect x="466" y="117" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">1</text>
+<rect x="498" y="117" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">2</text>
+<rect x="530" y="117" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">3</text>
+<rect x="562" y="117" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">4</text>
+<rect x="628" y="117" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="134.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">28</text>
+<text x="419.00" y="164.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r1</text>
+<rect x="466" y="146" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">5</text>
+<rect x="498" y="146" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">6</text>
+<rect x="530" y="146" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">7</text>
+<rect x="562" y="146" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">8</text>
+<rect x="628" y="146" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="163.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">32</text>
+<text x="419.00" y="193.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r2</text>
+<rect x="466" y="175" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">9</text>
+<rect x="498" y="175" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">10</text>
+<rect x="530" y="175" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">11</text>
+<rect x="562" y="175" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">12</text>
+<rect x="628" y="175" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="192.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">36</text>
+<text x="419.00" y="222.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r3</text>
+<rect x="466" y="204" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">13</text>
+<rect x="498" y="204" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">14</text>
+<rect x="530" y="204" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">15</text>
+<rect x="562" y="204" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">16</text>
+<rect x="628" y="204" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="221.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">40</text>
+<rect x="15" y="259" width="373" height="229" rx="9" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="30.00" y="289.00" class="v-ink" font-size="21" text-anchor="start" font-weight="650">C   All-to-All</text>
+<text x="30.00" y="314.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">Each column goes to its destination</text>
+<text x="79.00" y="349.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Input</text>
+<text x="240.00" y="349.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Output</text>
+<line x1="211.00" y1="357.00" x2="211.00" y2="474.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="30.00" y="379.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r0</text>
+<rect x="77" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">1</text>
+<rect x="109" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="123.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">2</text>
+<rect x="141" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="155.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">3</text>
+<rect x="173" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="187.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">4</text>
+<rect x="239" y="361" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">1</text>
+<rect x="271" y="361" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">5</text>
+<rect x="303" y="361" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">9</text>
+<rect x="335" y="361" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">13</text>
+<text x="30.00" y="408.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r1</text>
+<rect x="77" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">5</text>
+<rect x="109" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="123.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">6</text>
+<rect x="141" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="155.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">7</text>
+<rect x="173" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="187.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">8</text>
+<rect x="239" y="390" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">2</text>
+<rect x="271" y="390" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">6</text>
+<rect x="303" y="390" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">10</text>
+<rect x="335" y="390" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">14</text>
+<text x="30.00" y="437.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r2</text>
+<rect x="77" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">9</text>
+<rect x="109" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="123.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">10</text>
+<rect x="141" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="155.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">11</text>
+<rect x="173" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="187.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">12</text>
+<rect x="239" y="419" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">3</text>
+<rect x="271" y="419" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">7</text>
+<rect x="303" y="419" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">11</text>
+<rect x="335" y="419" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">15</text>
+<text x="30.00" y="466.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r3</text>
+<rect x="77" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="91.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">13</text>
+<rect x="109" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="123.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">14</text>
+<rect x="141" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="155.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">15</text>
+<rect x="173" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="187.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">16</text>
+<rect x="239" y="448" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="253.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">4</text>
+<rect x="271" y="448" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="285.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">8</text>
+<rect x="303" y="448" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="317.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">12</text>
+<rect x="335" y="448" width="28" height="24" rx="5" fill="var(--chart-amber)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="349.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">16</text>
+<rect x="404" y="259" width="373" height="229" rx="9" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="419.00" y="289.00" class="v-ink" font-size="21" text-anchor="start" font-weight="650">D   AllReduce</text>
+<text x="419.00" y="314.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">Column sums on every rank</text>
+<text x="468.00" y="349.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Input</text>
+<text x="629.00" y="349.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Output</text>
+<line x1="600.00" y1="357.00" x2="600.00" y2="474.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="419.00" y="379.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r0</text>
+<rect x="466" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">1</text>
+<rect x="498" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">2</text>
+<rect x="530" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">3</text>
+<rect x="562" y="361" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">4</text>
+<rect x="628" y="361" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">28</text>
+<rect x="660" y="361" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="674.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">32</text>
+<rect x="692" y="361" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="706.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">36</text>
+<rect x="724" y="361" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="738.00" y="378.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">40</text>
+<text x="419.00" y="408.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r1</text>
+<rect x="466" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">5</text>
+<rect x="498" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">6</text>
+<rect x="530" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">7</text>
+<rect x="562" y="390" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">8</text>
+<rect x="628" y="390" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">28</text>
+<rect x="660" y="390" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="674.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">32</text>
+<rect x="692" y="390" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="706.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">36</text>
+<rect x="724" y="390" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="738.00" y="407.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">40</text>
+<text x="419.00" y="437.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r2</text>
+<rect x="466" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">9</text>
+<rect x="498" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">10</text>
+<rect x="530" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">11</text>
+<rect x="562" y="419" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">12</text>
+<rect x="628" y="419" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">28</text>
+<rect x="660" y="419" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="674.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">32</text>
+<rect x="692" y="419" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="706.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">36</text>
+<rect x="724" y="419" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="738.00" y="436.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">40</text>
+<text x="419.00" y="466.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">r3</text>
+<rect x="466" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="480.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">13</text>
+<rect x="498" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="512.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">14</text>
+<rect x="530" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="544.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">15</text>
+<rect x="562" y="448" width="28" height="24" rx="5" fill="var(--figure-surface)" fill-opacity="1" stroke="var(--line)"></rect>
+<text x="576.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="400">16</text>
+<rect x="628" y="448" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="642.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">28</text>
+<rect x="660" y="448" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="674.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">32</text>
+<rect x="692" y="448" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="706.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">36</text>
+<rect x="724" y="448" width="28" height="24" rx="5" fill="var(--chart-teal)" fill-opacity="0.14" stroke="var(--line)"></rect>
+<text x="738.00" y="465.00" class="v-ink" font-size="15" text-anchor="middle" font-weight="610">40</text>
+</svg></div><p class="v-caption">图 1｜四种操作的输入和最终结果。每行对应一个 rank。</p></div>
+
+</details>
+
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>一个 rank 提供什么</th>
+<th>操作结束后拿到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AllReduce</td>
+<td>同形状张量的一份局部结果</td>
+<td>各 rank 逐元素归约后的完整张量</td>
+</tr>
+<tr>
+<td>ReduceScatter</td>
+<td>同形状张量的一份局部结果</td>
+<td>完整归约结果中分给自己的那一片</td>
+</tr>
+<tr>
+<td>AllGather</td>
+<td>属于自己的分片</td>
+<td>按 rank 顺序拼起来的完整张量</td>
+</tr>
+<tr>
+<td>All-to-All</td>
+<td>为每个目的 rank 准备的数据</td>
+<td>各来源 rank 专门发给自己的数据</td>
+</tr>
+<tr>
+<td>Broadcast</td>
+<td>根 rank 提供完整数据</td>
+<td>根 rank 的一份副本</td>
+</tr>
+<tr>
+<td>Send/Recv</td>
+<td>发送方提供一条消息</td>
+<td>指定接收方拿到这条消息</td>
+</tr>
+</tbody>
+</table></div>
+<p>ReduceScatter 做完后，每张卡只保留一段求和结果。接着做 AllGather，每张卡便能恢复完整结果，布局和 AllReduce 一样。浮点数若换了加法顺序，末位可能不同。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+<h3 id="每张卡搬多少字节">每张卡搬多少字节</h3>
+<p>拿一组 16 GB 的权重做 AllGather。均分给四张卡，每张已有 4 GB，还要收 12 GB。改用八张卡，每张要收 14 GB。把每张卡的接收量加起来，四卡共 48 GB，八卡共 112 GB。</p>
+<p>推广到 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container> 张卡，若拼好的张量共 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="S"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math></mjx-assistive-mml></mjx-container> 字节，均匀切成 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container> 片，每张卡手里先有 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="S/p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi>p</mi></math></mjx-assistive-mml></mjx-container>，还要收 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="(p-1)S/p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi>S</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi>p</mi></math></mjx-assistive-mml></mjx-container>。把整组收到的字节加起来，就是 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="(p-1)S"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi>S</mi></math></mjx-assistive-mml></mjx-container>。若改成每张卡固定带入 1 GB，四卡时每张收 3 GB，八卡时每张收 7 GB，因为拼好的张量也跟着变大。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+<h3 id="Ring-AllReduce-的耗时">Ring AllReduce 的耗时</h3>
+<p>设 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container> 张卡在均匀链路上做 ring AllReduce，归约前每张卡各有 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="S"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math></mjx-assistive-mml></mjx-container> 字节。ReduceScatter 走 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="p-1"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container> 轮，AllGather 再走 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="p-1"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container> 轮。每轮每张卡向下游发 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="S/p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi>p</mi></math></mjx-assistive-mml></mjx-container> 字节，也从上游收同样多，单卡发送量合计 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="2(p-1)S/p"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2</mn><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi>S</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi>p</mi></math></mjx-assistive-mml></mjx-container>。设一轮的启动时间为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\alpha"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></mjx-assistive-mml></mjx-container>，单向传输速率为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="B"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D435 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi></math></mjx-assistive-mml></mjx-container>，暂且省去归约计算、链路争用和协议开销。</p>
+<div><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+t_{\mathrm{ring}}(S)\approx 2(p-1)\alpha + \frac{2(p-1)}{p}\frac{S}{B}.
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2248"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mfrac space="3"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D435 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">ring</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo><mo>≈</mo><mn>2</mn><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi>α</mi><mo>+</mo><mfrac><mrow><mn>2</mn><mo stretchy="false">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mi>p</mi></mfrac><mfrac><mi>S</mi><mi>B</mi></mfrac><mo>.</mo></math></mjx-assistive-mml></mjx-container></div>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Modeled latency of ring AllReduce with eight ranks（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 792 450" role="img" aria-label="Modeled latency of ring AllReduce with eight ranks" font-family="system-ui, sans-serif" font-size="17">
+<desc>Two logarithmic axes. The constant startup cost and the rising transfer cost cross at 800 kilobytes, where each contributes 28 microseconds. The total is their sum.</desc>
+<text x="22.00" y="29.00" class="v-ink" font-size="23" text-anchor="start" font-weight="650">Ring AllReduce latency</text>
+<text x="22.00" y="54.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">8 ranks  /  2 µs per round  /  50 GB/s one-way</text>
+<text x="98.00" y="91.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">Time (µs)</text>
+<line x1="98.00" y1="376.00" x2="736.00" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="381.00" class="v-sub" font-size="15" text-anchor="end" font-weight="400">0.1</text>
+<line x1="98.00" y1="321.20" x2="736.00" y2="321.20" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="326.20" class="v-sub" font-size="15" text-anchor="end" font-weight="400">1</text>
+<line x1="98.00" y1="266.40" x2="736.00" y2="266.40" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="271.40" class="v-sub" font-size="15" text-anchor="end" font-weight="400">10</text>
+<line x1="98.00" y1="211.60" x2="736.00" y2="211.60" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="216.60" class="v-sub" font-size="15" text-anchor="end" font-weight="400">100</text>
+<line x1="98.00" y1="156.80" x2="736.00" y2="156.80" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="161.80" class="v-sub" font-size="15" text-anchor="end" font-weight="400">1,000</text>
+<line x1="98.00" y1="102.00" x2="736.00" y2="102.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="88.00" y="107.00" class="v-sub" font-size="15" text-anchor="end" font-weight="400">10,000</text>
+<line x1="98.00" y1="102.00" x2="98.00" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="98.00" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">8 KiB</text>
+<line x1="225.60" y1="102.00" x2="225.60" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="225.60" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">64 KiB</text>
+<line x1="353.20" y1="102.00" x2="353.20" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="353.20" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">512 KiB</text>
+<line x1="480.80" y1="102.00" x2="480.80" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="480.80" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">4 MiB</text>
+<line x1="608.40" y1="102.00" x2="608.40" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="608.40" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">32 MiB</text>
+<line x1="736.00" y1="102.00" x2="736.00" y2="376.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="736.00" y="399.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">256 MiB</text>
+<line x1="98.00" y1="376.00" x2="736.00" y2="376.00" stroke="var(--muted)" stroke-width="1"></line>
+<line x1="98.00" y1="102.00" x2="98.00" y2="376.00" stroke="var(--muted)" stroke-width="1"></line>
+<text x="417.00" y="428.00" class="v-sub" font-size="16" text-anchor="middle" font-weight="400">Input per rank (log scale)</text>
+<polyline points="98.00,241.90 108.63,241.90 119.27,241.90 129.90,241.90 140.53,241.90 151.17,241.90 161.80,241.90 172.43,241.90 183.07,241.90 193.70,241.90 204.33,241.90 214.97,241.90 225.60,241.90 236.23,241.90 246.87,241.90 257.50,241.90 268.13,241.90 278.77,241.90 289.40,241.90 300.03,241.90 310.67,241.90 321.30,241.90 331.93,241.90 342.57,241.90 353.20,241.90 363.83,241.90 374.47,241.90 385.10,241.90 395.73,241.90 406.37,241.90 417.00,241.90 427.63,241.90 438.27,241.90 448.90,241.90 459.53,241.90 470.17,241.90 480.80,241.90 491.43,241.90 502.07,241.90 512.70,241.90 523.33,241.90 533.97,241.90 544.60,241.90 555.23,241.90 565.87,241.90 576.50,241.90 587.13,241.90 597.77,241.90 608.40,241.90 619.03,241.90 629.67,241.90 640.30,241.90 650.93,241.90 661.57,241.90 672.20,241.90 682.83,241.90 693.47,241.90 704.10,241.90 714.73,241.90 725.37,241.90 736.00,241.90" fill="none" stroke="var(--chart-teal)" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 5"></polyline>
+<line x1="350.00" y1="72.00" x2="382.00" y2="72.00" stroke="var(--chart-teal)" stroke-width="3" stroke-dasharray="7 5"></line>
+<text x="390.00" y="77.00" class="v-ink" font-size="15" text-anchor="start" font-weight="400">Startup</text>
+<polyline points="98.00,350.93 108.63,346.81 119.27,342.68 129.90,338.56 140.53,334.43 151.17,330.31 161.80,326.19 172.43,322.06 183.07,317.94 193.70,313.81 204.33,309.69 214.97,305.57 225.60,301.44 236.23,297.32 246.87,293.19 257.50,289.07 268.13,284.95 278.77,280.82 289.40,276.70 300.03,272.57 310.67,268.45 321.30,264.32 331.93,260.20 342.57,256.08 353.20,251.95 363.83,247.83 374.47,243.70 385.10,239.58 395.73,235.46 406.37,231.33 417.00,227.21 427.63,223.08 438.27,218.96 448.90,214.84 459.53,210.71 470.17,206.59 480.80,202.46 491.43,198.34 502.07,194.22 512.70,190.09 523.33,185.97 533.97,181.84 544.60,177.72 555.23,173.59 565.87,169.47 576.50,165.35 587.13,161.22 597.77,157.10 608.40,152.97 619.03,148.85 629.67,144.73 640.30,140.60 650.93,136.48 661.57,132.35 672.20,128.23 682.83,124.11 693.47,119.98 704.10,115.86 714.73,111.73 725.37,107.61 736.00,103.48" fill="none" stroke="var(--chart-amber)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 5"></polyline>
+<line x1="476.00" y1="72.00" x2="508.00" y2="72.00" stroke="var(--chart-amber)" stroke-width="3" stroke-dasharray="2 5"></line>
+<text x="516.00" y="77.00" class="v-ink" font-size="15" text-anchor="start" font-weight="400">Transfer</text>
+<polyline points="98.00,241.65 108.63,241.61 119.27,241.55 129.90,241.49 140.53,241.41 151.17,241.32 161.80,241.22 172.43,241.09 183.07,240.94 193.70,240.76 204.33,240.56 214.97,240.31 225.60,240.02 236.23,239.68 246.87,239.29 257.50,238.82 268.13,238.28 278.77,237.66 289.40,236.94 300.03,236.10 310.67,235.15 321.30,234.06 331.93,232.83 342.57,231.45 353.20,229.90 363.83,228.18 374.47,226.29 385.10,224.21 395.73,221.96 406.37,219.54 417.00,216.94 427.63,214.18 438.27,211.27 448.90,208.21 459.53,205.03 470.17,201.72 480.80,198.31 491.43,194.80 502.07,191.20 512.70,187.53 523.33,183.80 533.97,180.01 544.60,176.17 555.23,172.28 565.87,168.36 576.50,164.41 587.13,160.43 597.77,156.43 608.40,152.41 619.03,148.38 629.67,144.33 640.30,140.27 650.93,136.20 661.57,132.12 672.20,128.03 682.83,123.94 693.47,119.84 704.10,115.74 714.73,111.63 725.37,107.52 736.00,103.41" fill="none" stroke="var(--chart-blue)" stroke-width="3" stroke-linecap="round"></polyline>
+<line x1="610.00" y1="72.00" x2="642.00" y2="72.00" stroke="var(--chart-blue)" stroke-width="3"></line>
+<text x="650.00" y="77.00" class="v-ink" font-size="15" text-anchor="start" font-weight="400">Total</text>
+<line x1="379.13" y1="249.90" x2="379.13" y2="280.00" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 4"></line>
+<circle cx="379.13" cy="241.90" r="4" fill="var(--ink)"></circle>
+<text x="389.13" y="280.00" class="v-sub" font-size="15" text-anchor="start" font-weight="400">800 kB · both 28 µs</text>
+</svg></div><p class="v-caption">图 2｜八 rank ring AllReduce 的时延模型。取每轮启动 2 µs、单向 50 GB/s，两项在 800 kB 处相等。横纵轴均为对数，曲线按公式计算。</p></div>
+<p>把 8 KiB 切成八片，每轮只发 1 KiB。按图 2 的参数，14 轮的传输加起来约 0.29 µs，启动项是 28 µs。几条小消息若能等到一起发，可以合成一条。数据并行可以攒够一桶梯度再交给通信库。张量并行的后一层还得读前一层的结果，跨层的归约很难攒在一起发。实际通信库也会随消息大小和拓扑换算法。</p>
+<h2 id="二、训练中的通信">二、训练中的通信</h2>
+<h3 id="DDP-与-FSDP-交换的是梯度还是参数">DDP 与 FSDP 交换的是梯度还是参数</h3>
+<p>两张卡各存一份模型，分别拿不同样本做前向和反向，这就是分布式数据并行（Distributed Data Parallel，DDP）。如果两边算出的本地平均梯度分别是 <code>[2, 4]</code> 和 <code>[6, 8]</code>，归约后各自除以二，两张卡就能用同一份 <code>[4, 6]</code> 更新模型。这个平均给每张卡相同的权重。若各卡的有效 token 数不等，想求所有 token 的平均梯度，就要把各卡的 token 数算进损失归一化。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<p>沿着 Transformer 从输出端往回算，末几层的梯度会早一些出来。PyTorch DDP 把梯度分桶，一桶的梯度凑齐了就开始归约，其余层接着做反向。反向计算都结束后，若最后一桶还在归约，优化器就得等它收尾。这一段通信落在反向和参数更新之间，没法用反向计算的时间盖过去。</p>
+<p>完全分片数据并行（Fully Sharded Data Parallel，FSDP）也让各 rank 处理不同样本。PyTorch FSDP2 把参数、梯度和优化器状态按 rank 分片存放。算到一个模块时，先用 AllGather 拼齐它的参数组。前向用完，若把完整参数释放掉，到了反向还得再拼一次。梯度算完后做 ReduceScatter，每张卡收到自己负责更新的那段归约结果。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Training schedules for DDP gradient buckets and one FSDP sharding group（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 411" role="img" aria-label="Training schedules for DDP gradient buckets and one FSDP sharding group" font-family="system-ui, sans-serif">
+  <title>DDP and FSDP training schedules</title>
+  <desc>DDP starts each gradient bucket AllReduce when its gradients are ready, overlapping the earlier reductions with backward compute. The optimizer waits for both the backward pass and all reductions. In one FSDP group with reshard after forward, weights are gathered before forward, the unsharded copy is freed, weights are gathered again before backward, and gradients are reduced and scattered before the shard-local update. Horizontal spans are illustrative.</desc>
+  <defs>
+    <marker id="llm-03-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--text-secondary)"></path>
+    </marker>
+  </defs>
+  <g fill="var(--text-primary)" font-weight="650" font-size="20">
+    <text x="25" y="34">DDP · gradient buckets in backward</text>
+    <text x="25" y="238">FSDP · one group, reshard after forward</text>
+  </g>
+  <g fill="var(--text-secondary)" font-size="15">
+    <text x="25" y="86">GPU compute</text>
+    <text x="25" y="140">Collectives</text>
+    <text x="25" y="301">Weight shard</text>
+    <text x="741" y="194" text-anchor="end">Time · schematic</text>
+  </g>
+  <path d="M144 61H741 M144 115H741 M25 213H741 M144 317H741" fill="none" stroke="var(--divider)" stroke-width="2"></path>
+  <path d="M144 187H608" fill="none" stroke="var(--text-secondary)" stroke-width="1.5" marker-end="url(#llm-03-arrow)"></path>
+  <g fill="var(--chart-blue)" fill-opacity=".12" stroke="var(--chart-blue)" stroke-width="1.2">
+    <rect x="144" y="61" width="107" height="38" rx="5"></rect>
+    <rect x="253" y="61" width="124" height="38" rx="5"></rect>
+    <rect x="379" y="61" width="126" height="38" rx="5"></rect>
+    <rect x="633" y="61" width="108" height="38" rx="5"></rect>
+    <rect x="247" y="274" width="76" height="45" rx="5"></rect>
+    <rect x="453" y="274" width="87" height="45" rx="5"></rect>
+    <rect x="664" y="274" width="77" height="45" rx="5"></rect>
+  </g>
+  <g fill="var(--chart-teal)" fill-opacity=".12" stroke="var(--chart-teal)" stroke-width="1.2">
+    <rect x="251" y="115" width="111" height="38" rx="5"></rect>
+    <rect x="377" y="115" width="111" height="38" rx="5"></rect>
+    <rect x="505" y="115" width="111" height="38" rx="5"></rect>
+    <rect x="144" y="274" width="96" height="45" rx="5"></rect>
+    <rect x="350" y="274" width="96" height="45" rx="5"></rect>
+    <rect x="547" y="274" width="110" height="45" rx="5"></rect>
+  </g>
+  <g fill="none" stroke="var(--text-secondary)" stroke-width="1.3">
+    <path d="M251 99V115 M377 99V115 M505 99V115" stroke-dasharray="3 3"></path>
+    <path d="M616 133H624V80H632" marker-end="url(#llm-03-arrow)"></path>
+    <path d="M240 296H247 M323 296H350 M446 296H453 M540 296H547 M657 296H664"></path>
+    <path d="M334 300V346H349" stroke-dasharray="3 3"></path>
+  </g>
+  <circle cx="334" cy="296" r="4" fill="var(--chart-amber)"></circle>
+  <g fill="var(--text-primary)" text-anchor="middle" font-size="15" font-weight="550">
+    <text x="197" y="85">Compute G₁</text>
+    <text x="315" y="85">Compute G₂</text>
+    <text x="442" y="85">Compute G₃</text>
+    <text x="687" y="85">Optimizer</text>
+    <text x="306" y="139">AllReduce G₁</text>
+    <text x="432" y="139">AllReduce G₂</text>
+    <text x="560" y="139">AllReduce G₃</text>
+    <text x="192" y="292">AllGather</text>
+    <text x="285" y="302">Forward</text>
+    <text x="398" y="292">AllGather</text>
+    <text x="496" y="302">Backward</text>
+    <text x="602" y="292">ReduceScatter</text>
+    <text x="702" y="292">Optimizer</text>
+  </g>
+  <g fill="var(--text-secondary)" font-size="14">
+    <text x="624" y="167" text-anchor="middle">Final bucket completes</text>
+    <text x="192" y="310" text-anchor="middle">weights</text>
+    <text x="398" y="310" text-anchor="middle">weights</text>
+    <text x="602" y="310" text-anchor="middle">gradients</text>
+    <text x="702" y="310" text-anchor="middle">local shard</text>
+  </g>
+  <text x="357" y="351" fill="var(--chart-amber)" font-size="16">Free gathered weights</text>
+  <g font-size="15" fill="var(--text-secondary)">
+    <rect x="144" y="378" width="15" height="15" rx="3" fill="var(--chart-blue)" fill-opacity=".12" stroke="var(--chart-blue)"></rect>
+    <text x="168" y="391">Local compute</text>
+    <rect x="306" y="378" width="15" height="15" rx="3" fill="var(--chart-teal)" fill-opacity=".12" stroke="var(--chart-teal)"></rect>
+    <text x="330" y="391">Communication</text>
+  </g>
+</svg></div><p class="v-caption">图 3｜DDP 的梯度桶与 FSDP2 的单个参数组。下图在前向后释放完整参数，反向前需要重新收集。条带只表示操作的依赖关系。</p></div>
+<p>以 80 亿参数的模型为例，参数收集和梯度归约都用每元素 2 B，总量各为 16 GB（十进制）。在八卡 ring 上，把各参数组的传输加起来，做完一遍参数 AllGather 或一遍梯度 ReduceScatter，每张卡都要发 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="7/8\times16=14"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c37"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mn class="mjx-n"><mjx-c class="mjx-c38"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c36"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c34"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>7</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mn>8</mn><mo>×</mo><mn>16</mn><mo>=</mo><mn>14</mn></math></mjx-assistive-mml></mjx-container> GB。这里按每步一次前向、一次反向算，各参数组采用相同的策略，略去初始化与辅助消息。</p>
+<p>DDP 把各桶的 AllReduce 加起来是 28 GB/卡。FSDP2 若在两段计算之间保留完整参数，一次 AllGather 加一次 ReduceScatter，也是 28 GB/卡。前向后若重新分片，反向前得再做一轮 AllGather，发送量就到了 42 GB/卡。多花的 14 GB 对应那一轮参数收集，省下的是两次计算之间存放完整参数所用的显存。要比单步耗时，还得看各次参数收集或梯度归约能和多少计算重叠。</p>
+<h3 id="张量并行在一层里面交换部分和">张量并行在一层里面交换部分和</h3>
+<p>把一个多层感知机（Multilayer Perceptron，MLP）分给两张卡，先切中间特征。设输入 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="X"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>X</mi></math></mjx-assistive-mml></mjx-container> 有 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math></mjx-assistive-mml></mjx-container> 行 token、<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="H"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container> 列隐藏特征，上投影把宽度扩到 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="F"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi></math></mjx-assistive-mml></mjx-container>，下投影再收回 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="H"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container>。把上投影 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="W_1"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>W</mi><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container> 沿输出列分成两半，下投影 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="W_2"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>W</mi><mn>2</mn></msub></math></mjx-assistive-mml></mjx-container> 沿对应的输入行分成两半。每张卡读同一份 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="X"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>X</mi></math></mjx-assistive-mml></mjx-container>，各自算自己那半边中间特征。到了下投影，两张卡算出来的都是 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T\times H"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi><mo>×</mo><mi>H</mi></math></mjx-assistive-mml></mjx-container> 的矩阵，其中每个位置各贡献一部分。把这两份部分和相加，就拿到了输出 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="Y"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44C TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Y</mi></math></mjx-assistive-mml></mjx-container>。下式省略偏置，<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\phi"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D719 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϕ</mi></math></mjx-assistive-mml></mjx-container> 是逐元素激活函数。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+<div><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+Y=\sum_{r=0}^{1}U_r,\qquad
+U_r=\phi(XW_{1,r})W_{2,r},\qquad
+U_r\in\mathbb{R}^{T\times H}.
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44C TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-munderover space="4"><mjx-over style="padding-bottom: 0.2em; padding-left: 0.545em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-over><mjx-box><mjx-munder><mjx-row><mjx-base><mjx-mo class="mjx-lop"><mjx-c class="mjx-c2211 TEX-S2"></mjx-c></mjx-mo></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.167em; padding-left: 0.111em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-texatom></mjx-under></mjx-row></mjx-munder></mjx-box></mjx-munderover><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D448 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.084em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 2em;"></mjx-mspace></mjx-mstyle><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D448 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.084em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D719 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 2em;"></mjx-mspace></mjx-mstyle><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D448 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.084em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2208"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c211D TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Y</mi><mo>=</mo><munderover><mo data-mjx-texclass="OP">∑</mo><mrow data-mjx-texclass="ORD"><mi>r</mi><mo>=</mo><mn>0</mn></mrow><mrow data-mjx-texclass="ORD"><mn>1</mn></mrow></munderover><msub><mi>U</mi><mi>r</mi></msub><mo>,</mo><mstyle scriptlevel="0"><mspace width="2em"></mspace></mstyle><msub><mi>U</mi><mi>r</mi></msub><mo>=</mo><mi>ϕ</mi><mo stretchy="false">(</mo><mi>X</mi><msub><mi>W</mi><mrow data-mjx-texclass="ORD"><mn>1</mn><mo>,</mo><mi>r</mi></mrow></msub><mo stretchy="false">)</mo><msub><mi>W</mi><mrow data-mjx-texclass="ORD"><mn>2</mn><mo>,</mo><mi>r</mi></mrow></msub><mo>,</mo><mstyle scriptlevel="0"><mspace width="2em"></mspace></mstyle><msub><mi>U</mi><mi>r</mi></msub><mo>∈</mo><msup><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">R</mi></mrow><mrow data-mjx-texclass="ORD"><mi>T</mi><mo>×</mo><mi>H</mi></mrow></msup><mo>.</mo></math></mjx-assistive-mml></mjx-container></div>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Two-rank tensor parallel MLP with column and row weight sharding（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 409" role="img" aria-label="Two-rank tensor parallel MLP with column and row weight sharding" font-family="system-ui, sans-serif">
+  <title>Tensor parallelism in a two-projection MLP</title>
+  <desc>The first matrix W1 is split into two column shards and the second matrix W2 into two row shards. Each rank holds the same input X, computes and activates its own intermediate columns, and projects those columns into a partial output of the full output shape. AllReduce sums the two partial outputs and returns Y to both ranks.</desc>
+  <defs>
+    <marker id="llm-04-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--text-secondary)"></path>
+    </marker>
+  </defs>
+  <g fill="var(--text-primary)" font-weight="650" font-size="20">
+    <text x="25" y="36">Weight layout</text>
+    <text x="25" y="185">Forward pass</text>
+  </g>
+  <path d="M25 158H735" fill="none" stroke="var(--divider)" stroke-width="2"></path>
+  <g fill="var(--text-secondary)" font-size="17" font-weight="550">
+    <text x="25" y="70">W₁  ·  H × F  ·  column split</text>
+    <text x="400" y="70">W₂  ·  F × H  ·  row split</text>
+  </g>
+  <g fill="var(--chart-blue)" fill-opacity=".12" stroke="var(--chart-blue)" stroke-width="1.2">
+    <rect x="25" y="85" width="155" height="54" rx="4"></rect>
+    <rect x="400" y="85" width="310" height="27" rx="4"></rect>
+    <rect x="168" y="208" width="149" height="60" rx="6"></rect>
+    <rect x="349" y="208" width="148" height="60" rx="6"></rect>
+  </g>
+  <g fill="var(--chart-teal)" fill-opacity=".12" stroke="var(--chart-teal)" stroke-width="1.2">
+    <rect x="180" y="85" width="155" height="54" rx="4"></rect>
+    <rect x="400" y="112" width="310" height="27" rx="4"></rect>
+    <rect x="168" y="290" width="149" height="60" rx="6"></rect>
+    <rect x="349" y="290" width="148" height="60" rx="6"></rect>
+  </g>
+  <rect x="25" y="249" width="91" height="60" rx="6" fill="var(--surface-card)" stroke="var(--border-subtle)" stroke-width="1.5"></rect>
+  <rect x="564" y="241" width="171" height="76" rx="6" fill="var(--chart-amber)" fill-opacity=".12" stroke="var(--chart-amber)" stroke-width="1.3"></rect>
+  <g fill="none" stroke="var(--text-secondary)" stroke-width="1.5">
+    <path d="M116 279H142V238H166" marker-end="url(#llm-04-arrow)"></path>
+    <path d="M142 279V320H166" marker-end="url(#llm-04-arrow)"></path>
+    <path d="M317 238H347 M317 320H347" marker-end="url(#llm-04-arrow)"></path>
+    <path d="M497 238H529V259H562" marker-end="url(#llm-04-arrow)"></path>
+    <path d="M497 320H529V299H562" marker-end="url(#llm-04-arrow)"></path>
+  </g>
+  <g fill="var(--text-primary)" text-anchor="middle" font-size="17" font-weight="550">
+    <text x="102" y="117">Rank 0</text>
+    <text x="257" y="117">Rank 1</text>
+    <text x="555" y="105">Rank 0</text>
+    <text x="555" y="132">Rank 1</text>
+    <text x="70" y="273">Input X</text>
+    <text x="242" y="232">A₀ = φ(XW₁⁰)</text>
+    <text x="423" y="232">U₀ = A₀W₂⁰</text>
+    <text x="242" y="314">A₁ = φ(XW₁¹)</text>
+    <text x="423" y="314">U₁ = A₁W₂¹</text>
+    <text x="649" y="285">Y = U₀ + U₁</text>
+  </g>
+  <g fill="var(--text-secondary)" text-anchor="middle" font-size="15">
+    <text x="70" y="294">T × H</text>
+    <text x="242" y="254">T × (F/2)</text>
+    <text x="423" y="254">T × H</text>
+    <text x="242" y="336">T × (F/2)</text>
+    <text x="423" y="336">T × H</text>
+    <text x="649" y="307">T × H on both ranks</text>
+  </g>
+  <text x="649" y="263" fill="var(--chart-amber)" text-anchor="middle" font-size="16" font-weight="650">AllReduce</text>
+  <text x="380" y="390" fill="var(--text-secondary)" text-anchor="middle" font-size="16">T tokens · H hidden width · F intermediate width</text>
+</svg></div><p class="v-caption">图 4｜两路张量并行的 MLP。<em>W</em><sub>1</sub> 按列切，<em>W</em><sub>2</sub> 沿同一组特征按行切，两路输出在下投影之后做 AllReduce。</p></div>
+<p>经典 Megatron 张量并行（Tensor Parallelism，TP）里，attention 的输出投影也这么算。加上 MLP，每个 Transformer block 前向归约两次。训练时还要给两个列并行入口分别归约输入梯度，反向也是两次。若用了序列并行（Sequence Parallelism），行并行的出口可以用 ReduceScatter，把归约后的 token 行分给各卡。等下一处列并行要用完整序列了，再做 AllGather。<sup class="cite"><a href="#ref-5">[5]</a></sup> <sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+<h3 id="流水线并行在阶段边界传激活">流水线并行在阶段边界传激活</h3>
+<p>把第 1 到第 16 层放在一个阶段，第 17 层起交给下一个阶段，两段之间就有了一条流水线边界。前向做完一个微批，第 16 层的激活用 Send/Recv 交给后一个阶段。训练反向沿原路送回对应的激活梯度。这个切法叫流水线并行（Pipeline Parallelism，PP）。阶段内部若用了 TP，归约仍由阶段内的 TP 组完成。<sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+<h3 id="MoE-专家并行按-token-的去向发消息">MoE 专家并行按 token 的去向发消息</h3>
+<p>给一批 token 选完专家，路由器就有了一张去向表。混合专家模型（Mixture of Experts，MoE）采用专家并行（Expert Parallelism，EP）时，专家分布在不同 rank 上。采用 All-to-All 的实现先在来源 rank 按目的地打包向量，再发给各专家。这一程叫 dispatch。专家算完，结果循原路送回，来源 rank 恢复 token 的顺序。如果一个 token 选了多个专家，就按路由权重把对应的几份输出加起来。返回并合并的过程叫 combine，训练反向的梯度也沿相应的路径交换。<sup class="cite"><a href="#ref-8">[8]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Mixture-of-experts routing with balanced and hotspot traffic matrices（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 381" role="img" aria-label="Mixture-of-experts routing with balanced and hotspot traffic matrices" font-family="system-ui, sans-serif">
+  <title>Token routing by source and destination rank</title>
+  <desc>Each source sends four top-1 assignments including one local assignment. Both cases have sixteen assignments and twelve cross-rank transfers. Every cell in the balanced matrix is one. The hotspot has rows 1 1 1 1, 3 1 0 0, 3 0 1 0, and 3 0 0 1. Remote receives by destination are 3 3 3 3 when balanced and 9 1 1 1 in the hotspot case.</desc>
+  <defs>
+    <rect id="llm-05-cell" width="50" height="41" rx="3"></rect>
+  </defs>
+  <g fill="var(--text-primary)" font-size="21" font-weight="650">
+    <text x="25" y="37">Balanced routing</text>
+    <text x="400" y="37">Hotspot at rank 0</text>
+  </g>
+  <path d="M380 23V328" fill="none" stroke="var(--divider)" stroke-width="2"></path>
+  <g fill="var(--text-secondary)" font-size="16">
+    <text x="205" y="70" text-anchor="middle">Destination rank</text>
+    <text x="580" y="70" text-anchor="middle">Destination rank</text>
+    <text x="342" y="98" text-anchor="middle">Total</text>
+    <text x="717" y="98" text-anchor="middle">Total</text>
+    <text x="38" y="194" text-anchor="middle" transform="rotate(-90 38 194)">Source rank</text>
+    <text x="413" y="194" text-anchor="middle" transform="rotate(-90 413 194)">Source rank</text>
+  </g>
+  <g fill="var(--text-secondary)" font-size="16" text-anchor="middle">
+    <text x="124" y="98">0</text><text x="178" y="98">1</text><text x="232" y="98">2</text><text x="286" y="98">3</text>
+    <text x="499" y="98">0</text><text x="553" y="98">1</text><text x="607" y="98">2</text><text x="661" y="98">3</text>
+    <text x="74" y="135">0</text><text x="74" y="180">1</text><text x="74" y="225">2</text><text x="74" y="270">3</text>
+    <text x="449" y="135">0</text><text x="449" y="180">1</text><text x="449" y="225">2</text><text x="449" y="270">3</text>
+  </g>
+  <g fill="var(--chart-blue)" fill-opacity=".14" stroke="var(--border-subtle)">
+    <use href="#llm-05-cell" x="153" y="109"></use><use href="#llm-05-cell" x="207" y="109"></use><use href="#llm-05-cell" x="261" y="109"></use>
+    <use href="#llm-05-cell" x="99" y="154"></use><use href="#llm-05-cell" x="207" y="154"></use><use href="#llm-05-cell" x="261" y="154"></use>
+    <use href="#llm-05-cell" x="99" y="199"></use><use href="#llm-05-cell" x="153" y="199"></use><use href="#llm-05-cell" x="261" y="199"></use>
+    <use href="#llm-05-cell" x="99" y="244"></use><use href="#llm-05-cell" x="153" y="244"></use><use href="#llm-05-cell" x="207" y="244"></use>
+    <use href="#llm-05-cell" x="528" y="109"></use><use href="#llm-05-cell" x="582" y="109"></use><use href="#llm-05-cell" x="636" y="109"></use>
+  </g>
+  <g fill="var(--chart-blue)" fill-opacity=".37" stroke="var(--chart-blue)">
+    <use href="#llm-05-cell" x="474" y="154"></use><use href="#llm-05-cell" x="474" y="199"></use><use href="#llm-05-cell" x="474" y="244"></use>
+  </g>
+  <g fill="var(--surface-card)" stroke="var(--border-subtle)">
+    <use href="#llm-05-cell" x="582" y="154"></use><use href="#llm-05-cell" x="636" y="154"></use>
+    <use href="#llm-05-cell" x="528" y="199"></use><use href="#llm-05-cell" x="636" y="199"></use>
+    <use href="#llm-05-cell" x="528" y="244"></use><use href="#llm-05-cell" x="582" y="244"></use>
+  </g>
+  <g fill="var(--chart-teal)" fill-opacity=".12" stroke="var(--chart-teal)" stroke-dasharray="4 3" stroke-width="1.3">
+    <use href="#llm-05-cell" x="99" y="109"></use><use href="#llm-05-cell" x="153" y="154"></use><use href="#llm-05-cell" x="207" y="199"></use><use href="#llm-05-cell" x="261" y="244"></use>
+    <use href="#llm-05-cell" x="474" y="109"></use><use href="#llm-05-cell" x="528" y="154"></use><use href="#llm-05-cell" x="582" y="199"></use><use href="#llm-05-cell" x="636" y="244"></use>
+  </g>
+  <g fill="var(--text-primary)" text-anchor="middle" font-size="18" font-weight="550">
+    <text x="124" y="136">1</text><text x="178" y="136">1</text><text x="232" y="136">1</text><text x="286" y="136">1</text>
+    <text x="124" y="181">1</text><text x="178" y="181">1</text><text x="232" y="181">1</text><text x="286" y="181">1</text>
+    <text x="124" y="226">1</text><text x="178" y="226">1</text><text x="232" y="226">1</text><text x="286" y="226">1</text>
+    <text x="124" y="271">1</text><text x="178" y="271">1</text><text x="232" y="271">1</text><text x="286" y="271">1</text>
+    <text x="499" y="136">1</text><text x="553" y="136">1</text><text x="607" y="136">1</text><text x="661" y="136">1</text>
+    <text x="499" y="181">3</text><text x="553" y="181">1</text><text x="607" y="181">0</text><text x="661" y="181">0</text>
+    <text x="499" y="226">3</text><text x="553" y="226">0</text><text x="607" y="226">1</text><text x="661" y="226">0</text>
+    <text x="499" y="271">3</text><text x="553" y="271">0</text><text x="607" y="271">0</text><text x="661" y="271">1</text>
+  </g>
+  <path d="M99 295H362 M474 295H737" stroke="var(--divider)" stroke-width="2"></path>
+  <g fill="var(--text-secondary)" text-anchor="middle" font-size="16">
+    <text x="342" y="135">4</text><text x="342" y="180">4</text><text x="342" y="225">4</text><text x="342" y="270">4</text>
+    <text x="717" y="135">4</text><text x="717" y="180">4</text><text x="717" y="225">4</text><text x="717" y="270">4</text>
+    <text x="124" y="318">3</text><text x="178" y="318">3</text><text x="232" y="318">3</text><text x="286" y="318">3</text>
+    <text x="553" y="318">1</text><text x="607" y="318">1</text><text x="661" y="318">1</text>
+    <text x="51" y="318">Remote in</text><text x="426" y="318">Remote in</text>
+  </g>
+  <text x="499" y="318" fill="var(--chart-amber)" text-anchor="middle" font-size="19" font-weight="700">9</text>
+  <rect x="25" y="345" width="17" height="16" rx="3" fill="var(--chart-teal)" fill-opacity=".12" stroke="var(--chart-teal)" stroke-dasharray="4 3"></rect>
+  <text x="51" y="359" fill="var(--text-secondary)" font-size="16">Local assignment</text>
+  <text x="737" y="359" fill="var(--text-secondary)" text-anchor="end" font-size="16">Each panel · 16 assignments · 12 cross-rank</text>
+</svg></div><p class="v-caption">图 5｜四个 rank 的 top-1 路由。行是来源，列是专家所在的 rank，每格计路由条数。落在对角线上的 token 留在本卡。</p></div>
+<p>两批都跨卡发了 12 份，右图有 9 份发往 rank 0。这张卡加上本地那一份，要替专家处理 10 条路由。每列加起来就是该 rank 的专家要处理的条数，跨卡流量只算对角线以外的格子。Top-<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="k"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi></math></mjx-assistive-mml></mjx-container> 路由会为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math></mjx-assistive-mml></mjx-container> 个 token 产生 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="kT"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi><mi>T</mi></math></mjx-assistive-mml></mjx-container> 个 token–expert 分配。若同一个 token 选中的几个专家落在同一目的地，传输实现可以复用同一份输入向量，跨节点流量还取决于专家的位置和打包方式。<sup class="cite"><a href="#ref-8">[8]</a></sup></p>
+<h2 id="三、推理要传什么">三、推理要传什么</h2>
+<h3 id="完整副本分请求，TP-副本在层内归约">完整副本分请求，TP 副本在层内归约</h3>
+<p>部署了几份独立的稠密模型时，请求分给哪个副本，它的前向和 KV Cache 就归哪个副本。副本里若有几张卡做 TP，层内归约在这几张卡之间进行。有些 MoE 服务把 attention 留在各自的副本里，却共用一组专家。各 rank 到了专家层仍要交换路由到其他 rank 的 token。<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+<p>拿一个 32 层模型算，隐藏宽度 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="H=4096"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c34"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c39"></mjx-c><mjx-c class="mjx-c36"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi><mo>=</mo><mn>4096</mn></math></mjx-assistive-mml></mjx-container>，激活用 BF16（每元素 2 B），沿用前面每层两次 AllReduce 的切法。提示有 2048 个 token，prefill 一次做完时，每次归约的输入有 2048 行，共 16 MiB。decode 若在同一步里推进 16 条序列，每条只添一个位置，归约的输入就缩到 16 行，也就是 128 KiB。两次前向都走过 32 层，算下来各有 64 次层内归约。这里按每 rank 交给归约的张量大小计，算链路字节还要指定通信算法和拓扑。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Tensor-parallel AllReduce sizes in prefill and decode（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 792 331" role="img" aria-label="Tensor-parallel AllReduce sizes in prefill and decode" font-family="system-ui, sans-serif" font-size="17">
+<desc>With 32 layers, both forwards call 64 layer collectives. One prefill collective takes 16 MiB per rank for 2048 rows. One decode collective takes 128 KiB for 16 rows.</desc>
+<text x="22.00" y="31.00" class="v-ink" font-size="23" text-anchor="start" font-weight="650">TP collective size per forward call</text>
+<text x="22.00" y="56.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">32 layers  /  hidden size 4,096  /  BF16 activations</text>
+<line x1="233.00" y1="98.00" x2="233.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="233.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">32 KiB</text>
+<line x1="333.00" y1="98.00" x2="333.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="333.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">128 KiB</text>
+<line x1="433.00" y1="98.00" x2="433.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="433.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">512 KiB</text>
+<line x1="533.00" y1="98.00" x2="533.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="533.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">2 MiB</text>
+<line x1="633.00" y1="98.00" x2="633.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="633.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">8 MiB</text>
+<line x1="733.00" y1="98.00" x2="733.00" y2="252.00" stroke="var(--line)" stroke-width="1"></line>
+<text x="733.00" y="276.00" class="v-sub" font-size="15" text-anchor="middle" font-weight="400">32 MiB</text>
+<text x="23.00" y="128.00" class="v-ink" font-size="20" text-anchor="start" font-weight="650">Prefill</text>
+<text x="23.00" y="151.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">2,048 token rows</text>
+<line x1="233.00" y1="139.00" x2="683.00" y2="139.00" stroke="var(--chart-blue)" stroke-width="3"></line>
+<circle cx="683.00" cy="139.00" r="7" fill="var(--chart-blue)"></circle>
+<text x="695.00" y="127.00" class="v-ink" font-size="17" text-anchor="start" font-weight="650">16 MiB</text>
+<text x="671.00" y="158.00" class="v-sub" font-size="15" text-anchor="end" font-weight="400">64 AllReduce calls</text>
+<text x="23.00" y="198.00" class="v-ink" font-size="20" text-anchor="start" font-weight="650">Decode</text>
+<text x="23.00" y="221.00" class="v-sub" font-size="16" text-anchor="start" font-weight="400">16 token rows</text>
+<line x1="233.00" y1="209.00" x2="333.00" y2="209.00" stroke="var(--chart-teal)" stroke-width="3"></line>
+<circle cx="333.00" cy="209.00" r="7" fill="var(--chart-teal)"></circle>
+<text x="345.00" y="197.00" class="v-ink" font-size="17" text-anchor="start" font-weight="650">128 KiB</text>
+<text x="321.00" y="228.00" class="v-sub" font-size="15" text-anchor="end" font-weight="400">64 AllReduce calls</text>
+<line x1="233.00" y1="252.00" x2="733.00" y2="252.00" stroke="var(--muted)" stroke-width="1"></line>
+<text x="483.00" y="309.00" class="v-sub" font-size="16" text-anchor="middle" font-weight="400">One AllReduce input per rank (log scale)</text>
+</svg></div><p class="v-caption">图 6｜横轴是单次层内 AllReduce 在一个 rank 上的输入大小，采用对数刻度。归约计数只含 attention 和 MLP。</p></div>
+<p>Attention 会读历史 KV，但给输出投影的只有这一轮新算的 16 行。这 16 行才是接下来归约的数据。把两个点放回图 2 的模型，128 KiB 那笔开销主要来自启动，16 MiB 那笔主要来自传输。每轮 decode 都要重新走这 64 次归约，当前 token 选出来，下一轮的输入才确定。<sup class="cite"><a href="#ref-5">[5]</a></sup> <sup class="cite"><a href="#ref-10">[10]</a></sup></p>
+<h3 id="Prefill-与-Decode-分离时，转移的是-KV">Prefill 与 Decode 分离时，转移的是 KV</h3>
+<p>若 prefill 和 decode 各用一组设备，读完提示词之后还有一次交接。Prefill worker 得把已经算好的 K、V 交给接手这条请求的 decode worker。DistServe 按对应层传送缓存，遇到带宽受限的部署，还可以让负责同一批层的两个 worker 留在一台机器上。若两边的并行布局不同，也可能要把一个源分片拆给几个目的 rank。<sup class="cite"><a href="#ref-10">[10]</a></sup></p>
+<p>以 32 层、8 个 KV 头、头维度 128 的分组查询注意力（Grouped-Query Attention，GQA）模型为例，KV 用 BF16 存储。令 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="L"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>L</mi></math></mjx-assistive-mml></mjx-container> 是层数、<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="h_{\mathrm{KV}}"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4B"></mjx-c><mjx-c class="mjx-c56"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>h</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">KV</mi></mrow></mrow></msub></math></mjx-assistive-mml></mjx-container> 是 KV 头数、<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="d_h"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>d</mi><mi>h</mi></msub></math></mjx-assistive-mml></mjx-container> 是头维度、<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="b"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container> 是每个元素的字节数。每个提示 token 对应的总逻辑缓存量如下。</p>
+<div><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+S_{\mathrm{KV/token}}=2Lh_{\mathrm{KV}}d_hb
+=2\times32\times8\times128\times2\ \mathrm{B}
+=128\ \mathrm{KiB}.
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.177em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4B"></mjx-c><mjx-c class="mjx-c56"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-n"><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6B"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4B"></mjx-c><mjx-c class="mjx-c56"></mjx-c></mjx-mi></mjx-texatom></mjx-texatom></mjx-script></mjx-msub><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c33"></mjx-c><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c38"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c32"></mjx-c><mjx-c class="mjx-c38"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c42"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c32"></mjx-c><mjx-c class="mjx-c38"></mjx-c></mjx-mn><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-texatom texclass="ORD"><mjx-mi class="mjx-n"><mjx-c class="mjx-c4B"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c42"></mjx-c></mjx-mi></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">KV</mi><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi data-mjx-auto-op="false">token</mi></mrow></mrow></msub><mo>=</mo><mn>2</mn><mi>L</mi><msub><mi>h</mi><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">KV</mi></mrow></mrow></msub><msub><mi>d</mi><mi>h</mi></msub><mi>b</mi><mo>=</mo><mn>2</mn><mo>×</mo><mn>32</mn><mo>×</mo><mn>8</mn><mo>×</mo><mn>128</mn><mo>×</mo><mn>2</mn><mtext>&nbsp;</mtext><mrow data-mjx-texclass="ORD"><mi mathvariant="normal">B</mi></mrow><mo>=</mo><mn>128</mn><mtext>&nbsp;</mtext><mrow data-mjx-texclass="ORD"><mi data-mjx-auto-op="false">KiB</mi></mrow><mo>.</mo></math></mjx-assistive-mml></mjx-container></div>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="KV transfer serialization floor（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 422" role="img" aria-label="KV transfer serialization floor" aria-labelledby="llm-kv-title" aria-describedby="llm-kv-desc" style="min-width:620px" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+  <title id="llm-kv-title">KV transfer serialization floor</title>
+  <desc id="llm-kv-desc">Theoretical time to serialize 128 KiB per prompt token over one equivalent payload link. At 32 Ki tokens, the 100, 200, and 400 gigabit-per-second links take 343.6, 171.8, and 85.9 milliseconds respectively.</desc>
+
+  <text x="72" y="30" fill="var(--text-primary, var(--ink))" font-size="23" font-weight="650">KV transfer serialization floor</text>
+  <text x="72" y="54" fill="var(--text-secondary, var(--muted))" font-size="15">128 KiB per prompt token · One equivalent payload link</text>
+
+  <path d="M72 115H584 M72 190H584 M72 265H584 M200 70V340 M328 70V340 M456 70V340 M584 70V340" fill="none" stroke="var(--divider, var(--line))" stroke-width="1"></path>
+  <path d="M72 70V340H584" fill="none" stroke="var(--text-secondary, var(--muted))" stroke-width="1.5"></path>
+
+  <g fill="var(--text-secondary, var(--muted))" font-size="16" text-anchor="end">
+    <text x="61" y="345">0</text>
+    <text x="61" y="270">100</text>
+    <text x="61" y="195">200</text>
+    <text x="61" y="120">300</text>
+  </g>
+  <g fill="var(--text-secondary, var(--muted))" font-size="16" text-anchor="middle">
+    <text x="72" y="366">0</text>
+    <text x="200" y="366">8</text>
+    <text x="328" y="366">16</text>
+    <text x="456" y="366">24</text>
+    <text x="584" y="366">32</text>
+    <text x="328" y="400" font-size="17">Prompt length (Ki tokens)</text>
+    <text transform="translate(19 206) rotate(-90)" font-size="17">Serialization time (ms)</text>
+  </g>
+
+  <g fill="none" stroke-width="3.5" stroke-linecap="round">
+    <path d="M72 340L584 82.302" stroke="var(--chart-amber)" stroke-dasharray="3 6"></path>
+    <path d="M72 340L584 211.151" stroke="var(--chart-teal)" stroke-dasharray="11 6"></path>
+    <path d="M72 340L584 275.575" stroke="var(--chart-blue)"></path>
+  </g>
+  <circle cx="584" cy="82.302" r="4.5" fill="var(--chart-amber)"></circle>
+  <circle cx="584" cy="211.151" r="4.5" fill="var(--chart-teal)"></circle>
+  <circle cx="584" cy="275.575" r="4.5" fill="var(--chart-blue)"></circle>
+
+  <g font-size="17" font-weight="650">
+    <text x="601" y="79" fill="var(--chart-amber)">100 Gb/s</text>
+    <text x="601" y="208" fill="var(--chart-teal)">200 Gb/s</text>
+    <text x="601" y="273" fill="var(--chart-blue)">400 Gb/s</text>
+  </g>
+  <g fill="var(--text-secondary, var(--muted))" font-size="15">
+    <text x="601" y="99">343.6 ms</text>
+    <text x="601" y="228">171.8 ms</text>
+    <text x="601" y="293">85.9 ms</text>
+  </g>
+</svg></div><p class="v-caption">图 7｜KV 交接的理论序列化下限。每个提示 token 对应 128 KiB，总量经过一条等效链路。横轴以 1024 个 token 为一单位，链路速率使用十进制 Gb/s。每条曲线只计算有效载荷上链所需的时间。</p></div>
+<p>8192 个提示 token 累积起来就是 1 GiB。这 1 GiB 若全过一条 400 Gb/s 的链路，光把字节送上链就要至少 21.47 ms。用两条链路时，要由最后传完的那份来算时间。只有两条链路能并行满速跑、数据又按速率分得开，才够得上按合计带宽算的下限。这里还要留出数据准备和接收端等待的时间。</p>
+<p>交接的等待算在哪段，要看首 token 由谁发给客户端。若 prefill 端先把它发出去，交接中尚未完成的部分就落在首、次 token 之间。若由 decode 端开始返回结果，这部分等待会落在首 token 延迟里。后续 KV 直接由 decode 端追加。<sup class="cite"><a href="#ref-10">[10]</a></sup> <sup class="cite"><a href="#ref-14">[14]</a></sup></p>
+<h2 id="四、从-collective-到网卡">四、从 collective 到网卡</h2>
+<p>DeepSeek-V3 的技术报告里，同一套 MoE dispatch 和 combine，在 prefill 和 decode 用了不同的走法。Prefill 先走 InfiniBand 跨节点，再用 NVLink 在节点内转发。Decode 为了降低延迟，跨节点时用 InfiniBand 点对点直传，通过 IBGDA（InfiniBand GPUDirect Async）提交操作。<sup class="cite"><a href="#ref-11">[11]</a></sup></p>
+<p>框架里的 <code>Send</code> 指把一条消息交给目标 rank。RDMA verbs 里的 <code>SEND</code> 则是网卡执行的一种操作。以可靠连接为例，发 <code>SEND</code> 之前，收方得在接收队列上备好缓冲区。用普通 <code>RDMA_WRITE</code> 时，发方按远端虚拟地址和 rkey 写进获准访问的内存。框架调用 Send/Recv 后，具体选哪种操作，由传输后端决定。有 GPUDirect RDMA 时，支持它的网卡可以直接读写 GPU 显存。由 CPU 还是 GPU 提交工作请求，则由后端的控制路径决定。<sup class="cite"><a href="#ref-12">[12]</a></sup> <sup class="cite"><a href="#ref-13">[13]</a></sup></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>交换的数据</th>
+<th>典型操作</th>
+<th>等到什么时候才能继续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DDP 训练</td>
+<td>本地样本产生的梯度</td>
+<td>AllReduce</td>
+<td>归约结果到齐后更新参数</td>
+</tr>
+<tr>
+<td>FSDP2 训练</td>
+<td>参数组分片、各自计算的梯度</td>
+<td>参数 AllGather，梯度 ReduceScatter</td>
+<td>参数齐了才算该组，梯度分片齐了才更新</td>
+</tr>
+<tr>
+<td>经典 TP 训练或推理</td>
+<td>激活的部分和、训练时的输入梯度部分和</td>
+<td>AllReduce</td>
+<td>同层的后继算子等待对应结果</td>
+</tr>
+<tr>
+<td>PP</td>
+<td>微批的边界激活或激活梯度</td>
+<td>Send/Recv</td>
+<td>相邻阶段等到该微批的输入</td>
+</tr>
+<tr>
+<td>MoE 专家并行</td>
+<td>路由后的 token 向量与专家输出</td>
+<td>两次按目的地交换</td>
+<td>专家等输入，来源 rank 等自己的输出</td>
+</tr>
+<tr>
+<td>独立稠密推理副本</td>
+<td>请求交给某个副本</td>
+<td>请求分发</td>
+<td>请求等待选中的副本排程</td>
+</tr>
+<tr>
+<td>Prefill/Decode 分离</td>
+<td>一条请求的提示 KV</td>
+<td>点对点或分片重分布</td>
+<td>Decode worker 等它需要的缓存</td>
+</tr>
+</tbody>
+</table></div>
+<p>相关博文包括<a href="/2026/06/28/ai-compute-interconnect-part1-communication-wall/">智算互联（上）：训练吞吐与通信瓶颈</a>、<a href="/2026/11/08/llm-inference-from-token-to-cluster/">大模型推理的执行机制与性能约束</a>和<a href="/2026/06/28/ai-compute-interconnect-part3-smart-nic-chip/">智算互联（下）：高性能网卡的芯片架构</a>。</p>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><span id="ref-1" class="ref-anchor"></span> NVIDIA. <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">NCCL Collective Operations</a>. 集合操作的输入输出语义。</li>
+<li><span id="ref-2" class="ref-anchor"></span> NVIDIA. <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md">NCCL Tests Performance</a>. 集合操作的流量系数与带宽口径。</li>
+<li><span id="ref-3" class="ref-anchor"></span> PyTorch. <a target="_blank" rel="noopener" href="https://docs.pytorch.org/docs/stable/notes/ddp.html">DistributedDataParallel Design Note</a>. 梯度分桶、归约与优化器顺序。</li>
+<li><span id="ref-4" class="ref-anchor"></span> PyTorch. <a target="_blank" rel="noopener" href="https://docs.pytorch.org/docs/stable/distributed.fsdp.fully_shard.html">FSDP2 fully_shard</a>. 参数组、重分片与梯度归约。</li>
+<li><span id="ref-5" class="ref-anchor"></span> Shoeybi et al., 2019. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1909.08053">Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism</a>. §3，MLP 与 attention 的张量并行。</li>
+<li><span id="ref-6" class="ref-anchor"></span> Korthikanti et al., MLSys 2023. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.05198">Reducing Activation Recomputation in Large Transformer Models</a>. 序列并行与激活布局。</li>
+<li><span id="ref-7" class="ref-anchor"></span> Narayanan et al., SC 2021. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2104.04473">Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM</a>. 流水线阶段及微批调度。</li>
+<li><span id="ref-8" class="ref-anchor"></span> NVIDIA. <a target="_blank" rel="noopener" href="https://docs.nvidia.com/megatron-core/developer-guide/0.15.0/apidocs/core/core.transformer.moe.token_dispatcher.html">Megatron Core MoE Token Dispatcher</a>. 专家并行的 dispatch、combine 与局部重排。</li>
+<li><span id="ref-9" class="ref-anchor"></span> vLLM. <a target="_blank" rel="noopener" href="https://docs.vllm.ai/en/stable/serving/data_parallel_deployment/">Data Parallel Deployment</a>. 独立推理副本与跨副本的专家层。</li>
+<li><span id="ref-10" class="ref-anchor"></span> Zhong et al., OSDI 2024. <a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi24/presentation/zhong-yinmin">DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</a>. Prefill/Decode 解耦、KV 交接及放置策略。</li>
+<li><span id="ref-11" class="ref-anchor"></span> DeepSeek-AI, 2024. <a target="_blank" rel="noopener" href="https://arxiv.org/html/2412.19437#S3.SS4">DeepSeek-V3 Technical Report</a>. §3.4，推理两阶段的 MoE 通信路径。</li>
+<li><span id="ref-12" class="ref-anchor"></span> NVIDIA. <a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/gpudirect-rdma/">GPUDirect RDMA</a>. 第三方 PCIe 设备访问 GPU 显存的数据路径。</li>
+<li><span id="ref-13" class="ref-anchor"></span> NVIDIA. <a target="_blank" rel="noopener" href="https://docs.nvidia.com/rdma-aware-networks-programming-user-manual-1-7.pdf#page=20">RDMA Aware Networks Programming User Manual</a>. §3.1，Send 和 RDMA Write 的接收缓冲区与地址约定。</li>
+<li><span id="ref-14" class="ref-anchor"></span> vLLM. <a target="_blank" rel="noopener" href="https://docs.vllm.ai/en/latest/features/disagg_prefill/#generate-api-output-modes">Disaggregated Prefilling</a>. 分离式推理的输出模式与 KV 交接。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon &amp; Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者: </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接:</strong>
+      <a href="https://leecdiang.com/2026/11/25/llm-training-inference-communication/" title="大模型训练和推理中的通信">https://leecdiang.com/2026/11/25/llm-training-inference-communication/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+              <a href="/tags/GPU/" rel="tag"># GPU</a>
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86/" rel="tag"># 大模型推理</a>
+              <a href="/tags/AI-Infrastructure/" rel="tag"># AI Infrastructure</a>
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/" rel="tag"># 分布式训练</a>
+              <a href="/tags/%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1/" rel="tag"># 集合通信</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+  </div></div>
+
+
+</main>
+  <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
+</body></html>

@@ -1,0 +1,3 @@
+forward,token_rows,input_bytes_per_rank,layer_allreduces
+prefill,2048,16777216,64
+decode,16,131072,64
