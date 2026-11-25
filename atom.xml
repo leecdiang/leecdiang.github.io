@@ -11,7 +11,7 @@
   <rights>All rights reserved 2026, LEEcDiang</rights>
   <subtitle>Tracing systems inside and beyond the clock.</subtitle>
   <title>Beyond the Clock</title>
-  <updated>2026-11-25T12:14:00.000Z</updated>
+  <updated>2026-11-25T12:25:00.000Z</updated>
   <entry>
     <author>
       <name>LEEcDiang</name>
@@ -31,7 +31,7 @@
 
 &lt;div&gt;
 &lt;p class=&quot;rdma-term-action&quot;&gt;&lt;a href=&quot;https://leecdiang.com/2026/11/25/rdma-four-operations/#rdma-host-path&quot;&gt;&#x8df3;&#x5230;&#x56fe; 1 &#x548c;&#x6b63;&#x6587;&lt;/a&gt;&#x3000;&lt;/p&gt;
-&lt;div class=&quot;table-container&quot;&gt;&lt;table aria-label=&quot;RDMA &#x7f29;&#x5199;&#x3001;&#x82f1;&#x6587;&#x5168;&#x79f0;&#x4e0e;&#x4e2d;&#x6587;&#x542b;&#x4e49;&quot;&gt;
+&lt;div class=&quot;table-container&quot;&gt;&lt;table tabindex=&quot;-1&quot; aria-label=&quot;RDMA &#x7f29;&#x5199;&#x3001;&#x82f1;&#x6587;&#x5168;&#x79f0;&#x4e0e;&#x4e2d;&#x6587;&#x542b;&#x4e49;&quot;&gt;
 &lt;colgroup&gt;&lt;col&gt;&lt;col&gt;&lt;col&gt;&lt;/colgroup&gt;
 &lt;thead&gt;&lt;tr&gt;&lt;th scope=&quot;col&quot;&gt;&#x7f29;&#x5199;&#x6216;&#x4ee3;&#x7801;&#x540d;&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;&#x82f1;&#x6587;&#x5168;&#x79f0;&#x6216;&#x540d;&#x79f0;&lt;/th&gt;&lt;th scope=&quot;col&quot;&gt;&#x4e2d;&#x6587;&#x542b;&#x4e49;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
 &lt;tbody&gt;
@@ -113,6 +113,7 @@
 &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;&lt;code&gt;CUDA&lt;/code&gt;&lt;/th&gt;&lt;td lang=&quot;en&quot;&gt;Compute Unified Device Architecture&lt;/td&gt;&lt;td&gt;NVIDIA &#x7684; GPU &#x5e76;&#x884c;&#x8ba1;&#x7b97;&#x5e73;&#x53f0;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
+
 &lt;/div&gt;
 
 &lt;h2&gt;&#x4e00;&#x3001;&#x5148;&#x627e;&#x51fa;&#x7f13;&#x51b2;&#x533a;&#xff0c;&#x518d;&#x770b;&#x7f51;&#x5361;&lt;/h2&gt;
@@ -366,7 +367,7 @@
     <published>2026-11-25T10:00:00.000Z</published>
     <summary type="text">&#x8ddf;&#x8e2a;&#x4e00;&#x6761; 4 KiB &#x6d88;&#x606f;&#x7684;&#x961f;&#x5217;&#x9879;&#x3001;PCIe &#x4e8b;&#x52a1;&#x548c;&#x7f51;&#x7edc;&#x5305;&#xff0c;&#x5bf9;&#x7167; SEND&#x3001;WRITE&#x3001;READ &#x548c; Atomic&#xff0c;&#x518d;&#x4ece; RecoNIC &#x548c; NCCL &#x6e90;&#x7801;&#x770b;&#x63a5;&#x6536;&#x5730;&#x5740;&#x4e0e;&#x5b8c;&#x6210;&#x901a;&#x77e5;&#x600e;&#x6837;&#x4f20;&#x9012;&#x3002;</summary>
     <title>&#x901a;&#x4fe1;&#x539f;&#x8bed;&#x80cc;&#x540e;&#x7684; RDMA &#x2014;&#x2014;&#x7406;&#x89e3;&#x56db;&#x79cd; RDMA &#x64cd;&#x4f5c;</title>
-    <updated>2026-11-25T12:14:00.000Z</updated>
+    <updated>2026-11-25T12:25:00.000Z</updated>
   </entry>
   <entry>
     <author>

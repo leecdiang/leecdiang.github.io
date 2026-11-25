@@ -1,18 +1,29 @@
 (() => {
   'use strict';
 
-  const termToggle = document.getElementById('rdma-term-toggle');
+  const expandTerms = document.getElementById('rdma-term-toggle');
+  const collapseTerms = document.getElementById('rdma-term-collapse');
   const extraTerms = document.getElementById('rdma-term-extra');
-  if (termToggle && extraTerms && !termToggle.hasAttribute('data-rdma-term-ready')) {
+  const termsTable = document.getElementById('rdma-term-table');
+  if (expandTerms && collapseTerms && extraTerms && termsTable && !expandTerms.hasAttribute('data-rdma-term-ready')) {
     function showExtraTerms(open) {
       extraTerms.hidden = !open;
-      termToggle.setAttribute('aria-expanded', String(open));
-      termToggle.textContent = open ? '收起其余术语' : '展开其余术语';
+      expandTerms.hidden = open;
+      collapseTerms.hidden = !open;
+      expandTerms.setAttribute('aria-expanded', String(open));
+      collapseTerms.setAttribute('aria-expanded', String(open));
     }
     showExtraTerms(false);
-    termToggle.hidden = false;
-    termToggle.setAttribute('data-rdma-term-ready', '');
-    termToggle.addEventListener('click', () => showExtraTerms(extraTerms.hidden));
+    expandTerms.setAttribute('data-rdma-term-ready', '');
+    expandTerms.addEventListener('click', () => {
+      showExtraTerms(true);
+      termsTable.focus({ preventScroll: true });
+    });
+    collapseTerms.addEventListener('click', () => {
+      showExtraTerms(false);
+      expandTerms.focus({ preventScroll: true });
+      expandTerms.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+    });
   }
 
   const root = document.getElementById('rdma-operation-path');

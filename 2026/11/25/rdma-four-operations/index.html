@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://leecdiang.com/images/social/20a43b995ef7.png">
 <meta property="article:published_time" content="2026-11-25T10:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-25T12:14:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T12:25:00.000Z">
 <meta property="article:author" content="LEEcDiang">
 <meta property="article:tag" content="AI Infrastructure">
 <meta property="article:tag" content="PCIe">
@@ -87,7 +87,7 @@
   
   
 
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/20a43b995ef7.png"><meta itemprop="dateModified" content="2026-11-25T12:14:00.000Z"><meta itemprop="datePublished" content="2026-11-25T10:00:00.000Z">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/20a43b995ef7.png"><meta itemprop="dateModified" content="2026-11-25T12:25:00.000Z"><meta itemprop="datePublished" content="2026-11-25T10:00:00.000Z">
     <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/25/rdma-four-operations/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -144,13 +144,13 @@
 #rdma-glossary code { font-size: 1em; white-space: normal; overflow-wrap: anywhere; }
 #rdma-glossary [hidden] { display: none !important; }
 #rdma-glossary .rdma-term-action { font-size: var(--rdma-table-font); text-align: start; margin: .3em 0; }
-#rdma-term-toggle { font: inherit; padding: .18em .6em; background: transparent; border: 1px solid currentColor; border-radius: .25em; color: inherit; cursor: pointer; }
-#rdma-term-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+#rdma-glossary button { font: inherit; font-size: var(--rdma-table-font); scroll-margin-block: 5rem 1rem; padding: .18em .6em; background: transparent; border: 1px solid currentColor; border-radius: .25em; color: inherit; cursor: pointer; }
+#rdma-glossary button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 #rdma-glossary tbody .rdma-term-group th { padding-top: .75em; }
 </style>
 <div id="rdma-glossary">
-<p class="rdma-term-action"><a href="#rdma-host-path">跳到图 1 和正文</a>　<button type="button" id="rdma-term-toggle" aria-controls="rdma-term-extra" aria-expanded="true" hidden="">收起其余术语</button></p>
-<div class="table-container"><table aria-label="RDMA 缩写、英文全称与中文含义">
+<p class="rdma-term-action"><a href="#rdma-host-path">跳到图 1 和正文</a>　<button type="button" id="rdma-term-toggle" aria-controls="rdma-term-extra" aria-expanded="false" hidden="">展开其余术语</button></p>
+<div class="table-container"><table id="rdma-term-table" tabindex="-1" aria-label="RDMA 缩写、英文全称与中文含义">
 <colgroup><col><col><col></colgroup>
 <thead><tr><th scope="col">缩写或代码名</th><th scope="col">英文全称或名称</th><th scope="col">中文含义</th></tr></thead>
 <tbody>
@@ -232,6 +232,7 @@
 <tr><th scope="row"><code>CUDA</code></th><td lang="en">Compute Unified Device Architecture</td><td>NVIDIA 的 GPU 并行计算平台</td></tr>
 </tbody>
 </table></div>
+<button type="button" id="rdma-term-collapse" aria-controls="rdma-term-extra" aria-expanded="true" hidden="">收起其余术语</button>
 </div>
 
 <h2 id="一、先找出缓冲区，再看网卡">一、先找出缓冲区，再看网卡</h2>
@@ -555,7 +556,7 @@
   <div data-rdma-static=""><p>SEND 把数据送进 B 的接收 WR 指定的 RX7。WRITE 写入 A 指定的 B 端 slot3。WRITE_WITH_IMM 还消耗 B 的一条接收 WQE。B 应用轮询 CQ，从 WC 中读到立即数 3。READ 把 slot3 的数据拉回 A。对 B 的计数器执行 Fetch &amp; Add (+1)，B 的值从 41 变为 42，A 收到旧值 41。</p></div>
   <figcaption class="v-caption">图 3｜虚线箭头表示控制信息，实线箭头表示数据。每步跟踪一次逻辑动作，可以包含多个包。RC 的确认与重传从略。</figcaption>
 </figure>
-<script src="/js/rdma-four-operations.js?v=cd5420df52" defer=""></script>
+<script src="/js/rdma-four-operations.js?v=55664a98b7" defer=""></script>
 
 <h3 id="SEND-由-B-决定消息落在哪儿">SEND 由 B 决定消息落在哪儿</h3>
 <p>B 先留出一块够大的缓冲区 <code>RX7</code>，调用 <code>ibv_post_recv</code> 向 RQ 提交一条指向它的 WR。A 提交 SEND 时只填本地 SGE，不必知道 <code>RX7</code> 在哪里。A 的 RNIC 从主存读出 4 KiB 发往 B。B 的 RNIC 从 RQ 取下一条 WQE，才知道要把这 4 KiB 写在哪里。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup></p>
