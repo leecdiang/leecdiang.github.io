@@ -1,0 +1,952 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
+  <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.612c7e967edd.css">
+  
+  
+  <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  
+    <meta name="description" content="跟踪一条 4 KiB 消息的队列项、PCIe 事务和网络包，对照 SEND、WRITE、READ 和 Atomic，再从 RecoNIC 和 NCCL 源码看接收地址与完成通知怎样传递。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通信原语背后的 RDMA ——理解四种 RDMA 操作">
+<meta property="og:url" content="https://leecdiang.com/2026/11/25/rdma-four-operations/">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="跟踪一条 4 KiB 消息的队列项、PCIe 事务和网络包，对照 SEND、WRITE、READ 和 Atomic，再从 RecoNIC 和 NCCL 源码看接收地址与完成通知怎样传递。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leecdiang.com/images/social/20a43b995ef7.png">
+<meta property="article:published_time" content="2026-11-25T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T10:15:00.000Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="AI Infrastructure">
+<meta property="article:tag" content="PCIe">
+<meta property="article:tag" content="RDMA">
+<meta property="article:tag" content="网卡">
+<meta property="article:tag" content="集合通信">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/20a43b995ef7.png">
+
+
+<link rel="canonical" href="https://leecdiang.com/2026/11/25/rdma-four-operations/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/25/rdma-four-operations/","path":"2026/11/25/rdma-four-operations/","title":"通信原语背后的 RDMA ——理解四种 RDMA 操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>通信原语背后的 RDMA ——理解四种 RDMA 操作 | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script defer="" src="/js/visual-diagrams.js"></script>
+  <script defer="" src="/assets/studio/core.811ecf2d3148.js"></script>
+  
+  
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
+<body class="studio-site studio-halo studio-reading">
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="studio-header">
+    <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="/photography/">摄影</a>
+      <a href="/archives/" aria-current="page">文章</a>
+      <a href="/about/">关于</a>
+    </nav>
+    <div class="header-controls"><button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+    <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
+    </button></div>
+  </header>
+  <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
+    
+
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E6%89%BE%E5%87%BA%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%8C%E5%86%8D%E7%9C%8B%E7%BD%91%E5%8D%A1"><span class="toc-text">一、先找出缓冲区，再看网卡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E6%9D%A1-SEND-%E5%9C%A8%E4%B8%BB%E6%9C%BA%E9%87%8C%E5%8D%A0%E5%87%A0%E5%9D%97%E5%86%85%E5%AD%98"><span class="toc-text">一条 SEND 在主机里占几块内存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%8C%E4%B8%80%E5%AF%B9%E7%BD%91%E5%8D%A1%EF%BC%8C%E5%9B%9B%E7%A7%8D%E6%93%8D%E4%BD%9C"><span class="toc-text">二、同一对网卡，四种操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SEND-%E7%94%B1-B-%E5%86%B3%E5%AE%9A%E6%B6%88%E6%81%AF%E8%90%BD%E5%9C%A8%E5%93%AA%E5%84%BF"><span class="toc-text">SEND 由 B 决定消息落在哪儿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WRITE-%E6%8A%8A%E6%95%B0%E6%8D%AE%E6%94%BE%E8%BF%9B%E7%BA%A6%E5%A5%BD%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-text">WRITE 把数据放进约好的位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#READ-%E7%9A%84%E8%AF%B7%E6%B1%82%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BE%80%E7%9B%B8%E5%8F%8D%E6%96%B9%E5%90%91%E8%B5%B0"><span class="toc-text">READ 的请求和数据往相反方向走</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Atomic-%E6%8B%BF%E5%9B%9E%E8%AE%A1%E6%95%B0%E5%99%A8%E4%BF%AE%E6%94%B9%E5%89%8D%E7%9A%84%E5%80%BC"><span class="toc-text">Atomic 拿回计数器修改前的值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%80%E6%9D%A1-WRITE-%E5%9C%A8-RecoNIC-%E9%87%8C%E6%80%8E%E4%B9%88%E8%B5%B0"><span class="toc-text">三、一条 WRITE 在 RecoNIC 里怎么走</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E5%8D%A1%E4%BF%9D%E5%AD%98%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%8C%E9%98%9F%E5%88%97%E5%8F%88%E6%94%BE%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="toc-text">网卡保存了什么，队列又放在哪里</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81NCCL-%E7%9A%84%E4%B8%80%E6%AC%A1%E5%8F%91%E9%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E7%94%A8-WRITE"><span class="toc-text">四、NCCL 的一次发送为什么会用 WRITE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E4%B8%8E%E6%BA%90%E7%A0%81"><span class="toc-text">资料与源码</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/20a43b995ef7.png"><meta itemprop="dateModified" content="2026-11-25T10:15:00.000Z"><meta itemprop="datePublished" content="2026-11-25T10:00:00.000Z">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/25/rdma-four-operations/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar-snow.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    
+      <header class="post-header">
+        
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
+        
+        <h1 class="post-title" itemprop="name headline">
+          通信原语背后的 RDMA ——理解四种 RDMA 操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">跟踪一条 4 KiB 消息的队列项、PCIe 事务和网络包，对照 SEND、WRITE、READ 和 Atomic，再从 RecoNIC 和 NCCL 源码看接收地址与完成通知怎样传递。</div>
+        </div>
+        
+        <div class="reading-byline">
+          <a class="reading-author" href="/about/"><img src="/images/avatar-snow.jpg" width="44" height="44" alt="LEEcDiang 的头像"><span><strong>LEEcDiang</strong><span>Chengzhan Li</span></span></a>
+          <time datetime="2026-11-25T18:00:00+08:00">2026.11.25 发布</time>
+        </div>
+        
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><div class="note primary"><p>A 要给 B 发 4 KiB 数据。用 SEND，A 可以一直不知道这 4 KiB 最后落在 B 的哪个地址。换成 RDMA WRITE，A 在提交请求时就得把那个地址填好。同样是把数据从 A 搬到 B，两张网卡分别要做什么？</p>
+</div>
+<span id="more"></span>
+<p>A 的网卡从本机内存把数据读出来，B 的网卡把收到的数据写进去。数据先经过 A 的 PCIe，再过网络，最后经过 B 的 PCIe。文末的 NCCL 例子里，还有一次沿反方向走的 WRITE。B 用它把接收地址告诉 A。有关这块数据为什么需要跨卡传输，可对照读<a href="/2026/11/25/llm-training-inference-communication/">《大模型训练和推理中的通信》</a>。</p>
+<h2 id="一、先找出缓冲区，再看网卡">一、先找出缓冲区，再看网卡</h2>
+<p>A、B 各有一张支持远程直接内存访问（RDMA）的网卡，下文简称 RNIC。两边已经建好可靠连接（RC），数据放在主机内存里。图 1 中间的以太网链路用的是 RoCEv2，两张网卡把 RDMA 传输包封装在 UDP/IP 里收发。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup></p>
+<p>应用先把可用的内存范围注册为 <strong>MR</strong>（Memory Region）。程序用散布／聚集列表描述本地缓冲区。列表中的每一项叫 SGE（scatter/gather element），用地址、长度和 <code>lkey</code> 指出要访问哪一段。如果 B 还希望 A 能远程读或写某段内存，就要授予相应权限，并通过双方的协议把远端地址和 <code>rkey</code> 告诉 A。网卡据此检查请求访问的范围和权限。B 可以把一个区域开放给 A 读，另一个区域开放给 A 写。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-2">[2]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Two hosts, two PCIe links, one network connection（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 434" role="img" aria-label="Two hosts, two PCIe links, one network connection" font-family="system-ui, sans-serif">
+  <title>Two hosts, two PCIe links, one network connection</title>
+  <desc>Each machine has a CPU, host DRAM and an RNIC attached to the host over its own PCIe link. Software posts work and polls completions in memory. A dotted arrow to the RNIC represents a doorbell register write. The two-ended solid arrow between the RNIC and DRAM represents device-initiated DMA reads and writes for host-backed queues and registered buffers. The RNICs exchange requests and responses over the network. Both endpoints can submit work.</desc>
+  <defs>
+    <marker id="rd4-host-blue" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-blue, #3c689a)"></path>
+    </marker>
+    <marker id="rd4-host-teal" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-teal, #226b63)"></path>
+    </marker>
+    <marker id="rd4-host-amber" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-amber, #8c5b23)"></path>
+    </marker>
+    <marker id="rd4-host-sub" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--text-secondary, #435669)"></path>
+    </marker>
+  </defs>
+  <rect x="12" y="12" width="296" height="282" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <text x="29" y="43" fill="var(--text-primary, #233442)" text-anchor="start" font-size="22" font-weight="680" class="v-ink">Host A</text>
+  <rect x="24" y="70" width="84" height="76" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.25"></rect>
+  <text x="66" y="101" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="650" class="v-ink">CPU</text>
+  <text x="66" y="124" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="13.5" font-weight="450" class="v-sub">Provider</text>
+  <rect x="134" y="62" width="162" height="91" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.25"></rect>
+  <text x="215" y="87" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17.5" font-weight="650" class="v-ink">Host DRAM</text>
+  <text x="215" y="111" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="15" font-weight="450" class="v-sub">SQ / RQ  ·  CQ</text>
+  <text x="215" y="134" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Registered buffer</text>
+  <path d="M 110 107 H 131" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-sub)"></path>
+  <polygon points="110.0,107.0 116.96,110.6 116.96,103.4" fill="var(--text-secondary, #435669)"></polygon>
+  <path d="M 66 148 V 219" fill="none" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#rd4-host-amber)"></path>
+  <path d="M 215 155 V 219" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-teal)"></path>
+  <polygon points="215.0,155.0 210.05,164.57 219.95,164.57" fill="var(--chart-teal, #226b63)"></polygon>
+  <text x="138" y="193" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="16" font-weight="580" class="v-sub">PCIe</text>
+  <rect x="25" y="223" width="270" height="57" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-blue, #3c689a)" stroke-width="1.8"></rect>
+  <text x="160" y="247" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="21" font-weight="680" class="v-ink">RNIC</text>
+  <text x="160" y="269" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Queue processing  ·  RC transport</text>
+  <rect x="452" y="12" width="296" height="282" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <text x="469" y="43" fill="var(--text-primary, #233442)" text-anchor="start" font-size="22" font-weight="680" class="v-ink">Host B</text>
+  <rect x="464" y="70" width="84" height="76" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.25"></rect>
+  <text x="506" y="101" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="650" class="v-ink">CPU</text>
+  <text x="506" y="124" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="13.5" font-weight="450" class="v-sub">Provider</text>
+  <rect x="574" y="62" width="162" height="91" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.25"></rect>
+  <text x="655" y="87" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17.5" font-weight="650" class="v-ink">Host DRAM</text>
+  <text x="655" y="111" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="15" font-weight="450" class="v-sub">SQ / RQ  ·  CQ</text>
+  <text x="655" y="134" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Registered buffer</text>
+  <path d="M 550 107 H 571" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-sub)"></path>
+  <polygon points="550.0,107.0 556.96,110.6 556.96,103.4" fill="var(--text-secondary, #435669)"></polygon>
+  <path d="M 506 148 V 219" fill="none" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#rd4-host-amber)"></path>
+  <path d="M 655 155 V 219" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-teal)"></path>
+  <polygon points="655.0,155.0 650.05,164.57 659.95,164.57" fill="var(--chart-teal, #226b63)"></polygon>
+  <text x="578" y="193" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="16" font-weight="580" class="v-sub">PCIe</text>
+  <rect x="465" y="223" width="270" height="57" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-blue, #3c689a)" stroke-width="1.8"></rect>
+  <text x="600" y="247" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="21" font-weight="680" class="v-ink">RNIC</text>
+  <text x="600" y="269" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Queue processing  ·  RC transport</text>
+  <text x="380" y="223" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="16" font-weight="620" class="v-ink">Ethernet</text>
+  <path d="M 298 249 H 462" fill="none" stroke="var(--chart-blue, #3c689a)" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-blue)"></path>
+  <polygon points="298.0,249.0 309.745,255.075 309.745,242.925" fill="var(--chart-blue, #3c689a)"></polygon>
+  <text x="380" y="274" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="15" font-weight="450" class="v-sub">RoCEv2</text>
+  <text x="14" y="336" fill="var(--text-primary, #233442)" text-anchor="start" font-size="18" font-weight="660" class="v-ink">What crosses PCIe?</text>
+  <path d="M 18 365 H 69" fill="none" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#rd4-host-amber)"></path>
+  <text x="85" y="370" fill="var(--text-primary, #233442)" text-anchor="start" font-size="16" font-weight="650" class="v-ink">MMIO</text>
+  <text x="168" y="370" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="450" class="v-sub">CPU writes a doorbell to notify its local RNIC.</text>
+  <path d="M 18 402 H 69" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-host-teal)"></path>
+  <polygon points="18.0,402.0 27.57,406.95 27.57,397.05" fill="var(--chart-teal, #226b63)"></polygon>
+  <text x="85" y="407" fill="var(--text-primary, #233442)" text-anchor="start" font-size="16" font-weight="650" class="v-ink">DMA</text>
+  <text x="168" y="407" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="450" class="v-sub">RNIC fetches work, moves data and writes completions.</text>
+</svg></div><p class="v-caption">图 1｜两台主机、一条网络和两段 PCIe。发一次普通的 4 KiB 消息，A 的网卡从本地内存读出载荷，B 的网卡把载荷写进自己的主机内存。图中选用主存队列、网卡主动取发送 WQE、载荷不内联的路径。</p></div>
+<p>图 1 里，A 的程序向发送队列（SQ）提交一条工作请求（WR）。负责适配设备的 verbs provider 会把它编码成网卡能读的队列项（WQE）。CPU 写门铃寄存器（doorbell），提醒网卡取新工作。CPU 用内存地址访问设备寄存器，称为内存映射 I/O（MMIO）。接下来由网卡通过 PCIe 主动读主存，先取 WQE，再读它指向的载荷。这就是直接内存访问（DMA）。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-13">[13]</a></sup></p>
+<p>发送队列和接收队列（RQ）组成队列对（QP）。每个 QP 有自己的编号 QPN。包里的目的 QPN 让 B 的网卡找到连接的状态，至于到达的数据该往哪个地址写，还得看操作码。应用通过完成队列（CQ）取回已完成请求的状态。下文的单条示例给 A 的请求设置了完成标志（signaled），因此成功后也会报告。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-4">[4]</a></sup></p>
+<h3 id="一条-SEND-在主机里占几块内存">一条 SEND 在主机里占几块内存</h3>
+<p>设 A 注册了一块 12 KiB 的内存，基址为 P。第一段从 P 起取 1024 B，第二段从 P + 8192 起取 3072 B，中间的空隙不用发送。A 用一条 SEND 引用两段内存，先列 1 KiB 的 SGE，再列 3 KiB 的 SGE。B 可以用一个连续的 4096 B 缓冲区接收，接到的字节顺序就是第一段接第二段。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="How one 4 KiB SEND uses a host-backed send queue, two local scatter-gather elements, PCIe DMA and a completion queue（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 630" role="img" aria-label="How one 4 KiB SEND uses a host-backed send queue, two local scatter-gather elements, PCIe DMA and a completion queue" font-family="system-ui, sans-serif">
+<title>One SEND, two local buffers, one completion</title>
+<desc>Host A posts one signaled, non-inline RC SEND. SGE zero describes one KiB at P; SGE one describes three KiB at P plus 8192. Both lie inside one registered twelve-KiB range and use local key K. On a host-backed queue fetch path, software publishes the work entry and rings a doorbell. The NIC uses QP state, fetches the WQE, checks the local key and ranges, gathers the two payload slices in order and sends one message to the peer. PCIe read requests point from NIC to host while returned bytes point from host to NIC. After the signaled send completes, the NIC writes a local completion entry. Logical accesses only. Descriptor encodings, caches, batching and physical transactions are implementation specific.</desc>
+<rect x="10" y="10" width="347" height="160" rx="8" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #aebcc9)" stroke-width="1"></rect>
+<rect x="365" y="10" width="345" height="160" rx="8" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #aebcc9)" stroke-width="1"></rect>
+<text x="24" y="41" font-size="20" font-weight="650" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">SQ slot n</text>
+<text x="344" y="40" font-size="16" font-weight="600" text-anchor="end" class="v-sub" fill="var(--text-secondary, #495669)">SEND · signaled</text>
+<path d="M23 54 L344 54" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="78" font-size="15" font-weight="600" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">SGE</text>
+<text x="92" y="78" font-size="15" font-weight="600" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Local address</text>
+<text x="270" y="78" font-size="15" font-weight="600" text-anchor="end" class="v-sub" fill="var(--text-secondary, #495669)">Length</text>
+<text x="324" y="78" font-size="15" font-weight="600" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">lkey</text>
+<text x="32" y="109" font-size="16" font-weight="620" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">0</text>
+<text x="92" y="109" font-size="16" font-weight="450" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">P</text>
+<text x="270" y="109" font-size="16" font-weight="470" text-anchor="end" class="v-ink" fill="var(--text-primary, #253442)">1 KiB</text>
+<text x="324" y="109" font-size="16" font-weight="470" text-anchor="middle" class="v-ink" fill="var(--text-primary, #253442)">K</text>
+<text x="32" y="140" font-size="16" font-weight="620" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">1</text>
+<text x="92" y="140" font-size="16" font-weight="450" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">P + 8192 B</text>
+<text x="270" y="140" font-size="16" font-weight="470" text-anchor="end" class="v-ink" fill="var(--text-primary, #253442)">3 KiB</text>
+<text x="324" y="140" font-size="16" font-weight="470" text-anchor="middle" class="v-ink" fill="var(--text-primary, #253442)">K</text>
+<text x="380" y="41" font-size="20" font-weight="650" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Registered MR</text>
+<text x="695" y="40" font-size="15" font-weight="600" text-anchor="end" class="v-sub" fill="var(--text-secondary, #495669)">Base P · key K</text>
+<path d="M379 54 L696 54" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="388" y="82" font-size="15" font-weight="620" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">SGE 0</text>
+<text x="608" y="82" font-size="15" font-weight="620" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">SGE 1</text>
+<path d="M400.5 88 L400.5 103" stroke="var(--text-secondary, #495669)" stroke-width="1" fill="none"></path>
+<path d="M625.5 88 L625.5 103" stroke="var(--text-secondary, #495669)" stroke-width="1" fill="none"></path>
+<rect x="388" y="103" width="300" height="18" rx="0" fill="var(--surface-soft, #eff3f6)" stroke="var(--figure-line, #aebcc9)" stroke-width="1"></rect>
+<rect x="388" y="103" width="25" height="18" rx="0" fill="var(--chart-blue, #3c689a)" stroke="var(--chart-blue, #3c689a)" stroke-width="1"></rect>
+<rect x="588" y="103" width="75" height="18" rx="0" fill="var(--chart-teal, #226b63)" stroke="var(--chart-teal, #226b63)" stroke-width="1"></rect>
+<path d="M388 122 L388 130" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="388" y="151" font-size="15" font-weight="450" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">0</text>
+<path d="M588 122 L588 130" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="588" y="151" font-size="15" font-weight="450" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">8</text>
+<path d="M688 122 L688 130" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="688" y="151" font-size="15" font-weight="450" text-anchor="end" class="v-sub" fill="var(--text-secondary, #495669)">12 KiB</text>
+<rect x="10" y="182" width="700" height="436" rx="8" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #aebcc9)" stroke-width="1"></rect>
+<text x="24" y="213" font-size="20" font-weight="670" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Host A</text>
+<text x="363" y="213" font-size="17" font-weight="620" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">Across PCIe</text>
+<text x="507" y="213" font-size="20" font-weight="670" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">A RNIC</text>
+<path d="M24 226 L696 226" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="252" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">CPU / provider</text>
+<text x="25" y="274" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Publish SQ[n]</text>
+<text x="362" y="262" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">MMIO doorbell</text>
+<path d="M243 269 L477 269" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.1" stroke-dasharray="5 3" fill="none"></path>
+<path d="M481 269 l-8 -4.5 v9 z" fill="var(--chart-amber, #8c5b23)"></path>
+<text x="506" y="252" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Select QP</text>
+<text x="506" y="274" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Locate its SQ</text>
+<path d="M24 289 L696 289" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="328" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">SQ slot n</text>
+<text x="25" y="350" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Encoded WQE</text>
+<text x="362" y="312" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">Read request · MRd</text>
+<path d="M481 319 L247 319" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.1" stroke-dasharray="5 3" fill="none"></path>
+<path d="M243 319 l8 -4.5 v9 z" fill="var(--chart-amber, #8c5b23)"></path>
+<text x="362" y="352" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">WQE data · CplD</text>
+<path d="M243 359 L477 359" stroke="var(--chart-blue, #3c689a)" stroke-width="2.1" fill="none"></path>
+<path d="M481 359 l-8 -4.5 v9 z" fill="var(--chart-blue, #3c689a)"></path>
+<text x="506" y="328" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Fetch WQE</text>
+<text x="506" y="350" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Decode the two SGEs</text>
+<path d="M24 375 L696 375" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="413" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Registered MR</text>
+<text x="25" y="435" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Two local source slices</text>
+<text x="362" y="397" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">Read requests · MRd</text>
+<path d="M481 404 L247 404" stroke="var(--chart-amber, #8c5b23)" stroke-width="2.1" stroke-dasharray="5 3" fill="none"></path>
+<path d="M243 404 l8 -4.5 v9 z" fill="var(--chart-amber, #8c5b23)"></path>
+<text x="362" y="438" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">Payload data · CplD</text>
+<path d="M243 445 L477 445" stroke="var(--chart-teal, #226b63)" stroke-width="2.1" fill="none"></path>
+<path d="M481 445 l-8 -4.5 v9 z" fill="var(--chart-teal, #226b63)"></path>
+<text x="506" y="412" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Check lkey + ranges</text>
+<text x="506" y="435" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Gather SGE 0, then 1</text>
+<path d="M24 460 L696 460" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="489" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Message to peer QP</text>
+<text x="25" y="512" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Logical payload order</text>
+<rect x="248" y="477" width="109.0" height="12" rx="0" fill="var(--chart-blue, #3c689a)" stroke="var(--chart-blue, #3c689a)" stroke-width="1"></rect>
+<rect x="357.0" y="477" width="327.0" height="12" rx="0" fill="var(--chart-teal, #226b63)" stroke="var(--chart-teal, #226b63)" stroke-width="1"></rect>
+<text x="302.5" y="513" font-size="15" font-weight="560" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">SGE 0 · 1 KiB</text>
+<text x="520.5" y="513" font-size="15" font-weight="560" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">SGE 1 · 3 KiB</text>
+<path d="M24 533 L696 533" stroke="var(--figure-line, #aebcc9)" stroke-width="1" fill="none"></path>
+<text x="25" y="565" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">CQ slot m</text>
+<text x="25" y="589" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">CPU polls for the result</text>
+<text x="362" y="570" font-size="15" font-weight="570" text-anchor="middle" class="v-sub" fill="var(--text-secondary, #495669)">CQE write · MWr</text>
+<path d="M481 577 L247 577" stroke="var(--chart-blue, #3c689a)" stroke-width="2.1" fill="none"></path>
+<path d="M243 577 l8 -4.5 v9 z" fill="var(--chart-blue, #3c689a)"></path>
+<text x="506" y="565" font-size="17" font-weight="630" text-anchor="start" class="v-ink" fill="var(--text-primary, #253442)">Complete SEND</text>
+<text x="506" y="589" font-size="15" font-weight="430" text-anchor="start" class="v-sub" fill="var(--text-secondary, #495669)">Report local success</text>
+</svg></div><p class="v-caption">图 2｜A 端的发送队列和载荷。上图按比例画出了两段源数据，中间空出的 7 KiB 不会上网。下图的读请求向左走，返回的数据向右走。最下面一行对应整条 SEND 的本地完成。</p></div>
+<p>提交函数返回成功时，网卡未必已把第二段读完。若 A 这时就覆写它，可能改掉本次要发的内容。A 可以在提交时给工作请求分配一个本地标识 <code>wr_id</code>，稍后轮询 CQ，通过完成记录认出是哪条请求成功了，再复用两段源缓冲区。这个标识留在本端。以 mlx5 为例，provider 会保存应用填的标识，轮询时能依据硬件返回的信息找到它。<sup class="cite"><a href="#rd-ref-3">[3]</a></sup><sup class="cite"><a href="#rd-ref-4">[4]</a></sup><sup class="cite"><a href="#rd-ref-13">[13]</a></sup></p>
+<h2 id="二、同一对网卡，四种操作">二、同一对网卡，四种操作</h2>
+<p>先播放 SEND，再切到 WRITE，看看 B 端哪一项给出了目的地址。WRITE 还可以切换成“带立即数”，这时数据仍然落在原处，变化的是 B 的接收队列和完成通知。动画把 A 的 4 KiB 统称为 TX。要看网卡怎样从两个地址读出这块数据，可以回看图 2。</p>
+
+<style>
+#rdma-operation-path {
+  --rd-ink: var(--text-primary, #263543);
+  --rd-muted: var(--text-secondary, #4c5c6c);
+  --rd-rule: var(--border-subtle, #a1b1bf);
+  --rd-panel: var(--surface-card, #fff);
+  --rd-control: var(--chart-blue, #34699a);
+  --rd-data: var(--chart-teal, #18796c);
+  --rd-local: var(--chart-amber, #8c581a);
+  --rd-current: var(--rd-local);
+  color: var(--rd-ink);
+  container-type: inline-size;
+}
+#rdma-operation-path[data-event-kind="control"] { --rd-current: var(--rd-control); }
+#rdma-operation-path[data-event-kind="data"] { --rd-current: var(--rd-data); }
+#rdma-operation-path [hidden], #rdma-operation-path[data-rdma-ready] [data-rdma-static] { display: none !important; }
+#rdma-operation-path .rd-actions, #rdma-operation-path .rd-ops, #rdma-operation-path .rd-nav { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; }
+#rdma-operation-path .rd-actions { justify-content:space-between; gap:.55rem; }
+#rdma-operation-path :is(button, select) {
+  color:var(--rd-ink); border:1px solid var(--rd-rule); background:var(--rd-panel);
+  border-radius:.38rem; padding:.27rem .55rem; min-height:2.15rem; font:inherit; font-size:.85rem;
+}
+#rdma-operation-path button { cursor:pointer; }
+#rdma-operation-path button[aria-pressed="true"] { border-color:var(--rd-ink); box-shadow:inset 0 -2px var(--rd-ink); font-weight:700; }
+#rdma-operation-path button[aria-disabled="true"] { opacity:.42; cursor:default; }
+#rdma-operation-path :is(button,select):focus-visible { outline:2px solid var(--rd-control); outline-offset:2px; }
+#rdma-operation-path .rd-variant { display:flex; align-items:center; flex-wrap:wrap; gap:.45rem; margin:.6rem 0 0; font-size:.88rem; }
+#rdma-operation-path .rd-map { display:grid; grid-template-columns:minmax(0,1.15fr) .64fr minmax(0,1fr) .77fr minmax(0,1fr) .64fr minmax(0,1.15fr); grid-template-areas:"am pa an net bn pb bm"; align-items:center; margin:1.05rem 0; }
+#rdma-operation-path [data-node="am"] { grid-area:am; } #rdma-operation-path [data-node="an"] { grid-area:an; }
+#rdma-operation-path [data-node="bn"] { grid-area:bn; } #rdma-operation-path [data-node="bm"] { grid-area:bm; }
+#rdma-operation-path [data-edge="a"] { grid-area:pa; } #rdma-operation-path [data-edge="b"] { grid-area:pb; }
+#rdma-operation-path [data-edge="wire"] { grid-area:net; }
+#rdma-operation-path .rd-node {
+  display:grid; place-content:center; text-align:center; min-height:3.55rem; line-height:1.25; padding:.26rem;
+  color:var(--rd-ink); border:1px solid var(--rd-rule); border-radius:.45rem; background:var(--rd-panel);
+}
+#rdma-operation-path .rd-node b { font-weight:650; font-size:.92rem; }
+#rdma-operation-path .rd-node small { margin-top:.2rem; font:.79rem/1.15 ui-monospace, monospace; color:var(--rd-muted); }
+#rdma-operation-path .rd-node[data-current] { border:2px solid var(--rd-current); background:color-mix(in srgb, var(--rd-current) 8%, var(--rd-panel)); }
+#rdma-operation-path .rd-edge { display:grid; position:relative; place-items:center; color:var(--rd-muted); height:2.8rem; min-width:0; }
+#rdma-operation-path .rd-edge small { position:absolute; top:.05rem; font-size:.73rem; line-height:1.1; white-space:nowrap; color:var(--rd-muted); }
+#rdma-operation-path .rd-edge i { position:relative; display:block; width:100%; border-top:1px solid var(--rd-rule); }
+#rdma-operation-path .rd-edge[data-direction] i { color:var(--rd-current); border-top:3px solid currentColor; }
+#rdma-operation-path[data-event-kind="control"] .rd-edge[data-direction] i { border-top-style:dashed; }
+#rdma-operation-path .rd-edge[data-direction] i::after {
+  position:absolute; right:0; top:-5px; content:""; width:7px; height:7px;
+  border-top:2px solid; border-right:2px solid; transform:rotate(45deg);
+}
+#rdma-operation-path .rd-edge[data-direction="back"] i::after { left:0; right:auto; transform:rotate(-135deg); }
+#rdma-operation-path .rd-edge[data-direction] i::before {
+  content:""; position:absolute; z-index:1; width:6px; height:6px; border-radius:50%; top:-4.5px;
+  background:currentColor; animation:rdma-four-pulse .8s ease-out both;
+}
+#rdma-operation-path .rd-edge[data-direction="back"] i::before { animation-direction:reverse; }
+@keyframes rdma-four-pulse { from { left:4%; } to { left:86%; } }
+#rdma-operation-path .rd-story { border-left:3px solid var(--rd-current); padding:.15rem 0 .15rem .8rem; margin:.5rem 0 .85rem; }
+#rdma-operation-path .rd-story strong { font-size:1rem; font-weight:650; }
+#rdma-operation-path .rd-counter { font:.78rem/1.2 ui-monospace,monospace; color:var(--rd-muted); margin-right:.5rem; white-space:nowrap; }
+#rdma-operation-path .rd-story p { margin:.25rem 0 0; text-align:start; font-size:.93rem; line-height:1.6; }
+#rdma-operation-path .rd-ledger { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.9rem; }
+#rdma-operation-path .rd-ledger section { border-top:1px solid var(--rd-rule); padding-top:.4rem; }
+#rdma-operation-path .rd-ledger strong { font-weight:650; font-size:.85rem; }
+#rdma-operation-path .rd-ledger dl { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:.2rem .5rem; margin:.4rem 0 0; font-size:.82rem; line-height:1.45; text-align:start; }
+#rdma-operation-path .rd-ledger dt { color:var(--rd-muted); }
+#rdma-operation-path .rd-ledger dd { margin:0; overflow-wrap:anywhere; }
+#rdma-operation-path .rd-ledger dd[data-changed] { font-weight:650; }
+#rdma-operation-path .rd-request { margin:.7rem 0 .2rem; border-top:1px solid var(--rd-rule); padding:.4rem 0 0; }
+#rdma-operation-path .rd-request summary { cursor:pointer; color:var(--rd-ink); font-size:.86rem; font-weight:650; overflow-wrap:anywhere; }
+#rdma-operation-path .rd-request summary:focus-visible { outline:2px solid var(--rd-control); outline-offset:2px; }
+#rdma-operation-path .rd-request code { padding:.06rem .23rem; font-size:.8rem; color:inherit; background:transparent; overflow-wrap:anywhere; white-space:normal; }
+#rdma-operation-path .rd-request dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.48rem .9rem; margin:.52rem 0 .28rem; font-size:.82rem; line-height:1.42; }
+#rdma-operation-path .rd-request dl div { min-width:0; }
+#rdma-operation-path .rd-request dt { color:var(--rd-muted); }
+#rdma-operation-path .rd-request dd { margin:.07rem 0 0; overflow-wrap:anywhere; }
+#rdma-operation-path figcaption { margin:.8rem 0 0; text-align:start; }
+#rdma-operation-path [data-rdma-static] { margin:.6rem 0; font-size:.9rem; }
+@container (max-width: 32rem) {
+  #rdma-operation-path .rd-map { grid-template-columns:minmax(0,1fr) .55fr minmax(0,1fr); grid-template-rows:auto 2.5rem auto; grid-template-areas:"am pa an" ". . net" "bm pb bn"; max-width:25rem; margin:.8rem auto; }
+  #rdma-operation-path [data-edge="b"] i { transform:rotate(180deg); }
+  #rdma-operation-path [data-edge="wire"] { height:100%; }
+  #rdma-operation-path [data-edge="wire"] small { top:50%; left:calc(50% + .65rem); transform:translateY(-50%); }
+  #rdma-operation-path [data-edge="wire"] i { width:2.5rem; transform:rotate(90deg); }
+  #rdma-operation-path .rd-node { min-height:2.6rem; }
+}
+@container (max-width: 24rem) {
+  #rdma-operation-path .rd-request dl { grid-template-columns:1fr; }
+  #rdma-operation-path .rd-request dl div { display:grid; grid-template-columns:6.5em minmax(0,1fr); gap:.4rem; }
+  #rdma-operation-path .rd-ledger { grid-template-columns:1fr; gap:.55rem; }
+  #rdma-operation-path .rd-ledger section { display:grid; grid-template-columns:4.3em 1fr; gap:.4rem; align-items:start; }
+  #rdma-operation-path .rd-ledger dl { margin:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #rdma-operation-path .rd-edge[data-direction] i::before { display:none; animation:none; }
+}
+</style>
+<figure class="v-figure" id="rdma-operation-path" aria-label="四种 RDMA 操作的双端路径">
+  <div data-rdma-controls="" hidden="">
+    <div class="rd-actions">
+      <div class="rd-ops" role="group" aria-label="选择操作">
+        <button type="button" data-op="send" aria-pressed="true">SEND</button>
+        <button type="button" data-op="write" aria-pressed="false">WRITE</button>
+        <button type="button" data-op="read" aria-pressed="false">READ</button>
+        <button type="button" data-op="atomic" aria-pressed="false">ATOMIC</button>
+      </div>
+      <div class="rd-nav" role="group" aria-label="演示进度">
+        <button type="button" data-move="prev" aria-disabled="true">上一步</button>
+        <button type="button" data-move="next">下一步</button>
+        <button type="button" data-move="play">播放</button>
+      </div>
+    </div>
+    <div class="rd-variant" data-atomic-controls="" hidden="">
+      <label for="rdma-four-atomic">原子操作</label>
+      <select id="rdma-four-atomic"><option value="faa" selected="">Fetch &amp; Add (+1)</option><option value="hit">CAS (41 → 99)</option><option value="miss">CAS (40 → 99)</option></select>
+    </div>
+    <div class="rd-variant" data-write-controls="" hidden="">
+      <label for="rdma-four-write">写入方式</label>
+      <select id="rdma-four-write"><option value="plain" selected="">普通 WRITE</option><option value="imm">WRITE_WITH_IMM（立即数 3）</option></select>
+    </div>
+  </div>
+  <div class="rd-map" aria-label="从 A 到 B 依次经过 A 主机内存、PCIe、A RNIC、网络、B RNIC、PCIe 和 B 主机内存">
+    <div class="rd-node" data-node="am"><b>A 主机</b><small data-memory-label="a">DRAM · TX</small></div>
+    <span class="rd-edge" data-edge="a"><small>PCIe</small><i aria-hidden="true"></i></span>
+    <div class="rd-node" data-node="an"><b>A 网卡</b><small>RNIC</small></div>
+    <span class="rd-edge" data-edge="wire"><small>网络</small><i aria-hidden="true"></i></span>
+    <div class="rd-node" data-node="bn"><b>B 网卡</b><small>RNIC</small></div>
+    <span class="rd-edge" data-edge="b"><small>PCIe</small><i aria-hidden="true"></i></span>
+    <div class="rd-node" data-node="bm"><b>B 主机</b><small data-memory-label="b">DRAM · RX7</small></div>
+  </div>
+  <div class="rd-story" role="status" aria-live="polite" aria-atomic="true">
+    <span class="rd-counter" data-counter="">0 / 5</span><strong data-event-title="">SEND 的起点</strong>
+    <p data-event-text="">A 有 4 KiB 待发数据。B 已提前投递一条接收请求，指定 RX7 用来存放这条消息。</p>
+  </div>
+  <div class="rd-ledger">
+    <section aria-label="发起端状态"><strong>A 发起端</strong><dl>
+      <dt>内存</dt><dd data-field="aMem">TX · 4 KiB</dd>
+      <dt>SQ</dt><dd data-field="sq">尚未提交</dd>
+      <dt>CQ</dt><dd data-field="aCq">等待</dd>
+    </dl></section>
+    <section aria-label="响应端状态"><strong>B 响应端</strong><dl>
+      <dt>内存</dt><dd data-field="bMem">RX7 · 空</dd>
+      <dt>RQ</dt><dd data-field="rq">RX7 已投递</dd>
+      <dt>CQ</dt><dd data-field="bCq">等待</dd>
+    </dl></section>
+  </div>
+  <details class="rd-request" open="">
+    <summary>请求字段与接收条件　<code data-wr-field="opcode">IBV_WR_SEND</code></summary>
+    <dl>
+      <div><dt>A 的本地 SGE</dt><dd data-wr-field="local">源 TX · 4 KiB · lkey(TX)</dd></div>
+      <div><dt>A 填的远端目标或源</dt><dd data-wr-field="remote">只指定已连接 QP，无远端地址和 rkey</dd></div>
+      <div><dt>B 的内存权限</dt><dd data-wr-field="access">RX7 允许本地 RNIC 写入</dd></div>
+      <div><dt>B 的接收 WQE</dt><dd data-wr-field="receive">1 条 · 指定载荷缓冲区 RX7</dd></div>
+      <div data-wr-extra="" hidden=""><dt data-wr-extra-label=""></dt><dd data-wr-field="extra"></dd></div>
+    </dl>
+  </details>
+  <div data-rdma-static=""><p>SEND 把数据送进 B 预投的 RX7。WRITE 写入 A 指定的 B 端 slot3。带立即数的写还消耗 B 的一条接收 WQE，B 轮询 CQ 后从返回的工作完成记录（WC）读到立即数 3。READ 把 slot3 的数据拉回 A。对 B 的计数器执行 Fetch &amp; Add (+1)，B 的值从 41 变为 42，A 收到旧值 41。</p></div>
+  <figcaption class="v-caption">图 3｜虚线箭头表示控制信息，实线箭头表示数据。每步跟踪一次逻辑动作，可以包含多个包。可靠连接的确认与重传从略。</figcaption>
+</figure>
+<script src="/js/rdma-four-operations.js" defer=""></script>
+
+<h3 id="SEND-由-B-决定消息落在哪儿">SEND 由 B 决定消息落在哪儿</h3>
+<p>B 先挑一块够大的接收缓冲区，叫它 <code>RX7</code>。B 通过 <code>ibv_post_recv</code> 把它挂到 RQ 上，随后可以去做别的工作。A 只要在自己 SQ 的 SEND 请求里填写本地数据的位置、长度及本地密钥。A 的网卡从内存读出 4 KiB，沿连接发往 B。B 的网卡从自己的 RQ 取下一个接收项，才知道要把数据写入 <code>RX7</code>。缓冲区的地址始终由 B 管。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup></p>
+<p>B 轮询到这条接收完成后，可以凭接收请求的标识找到 <code>RX7</code>，并从完成项读出实际收到的长度。如果包已经到了，B 却还没有可用的接收项，RC 响应方可以回复 Receiver Not Ready（RNR），A 的网卡按配置重试。即使 A 的网卡已经收到对端的 ACK，B 的程序也可能还没来得及轮询 CQ。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="One four-kibibyte SEND with two different path MTUs（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 322" role="img" aria-label="One four-kibibyte SEND with two different path MTUs" font-family="system-ui, sans-serif">
+  <title>One SEND, two packet layouts</title>
+  <desc>A posts one signaled, non-inline 4096-byte SEND. With a path MTU of 4096 bytes, one SEND ONLY packet carries the message. With a path MTU of 1024 bytes, four packets cover four consecutive 1024-byte slices: FIRST, MIDDLE, MIDDLE, LAST. Under both configurations, B consumes one sufficiently large receive WQE. A gets one successful send completion and B gets one successful receive completion.</desc>
+  <text x="16" y="29" class="v-ink" fill="var(--text-primary,#18212b)" font-weight="670" font-size="23">One 4 KiB SEND</text>
+  <text x="16" y="55" class="v-sub" fill="var(--text-secondary,#4d6072)" font-size="17">Reliable connection · signaled, non-inline send</text>
+  <g class="v-sub" fill="var(--text-secondary,#4d6072)" font-size="15.5">
+    <text x="16" y="98">QP path MTU</text>
+    <text x="404" y="92" text-anchor="middle">Payload offset (KiB)</text>
+  </g>
+  <g stroke="var(--text-muted,#54697a)" stroke-width="1" fill="none">
+    <path d="M160 121H648 M160 117v8 M282 117v8 M404 117v8 M526 117v8 M648 117v8"></path>
+  </g>
+  <g class="v-sub" fill="var(--text-secondary,#4d6072)" font-size="15" text-anchor="middle">
+    <text x="160" y="113">0</text><text x="282" y="113">1</text><text x="404" y="113">2</text><text x="526" y="113">3</text><text x="648" y="113">4</text>
+  </g>
+  <g fill="var(--chart-blue,#356a8f)" fill-opacity=".11" stroke="var(--chart-blue,#356a8f)" stroke-width="1.6">
+    <rect x="160" y="135" width="488" height="40" rx="4"></rect>
+    <rect x="160" y="190" width="488" height="40" rx="4"></rect>
+    <path d="M282 191v38 M404 191v38 M526 191v38" fill="none"></path>
+  </g>
+  <g class="v-ink" fill="var(--text-primary,#18212b)" font-size="18" font-weight="620">
+    <text x="16" y="161">4096 B</text><text x="16" y="216">1024 B</text>
+  </g>
+  <g class="v-ink" fill="var(--text-primary,#18212b)" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="600">
+    <text x="404" y="161">ONLY</text>
+    <text x="221" y="216">FIRST</text><text x="343" y="216">MIDDLE</text><text x="465" y="216">MIDDLE</text><text x="587" y="216">LAST</text>
+  </g>
+  <path d="M16 249H648" stroke="var(--text-muted,#54697a)" stroke-opacity=".35"></path>
+  <g class="v-sub" fill="var(--text-secondary,#4d6072)" font-size="15.5">
+    <text x="16" y="276">Sender A</text><text x="339" y="276">Receiver B</text>
+  </g>
+  <g class="v-ink" fill="var(--text-primary,#18212b)" font-size="16.5" font-weight="590">
+    <text x="16" y="302">1 SEND WR · 1 send CQE</text>
+    <text x="339" y="302">1 receive WQE · 1 receive CQE</text>
+  </g>
+</svg></div><p class="v-caption">图 4｜同一条 SEND 可以装进一个包，也可以拆成四个。横向长度代表应用载荷字节数。两行均假设传输成功、无重传，B 预投了足够大的接收缓冲区。图中不计报头和 ACK。</p></div>
+<p>把这条 SEND 的路径 MTU（PMTU）设为 1024 B，网卡在网络上依次发 First、Middle、Middle、Last 四个包。四个包合起来才是一条消息，B 总共消耗一个接收项，得到一次成功接收完成。改回 4096 B，网络上一个 Only 包就能发完，应用看到的完成数相同。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-9">[9]</a></sup></p>
+<details><summary>同一笔 4 KiB，换到 PCIe 上会看到多少个事务？</summary>
+<p>只数载荷的搬运。假设两段源缓冲区和连续的目的缓冲区都从 4 KiB 页边界开始，PCIe 最大读请求大小（MRRS）为 512 B，两端相关路径的最大有效载荷（MPS）都为 256 B。下表按每次都取到上限计算。<sup class="cite"><a href="#rd-ref-15">[15]</a></sup></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>观察位置</th>
+<th>在链路上数什么</th>
+<th style="text-align:right">4 KiB 这一例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 端 PCIe，RNIC 向主机发请求</td>
+<td>内存读请求（MRd），每次请求 512 B</td>
+<td style="text-align:right">8 个</td>
+</tr>
+<tr>
+<td>A 端 PCIe，主机向 RNIC 返回数据</td>
+<td>带数据的读完成（CplD），每个至多带 256 B</td>
+<td style="text-align:right">16 个</td>
+</tr>
+<tr>
+<td>两台机器之间的网络</td>
+<td>PMTU 为 1024 B 的 SEND 数据包</td>
+<td style="text-align:right">4 个</td>
+</tr>
+<tr>
+<td>B 端 PCIe，RNIC 向主存写载荷</td>
+<td>内存写事务（MWr），每个带 256 B</td>
+<td style="text-align:right">16 个</td>
+</tr>
+<tr>
+<td>B 的应用</td>
+<td>轮询到的成功接收完成</td>
+<td style="text-align:right">1 条</td>
+</tr>
+</tbody>
+</table></div>
+<p>两端 PCIe 计数中的 8、16、16 是上述条件下的最少数量。真实设备可以拆得更细，取 WQE、写完成项也另有流量。比如 A 的网卡向主机读 512 B，至少要等两个 CplD 才收齐这一笔读请求的数据。B 的应用轮询时，只看到整条 4 KiB 消息的一次接收完成。</p>
+</details>
+<h3 id="WRITE-把数据放进约好的位置">WRITE 把数据放进约好的位置</h3>
+<p>这次 B 在已注册区域里留出 <code>slot3</code>，开好远程写权限，把槽的地址和 <code>rkey</code> 告诉 A。A 提交 RDMA WRITE 时，同时填写本地 4 KiB 的来源和 B 的目的地址。A 的网卡照旧读本地内存，B 的网卡检查请求后，直接把数据写进 <code>slot3</code>。和刚才的 SEND 相比，两端 PCIe 上大块数据的方向完全一样，换掉的是 B 查找写入位置的方法。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-2">[2]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup></p>
+<p>普通 WRITE 不消耗 B 的接收 WQE，也不给 B 的应用产生这笔写入的接收完成。如果 B 还想知道哪一个槽可以读，可以约定用 <strong>WRITE_WITH_IMM</strong>。A 写入的目的地址仍是 <code>slot3</code>，同时附上一个 32 位立即数，比如槽号 3。B 为通知预投一个接收请求，给它取本地标识 7。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup><sup class="cite"><a href="#rd-ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="How SEND, WRITE and WRITE WITH IMMEDIATE place four kibibytes at receiver B（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 692 548" role="img" aria-label="How SEND, WRITE and WRITE WITH IMMEDIATE place four kibibytes at receiver B" font-family="system-ui, sans-serif">
+<title>Payload placement and receive completion on B</title>
+<desc>Each case is a fresh successful RC transfer into host memory. Read across each panel. For SEND a receive WQE on the destination QP supplies an SGE into RX7 and B’s completion reports its locally assigned wr_id of 7. For ordinary WRITE, the address from A and its remote write key select slot3, no receive WQE is consumed and no receive completion is generated. For WRITE WITH IMMEDIATE the same address selects slot3. One locally posted receive is consumed for the notification. A receive completion returns B’s local wr_id of 7 and A’s 32-bit immediate value of 3. Solid arrows show the payload path into memory and dashed arrows denote the completion visible to software. The diagram does not specify how the provider recovers the local wr_id.</desc>
+<text x="26" y="28" fill="var(--text-primary,#233342)" font-size="20" font-weight="680" text-anchor="start">B RNIC</text>
+<text x="347" y="27" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="600" text-anchor="middle">PCIe</text>
+<text x="433" y="28" fill="var(--text-primary,#233342)" font-size="20" font-weight="680" text-anchor="start">B host memory</text>
+<rect x="9" y="42" width="674" height="151" rx="9" fill="var(--surface-card,#ffffff)" stroke="var(--figure-line,#b7c1cb)"></rect>
+<rect x="10" y="43" width="672" height="36" rx="8" fill="var(--surface-soft,#f1f5f7)" stroke="none"></rect>
+<path d="M10 79H682" fill="none" stroke="var(--figure-line,#b7c1cb)" stroke-width="1"></path>
+<text x="25" y="67" fill="var(--text-primary,#233342)" font-size="19.5" font-weight="700" text-anchor="start">SEND</text>
+<text x="668" y="66" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="540" text-anchor="end">1 receive WQE consumed</text>
+<text x="26" y="107" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="650" text-anchor="start">Next receive WQE on QP</text>
+<text x="26" y="127" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">B’s SGE points to RX7</text>
+<path d="M286 111H401" fill="none" stroke="var(--chart-blue,#356b96)" stroke-width="2.3"></path>
+<path d="m400 106 10 5 -10 5 z" fill="var(--chart-blue,#356b96)"></path>
+<text x="347" y="102" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="600" text-anchor="middle">4 KiB</text>
+<text x="433" y="107" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="670" text-anchor="start">RX7</text>
+<text x="433" y="127" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">B’s posted receive buffer</text>
+<text x="26" y="160" fill="var(--text-primary,#233342)" font-size="16.7" font-weight="620" text-anchor="start">ID of that receive WR</text>
+<text x="26" y="180" fill="var(--text-secondary,#495968)" font-size="15.3" font-weight="450" text-anchor="start">wr_id = 7, chosen by B</text>
+<path d="M286 165H401" fill="none" stroke="var(--chart-teal,#25756e)" stroke-width="2.3" stroke-dasharray="6 4"></path>
+<path d="m400 160 10 5 -10 5 z" fill="var(--chart-teal,#25756e)"></path>
+<text x="347" y="157" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="600" text-anchor="middle">CQ update</text>
+<text x="433" y="161" fill="var(--text-primary,#233342)" font-size="17" font-weight="640" text-anchor="start">Receive CQ entry</text>
+<text x="433" y="182" fill="var(--text-secondary,#495968)" font-size="15.3" font-weight="450" text-anchor="start">Poll: wr_id = 7</text>
+<rect x="9" y="205" width="674" height="151" rx="9" fill="var(--surface-card,#ffffff)" stroke="var(--figure-line,#b7c1cb)"></rect>
+<rect x="10" y="206" width="672" height="36" rx="8" fill="var(--surface-soft,#f1f5f7)" stroke="none"></rect>
+<path d="M10 242H682" fill="none" stroke="var(--figure-line,#b7c1cb)" stroke-width="1"></path>
+<text x="25" y="230" fill="var(--text-primary,#233342)" font-size="19.5" font-weight="700" text-anchor="start">WRITE</text>
+<text x="668" y="229" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="540" text-anchor="end">0 receive WQEs consumed</text>
+<text x="26" y="270" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="650" text-anchor="start">Address + rkey from A</text>
+<text x="26" y="290" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">Check MR bounds and write access</text>
+<path d="M286 274H401" fill="none" stroke="var(--chart-blue,#356b96)" stroke-width="2.3"></path>
+<path d="m400 269 10 5 -10 5 z" fill="var(--chart-blue,#356b96)"></path>
+<text x="347" y="265" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="600" text-anchor="middle">4 KiB</text>
+<text x="433" y="270" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="670" text-anchor="start">slot3</text>
+<text x="433" y="290" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">Address specified by A</text>
+<text x="26" y="323" fill="var(--text-primary,#233342)" font-size="16.7" font-weight="620" text-anchor="start">No receive WQE consumed</text>
+<text x="26" y="343" fill="var(--text-secondary,#495968)" font-size="15.3" font-weight="450" text-anchor="start">No receive WR needed</text>
+<path d="M286 327H410" fill="none" stroke="var(--figure-line,#b7c1cb)" stroke-width="1"></path>
+<path d="M343 323l8 8m-8 0 8-8" fill="none" stroke="var(--text-muted,#657482)" stroke-width="1.8"></path>
+<text x="433" y="334" fill="var(--text-secondary,#495968)" font-size="16" font-weight="560" text-anchor="start">No receive completion</text>
+<rect x="9" y="368" width="674" height="151" rx="9" fill="var(--surface-card,#ffffff)" stroke="var(--figure-line,#b7c1cb)"></rect>
+<rect x="10" y="369" width="672" height="36" rx="8" fill="var(--surface-soft,#f1f5f7)" stroke="none"></rect>
+<path d="M10 405H682" fill="none" stroke="var(--figure-line,#b7c1cb)" stroke-width="1"></path>
+<text x="25" y="393" fill="var(--text-primary,#233342)" font-size="19.5" font-weight="700" text-anchor="start">WRITE_WITH_IMM</text>
+<text x="668" y="392" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="540" text-anchor="end">1 receive WQE consumed</text>
+<text x="26" y="433" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="650" text-anchor="start">Address + rkey from A</text>
+<text x="26" y="453" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">Check MR bounds and write access</text>
+<path d="M286 437H401" fill="none" stroke="var(--chart-blue,#356b96)" stroke-width="2.3"></path>
+<path d="m400 432 10 5 -10 5 z" fill="var(--chart-blue,#356b96)"></path>
+<text x="347" y="428" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="600" text-anchor="middle">4 KiB</text>
+<text x="433" y="433" fill="var(--text-primary,#233342)" font-size="17.5" font-weight="670" text-anchor="start">slot3</text>
+<text x="433" y="453" fill="var(--text-secondary,#495968)" font-size="15.5" font-weight="450" text-anchor="start">Address specified by A</text>
+<text x="26" y="486" fill="var(--text-primary,#233342)" font-size="16.7" font-weight="620" text-anchor="start">One receive WR from B</text>
+<text x="26" y="506" fill="var(--text-secondary,#495968)" font-size="15.3" font-weight="450" text-anchor="start">Plus 32-bit immediate from A</text>
+<path d="M286 491H401" fill="none" stroke="var(--chart-teal,#25756e)" stroke-width="2.3" stroke-dasharray="6 4"></path>
+<path d="m400 486 10 5 -10 5 z" fill="var(--chart-teal,#25756e)"></path>
+<text x="347" y="483" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="600" text-anchor="middle">CQ update</text>
+<text x="433" y="487" fill="var(--text-primary,#233342)" font-size="17" font-weight="640" text-anchor="start">Receive CQ entry</text>
+<text x="433" y="508" fill="var(--text-secondary,#495968)" font-size="15.3" font-weight="450" text-anchor="start">Poll: wr_id = 7 · imm = 3</text>
+<text x="11" y="540" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="500" text-anchor="start">Solid: payload to memory</text>
+<text x="322" y="540" fill="var(--text-secondary,#495968)" font-size="14.8" font-weight="500" text-anchor="start">Dashed: notification visible to B</text>
+</svg></div><p class="v-caption">图 5｜只看 B。实线跟踪 4 KiB 载荷，虚线跟踪接收通知。每一行是一次独立实验。最下一行，软件轮询所得的 wr_id = 7 由 B 填写，立即数 3 由 A 填写。</p></div>
+<p>在 B 看到的这条完成记录里，<code>wr_id = 7</code> 告诉 B 哪一个接收请求被消耗了，<code>imm_data</code> 经双方约定的编码解读为 3，告诉 B 去哪个槽读数据。两项都出现在一次轮询结果里，却来自两台机器。普通 SEND 若遇上空的接收队列会触发 RNR，带立即数的 WRITE 同样需要可用的接收项。普通 WRITE 可以在不消耗接收项的情况下着陆，但仍得等上层协议允许，A 才能覆盖 B 正在读的槽。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-4">[4]</a></sup></p>
+<p>还有一个细节在抓包时能看见。如果 WRITE 跨越多个传输包，远端起始地址、rkey 和总长度在 First 包的远端扩展传输头（RETH）里。Middle 和普通 Last 不再重发这三个字段。若是带立即数的多包 WRITE，立即数跟在 Last 包里。单包操作则在 Only 包里一次给齐所需字段。<sup class="cite"><a href="#rd-ref-16">[16]</a></sup></p>
+<h3 id="READ-的请求和数据往相反方向走">READ 的请求和数据往相反方向走</h3>
+<p>如果数据原本就在 B 的 <code>slot3</code>，而 A 想把它取回来，B 可以给这段内存开远程读权限，把地址和 <code>rkey</code> 交给 A。A 在 SQ 提交 READ，填的是 <strong>B 的源地址和 A 的目的缓冲区</strong>。离开 A 的先是一条读请求，写明从哪里读、读多少，4 KiB 载荷此时还在 B。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-2">[2]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup></p>
+<p>看一笔 PMTU 为 1024 B、无重传的 4 KiB READ。A 只发一条读请求，B 的 RNIC 通过 B 端 PCIe 读出主存里的 4 KiB，把数据分进四个响应包。A 的 RNIC 收到它们后，按自己原先提交的 READ 请求，把数据写入 A 的目的缓冲区。B 只需要知道读自己哪块内存，A 的目的地址和本地 lkey 可以一直留在 A。A 轮询到成功完成后就可以读结果。B 无需为这次读取投递接收请求，但要保证源内存在读取期间有效。<sup class="cite"><a href="#rd-ref-1">[1]</a></sup><sup class="cite"><a href="#rd-ref-3">[3]</a></sup><sup class="cite"><a href="#rd-ref-16">[16]</a></sup></p>
+<h3 id="Atomic-拿回计数器修改前的值">Atomic 拿回计数器修改前的值</h3>
+<p>把 4 KiB 的槽换成一个 8 字节对齐的 64 位计数器，初值为 41。B 为它所在的 MR 开启远程原子权限，并把地址和 rkey 交给请求方。两台请求方都想领一个编号。如果各自先 READ，再把旧值加一 WRITE 回去，它们可能同时读到 41，最后都写回 42。明明领了两次号，计数器只走了一步。</p>
+<p>支持远端原子的 RNIC 可以执行 <strong>Fetch-and-Add（FAA）</strong>。A 给出远端地址、<code>rkey</code> 和加数 1，并留出本地的 8 字节结果缓冲区。B 对这个字做一次不可分割的读改写，计数器变为 42，返回 A 的是<strong>旧值 41</strong>。若两个请求都通过同一响应 RNIC 对这个字做 FAA，并且中间没有其他写入，它们会分别领到 41 和 42，最终计数为 43。谁先领到哪个号取决于操作的执行顺序。<sup class="cite"><a href="#rd-ref-3">[3]</a></sup><sup class="cite"><a href="#rd-ref-10">[10]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="A lost increment versus two atomic fetch-and-add operations（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 377" role="img" aria-label="A lost increment versus two atomic fetch-and-add operations" font-family="system-ui, sans-serif">
+  <title>A lost increment versus two atomic fetch-and-add operations</title>
+  <desc>Both clients update the same aligned 64-bit counter initialized to 41 through a single responding RNIC. On the left an admissible interleaving has A and C read 41, then both write 42, losing one increment. On the right the responder executes A and then C as indivisible fetch-and-add operations. Their returned old values are 41 and 42, and the final counter value is 43. The reverse serialization order exchanges the two return values.</desc>
+  <defs>
+    <marker id="rd4-rmw-blue" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-blue, #3c689a)"></path>
+    </marker>
+    <marker id="rd4-rmw-teal" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-teal, #226b63)"></path>
+    </marker>
+    <marker id="rd4-rmw-amber" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-amber, #8c5b23)"></path>
+    </marker>
+    <marker id="rd4-rmw-sub" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--text-secondary, #435669)"></path>
+    </marker>
+  </defs>
+  <text x="12" y="31" fill="var(--text-primary, #233442)" text-anchor="start" font-size="22" font-weight="670" class="v-ink">One counter at B, two requesters</text>
+  <rect x="8" y="55" width="366" height="305" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <text x="23" y="87" fill="var(--text-primary, #233442)" text-anchor="start" font-size="19" font-weight="650" class="v-ink">Separate READ and WRITE</text>
+  <text x="23" y="113" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="15" font-weight="500" class="v-sub">Initial value  41</text>
+  <path d="M 23 126 H 359" fill="none" stroke="var(--divider, #cbd5df)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"></path>
+  <text x="34" y="151" fill="var(--text-muted, #516477)" text-anchor="start" font-size="14" font-weight="550" class="v-muted">From</text>
+  <text x="113" y="151" fill="var(--text-muted, #516477)" text-anchor="start" font-size="14" font-weight="550" class="v-muted">Access at B</text>
+  <text x="349" y="151" fill="var(--text-muted, #516477)" text-anchor="end" font-size="14" font-weight="550" class="v-muted">B after</text>
+  <text x="48" y="181" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">A</text>
+  <text x="113" y="181" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">READ → 41</text>
+  <text x="332" y="181" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">41</text>
+  <text x="48" y="211" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">C</text>
+  <text x="113" y="211" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">READ → 41</text>
+  <text x="332" y="211" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">41</text>
+  <text x="48" y="241" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">A</text>
+  <text x="113" y="241" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">WRITE 42</text>
+  <text x="332" y="241" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">42</text>
+  <text x="48" y="271" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">C</text>
+  <text x="113" y="271" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">WRITE 42</text>
+  <text x="332" y="271" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">42</text>
+  <rect x="23" y="299" width="336" height="44" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-amber, #8c5b23)" stroke-width="1.6"></rect>
+  <text x="191" y="327" fill="var(--chart-amber, #8c5b23)" text-anchor="middle" font-size="18" font-weight="650">Final value  42</text>
+  <rect x="386" y="55" width="366" height="305" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <text x="401" y="87" fill="var(--text-primary, #233442)" text-anchor="start" font-size="19" font-weight="650" class="v-ink">Atomic FETCH_ADD(+1)</text>
+  <text x="401" y="113" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="15" font-weight="500" class="v-sub">Initial value  41</text>
+  <path d="M 401 126 H 737" fill="none" stroke="var(--divider, #cbd5df)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"></path>
+  <text x="412" y="151" fill="var(--text-muted, #516477)" text-anchor="start" font-size="14" font-weight="550" class="v-muted">From</text>
+  <text x="491" y="151" fill="var(--text-muted, #516477)" text-anchor="start" font-size="14" font-weight="550" class="v-muted">Access at B</text>
+  <text x="727" y="151" fill="var(--text-muted, #516477)" text-anchor="end" font-size="14" font-weight="550" class="v-muted">B after</text>
+  <text x="426" y="181" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">A</text>
+  <text x="491" y="181" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">old value 41</text>
+  <text x="710" y="181" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">42</text>
+  <text x="426" y="211" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">C</text>
+  <text x="491" y="211" fill="var(--text-secondary, #435669)" text-anchor="start" font-size="16" font-weight="500" class="v-sub">old value 42</text>
+  <text x="710" y="211" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17" font-weight="620" class="v-ink">43</text>
+  <rect x="401" y="299" width="336" height="44" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-teal, #226b63)" stroke-width="1.6"></rect>
+  <text x="569" y="327" fill="var(--chart-teal, #226b63)" text-anchor="middle" font-size="18" font-weight="650">Final value  43</text>
+</svg></div><p class="v-caption">图 6｜A 和 C 通过 B 的同一张 RNIC 更新一个计数器。左边是先 READ 再 WRITE 的一种交错次序，右边让两个请求都执行 Fetch-and-Add。两次返回的旧值可以直接用作不同的编号。</p></div>
+<p>另一种经典操作是 <strong>Compare-and-Swap（CAS）</strong>。A 可以要求“若还是 41，就改成 99”。在演示的命中分支里，B 从 41 变为 99，A 收到 41。再切到未命中分支，这次 A 要求“若为 40，就换成 99”，B 的初值仍为 41，于是它保持 41，A 收到的也是 41。A 把返回的旧值与本次提交的期望值一比，就知道是否发生了替换。两条工作请求都可以正常完成。线上返回的是带旧值的 Atomic ACK，A 的网卡把旧值写进结果缓冲区，成功状态则通过 CQ 交给 A 的程序。因而查 CQ 可以知道请求是否执行完，查结果缓冲区才能知道旧值。<sup class="cite"><a href="#rd-ref-16">[16]</a></sup></p>
+<p>经典 RC 原子操作针对一个 64 位字。能否与 B 的 CPU 或另一张网卡并发地对同一字做原子访问，取决于设备报告的原子能力范围。远端 RNIC 怎样实现这次读改写，verbs 也没有规定必须用某一种 PCIe 事务。<sup class="cite"><a href="#rd-ref-3">[3]</a></sup><sup class="cite"><a href="#rd-ref-10">[10]</a></sup></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>A 提交的操作</th>
+<th>B 端访问哪里</th>
+<th>网络上主要的数据方向</th>
+<th>B 消耗接收 WQE</th>
+<th>B 轮询 CQ 时能否得到接收完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEND</td>
+<td>B 从 RQ 取出的接收缓冲区</td>
+<td>4 KiB 从 A 到 B</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>WRITE</td>
+<td>A 给出的远端目的地址</td>
+<td>4 KiB 从 A 到 B</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>READ</td>
+<td>A 给出的远端源地址</td>
+<td>请求从 A 到 B，4 KiB 从 B 到 A</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Atomic</td>
+<td>A 给出的远端 64 位字地址</td>
+<td>操作数从 A 到 B，旧值从 B 到 A</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>WRITE_WITH_IMM（WRITE 的变体）</td>
+<td>A 给出的远端目的地址</td>
+<td>载荷和立即数从 A 到 B</td>
+<td>是</td>
+<td>是，带立即数</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="三、一条-WRITE-在-RecoNIC-里怎么走">三、一条 WRITE 在 RecoNIC 里怎么走</h2>
+<p>回到 WRITE 的例子。B 的网卡收到了包，准备往主机内存里的 <code>slot3</code> 写 4 KiB。这次把图 1 中 B 的方框展开，换成 Alveo U250 上的 <strong>RecoNIC</strong>。它的板级设计和软件都可以查源码，负责处理 RoCEv2 的是 AMD 的许可 IP ERNIC v3.1。<sup class="cite"><a href="#rd-ref-5">[5]</a></sup><sup class="cite"><a href="#rd-ref-6">[6]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="RecoNIC on an Alveo U250: packet classification and the RDMA memory paths（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-label="RecoNIC on an Alveo U250: packet classification and the RDMA memory paths" font-family="system-ui, sans-serif">
+  <title>RecoNIC on an Alveo U250: packet classification and the RDMA memory paths</title>
+  <desc>The left panel follows incoming Ethernet frames through CMAC RX and the packet classifier. RoCEv2 packets go to the licensed ERNIC v3.1 engine. Ordinary frames take the QDMA receive stream. The right panel expands the memory interfaces of that same ERNIC. Its AXI memory-mapped ports connect to a system crossbar. The host path uses the QDMA AXI bridge and PCIe to host DRAM. The device path uses the device crossbar and DDR controller to on-card DDR; it does not need the host PCIe link for payload placement.</desc>
+  <defs>
+    <marker id="rd4-rn-blue" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-blue, #3c689a)"></path>
+    </marker>
+    <marker id="rd4-rn-teal" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-teal, #226b63)"></path>
+    </marker>
+    <marker id="rd4-rn-amber" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--chart-amber, #8c5b23)"></path>
+    </marker>
+    <marker id="rd4-rn-sub" viewBox="0 0 8 8" refX="7.1" refY="4" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--text-secondary, #435669)"></path>
+    </marker>
+  </defs>
+  <rect x="8" y="10" width="331" height="491" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <rect x="349" y="10" width="403" height="491" rx="10" fill="var(--surface-soft, #f0f4f7)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.15"></rect>
+  <text x="23" y="41" fill="var(--text-primary, #233442)" text-anchor="start" font-size="21" font-weight="680" class="v-ink">Ethernet ingress</text>
+  <text x="365" y="41" fill="var(--text-primary, #233442)" text-anchor="start" font-size="21" font-weight="680" class="v-ink">RDMA memory access</text>
+  <rect x="59" y="64" width="228" height="55" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="173.0" y="89.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="17.5" font-weight="620" class="v-ink">100 GbE CMAC</text>
+  <text x="173.0" y="109.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">RX stream</text>
+  <path d="M 173 120 V 154" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-sub)"></path>
+  <rect x="50" y="158" width="246" height="56" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="173.0" y="184.0" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">Packet classifier</text>
+  <text x="173.0" y="204.0" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">RoCEv2 / ordinary Ethernet</text>
+  <path d="M 173 216 V 238 H 92 V 247" fill="none" stroke="var(--chart-blue, #3c689a)" stroke-width="2.15" stroke-linejoin="round" stroke-linecap="round"></path>
+  <path d="M 92 270 V 282" fill="none" stroke="var(--chart-blue, #3c689a)" stroke-width="2.15" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-blue)"></path>
+  <path d="M 173 238 H 251 V 247" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="2.05" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"></path>
+  <path d="M 251 270 V 282" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="2.05" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#rd4-rn-sub)"></path>
+  <text x="92" y="265" fill="var(--chart-blue, #3c689a)" text-anchor="middle" font-size="15" font-weight="610">RoCEv2</text>
+  <text x="255" y="265" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14.5" font-weight="570" class="v-sub">Other traffic</text>
+  <rect x="20" y="286" width="145" height="75" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-blue, #3c689a)" stroke-width="1.6"></rect>
+  <text x="92.5" y="321.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">ERNIC 3.1</text>
+  <text x="92.5" y="341.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">RDMA engine</text>
+  <rect x="181" y="286" width="146" height="75" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="254.0" y="321.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">QDMA RX</text>
+  <text x="254.0" y="341.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Packet stream</text>
+  <path d="M 250 362 V 396" fill="none" stroke="var(--text-secondary, #435669)" stroke-width="2.05" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4" marker-end="url(#rd4-rn-sub)"></path>
+  <rect x="181" y="400" width="146" height="51" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="254.0" y="431.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="15.5" font-weight="620" class="v-ink">Host RX buffers</text>
+  <text x="92" y="391" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">AMD licensed IP</text>
+  <rect x="422" y="64" width="255" height="55" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--chart-blue, #3c689a)" stroke-width="1.6"></rect>
+  <text x="549.5" y="89.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">ERNIC 3.1</text>
+  <text x="549.5" y="109.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">AXI memory-mapped ports</text>
+  <path d="M 550 122 V 154" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-teal)"></path>
+  <polygon points="550.0,122.0 544.825,132.005 555.175,132.005" fill="var(--chart-teal, #226b63)"></polygon>
+  <rect x="416" y="158" width="267" height="56" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="549.5" y="184.0" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">System AXI crossbar</text>
+  <text x="549.5" y="204.0" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">Address selects the target</text>
+  <path d="M 550 217 V 235" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"></path>
+  <polygon points="550.0,217.0 545.05,226.57 554.95,226.57" fill="var(--chart-teal, #226b63)"></polygon>
+  <path d="M 449 246 V 235 H 652 V 246" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"></path>
+  <path d="M 449 268 V 279" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-teal)"></path>
+  <path d="M 652 268 V 279" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-teal)"></path>
+  <text x="449" y="262" fill="var(--chart-teal, #226b63)" text-anchor="middle" font-size="15" font-weight="570">Host address</text>
+  <text x="651" y="262" fill="var(--chart-teal, #226b63)" text-anchor="middle" font-size="15" font-weight="570">Card address</text>
+  <rect x="363" y="282" width="172" height="69" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="449.0" y="314.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="16.3" font-weight="620" class="v-ink">QDMA AXI bridge</text>
+  <text x="449.0" y="334.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">PCIe-facing AXI port</text>
+  <rect x="562" y="282" width="176" height="69" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="650.0" y="314.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="16" font-weight="620" class="v-ink">Device AXI crossbar</text>
+  <text x="650.0" y="334.5" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14" font-weight="450" class="v-sub">DDR controller path</text>
+  <path d="M 449 354 V 413" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-teal)"></path>
+  <polygon points="449.0,354.0 444.05,363.57 453.95,363.57" fill="var(--chart-teal, #226b63)"></polygon>
+  <path d="M 651 354 V 413" fill="none" stroke="var(--chart-teal, #226b63)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#rd4-rn-teal)"></path>
+  <polygon points="651.0,354.0 646.05,363.57 655.95,363.57" fill="var(--chart-teal, #226b63)"></polygon>
+  <text x="484" y="391" fill="var(--text-secondary, #435669)" text-anchor="middle" font-size="14.5" font-weight="580" class="v-sub">PCIe</text>
+  <rect x="363" y="417" width="172" height="57" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="449.0" y="451.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">Host DRAM</text>
+  <rect x="562" y="417" width="176" height="57" rx="7" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #abb8c4)" stroke-width="1.6"></rect>
+  <text x="650.0" y="451.5" fill="var(--text-primary, #233442)" text-anchor="middle" font-size="18" font-weight="620" class="v-ink">On-card DDR</text>
+</svg></div><p class="v-caption">图 7｜RecoNIC 的收包分流和内存访问。沿以太网入口看，普通包与 RoCE 包进不同模块。沿 ERNIC 的内存接口看，目标可以是主机内存，也可以是板载 DDR。两边的 ERNIC 是同一个硬件模块。<sup class="cite"><a href="#rd-ref-5">[5]</a></sup><sup class="cite"><a href="#rd-ref-6">[6]</a></sup></p></div>
+<p>从网线进来，帧先到以太网 MAC（CMAC）。分类器把 RoCE 流量送给 ERNIC，普通网络流量另走常规收包路径。这个 WRITE 会进 ERNIC。找到目标缓冲区后，引擎从片上的 AXI 内存接口发出写入，经交叉开关和 QDMA 的 PCIe 桥到达主机内存。如果目的缓冲区在板载 DDR，写入就在板上结束。图里 QDMA 出现了两次。左边处理普通包的接收，右边给 ERNIC 提供通往主机内存的桥。<sup class="cite"><a href="#rd-ref-5">[5]</a></sup><sup class="cite"><a href="#rd-ref-7">[7]</a></sup></p>
+<h3 id="网卡保存了什么，队列又放在哪里">网卡保存了什么，队列又放在哪里</h3>
+<p>选 RecoNIC 示例的 <code>host_mem</code> 配置，SQ、RQ 和 CQ 的存储在主机里。那 ERNIC 怎么知道该读哪一项？建 RC QP 时，软件把队列基地址和深度等参数交给硬件，同时配置远端 QPN、包序号（PSN）、路径 MTU、重试参数及保护域（PD）。它们属于每条连接自己的状态。PG332 描述的 QP Manager 会在发送队列间仲裁，缓存已经取回的发送 WQE，再交给 WQE Processor 按 PMTU 组包、驱动 DMA。这样，主存里有发送队列，卡上也能暂存其中一项的副本。<sup class="cite"><a href="#rd-ref-6">[6]</a></sup><sup class="cite"><a href="#rd-ref-7">[7]</a></sup></p>
+<p>进来的 WRITE 还要查另一组信息。比方说 B 注册了 16 KiB，并分成四个连续的 4 KiB 槽，<code>slot3</code> 占用最后 4096 B。目的 QPN 让 ERNIC 找到连接。远端地址、rkey 和长度用来检查相应内存窗口与写权限。若把同一个写请求的起点再后移 64 B，尾部就越过窗口，网卡不能把它作为合法的 4 KiB 写入执行。QPN 指出包属于哪条连接，网卡还要核对 QP 与 MR 是否属于同一保护域，以及 MR 是否允许这次写入。<sup class="cite"><a href="#rd-ref-2">[2]</a></sup><sup class="cite"><a href="#rd-ref-6">[6]</a></sup></p>
+<p>RecoNIC 随库提供了 SEND/RECV、WRITE 和 READ 的双端示例。它自己的接收程序轮询 RQ 生产者索引，从预分配的槽取消息，用完再更新消费位置。在源码里，收到新消息的信号就是这个索引向前移动。前面动画里的接收完成项对应通用 libibverbs 接口。这版 ERNIC 的手册也明确列出不支持 Atomic，图 6 的取号例子要用具备该能力的 RNIC。<sup class="cite"><a href="#rd-ref-6">[6]</a></sup><sup class="cite"><a href="#rd-ref-8">[8]</a></sup></p>
+<h2 id="四、NCCL-的一次发送为什么会用-WRITE">四、NCCL 的一次发送为什么会用 WRITE</h2>
+<p>跨机 AllGather 完成后，B 的结果缓冲区里应当有一段来自 A 的张量。只看这块张量怎样从 A 传到 B。至于每次传输怎样安排，NCCL 可以交给网络后端。即使上层用的是成对的 <code>ncclSend</code> 和 <code>ncclRecv</code>，网卡也可以用 RDMA WRITE 把这块数据送到位。下面跟的是内置 IB 后端的一个具体分支。<sup class="cite"><a href="#rd-ref-11">[11]</a></sup><sup class="cite"><a href="#rd-ref-12">[12]</a></sup></p>
+<p>先动手的是 B。在这个版本的 <code>ncclIbIrecv()</code> 里，有一条很容易忽略的接收请求。它有 <code>wr_id</code>，但 <code>sg_list = NULL</code>、<code>num_sge = 0</code>。B 先把这个接收项投给相应 QP，留给写入通知使用。它没有指定任何用来放张量的缓冲区。真正的落点由接下来的 <code>ncclIbPostFifo()</code> 公布。B 把地址、容量和 rkey 写进 A 那边的 FIFO 槽，A 读到它们以后，才知道往哪里写。<sup class="cite"><a href="#rd-ref-12">[12]</a></sup><sup class="cite"><a href="#rd-ref-17">[17]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="NCCL v2.26.5-1 sends 4 KiB as the payload of the write carrying immediate data, versus 16 KiB in a separate RDMA write（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 516" role="img" aria-label="NCCL v2.26.5-1 sends 4 KiB as the payload of the write carrying immediate data, versus 16 KiB in a separate RDMA write" font-family="system-ui, sans-serif">
+<title>One receive setup, two send paths in the NCCL IB backend</title>
+<desc>Single message, one data QP, adaptive routing enabled, default threshold 8192 bytes. At B, a receive request with zero scatter/gather entries and a local work request identifier is posted first. B then writes its advertised address, rkey and capacity into a FIFO at A. For a 4096-byte message, A posts a write with immediate that carries all 4096 payload bytes. For a 16384-byte message, A chains a normal payload write and a zero-payload write with immediate, submitting the chain once. In either case, B receives one receive completion and the immediate value is the message size in bytes. Arrows show work request direction, not individual transport packets.</desc>
+<text x="20" y="28" text-anchor="start" font-size="22" font-weight="670" class="v-ink" fill="var(--text-primary, #1d2b39)">NCCL IB transport</text>
+<text x="20" y="54" text-anchor="start" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">Single message · one data QP · adaptive routing on · default threshold = 8192 B</text>
+<rect x="12" y="72" width="736" height="126" rx="9" fill="var(--surface-soft, #f3f6f8)" stroke="var(--figure-line, #a6b4c1)" stroke-width="1"></rect>
+<text x="32" y="100" text-anchor="start" font-size="18" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">A · Sender</text>
+<text x="727" y="100" text-anchor="end" font-size="18" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">B · Receiver</text>
+<text x="32" y="124" text-anchor="start" font-size="15" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">FIFO slot for B’s buffer descriptor</text>
+<text x="727" y="124" text-anchor="end" font-size="15" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">Post receive · 0 SGEs · local wr_id</text>
+<text x="380" y="153" text-anchor="middle" font-size="16" font-weight="590" class="v-ink" fill="var(--text-primary, #1d2b39)">RDMA WRITE · B’s address, rkey and capacity</text>
+<path d="M709 169H58" fill="none" stroke="var(--chart-teal, #276f68)" stroke-width="2.4" stroke-dasharray="7 5"></path>
+<circle cx="709" cy="169" r="3.5" fill="var(--chart-teal, #276f68)"></circle><path d="M48 169 l11 -5 v10 z" fill="var(--chart-teal, #276f68)"></path>
+<text x="380" y="189" text-anchor="middle" font-size="14.5" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">B publishes the descriptor before A can send data.</text>
+<rect x="12" y="213" width="360" height="292" rx="9" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #a6b4c1)" stroke-width="1"></rect>
+<rect x="388" y="213" width="360" height="292" rx="9" fill="var(--surface-card, #ffffff)" stroke="var(--figure-line, #a6b4c1)" stroke-width="1"></rect>
+<text x="30" y="245" text-anchor="start" font-size="22" font-weight="660" class="v-ink" fill="var(--text-primary, #1d2b39)">4 KiB</text>
+<text x="355" y="244" text-anchor="end" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">4096 ≤ 8192</text>
+<text x="30" y="270" text-anchor="start" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">1 data-path WR</text>
+<text x="32" y="305" text-anchor="start" font-size="16" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">A</text>
+<text x="352" y="305" text-anchor="end" font-size="16" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">B</text>
+<text x="406" y="245" text-anchor="start" font-size="22" font-weight="660" class="v-ink" fill="var(--text-primary, #1d2b39)">16 KiB</text>
+<text x="731" y="244" text-anchor="end" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">16384 &gt; 8192</text>
+<text x="406" y="270" text-anchor="start" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">2 chained data-path WRs · 1 post</text>
+<text x="408" y="305" text-anchor="start" font-size="16" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">A</text>
+<text x="728" y="305" text-anchor="end" font-size="16" font-weight="650" class="v-ink" fill="var(--text-primary, #1d2b39)">B</text>
+<text x="192" y="332" text-anchor="middle" font-size="17" font-weight="625" class="v-ink" fill="var(--text-primary, #1d2b39)">WRITE_WITH_IMM</text>
+<path d="M37 345H336" fill="none" stroke="var(--chart-blue, #396d98)" stroke-width="2.4"></path>
+<circle cx="37" cy="345" r="3.5" fill="var(--chart-blue, #396d98)"></circle><path d="M346 345 l-11 -5 v10 z" fill="var(--chart-blue, #396d98)"></path>
+<text x="192" y="369" text-anchor="middle" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">4096 B payload · imm = 4096</text>
+<text x="568" y="332" text-anchor="middle" font-size="17" font-weight="625" class="v-ink" fill="var(--text-primary, #1d2b39)">RDMA_WRITE</text>
+<path d="M413 345H712" fill="none" stroke="var(--chart-blue, #396d98)" stroke-width="2.4"></path>
+<circle cx="413" cy="345" r="3.5" fill="var(--chart-blue, #396d98)"></circle><path d="M722 345 l-11 -5 v10 z" fill="var(--chart-blue, #396d98)"></path>
+<text x="568" y="369" text-anchor="middle" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">16384 B payload</text>
+<text x="568" y="400" text-anchor="middle" font-size="17" font-weight="625" class="v-ink" fill="var(--text-primary, #1d2b39)">WRITE_WITH_IMM</text>
+<path d="M413 413H712" fill="none" stroke="var(--chart-teal, #276f68)" stroke-width="2.4" stroke-dasharray="7 5"></path>
+<circle cx="413" cy="413" r="3.5" fill="var(--chart-teal, #276f68)"></circle><path d="M722 413 l-11 -5 v10 z" fill="var(--chart-teal, #276f68)"></path>
+<text x="568" y="436" text-anchor="middle" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">0 B payload · imm = 16384</text>
+<path d="M30 450H354" fill="none" stroke="var(--figure-line, #a6b4c1)" stroke-width="1"></path>
+<text x="32" y="474" text-anchor="start" font-size="16" font-weight="600" class="v-ink" fill="var(--text-primary, #1d2b39)">B · 1 receive CQE</text>
+<text x="32" y="498" text-anchor="start" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">imm_data = 4096 B</text>
+<path d="M406 450H730" fill="none" stroke="var(--figure-line, #a6b4c1)" stroke-width="1"></path>
+<text x="408" y="474" text-anchor="start" font-size="16" font-weight="600" class="v-ink" fill="var(--text-primary, #1d2b39)">B · 1 receive CQE</text>
+<text x="408" y="498" text-anchor="start" font-size="16" font-weight="450" class="v-sub" fill="var(--text-secondary, #49596a)">imm_data = 16384 B</text>
+</svg></div><p class="v-caption">图 8｜NCCL v2.26.5-1 内置 IB 后端。固定一条消息、一个 QP，开启自适应路由并保留默认阈值 8192 B。两种大小共用 B 发布缓冲区的步骤，区别从 A 提交数据 WR 时开始。图中省略传输层 ACK。<sup class="cite"><a href="#rd-ref-12">[12]</a></sup><sup class="cite"><a href="#rd-ref-17">[17]</a></sup></p></div>
+<p>在这个分支里，<code>ncclIbMultiSend()</code> 判断消息大小是否严格大于 <code>NCCL_IB_AR_THRESHOLD</code>。把开头的 4 KiB 和一条 16 KiB 消息代进去，数一数 A 要提交几条 WR。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>A 要发的数据</th>
+<th>A 在这一条 QP 上提交的工作</th>
+<th>B 从接收完成读回的大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 KiB</td>
+<td>一条 WRITE_WITH_IMM，同时带 4096 B 张量数据和立即数</td>
+<td>4096 B</td>
+</tr>
+<tr>
+<td>16 KiB</td>
+<td>一条普通 WRITE 搬 16384 B，再接一条零载荷 WRITE_WITH_IMM，串成链一次提交</td>
+<td>16384 B</td>
+</tr>
+</tbody>
+</table></div>
+<p>恰好 8 KiB 也走第一行的路径。第二行末尾的写没有第二份张量数据，却照样能触发 B 的接收完成。B 的代码从 <code>wc-&gt;imm_data</code> 取回原消息的长度，所以即便最后那条写的载荷长度为零，B 仍能读出 16384。图 5 里两端约定把这个字段用作槽号，NCCL 在这里用它传长度。表里数的是 A 传张量的工作请求，前面 B 发布地址的那条控制 WRITE 两种情形都有。<sup class="cite"><a href="#rd-ref-12">[12]</a></sup><sup class="cite"><a href="#rd-ref-17">[17]</a></sup></p>
+<p>如果张量在 GPU 显存里，而且平台支持 GPUDirect RDMA，图 1 里指向主机 DRAM 的载荷箭头还可以改指向 GPU 显存。RNIC 可以直接走 PCIe 点对点访问这块内存。依赖这批数据的 GPU 内核何时可以启动，还要遵守 CUDA 和通信库的同步要求。<sup class="cite"><a href="#rd-ref-14">[14]</a></sup></p>
+<p>回到开头的 4 KiB。用 SEND，B 把可写地址留在自己的接收队列里。图 8 的方案则先把可写地址送到 A，所以 A 用一次带立即数的写就能把张量送到位。B 的网络后端收到了这一块的通知，接下来可以推进这笔传输。整个 AllGather 还要等其余分块满足依赖，而原来的槽什么时候能再次使用，取决于消费它的那一步是否已经结束。</p>
+<h2 id="资料与源码">资料与源码</h2>
+<ol>
+<li><span id="rd-ref-1" class="ref-anchor"></span> NVIDIA，《<a target="_blank" rel="noopener" href="https://docs.nvidia.com/rdma-aware-networks-programming-user-manual-1-7.pdf">RDMA Aware Networks Programming User Manual</a>》，§3.1–3.3。RC 的通信操作、队列和工作请求。线上封装见 NVIDIA 的 <a target="_blank" rel="noopener" href="https://docs.nvidia.com/networking/display/mlnxenv23102131201lts/rdma-over-converged-ethernet-roce.pdf">RoCE 模式说明</a>。</li>
+<li><span id="rd-ref-2" class="ref-anchor"></span> rdma-core，<a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/ibv_reg_mr.3.html">ibv_reg_mr(3)</a>。内存区域、访问权限、lkey 和 rkey。</li>
+<li><span id="rd-ref-3" class="ref-anchor"></span> rdma-core，<a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/ibv_post_send.3.html">ibv_post_send(3)</a> 与 <a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/ibv_wr_post.3.html">ibv_wr_post(3)</a>。工作请求字段、立即数、原子操作及返回值。</li>
+<li><span id="rd-ref-4" class="ref-anchor"></span> rdma-core，<a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/ibv_post_recv.3.html">ibv_post_recv(3)</a> 与 <a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/ibv_poll_cq.3.html">ibv_poll_cq(3)</a>。接收请求与成功完成项。</li>
+<li><span id="rd-ref-5" class="ref-anchor"></span> AMD/Xilinx，<a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/shell/top/reconic.sv#L455-L488">RecoNIC 顶层收包分流</a> 与 <a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/shell/plugs/rdma_onic_plugin/vivado_ip/rdma_core.tcl#L6-L16">IP 生成配置</a>。板级案例固定在提交 <code>c8b7849</code>。</li>
+<li><span id="rd-ref-6" class="ref-anchor"></span> AMD/Xilinx，<a target="_blank" rel="noopener" href="https://docs.amd.com/api/khub/documents/nDGs8OYpH_RaOoMVNdbegA/content">ERNIC v3.1 产品手册 PG332</a>，第 7–8、10–11、30–32、59–61 页。QP Manager、缓存的 WQE、MR 访问窗口及 RC QP 配置。</li>
+<li><span id="rd-ref-7" class="ref-anchor"></span> RecoNIC，<a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/patches/open-nic-shell/rdma_onic.patch#L1469-L1658">OpenNIC shell 与 ERNIC 内存接口的连接</a> 及 <a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/README.md#L220-L302">host_mem / dev_mem 示例</a>。</li>
+<li><span id="rd-ref-8" class="ref-anchor"></span> RecoNIC，<a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/lib/rdma_api.c#L936-L989">接收与消费指针实现</a> 与 <a target="_blank" rel="noopener" href="https://github.com/Xilinx/RecoNIC/blob/c8b784938777076805c428c73f90f92374004ed5/examples/rdma_test/send_recv.c#L289-L325">send_recv 示例</a>。</li>
+<li><span id="rd-ref-9" class="ref-anchor"></span> Linux v6.12，<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/v6.12/drivers/infiniband/sw/rxe/rxe_req.c#L238-L258">Soft-RoCE 请求端的 RC SEND 分包选择</a>。可对照 Only、First、Middle、Last 的条件。</li>
+<li><span id="rd-ref-10" class="ref-anchor"></span> NVIDIA，<a target="_blank" rel="noopener" href="https://networking-docs.nvidia.com/doca/archive/3-5-0/atomic-operations">Atomic Operations</a>。64 位操作与设备原子性范围。</li>
+<li><span id="rd-ref-11" class="ref-anchor"></span> NVIDIA NCCL，<a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">Collective Operations</a> 与 <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/p2p.html">Point-to-point Communication</a>。集合操作与进程间点对点接口。</li>
+<li><span id="rd-ref-12" class="ref-anchor"></span> NVIDIA NCCL v2.26.5-1，<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl/blob/3000e3c797b4b236221188c07aa09c1f3a0170d4/src/transport/net_ib.cc#L2111-L2153">公布接收缓冲区</a> 与 <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl/blob/3000e3c797b4b236221188c07aa09c1f3a0170d4/src/transport/net_ib.cc#L1900-L2011">构造 WRITE 及 WRITE_WITH_IMM</a>，固定提交 <code>3000e3c</code>。</li>
+<li><span id="rd-ref-13" class="ref-anchor"></span> rdma-core v53.0，<a target="_blank" rel="noopener" href="https://github.com/linux-rdma/rdma-core/blob/v53.0/providers/mlx5/qp.c#L754-L792">mlx5 provider 的发送门铃路径</a>。另见<a target="_blank" rel="noopener" href="https://github.com/linux-rdma/rdma-core/blob/v53.0/providers/mlx5/qp.c#L1125-L1138">本地记录发送请求标识</a>和<a target="_blank" rel="noopener" href="https://github.com/linux-rdma/rdma-core/blob/v53.0/providers/mlx5/cq.c#L786-L806">轮询时还原工作完成</a>。</li>
+<li><span id="rd-ref-14" class="ref-anchor"></span> NVIDIA，<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/gpudirect-rdma/index.html#synchronization-and-memory-ordering">GPUDirect RDMA 与内存顺序</a>。显存的 PCIe 点对点访问与 CUDA 同步。</li>
+<li><span id="rd-ref-15" class="ref-anchor"></span> Intel，<a target="_blank" rel="noopener" href="https://cdrdv2-public.intel.com/666287/an855-683504-666287.pdf">AN 855, PCI Express High Performance Reference Design</a>，读完成拆分示例。另见 AMD <a target="_blank" rel="noopener" href="https://docs.amd.com/r/en-US/pg055-axi-bridge-pcie/Max-Payload-Size-for-PCIe-Max-Read-Request-Size-or-4K-Page-Violated">PG055 的 MPS、MRRS 和 4 KiB 边界规则</a>。</li>
+<li><span id="rd-ref-16" class="ref-anchor"></span> Linux v6.12，<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/v6.12/drivers/infiniband/sw/rxe/rxe_opcode.c#L185-L376">Soft-RoCE 的 RC 操作码与传输头布局</a>。WRITE 的 RETH 与立即数、READ 的请求和响应、Atomic ACK。</li>
+<li><span id="rd-ref-17" class="ref-anchor"></span> NVIDIA NCCL v2.26.5-1，<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl/blob/3000e3c797b4b236221188c07aa09c1f3a0170d4/src/transport/net_ib.cc#L100-L105">默认自适应路由阈值</a>、<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl/blob/3000e3c797b4b236221188c07aa09c1f3a0170d4/src/transport/net_ib.cc#L2208-L2244">先预投零 SGE 接收项再发布 FIFO</a>、<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nccl/blob/3000e3c797b4b236221188c07aa09c1f3a0170d4/src/transport/net_ib.cc#L2387-L2396">在完成时读回单条消息大小</a>。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon &amp; Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者: </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接:</strong>
+      <a href="https://leecdiang.com/2026/11/25/rdma-four-operations/" title="通信原语背后的 RDMA ——理解四种 RDMA 操作">https://leecdiang.com/2026/11/25/rdma-four-operations/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1/" rel="tag"># 集合通信</a>
+              <a href="/tags/RDMA/" rel="tag"># RDMA</a>
+              <a href="/tags/PCIe/" rel="tag"># PCIe</a>
+              <a href="/tags/AI-Infrastructure/" rel="tag"># AI Infrastructure</a>
+              <a href="/tags/%E7%BD%91%E5%8D%A1/" rel="tag"># 网卡</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+  </div></div>
+
+
+</main>
+  <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
+</body></html>
