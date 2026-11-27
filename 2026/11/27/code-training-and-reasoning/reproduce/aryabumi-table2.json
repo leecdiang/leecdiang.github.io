@@ -1,0 +1,37 @@
+{
+  "study": "Aryabumi et al. (ICLR 2025), To Code, or Not To Code?",
+  "source": "https://proceedings.iclr.cc/paper_files/paper/2025/file/c513d1786f85531fac7050947736265f-Paper-Conference.pdf#page=25",
+  "location": "Appendix B, Table 2, PRETRAINING section; Cooldown (T) = N/A.",
+  "parameters": "470M",
+  "unit": "percent, as reported to one decimal",
+  "conditions": {
+    "textOnly": {
+      "textTokensB": 400,
+      "codeTokensB": 0
+    },
+    "balancedOnly": {
+      "textTokensB": 200,
+      "codeTokensB": 200
+    }
+  },
+  "metrics": [
+    {
+      "name": "NL reasoning",
+      "metric": "Avg. accuracy",
+      "textOnly": 49,
+      "balancedOnly": 51.8
+    },
+    {
+      "name": "World knowledge",
+      "metric": "Avg. exact match",
+      "textOnly": 9.5,
+      "balancedOnly": 8.1
+    },
+    {
+      "name": "Code",
+      "metric": "Avg. pass@1",
+      "textOnly": 0.4,
+      "balancedOnly": 9
+    }
+  ]
+}

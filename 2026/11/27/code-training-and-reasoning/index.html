@@ -1,0 +1,637 @@
+<!DOCTYPE html><html lang="zh-CN" data-static-math="true"><head>
+  <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self' 'sha256-05P4tBYvl1EOQNu6HP+kVmoAqQRn/GDyXlHJGvk8K2w=' 'sha256-H3XqxO8lY++OlEYwS43hbdLeCq/KdGf0pWjPDzTONWI=' 'sha256-QmQY1YcV51Tuh4Xa7idkB6m+NC79Plj+tCcuHmhO59U=' 'sha256-eP73EqIpZgCP+vsQJCyjEJe6kgdxUKDjcgwJNUm4NqI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://leecdiang.com https://media.overclock3d.net; font-src 'self' data:; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>(()=>{const e="studio-theme-visit",t=document.documentElement,r=matchMedia("(prefers-color-scheme: dark)"),s=e=>["system","light","dark"].includes(e);let n="system";function c(c){n=s(c)?c:"system",t.dataset.themePreference=n,t.dataset.color="system"===n?r.matches?"dark":"light":n;try{sessionStorage.setItem(e,JSON.stringify({preference:n,systemDark:r.matches}))}catch{}}function o(){const t=function(){try{const t=JSON.parse(sessionStorage.getItem(e));if(t&&s(t.preference)&&"boolean"==typeof t.systemDark)return t}catch{}return null}();c(t&&t.systemDark===r.matches?t.preference:"system")}const a=performance.getEntriesByType("navigation")[0]?.type;let i=!1;try{i=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch{}"reload"===a||"back_forward"!==a&&!i?c("system"):o(),window.StudioThemeState={get preference(){return n},select:c,sync:o}})();</script>
+  <script>(function(){var l;try{l=localStorage.getItem('leecdiang-language')}catch(e){}if(l!=='zh'&&l!=='en')l=/^zh\b/i.test(navigator.language||'zh')?'zh':'en';document.documentElement.dataset.language=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';})();</script>
+  <script>try{if(localStorage.getItem('studio-reading-width')==='wide')document.documentElement.setAttribute('data-reading-wide','')}catch(e){}</script>
+
+  <script>(function(){try{var r=document.documentElement,k='studio-route-entry',v=JSON.parse(sessionStorage.getItem(k)||'null');sessionStorage.removeItem(k);if(v&&Date.now()-v.at<8000&&v.path===location.pathname+location.search&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches)r.dataset.routeEnter='';var e=Number(sessionStorage.getItem('studio-halo-epoch'))||Date.now();sessionStorage.setItem('studio-halo-epoch',e);r.style.setProperty('--halo-phase',-((Date.now()-e)%48000)+'ms')}catch(e){}})();</script>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" data-studio-style="" href="/assets/studio/style.f0810c8a098a.css"><link rel="stylesheet" data-static-math-style="" href="/assets/studio/math.4d032b484e1b.css">
+  
+  
+  <script class="next-config" data-name="main" type="application/json">{"hostname":"leecdiang.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"Default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":false,"nav":{"waline":{"text":"评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script>
+  <script defer="" src="/assets/studio/content.00c2f4bc61fe.js"></script>
+  
+    <meta name="description" content="仓库有 6 件货，三笔订单依次要 4、5、2 件。用这道题看代码和文字能共用什么，再读四组训练实验，看看哪些推理题受益，以及多读代码时模型少读了什么。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读代码能让大模型更会做推理题吗？">
+<meta property="og:url" content="https://leecdiang.com/2026/11/27/code-training-and-reasoning/">
+<meta property="og:site_name" content="Beyond the Clock">
+<meta property="og:description" content="仓库有 6 件货，三笔订单依次要 4、5、2 件。用这道题看代码和文字能共用什么，再读四组训练实验，看看哪些推理题受益，以及多读代码时模型少读了什么。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leecdiang.com/images/social/eddd16e00e10.png">
+<meta property="article:published_time" content="2026-11-27T12:20:00.000Z">
+<meta property="article:modified_time" content="2026-11-27T12:46:19.024Z">
+<meta property="article:author" content="LEEcDiang">
+<meta property="article:tag" content="Transformer">
+<meta property="article:tag" content="大语言模型">
+<meta property="article:tag" content="计算机体系结构">
+<meta property="article:tag" content="预训练">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://leecdiang.com/images/social/eddd16e00e10.png">
+
+
+<link rel="canonical" href="https://leecdiang.com/2026/11/27/code-training-and-reasoning/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://leecdiang.com/2026/11/27/code-training-and-reasoning/","path":"2026/11/27/code-training-and-reasoning/","title":"读代码能让大模型更会做推理题吗？"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>读代码能让大模型更会做推理题吗？ | Beyond the Clock</title>
+  
+
+
+
+
+
+
+
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script>
+
+
+  
+  <script defer="" src="/js/visual-diagrams.js"></script>
+  <script defer="" src="/assets/studio/core.e41d95e0cd09.js"></script>
+  
+  
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Beyond the Clock" type="application/atom+xml">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="security-policy-version" content="2026-11-07"></head>
+<body class="studio-site studio-halo studio-reading">
+  <div class="ambient-halo" aria-hidden="true"><div class="ambient-art ambient-art--light is-ready"></div><div class="ambient-art ambient-art--dark is-ready"></div></div>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="studio-header">
+    <a class="studio-brand" href="/" translate="no" aria-label="LEEcDiang 首页">LEEcDiang<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="/photography/">摄影</a>
+      <a href="/archives/" aria-current="page">文章</a>
+      <a href="/about/">关于</a>
+    </nav>
+    <div class="header-controls">
+      <button type="button" id="language-mode" class="language-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
+      <button type="button" class="reading-width-toggle" aria-pressed="false" hidden="">宽版阅读</button>
+      <button type="button" id="color-mode" class="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.1A8.6 8.6 0 0 1 10.9 3.5 8.6 8.6 0 1 0 20.5 13.1Z"></path></svg>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
+      </button>
+    </div>
+  </header>
+  <main id="main-content" tabindex="-1" class="studio-main main-inner studio-content-plane post posts-expand">
+    
+
+  <div class="reading-layout"><aside class="reading-toc" aria-label="文章目录"><details><summary>文章目录</summary><div class="toc-scroll" lang="zh-CN"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BF%BB%E8%AF%91%E6%A8%A1%E5%9E%8B%E4%B9%9F%E8%83%BD%E5%AD%A6%E5%88%B0%E7%BF%BB%E8%AF%91%E4%BB%A5%E5%A4%96%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-text">一、翻译模型也能学到翻译以外的东西</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%A6%81%E7%8C%9C%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%AF%8D%EF%BC%8C%E5%BE%97%E8%AE%B0%E4%BD%8F%E4%BB%80%E4%B9%88"><span class="toc-text">二、要猜下一个词，得记住什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Transformer-%E8%AE%A9%E5%93%AA%E4%BA%9B%E8%AE%A1%E7%AE%97%E8%83%BD%E5%90%8C%E6%97%B6%E5%BC%80%E5%B7%A5"><span class="toc-text">三、Transformer 让哪些计算能同时开工</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%80%E7%AC%94%E8%B7%B3%E8%BF%87%E7%9A%84%E8%AE%A2%E5%8D%95%E6%80%8E%E6%A0%B7%E5%B8%AE%E5%88%B0%E5%8F%A6%E4%B8%80%E9%81%93%E9%A2%98"><span class="toc-text">四、一笔跳过的订单怎样帮到另一道题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%A4%9A%E8%AF%BB%E4%BB%A3%E7%A0%81%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%B0%91%E8%AF%BB%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-text">五、多读代码的时候，少读了什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%B8%E5%A4%9A%E6%88%90%E7%BB%A9%E4%BB%8D%E8%83%BD%E4%B8%80%E8%B5%B7%E5%8F%98%E5%A5%BD"><span class="toc-text">六、为什么许多成绩仍能一起变好</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div><a class="reading-top" href="#main-content">回到文章开头 ↑</a></details></aside><div class="reading-main">
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN"><meta itemprop="image" content="https://leecdiang.com/images/social/eddd16e00e10.png"><meta itemprop="dateModified" content="2026-11-27T12:46:19.024Z"><meta itemprop="datePublished" content="2026-11-27T12:20:00.000Z">
+    <link itemprop="mainEntityOfPage" href="https://leecdiang.com/2026/11/27/code-training-and-reasoning/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar-snow.jpg">
+      <meta itemprop="name" content="LEEcDiang">
+    <link itemprop="url" href="https://leecdiang.com/about/"></span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Beyond the Clock">
+      <meta itemprop="description" content="Beyond the Clock — LEEcDiang personal archive on microelectronics, digital IC, computer architecture, AI infrastructure, tools, and visual narratives.">
+    </span>
+
+    
+      <header class="post-header">
+        
+        <nav class="reading-breadcrumb" aria-label="文章导航"><a href="/archives/">← 文章</a><span>/</span><a href="/categories/Silicon-Circuits/">Silicon &amp; Circuits</a></nav>
+        
+        <h1 class="post-title" itemprop="name headline">
+          读代码能让大模型更会做推理题吗？
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+            <div class="post-description">仓库有 6 件货，三笔订单依次要 4、5、2 件。用这道题看代码和文字能共用什么，再读四组训练实验，看看哪些推理题受益，以及多读代码时模型少读了什么。</div>
+        </div>
+        
+        <div class="reading-byline">
+          <a class="reading-author" href="/about/"><img src="/images/avatar-snow.jpg" width="44" height="44" alt="LEEcDiang 的头像"><span><strong>LEEcDiang</strong><span>Chengzhan Li</span></span></a>
+          <time datetime="2026-11-27T20:20:00+08:00">2026.11.27 发布</time>
+        </div>
+        
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody" data-math-prerendered="19"><div class="note primary"><p>最近看访谈，听到一个让我有些意外的说法：给大模型多读些代码，有时连推理题也能做得更好。模型见过许多 Python 程序，以后更会补全函数，这很好理解。可换成一道中文应用题，题目里一行程序都没有，代码训练究竟帮了哪一步？</p>
+</div>
+<span id="more"></span>
+<p>仓库里有 6 件货，三笔订单先后要 4 件、5 件和 2 件。每单必须一次给齐，不够就跳过，继续处理下一单。最后还剩几件？</p>
+<p>第二笔订单决定了答案。第一笔拿走 4 件，库里还剩 2 件。来要 5 件的人空手离开，最后一位恰好要 2 件，发完剩 0 件。同样的情形写进程序，就是一个条件不成立、变量保持原值的分支。人读这两种写法很容易认出是同一道题。对模型来说，这中间隔着什么？</p>
+<h2 id="一、翻译模型也能学到翻译以外的东西">一、翻译模型也能学到翻译以外的东西</h2>
+<p>给英译法模型一句英语，再给它对应的法语译文。为了选对法语里的词，模型得辨认谁做了什么、一个代词指向谁。另一个单独训练的阅读理解模型也需要这些信息。如果两次训练各自从头开始，翻译模型学到的东西要怎样交给它？</p>
+<p>早在 Transformer 之前，研究者就试过两种做法。2015 年，Dai 和 Le 先让循环网络读没有人工标签的文字，再用学到的参数初始化文本分类器。这是迁移学习，第二项任务从第一项训练留下的权重起步。Luong 等人把机器翻译和句法分析放在一起训练，让两项任务共用读输入句子的编码器，各自保留生成答案的部分。这样，翻译样本也能更新句法分析要用的参数。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Task-specific supervision and a shared language model（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 310" role="img" aria-label="Task-specific supervision and a shared language model" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Task-specific supervision and a shared language model</title>
+  <desc>Two independent models train on labeled examples. A shared language model learns next-token prediction on mixed data. Prompts can use the same weights to translate sentences or classify reviews.</desc>
+  <!-- Original schematic. The two arrangements can coexist. -->
+  <text x="8" y="26" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">Separate task models</text>
+  <text x="8" y="74" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Sentence pairs</text>
+  <path d="M 181 67 L 201 67" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 196 70.3 L 203 67 L 196 63.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="209" y="52" width="56" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="237" y="75" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">θ₁</text>
+  <path d="M 274 67 L 304 67" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 299 70.3 L 306 67 L 299 63.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <text x="316" y="74" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">Translate</text>
+  <text x="8" y="121" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Labeled reviews</text>
+  <path d="M 181 114 L 201 114" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 196 117.3 L 203 114 L 196 110.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="209" y="99" width="56" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="237" y="122" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">θ₂</text>
+  <path d="M 274 114 L 304 114" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 299 117.3 L 306 114 L 299 110.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <text x="316" y="121" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">Classify</text>
+  <path d="M 8 155 L 472 155" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="8" y="191" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">One pretrained language model</text>
+  <text x="8" y="230" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Text + code</text>
+  <path d="M 128 223 L 162 223" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 157 226.3 L 164 223 L 157 219.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="171" y="206" width="94" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="218" y="229" font-size="18" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">shared θ</text>
+  <path d="M 273 223 L 302 223" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 297 226.3 L 304 223 L 297 219.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <text x="314" y="230" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">Next token</text>
+  <path d="M 218 241 L 218 260" fill="none" stroke="var(--muted, #526071)" stroke-width="1.4" opacity="1"></path>
+  <path d="M 147 260 L 335 260" fill="none" stroke="var(--muted, #526071)" stroke-width="1.4" opacity="1"></path>
+  <path d="M 147 260 L 147 271" fill="none" stroke="var(--muted, #526071)" stroke-width="1.4" opacity="1"></path>
+  <path d="M 143.7 266 L 147 273 L 150.3 266 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <path d="M 335 260 L 335 271" fill="none" stroke="var(--muted, #526071)" stroke-width="1.4" opacity="1"></path>
+  <path d="M 331.7 266 L 335 273 L 338.3 266 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <text x="147" y="295" font-size="19" font-weight="550" text-anchor="middle" fill="var(--ink, #293441)">Translate</text>
+  <text x="335" y="295" font-size="19" font-weight="550" text-anchor="middle" fill="var(--ink, #293441)">Classify</text>
+  <text x="8" y="279" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">At use</text>
+</svg></div><p class="v-caption">图 1｜上半部的翻译和分类各有一份权重。下半部读文本和代码时更新的是同一套权重，后来可以用不同提示让它翻译或分类。原创训练范式示意，历史上两种做法长期并存。</p></div>
+<p>今天常用的自回归语言模型把准备数据这件事又简化了一步。一篇影评、一段程序、一份附了解答的习题，都自带训练用的答案：读到某个位置，后面实际出现的那个 token 就是目标。一个 token 可以是词、词的一部分，也可以是一段标点。不同材料共用一套参数，也共用这套出题办法。至于一段文字能教给模型哪些东西，有个比 Transformer 论文还早两个月的实验，恰好能让人看到一点内部情形。</p>
+<p>2017 年 4 月，Radford 等人用八千多万条亚马逊评论训练一个乘法长短期记忆网络（mLSTM）。模型一个字节一个字节地读，任务是猜下一个字节，训练时没用好评或差评标签。研究者随后比较了 4096 个状态分量在几项分类任务里的贡献，发现其中一个对褒贬特别敏感。让模型读 IMDb 影评，用带标签的影评给这一个数选好分界值，分类准确率达到 92.30%。用全部分量训练分类器，是 92.88%。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Reading and intervening on one sentiment unit（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 305" role="img" aria-label="Reading and intervening on one sentiment unit" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Reading and intervening on one sentiment unit</title>
+  <desc>A byte-level recurrent model trained on Amazon reviews. A threshold on one unit achieved 92.30% IMDb sentiment accuracy. Fixing that unit at +1 or −1 steered generated reviews.</desc>
+  <!-- Radford, Jozefowicz & Sutskever (2017), sections 4.2 and 4.5, Table 5. https://arxiv.org/abs/1704.01444 . Quotations are excerpts from generated samples in Table 5. -->
+  <text x="8" y="25" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">Amazon reviews</text>
+  <path d="M 207 19 L 233 19" fill="none" stroke="var(--muted, #526071)" stroke-width="2" opacity="1"></path>
+  <path d="M 228 22.3 L 235 19 L 228 15.7 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <text x="250" y="25" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">Predict next byte</text>
+  <text x="8" y="78" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">Read one unit</text>
+  <rect x="9" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="28" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="47" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="66" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="85" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="104" y="95" width="14" height="27" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="123" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="142" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="161" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="180" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="199" y="95" width="14" height="27" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <text x="229" y="116" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">… 4,096 units</text>
+  <text x="8" y="155" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">IMDb sentiment accuracy</text>
+  <text x="469" y="155" font-size="23" font-weight="650" text-anchor="end" fill="var(--chart-teal, #2b7975)">92.30%</text>
+  <path d="M 8 173 L 472 173" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="8" y="204" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">Fix the unit during generation</text>
+  <rect x="8" y="221" width="58" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="37" y="244" font-size="18" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">+1</text>
+  <text x="83" y="245" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">“Highly recommended”</text>
+  <rect x="8" y="260" width="58" height="34" rx="5" fill="var(--chart-red, #ac4d5b)" fill-opacity="0.1" stroke="var(--chart-red, #ac4d5b)" stroke-width="1.2"></rect>
+  <text x="37" y="283" font-size="18" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">−1</text>
+  <text x="83" y="284" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">“A waste of time and money.”</text>
+</svg></div><p class="v-caption">图 2｜从评论里读出情感，和在生成时把一个分量固定为 +1 或 −1，是两次不同的实验。下方英文摘自论文表 5 的实际生成样本。按 Radford 等人的实验重绘。<a href="#ref-3">[3]</a></p></div>
+<p>想想一条抱怨电池续航的评论，末尾接“以后还会再买”的可能性就小了。前文的态度能帮模型猜后文，情感标签可以等到检验时再给。研究者还在生成过程中把那个分量固定为正值或负值，续写评论的语气也随之偏向相应一边。一个只练过续写的模型，已经学到了能从亚马逊商品评论带到电影评论的东西。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<h2 id="二、要猜下一个词，得记住什么">二、要猜下一个词，得记住什么</h2>
+<p>换回仓库。写下 <code>for order in orders</code>，让模型补 Python 的行尾，它可以凭熟悉的语法猜冒号。再写 <code>remaining -=</code>，合适的续写得看前面用哪个名字指代这笔订单的数量。如果要补的是处理日志里“第三笔订单后余货为 __”，认得变量名也不够。图 3 可以逐笔展开，看看每次填数时已经知道哪些事。</p>
+
+<link rel="stylesheet" href="/2026/11/27/code-training-and-reasoning/interactive/controls.css">
+<script defer="" src="/2026/11/27/code-training-and-reasoning/interactive/controls.js"></script>
+<figure class="v-figure transfer-widget" id="trace-next-token" data-transfer-widget="trace"><p data-fallback="">起始 6 件。申请 4 件后剩 2 件；下一笔要 5 件，只剩 2 件，跳过；最后申请 2 件，余量归零。逐笔记录是 [2, 2, 0]。</p><figcaption class="v-caption">图 3｜依次填入每笔订单处理后的余量，再看哪个条件约束了当前的答案。候选数字由作者选取，未使用模型打分。</figcaption></figure>
+
+<p>这些位置都可以用同一项损失来训练。把一段语料切成 token，记第 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="t"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>t</mi></math></mjx-assistive-mml></mjx-container> 个为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="x_t"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>x</mi><mi>t</mi></msub></math></mjx-assistive-mml></mjx-container>。模型读它前面的内容，给词表里的每个候选一个概率。实际出现的 token 分到的概率越小，这次预测付出的损失就越大。对 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math></mjx-assistive-mml></mjx-container> 个位置取平均，可以写成</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+
+L(\theta)=-\frac{1}{T}\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{<t}).
+
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-munderover space="2"><mjx-over style="padding-bottom: 0.2em; padding-left: 0.473em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-over><mjx-box><mjx-munder><mjx-row><mjx-base><mjx-mo class="mjx-lop"><mjx-c class="mjx-c2211 TEX-S2"></mjx-c></mjx-mo></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.167em; padding-left: 0.143em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-under></mjx-row></mjx-munder></mjx-box></mjx-munderover><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2223"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>L</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><munderover><mo data-mjx-texclass="OP">∑</mo><mrow data-mjx-texclass="ORD"><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mi>T</mi></mrow></munderover><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo><mo>.</mo></math></mjx-assistive-mml></mjx-container></p>
+<p>公式只检查目标 token 分到了多少概率，不规定网络该怎么算出这个数。常见搭配足以猜中不少位置，猜一段话里提到的城市属于哪个国家可能要用到事实知识。库存日志又是另一种情况：同一句“这一笔处理完还剩”，后面接 2 还是 0，要往前找上一次的余量，还要知道这笔订单有没有成交。训练可以奖励所有这些有助于预测的线索，即使语料里从头到尾没有“请跟踪余量”这条指令。</p>
+<p>我们可以写一个程序，显式留出一个变量存余量。神经网络学到的线索则可能分散在许多激活分量里。训练使某些输入差异在内部变得可辨认，例如事情已经办成，还是条件不够、原状保留。这样的内部编码叫作表示。从样本中学出能区分这些情况的特征，就是特征学习。换了数字、换了表述仍能答对，才有理由谈它在这些新例子上的泛化。只看一次正确续写，很难分辨模型用了哪条线索。</p>
+<p>黑白棋给了研究者一个少见的便利：每读一手棋，都能算出此时整块棋盘的正确答案。Li 等人训练 Othello-GPT 时只给落子记录，让它预测下一手，随后冻结模型，另外训练一个小网络，从它的中间激活读出指定格子是黑、白还是空。这个小网络叫探针。用带非线性的小网络作探针，研究者能从这些激活里相当准确地还原盘面。再沿探针指示的方向改动激活，使探针把某个格子读成另一种颜色，模型给下一手分配的概率也会向修改后盘面的合法走法移动。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Legal moves after the opening C4 in Othello（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" role="img" aria-label="Legal moves after the opening C4 in Othello" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Legal moves after the opening C4 in Othello</title>
+  <desc>Rows run from top to bottom. Black played C4 and flipped D4. White can play C3, E3 or C5. Squares are derived from the rules, without using model outputs.</desc>
+  <!-- Original Othello position. See Li et al., ICLR 2023, https://arxiv.org/abs/2210.13382 for the probing and intervention experiments. -->
+  <text x="45" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">A</text>
+  <text x="16" y="56" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">1</text>
+  <text x="73" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">B</text>
+  <text x="16" y="84" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">2</text>
+  <text x="101" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">C</text>
+  <text x="16" y="112" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">3</text>
+  <text x="129" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">D</text>
+  <text x="16" y="140" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">4</text>
+  <text x="157" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">E</text>
+  <text x="16" y="168" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">5</text>
+  <text x="185" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">F</text>
+  <text x="16" y="196" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">6</text>
+  <text x="213" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">G</text>
+  <text x="16" y="224" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">7</text>
+  <text x="241" y="26" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">H</text>
+  <text x="16" y="252" font-size="17" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">8</text>
+  <rect x="31" y="36" width="224" height="224" rx="0" fill="var(--chart-teal, #2b7975)" fill-opacity="0.06" stroke="var(--chart-teal, #2b7975)" stroke-width="1.5"></rect>
+  <path d="M 59 36 L 59 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 64 L 255 64" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 87 36 L 87 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 92 L 255 92" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 115 36 L 115 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 120 L 255 120" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 143 36 L 143 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 148 L 255 148" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 171 36 L 171 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 176 L 255 176" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 199 36 L 199 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 204 L 255 204" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 227 36 L 227 260" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <path d="M 31 232 L 255 232" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="0.8" opacity="0.62"></path>
+  <circle cx="101" cy="134" r="10" fill="#263344" stroke="#98a6b6" stroke-width="1.2"></circle>
+  <circle cx="129" cy="134" r="10" fill="#263344" stroke="#98a6b6" stroke-width="1.2"></circle>
+  <circle cx="157" cy="134" r="10" fill="#263344" stroke="#98a6b6" stroke-width="1.2"></circle>
+  <circle cx="129" cy="162" r="10" fill="#263344" stroke="#98a6b6" stroke-width="1.2"></circle>
+  <circle cx="157" cy="162" r="10" fill="#fff" stroke="#98a6b6" stroke-width="1.2"></circle>
+  <circle cx="101" cy="106" r="8" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="2.2" stroke-dasharray="3 2"></circle>
+  <circle cx="157" cy="106" r="8" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="2.2" stroke-dasharray="3 2"></circle>
+  <circle cx="101" cy="162" r="8" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="2.2" stroke-dasharray="3 2"></circle>
+  <text x="280" y="79" font-size="21" font-weight="630" text-anchor="start" fill="var(--heading, #102b56)">Black plays C4</text>
+  <text x="280" y="111" font-size="19" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">D4 flips to black.</text>
+  <path d="M 280 137 L 467 137" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="280" y="173" font-size="21" font-weight="630" text-anchor="start" fill="var(--heading, #102b56)">White to move</text>
+  <circle cx="290" cy="202" r="8" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="2.2" stroke-dasharray="3 2"></circle>
+  <text x="309" y="208" font-size="18" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Legal square</text>
+  <text x="280" y="245" font-size="21" font-weight="620" text-anchor="start" fill="var(--chart-teal, #2b7975)">C3 · E3 · C5</text>
+</svg></div><p class="v-caption">图 4｜黑方在 C4 落子后，白方有哪些选择？示例棋局用来说明探针要读出什么，盘面按规则计算。论文另用干预实验检验模型选下一手时是否用到这类信息。<a href="#ref-4">[4]</a></p></div>
+<p>从激活里读出一项信息，和改动这项信息后让预测跟着变，是两种强度不同的证据。黑白棋有固定棋规，还允许研究者为改动后的棋盘重新列出合法走法。等到面对一份合同、一段程序或者日常对话，就很难找到这样一张可供逐格核对的标准棋盘了。</p>
+<h2 id="三、Transformer-让哪些计算能同时开工">三、Transformer 让哪些计算能同时开工</h2>
+<p>如果循环网络已经能从续写里学到情感，为什么后来广泛使用的是 Transformer？看一遍训练时的数据依赖，比数它有几个注意力头更能说明这个变化。</p>
+<p>假设一段训练文本有四个位置。循环神经网络（RNN）在位置 2 的状态要用到位置 1 刚算出的状态，位置 3 又要等位置 2。LSTM 的门控能让前面的信息保留更久，这条逐位置递推仍然存在。可以把多条句子凑成一批，但在同一条句子里，多给几个计算单元，也不能提前得到第 3 步缺的那个状态。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+<p>换成因果自注意力，先把上一层的四个位置摆成四行。每一行都从<strong>上一层</strong>取数：第 1 行只能看自己，第 4 行可以取前面三行和自己。等上一层就绪，第 4 行不用等本层第 3 行输出才开始算。训练文本连同正确答案本来就已知，把目标错开一位，再用因果掩码挡住未来位置，就可以在一次前向计算中同时预测许多位置。两处相隔很远的词，在循环网络里要经过一连串中间状态传话，在一层全注意力里就有一条直接连接。不同层之间仍须依次计算。原版 Transformer 用于翻译，这里单取与今天自回归模型有关的解码器依赖来画。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Four positions in a recurrent or a causal attention layer（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 356" role="img" aria-label="Four positions in a recurrent or a causal attention layer" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Four positions in a recurrent or a causal attention layer</title>
+  <desc>Each recurrent state depends on its predecessor and its input. Each attention output reads layer inputs at earlier positions and its own position. Within the same attention layer no horizontal edge joins output positions.</desc>
+  <!-- Original graph for teacher-forced training. See Vaswani et al., Table 1 and section 3.2.3, https://arxiv.org/abs/1706.03762 . Edges are logical dependencies. -->
+  <text x="8" y="28" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">Recurrent layer</text>
+  <path d="M 91 69 L 139 69" fill="none" stroke="var(--chart-blue, #376b9f)" stroke-width="2" opacity="1"></path>
+  <path d="M 134 72.3 L 141 69 L 134 65.7 Z" fill="var(--chart-blue, #376b9f)" opacity="1"></path>
+  <path d="M 56 105 L 56 90" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 59.3 95 L 56 88 L 52.7 95 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="26" y="52" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="56" y="75" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">h₁</text>
+  <text x="56" y="128" font-size="19" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">x₁</text>
+  <path d="M 212 69 L 261 69" fill="none" stroke="var(--chart-blue, #376b9f)" stroke-width="2" opacity="1"></path>
+  <path d="M 256 72.3 L 263 69 L 256 65.7 Z" fill="var(--chart-blue, #376b9f)" opacity="1"></path>
+  <path d="M 177 105 L 177 90" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 180.3 95 L 177 88 L 173.7 95 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="147" y="52" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="177" y="75" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">h₂</text>
+  <text x="177" y="128" font-size="19" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">x₂</text>
+  <path d="M 334 69 L 382 69" fill="none" stroke="var(--chart-blue, #376b9f)" stroke-width="2" opacity="1"></path>
+  <path d="M 377 72.3 L 384 69 L 377 65.7 Z" fill="var(--chart-blue, #376b9f)" opacity="1"></path>
+  <path d="M 299 105 L 299 90" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 302.3 95 L 299 88 L 295.7 95 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="269" y="52" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="299" y="75" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">h₃</text>
+  <text x="299" y="128" font-size="19" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">x₃</text>
+  <path d="M 420 105 L 420 90" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 423.3 95 L 420 88 L 416.7 95 Z" fill="var(--muted, #526071)" opacity="1"></path>
+  <rect x="390" y="52" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="420" y="75" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">h₄</text>
+  <text x="420" y="128" font-size="19" font-weight="520" text-anchor="middle" fill="var(--muted, #526071)">x₄</text>
+  <path d="M 8 153 L 472 153" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="8" y="186" font-size="21" font-weight="650" text-anchor="start" fill="var(--chart-blue, #376b9f)">Causal self-attention</text>
+  <path d="M 56 291 L 56 242" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 59.3 247 L 56 240 L 52.7 247 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 56 291 L 171.17 240.8" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 167.9 245.82 L 173 240 L 165.26 239.77 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 177 291 L 180.84 241.99" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 183.74 247.24 L 181 240 L 177.16 246.72 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 56 291 L 289.05 240.42" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 284.86 244.71 L 291 240 L 283.46 238.26 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 177 291 L 297.15 240.77" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 293.81 245.74 L 299 240 L 291.27 239.66 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 299 291 L 306.69 241.98" fill="none" stroke="var(--muted, #526071)" stroke-width="1.6" opacity="0.67"></path>
+  <path d="M 309.18 247.43 L 307 240 L 302.66 246.4 Z" fill="var(--muted, #526071)" opacity="0.67"></path>
+  <path d="M 56 291 L 406.02 240.29" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 401.55 244.27 L 408 240 L 400.6 237.74 Z" fill="var(--chart-teal, #2b7975)" opacity="1"></path>
+  <path d="M 177 291 L 414.04 240.42" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 409.84 244.69 L 416 240 L 408.47 238.23 Z" fill="var(--chart-teal, #2b7975)" opacity="1"></path>
+  <path d="M 299 291 L 422.15 240.76" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 418.77 245.7 L 424 240 L 416.27 239.59 Z" fill="var(--chart-teal, #2b7975)" opacity="1"></path>
+  <path d="M 420 291 L 431.54 241.95" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="1.6" opacity="1"></path>
+  <path d="M 433.61 247.57 L 432 240 L 427.18 246.06 Z" fill="var(--chart-teal, #2b7975)" opacity="1"></path>
+  <rect x="26" y="204" width="60" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="56" y="227" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">y₁</text>
+  <rect x="26" y="293" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="56" y="316" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">x₁</text>
+  <rect x="147" y="204" width="60" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="177" y="227" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">y₂</text>
+  <rect x="147" y="293" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="177" y="316" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">x₂</text>
+  <rect x="269" y="204" width="60" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="299" y="227" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">y₃</text>
+  <rect x="269" y="293" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="299" y="316" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">x₃</text>
+  <rect x="390" y="204" width="60" height="34" rx="5" fill="var(--chart-teal, #2b7975)" fill-opacity="0.1" stroke="var(--chart-teal, #2b7975)" stroke-width="1.2"></rect>
+  <text x="420" y="227" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">y₄</text>
+  <rect x="390" y="293" width="60" height="34" rx="5" fill="var(--chart-blue, #376b9f)" fill-opacity="0.1" stroke="var(--chart-blue, #376b9f)" stroke-width="1.2"></rect>
+  <text x="420" y="316" font-size="19" font-weight="570" text-anchor="middle" fill="var(--ink, #293441)">x₄</text>
+  <text x="8" y="350" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">x = layer input</text>
+  <text x="472" y="350" font-size="18" font-weight="450" text-anchor="end" fill="var(--muted, #526071)">y = layer output</text>
+</svg></div><p class="v-caption">图 5｜四个位置、一层计算。循环边连接同一层的相邻位置，因果注意力的连线来自上一层已经就绪的位置。图与下方逐步演示都只表示依赖关系，不用格数估算运行时间。<a href="#ref-5">[5]</a></p></div>
+
+<div class="transfer-widget tr-schedule" id="trace-schedule" data-transfer-widget="schedule"><p data-fallback="">把四个输入位置都准备好。RNN 的四个输出要沿隐藏状态依次求出；一层因果自注意力的四行可以同时求值，每行仍只能读取本位置和它左边的输入。</p></div>
+
+<p>落到 GPU 上，区别体现在送进去的矩阵形状。若每个位置有 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="d"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>d</mi></math></mjx-assistive-mml></mjx-container> 个特征，整段有 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math></mjx-assistive-mml></mjx-container> 个位置，一次线性投影就可以把 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T\times d"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi><mo>×</mo><mi>d</mi></math></mjx-assistive-mml></mjx-container> 的输入矩阵乘上同一块权重。加速器能把这些行切成小块，分给许多乘加单元，一块权重装进片上存储后还能给多行复用。这与<a href="/2026/11/03/gemm-languages-to-architecture/">矩阵乘法那篇</a>讨论的分块是同一件事。循环网络也做矩阵乘法，额外的困难是同一条序列里，有些本可凑成大矩阵的行还没有算出来。</p>
+<p>让每个位置都能直接读到前文，也带来了新的成本。标准全注意力在长为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math></mjx-assistive-mml></mjx-container> 的序列上，要处理的成对位置数量按 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="T^2"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.056em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>T</mi><mn>2</mn></msup></math></mjx-assistive-mml></mjx-container> 增长。即使算术单元足够多，把中间的分数矩阵写回显存再读出来也可能很慢。FlashAttention 通过分块，在片上累积结果，省掉完整分数矩阵的显存读写。同样的层，能在多长的序列上训练、每秒读多少数据，还取决于内核实现、显存和卡间通信。优化器还得选好每次更新的步长，让长时间的训练保持稳定。语料若反复出现同一批样板，再高的吞吐也只是在重复练习。<sup class="cite"><a href="#ref-5">[5]</a></sup><sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+<p>真正让模型自己写答案时，情况又变了。它此刻若还没决定输出“跳过”还是“接受”，下一个位置的输入就还没定。缓存历史的键和值能省去对旧位置的重复计算，却不能预先告诉它上一步会选哪个词。这也解释了<a href="/2026/11/08/llm-inference-from-token-to-cluster/">推理时读题与逐词作答</a>为什么会给同一张 GPU 两种不同的工作量：读题时能一次处理整段，生成时同一请求每步只新增一个位置。Transformer 给大规模训练提供了合适的计算方式。至于读程序省下的功夫能不能用到应用题上，得再回到训练内容。</p>
+<h2 id="四、一笔跳过的订单怎样帮到另一道题">四、一笔跳过的订单怎样帮到另一道题</h2>
+<p>把开头的文字改写成 Python，只需几行。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">remaining = <span class="number">6</span></span><br><span class="line"><span class="keyword">for</span> order <span class="keyword">in</span> [<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>]:</span><br><span class="line">    <span class="keyword">if</span> order &lt;= remaining:</span><br><span class="line">        remaining -= order</span><br><span class="line"><span class="built_in">print</span>(remaining)</span><br></pre></td></tr></tbody></table></figure>
+<p>最有意思的是程序里没写出来的那一步。读到 5 时，条件不成立，程序直接回到循环开头，<code>remaining</code> 仍为 2。题目里的“跳过”两个字承担了这个隐含分支。用图 6 的记号，<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="b"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container> 是处理前的余量，<mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="q"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi></math></mjx-assistive-mml></mjx-container> 是本单需求。若 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="q\le b"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>q</mi><mo>≤</mo><mi>b</mi></math></mjx-assistive-mml></mjx-container>，新余量 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="b’=b-q"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>b</mi><mo data-mjx-alternate="1">′</mo></msup><mo>=</mo><mi>b</mi><mo>−</mo><mi>q</mi></math></mjx-assistive-mml></mjx-container>，否则 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="b’=b"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>b</mi><mo data-mjx-alternate="1">′</mo></msup><mo>=</mo><mi>b</mi></math></mjx-assistive-mml></mjx-container>。三种写法都要求分清“这一步读了一个新数”和“这一步改变了余额”。把订单改成几组想要一起入场的观众，票数和人数都可以换，这个区别还在。</p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Inventory update in code, algebra and a ledger（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 308" role="img" aria-label="Inventory update in code, algebra and a ledger" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Inventory update in code, algebra and a ledger</title>
+  <desc>Start with 6 items. Accept a request only when the entire quantity fits. Requests 4, 5 and 2 leave 2, 2 and 0. This analogy was constructed by the author.</desc>
+  <!-- Original worked example of a stateful update. The drawing does not report model activations. -->
+  <text x="8" y="29" font-size="19" font-weight="600" text-anchor="start" fill="var(--muted, #526071)">Code</text>
+  <text x="112" y="29" font-size="20" font-weight="550" text-anchor="start" fill="var(--ink, #293441)" font-family="ui-monospace, Menlo, monospace">if q &lt;= b: b -= q</text>
+  <text x="8" y="68" font-size="19" font-weight="600" text-anchor="start" fill="var(--muted, #526071)">Math</text>
+  <text x="112" y="68" font-size="22" font-weight="550" text-anchor="start" fill="var(--ink, #293441)">b′ = b − q · 1[q ≤ b]</text>
+  <path d="M 8 92 L 472 92" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="8" y="130" font-size="19" font-weight="600" text-anchor="start" fill="var(--heading, #102b56)">Request</text>
+  <text x="123" y="130" font-size="19" font-weight="600" text-anchor="start" fill="var(--heading, #102b56)">Action</text>
+  <text x="263" y="130" font-size="19" font-weight="600" text-anchor="start" fill="var(--heading, #102b56)">Stock remaining</text>
+  <text x="19" y="162" font-size="21" font-weight="570" text-anchor="start" fill="var(--ink, #293441)">—</text>
+  <text x="123" y="162" font-size="20" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Start</text>
+  <rect x="263" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="287" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="311" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="335" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="359" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="383" y="146" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <text x="465" y="162" font-size="21" font-weight="620" text-anchor="end" fill="var(--ink, #293441)">6</text>
+  <text x="19" y="205" font-size="21" font-weight="570" text-anchor="start" fill="var(--ink, #293441)">4</text>
+  <text x="123" y="205" font-size="20" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Fill</text>
+  <rect x="263" y="189" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="287" y="189" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="311" y="189" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="335" y="189" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="359" y="189" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="383" y="189" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <text x="465" y="205" font-size="21" font-weight="620" text-anchor="end" fill="var(--ink, #293441)">2</text>
+  <text x="19" y="248" font-size="21" font-weight="570" text-anchor="start" fill="var(--ink, #293441)">5</text>
+  <text x="123" y="248" font-size="20" font-weight="550" text-anchor="start" fill="var(--chart-amber, #946022)">Skip</text>
+  <rect x="263" y="232" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="287" y="232" width="18" height="18" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <rect x="311" y="232" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="335" y="232" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="359" y="232" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="383" y="232" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <text x="465" y="248" font-size="21" font-weight="620" text-anchor="end" fill="var(--ink, #293441)">2</text>
+  <text x="19" y="291" font-size="21" font-weight="570" text-anchor="start" fill="var(--ink, #293441)">2</text>
+  <text x="123" y="291" font-size="20" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Fill</text>
+  <rect x="263" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="287" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="311" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="335" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="359" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <rect x="383" y="275" width="18" height="18" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="var(--line, #dce2e9)" stroke-width="1"></rect>
+  <text x="465" y="291" font-size="21" font-weight="620" text-anchor="end" fill="var(--ink, #293441)">0</text>
+</svg></div><p class="v-caption">图 6｜代码中的条件、数学习题的分段规则和文字里的“给齐才发货”，沿同一笔订单对齐。余量依次为 2、2、0。原创概念示意，这里对齐的是三种描述的解法，模型的隐藏激活未经测量。</p></div>
+<p>程序把这些关系写得相当密。变量名把前一次的赋值和后一次的读取连起来，条件判断决定哪次赋值生效，循环把同一条规则用在不同输入上。遇到递归调用，还得弄清这一层的返回值会交给谁。一个长程序可以拆成小问题，再把结果组合起来。如果训练让网络更容易保留旧值、找到引用它的位置，这些特征在别的语料里也有机会被用到。只学会缩进、冒号和常见变量名，代码补全照样可能进步，对库存题的帮助却很有限。</p>
+<p>把“有帮助”缩小到一次参数更新，可以算得更确切些。在同一组参数 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\theta"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>θ</mi></math></mjx-assistive-mml></mjx-container> 上，取一批代码算出预测损失的梯度 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="g_c"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>g</mi><mi>c</mi></msub></math></mjx-assistive-mml></mjx-container>，再用一批数学题的解答算出另一个梯度 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="g_m"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>g</mi><mi>m</mi></msub></math></mjx-assistive-mml></mjx-container>。两批都按下一个 token 计分。梯度指向各自损失上升最快的方向。先只用代码，沿相反方向走一小步，步长为 <mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" data-tex="\eta>0"><mjx-math class=" MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3E"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>η</mi><mo>&gt;</mo><mn>0</mn></math></mjx-assistive-mml></mjx-container>。数学损失会怎样变？</p>
+<p><mjx-container class="MathJax" jax="CHTML" style="font-size: 113.1%; position: relative;" display="true" data-tex="
+
+\theta’=\theta-\eta g_c,\qquad
+
+L_m(\theta’)-L_m(\theta)\approx -\eta, g_m^\mathsf{T}g_c .
+
+"><mjx-math display="true" style="margin-left: 0; margin-right: 0;" class=" MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 2em;"></mjx-mspace></mjx-mstyle><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D703 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2248"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msubsup space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: 0;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-ss"><mjx-c class="mjx-c1D5B3 TEX-SS"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.347em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2E"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>θ</mi><mo data-mjx-alternate="1">′</mo></msup><mo>=</mo><mi>θ</mi><mo>−</mo><mi>η</mi><msub><mi>g</mi><mi>c</mi></msub><mo>,</mo><mstyle scriptlevel="0"><mspace width="2em"></mspace></mstyle><msub><mi>L</mi><mi>m</mi></msub><mo stretchy="false">(</mo><msup><mi>θ</mi><mo data-mjx-alternate="1">′</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi>L</mi><mi>m</mi></msub><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>≈</mo><mo>−</mo><mi>η</mi><mo>,</mo><msubsup><mi>g</mi><mi>m</mi><mrow data-mjx-texclass="ORD"><mi mathvariant="sans-serif">T</mi></mrow></msubsup><msub><mi>g</mi><mi>c</mi></msub><mo>.</mo></math></mjx-assistive-mml></mjx-container></p>
+<p>右边的内积，就是代码梯度在数学梯度方向上有多大分量，再乘上数学梯度的长度。图 7 固定两根梯度的长度，只转动夹角。夹角小于直角时，沿代码的下降方向走，数学损失在一阶近似下也下降；越过直角，它反而上升。这种方向的一致程度叫梯度对齐。多任务训练会遇到梯度冲突，也确实有研究用类似的内积在小模型上估计不同语料应占多少采样权重。<sup class="cite"><a href="#ref-7">[7]</a></sup><sup class="cite"><a href="#ref-8">[8]</a></sup></p>
+
+<figure class="v-figure transfer-widget" id="trace-gradients" data-transfer-widget="gradients"><div data-fallback=""><svg viewBox="0 0 240 110" role="img" aria-label="60 度的两个梯度，短箭头为沿负代码梯度的更新" style="max-width:320px"><g fill="none" stroke-width="3"><path stroke="var(--chart-blue,#467ab8)" d="M75 85H155m-8-5 8 5-8 5"></path><path stroke="var(--chart-red,#ab574a)" stroke-dasharray="5 3" d="M75 85l40-69m-9 5 9-5 0 10"></path><path stroke="var(--chart-teal,#367e75)" d="M75 85H55m5-4-5 4 5 4"></path></g><g fill="currentColor" font-size="12"><text x="160" y="90">g_code</text><text x="121" y="19">g_math</text><text x="14" y="90">−ηg</text></g></svg><p>单位梯度夹角为 60°，内积为 +0.5。取 η = 0.25，数学损失的一阶变化约为 −0.125。夹角换成 120°，内积与损失变化的符号都会翻转。</p></div><figcaption class="v-caption">图 7｜两根梯度都是单位向量。短箭头是沿代码梯度的反方向走四分之一单位的参数更新。转动虚线的数学梯度，可以看到同一步更新在它方向上的投影。原创二维示意，只计算一阶项。</figcaption></figure>
+
+<p>说一项训练对另一项任务有<strong>正迁移</strong>或<strong>负迁移</strong>，最终要看它相对对照组把目标任务做得更好还是更差。图 7 给的是参数附近光滑损失的一阶展开，夹角恰为直角也只意味着一阶项为零。下一批样本的方向可能就变了。优化器若带动量或对各分量调整步长，代入展开的也应是实际走出的那一步。更何况，给正确 token 多分一点概率，还未必足以让一道整题由错变对。要回答开头的问题，总得看看真正训练出来的两组模型。</p>
+<h2 id="五、多读代码的时候，少读了什么">五、多读代码的时候，少读了什么</h2>
+<p>Petty 等人把“多读”拆成了两个实验。他们用约 3.74 亿参数的模型，从 1320 亿个自然语言 token 起步设计对照，每种配方都换五个随机种子各训一次。如果把当中的一半换成代码，总量不变，训练材料成了 660 亿文本加 660 亿代码。另一种做法是保留全部 1320 亿文本，再加 1320 亿代码。第二种模型的训练长了一倍，因此作者还做了同样长的纯文本组。<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Code replacement and code addition at a 50 percent mixture（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 357" role="img" aria-label="Code replacement and code addition at a 50 percent mixture" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Code replacement and code addition at a 50 percent mixture</title>
+  <desc>Petty and colleagues compared a 132-billion-token language-only baseline with 66B language plus 66B code, and 132B language plus 132B code. A language-only run with 264B total tokens matches the additive run.</desc>
+  <!-- Original rendering of Petty, van Steenkiste & Linzen (TMLR 2025), Fig. 1 and sections 3–4.1. https://openreview.net/forum?id=pxxmUKKgel . Segments encode counts; training sequences were interleaved. -->
+  <text x="8" y="29" font-size="21" font-weight="650" text-anchor="start" fill="var(--heading, #102b56)">Pretraining tokens (billions)</text>
+  <rect x="9" y="43" width="18" height="14" rx="2" fill="var(--chart-blue, #376b9f)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <text x="36" y="56" font-size="18" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Text</text>
+  <rect x="108" y="43" width="18" height="14" rx="2" fill="var(--chart-teal, #2b7975)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <text x="135" y="56" font-size="18" font-weight="450" text-anchor="start" fill="var(--ink, #293441)">Code</text>
+  <text x="8" y="89" font-size="19" font-weight="560" text-anchor="start" fill="var(--ink, #293441)">Text baseline</text>
+  <text x="469" y="89" font-size="18" font-weight="460" text-anchor="end" fill="var(--muted, #526071)">132B total</text>
+  <rect x="8" y="97" width="464" height="29" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <rect x="8" y="97" width="232" height="29" rx="0" fill="var(--chart-blue, #376b9f)" fill-opacity="0.16" stroke="var(--chart-blue, #376b9f)" stroke-width="1"></rect>
+  <text x="124" y="118" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">132B text</text>
+  <text x="8" y="158" font-size="19" font-weight="560" text-anchor="start" fill="var(--ink, #293441)">Fixed total</text>
+  <text x="469" y="158" font-size="18" font-weight="460" text-anchor="end" fill="var(--muted, #526071)">132B total</text>
+  <rect x="8" y="166" width="464" height="29" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <rect x="8" y="166" width="116" height="29" rx="0" fill="var(--chart-blue, #376b9f)" fill-opacity="0.16" stroke="var(--chart-blue, #376b9f)" stroke-width="1"></rect>
+  <text x="66" y="187" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">66B text</text>
+  <rect x="124" y="166" width="116" height="29" rx="0" fill="var(--chart-teal, #2b7975)" fill-opacity="0.16" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <text x="182" y="187" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">66B code</text>
+  <text x="8" y="227" font-size="19" font-weight="560" text-anchor="start" fill="var(--ink, #293441)">Fixed text</text>
+  <text x="469" y="227" font-size="18" font-weight="460" text-anchor="end" fill="var(--muted, #526071)">264B total</text>
+  <rect x="8" y="235" width="464" height="29" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <rect x="8" y="235" width="232" height="29" rx="0" fill="var(--chart-blue, #376b9f)" fill-opacity="0.16" stroke="var(--chart-blue, #376b9f)" stroke-width="1"></rect>
+  <text x="124" y="256" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">132B text</text>
+  <rect x="240" y="235" width="232" height="29" rx="0" fill="var(--chart-teal, #2b7975)" fill-opacity="0.16" stroke="var(--chart-teal, #2b7975)" stroke-width="1"></rect>
+  <text x="356" y="256" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">132B code</text>
+  <text x="8" y="296" font-size="19" font-weight="560" text-anchor="start" fill="var(--ink, #293441)">Long text control</text>
+  <text x="469" y="296" font-size="18" font-weight="460" text-anchor="end" fill="var(--muted, #526071)">264B total</text>
+  <rect x="8" y="304" width="464" height="29" rx="2" fill="var(--surface, #f3f5f8)" fill-opacity="1" stroke="none" stroke-width="1.4"></rect>
+  <rect x="8" y="304" width="464" height="29" rx="0" fill="var(--chart-blue, #376b9f)" fill-opacity="0.16" stroke="var(--chart-blue, #376b9f)" stroke-width="1"></rect>
+  <text x="240" y="325" font-size="18" font-weight="590" text-anchor="middle" fill="var(--ink, #293441)">264B text</text>
+  <text x="8" y="354" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">All bars use the same scale.</text>
+</svg></div><p class="v-caption">图 8｜横条按训练 token 数等比例绘制，B 表示十亿。先比较同为 132B 的两条，再看同为 264B 的两条。跨长度比较时，内容和训练量可能一起变化。根据 Petty 等人图 1 的 50% 代码条件重绘。<a href="#ref-9">[9]</a></p></div>
+<p>他们考了一类很贴近开头直觉的题。模型先经任务微调，练习把英语句子译成逻辑表达式，再用见过的词和结构拼出训练时没见过的组合，要求整个表达式写对。在简化输出格式的 COGS-vf 上，把代码追加到文本之后，相比读同样多 token 的纯文本组，模型更能处理一些没见过的结构组合。作者甚至检查了输出括号能否配平，仅靠少写几个错括号，解释不了总体趋势。换一道同样可以描述为“语言推理”的题，让模型把主动句变成被动句，更多代码反倒总体上拉低了泛化表现。连保留了全部文本、额外加入代码的那组也出现了这种下降。多位数算术选择题在固定总量组里也没有一路涨，曲线在约 40% 到 50% 代码附近见顶。<sup class="cite"><a href="#ref-9">[9]</a></sup></p>
+<p>另一组实验能直接看到这笔交换的得失。Aryabumi 等人取 4.7 亿参数的模型，两组各读 4000 亿 token。为了排除最后一段训练又调配语料的影响，图 9 只取论文表 2 进入这一阶段前的两行。把一半文本换成代码，自然语言推理任务的平均准确率从 49.0% 升到 51.8%，增加 2.8 个百分点。知识问答要求生成的答案与参考答案精确匹配，平均分从 9.5% 降到 8.1%。代码题看一次生成的解答能否通过测试，平均 pass@1 从 0.4% 升到 9.0%。<sup class="cite"><a href="#ref-10">[10]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Changes at 50 percent code, compared with text only（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 351" role="img" aria-label="Changes at 50 percent code, compared with text only" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>Changes at 50% code, compared with text only</title>
+  <desc>At 470M parameters and 400B total training tokens, replacing half the text with code changed NL reasoning by +2.8 percentage points, world knowledge by −1.4 and code by +8.6.</desc>
+  <!-- Appendix B, Table 2, PRETRAINING section; Cooldown (T) = N/A. Source: https://proceedings.iclr.cc/paper_files/paper/2025/file/c513d1786f85531fac7050947736265f-Paper-Conference.pdf#page=25 -->
+  <text x="8" y="26" font-size="20" font-weight="650" text-anchor="start" fill="var(--ink, #293441)">Change in percentage points</text>
+  <text x="8" y="53" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">Text only → 50% code</text>
+  <text x="8" y="94" font-size="20" font-weight="620" text-anchor="start" fill="var(--ink, #293441)">NL reasoning</text>
+  <text x="472" y="94" font-size="20" font-weight="450" text-anchor="end" fill="var(--ink, #293441)">49.0 → 51.8</text>
+  <text x="8" y="117" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">Avg. accuracy</text>
+  <path d="M 61 137 H 449" stroke="var(--line, #dce2e9)" fill="none" stroke-width="1.5"></path>
+  <path d="M 139 127 v 20" stroke="var(--muted, #526071)" fill="none" stroke-width="1.2"></path>
+  <path d="M 139 137 H 223" stroke="var(--chart-teal, #2b7975)" fill="none" stroke-width="7"></path>
+  <text x="232" y="143" font-size="18" font-weight="650" text-anchor="start" fill="var(--chart-teal, #2b7975)">+2.8</text>
+  <text x="8" y="185" font-size="20" font-weight="620" text-anchor="start" fill="var(--ink, #293441)">World knowledge</text>
+  <text x="472" y="185" font-size="20" font-weight="450" text-anchor="end" fill="var(--ink, #293441)">9.5 → 8.1</text>
+  <text x="8" y="208" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">Avg. exact match</text>
+  <path d="M 61 228 H 449" stroke="var(--line, #dce2e9)" fill="none" stroke-width="1.5"></path>
+  <path d="M 139 218 v 20" stroke="var(--muted, #526071)" fill="none" stroke-width="1.2"></path>
+  <path d="M 139 228 H 97" stroke="var(--chart-red, #ac4d5b)" fill="none" stroke-width="7"></path>
+  <text x="88" y="234" font-size="18" font-weight="650" text-anchor="end" fill="var(--chart-red, #ac4d5b)">−1.4</text>
+  <text x="8" y="276" font-size="20" font-weight="620" text-anchor="start" fill="var(--ink, #293441)">Code</text>
+  <text x="472" y="276" font-size="20" font-weight="450" text-anchor="end" fill="var(--ink, #293441)">0.4 → 9.0</text>
+  <text x="8" y="299" font-size="18" font-weight="450" text-anchor="start" fill="var(--muted, #526071)">Avg. pass@1</text>
+  <path d="M 61 319 H 449" stroke="var(--line, #dce2e9)" fill="none" stroke-width="1.5"></path>
+  <path d="M 139 309 v 20" stroke="var(--muted, #526071)" fill="none" stroke-width="1.2"></path>
+  <path d="M 139 319 H 397" stroke="var(--chart-teal, #2b7975)" fill="none" stroke-width="7"></path>
+  <text x="406" y="325" font-size="18" font-weight="650" text-anchor="start" fill="var(--chart-teal, #2b7975)">+8.6</text>
+  <text x="139" y="348" font-size="18" font-weight="450" text-anchor="middle" fill="var(--muted, #526071)">0</text>
+</svg></div><p class="v-caption">图 9｜两组都训练到 400B token。每一行只比较本行的两种配方，差值为百分点。三行的评分方法不同。按 Aryabumi 等人表 2 的预训练行重绘。<a href="#ref-10">[10]</a> · <a href="/2026/11/27/code-training-and-reasoning/reproduce/aryabumi-table2.json">原始表值</a> · <a href="/2026/11/27/code-training-and-reasoning/reproduce/render-transfer.mjs">绘图脚本</a></p></div>
+<p>推理涨、知识跌，可以有一个很朴素的原因：程序里反复出现条件和依赖，但挤掉的文章可能恰好写了某个人的出生地。图 9 能告诉我们两种配方各自训练出了什么，不能倒过来查明某道错题对应哪篇被换掉的文章。它的“自然语言推理”也是一组特定的评测，不能把 2.8 个百分点记在数学成绩上。</p>
+<p>那么，把代码改成写明中间步骤的文字，还有没有用？Waheed 等人固定指令问题，改写用于微调的答案，有的保留可运行程序，有的给伪代码或用文字编码的流程图，还有的故意扰乱程序的结构或注释。他们用五个模型家族、八种规模做指令微调。某些任务用伪代码或流程图就能取得与原始代码相当的结果。有些程序即使配了误导性的注释，只要表面规律还在，部分测试成绩仍能接近原始代码组。这里相同条数的答案可以有不同 token 数。实验回答的是微调时答案写成什么样合适，要决定从零预训练时的代码比例，还得计入另一笔预算。<sup class="cite"><a href="#ref-11">[11]</a></sup></p>
+<p>Zhao 等人从另一个方向检验了这个猜想。他们在固定总 token 数的预训练里拿掉独立代码语料，按比例从其余类别补足。夹有代码片段的问题描述、解释和推导仍留在训练集里。图 10 里，从空心标记的去代码组读到实心标记的完整配方。十亿参数的稠密模型在编程题 HumanEval 上从 2.44 分升到 24.39 分。看两份数学卷子，MATH500 的分数向左移，OlympiadBench 的却向右移。两项结果都是真实测量，取其中一项代表“数学能力”，就会得到相反的答案。<sup class="cite"><a href="#ref-12">[12]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="Selected task scores for two dense one-billion-parameter training mixtures（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 348" role="img" aria-label="Selected task scores for two dense one-billion-parameter training mixtures" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif" fill="var(--ink, #293441)">
+  <title>Task scores in the dense 1B ablation</title>
+  <desc>Open circle: without the independent code corpus. Filled diamond: full data. HumanEval rises from 2.44 to 24.39, MATH500 falls from 25.60 to 22.80, and OlympiadBench rises from 0.59 to 4.15. Read each comparison within its own benchmark.</desc>
+  <metadata>Source: Yuze Zhao et al., What Really Improves Mathematical Reasoning: Structured Reasoning Signals Beyond Pure Code, Appendix A.7, Table 4. https://arxiv.org/html/2605.19762v1#A1.SS7 . Dense 1B, selected individual tasks. Columns: benchmark, w/o code (1B), full data (1B). HumanEval,2.44,24.39; MATH500,25.60,22.80; OlympiadBench,0.59,4.15.</metadata>
+  <text x="8" y="26" font-size="20" font-weight="650">Benchmark score · dense 1B</text>
+  <circle cx="17" cy="54" r="6" fill="none" stroke="var(--ink, #293441)" stroke-width="2.5"></circle><text x="32" y="60" font-size="18">w/o independent code</text>
+  <path d="M269 47l7 7-7 7-7-7z" fill="var(--chart-teal, #2b7975)"></path><text x="284" y="60" font-size="18">Full data</text>
+  <text x="8" y="99" font-size="20" font-weight="620">HumanEval</text><text x="472" y="99" text-anchor="end" font-size="20">2.44 → 24.39</text>
+  <path d="M30 122H57.16M71.16 122H450" stroke="var(--line, #dce2e9)" stroke-width="1.5" fill="none"></path>
+  <path d="M71.16 122H371.46" stroke="var(--muted, #526071)" stroke-width="2.5"></path><circle cx="64.16" cy="122" r="6" fill="none" stroke="var(--ink, #293441)" stroke-width="2.5"></circle><path d="M371.46 115l7 7-7 7-7-7z" fill="var(--chart-teal, #2b7975)"></path>
+  <text x="8" y="172" font-size="20" font-weight="620">MATH500</text><text x="472" y="172" text-anchor="end" font-size="20">25.60 → 22.80</text>
+  <path d="M30 195H381.4M395.4 195H450" stroke="var(--line, #dce2e9)" stroke-width="1.5" fill="none"></path>
+  <path d="M381.4 195H349.2" stroke="var(--muted, #526071)" stroke-width="2.5"></path><circle cx="388.4" cy="195" r="6" fill="none" stroke="var(--ink, #293441)" stroke-width="2.5"></circle><path d="M349.2 188l7 7-7 7-7-7z" fill="var(--chart-teal, #2b7975)"></path>
+  <text x="8" y="245" font-size="20" font-weight="620">OlympiadBench</text><text x="472" y="245" text-anchor="end" font-size="20">0.59 → 4.15</text>
+  <path d="M30 268H31.259999999999998M45.26 268H450" stroke="var(--line, #dce2e9)" stroke-width="1.5" fill="none"></path>
+  <path d="M45.26 268H88.1" stroke="var(--muted, #526071)" stroke-width="2.5"></path><circle cx="38.26" cy="268" r="6" fill="none" stroke="var(--ink, #293441)" stroke-width="2.5"></circle><path d="M88.1 261l7 7-7 7-7-7z" fill="var(--chart-teal, #2b7975)"></path>
+  <path d="M30 293H450 M30 293v6 M170 293v6 M310 293v6 M450 293v6" fill="none" stroke="var(--muted, #526071)" stroke-width="1.2"></path>
+  <g font-size="17" text-anchor="middle" fill="var(--muted, #526071)"><text x="30" y="320">0</text><text x="170" y="320">10</text><text x="310" y="320">20</text><text x="450" y="320">30</text></g>
+</svg></div><p class="v-caption">图 10｜同一篇论文、同一规模的两个预训练模型。去掉独立程序后，其余语料会补足训练预算。读每一行的两个点，可以看到完整配方使哪些题的分数上升、哪些下降。按 Zhao 等人附录 A.7 的 1B 稠密模型原始表值重绘。<a href="#ref-12">[12]</a></p></div>
+<p>作者又固定数学语料预算，用那些把推导步骤和符号关系写得更完整的解答替换一部分普通数学文本。部分复杂数学任务受益，GSM8K 等较简单的应用题却可能吃亏。入选的解答通常也更长，内容和形式仍缠在一起。<sup class="cite"><a href="#ref-12">[12]</a></sup></p>
+<p>读到这里，我更想知道训练材料里究竟写了什么。程序里多出来的是有条件的状态更新，还是一串格式固定的样板？被换掉的是闲聊，还是一道把每步推导都写清楚的例题？两件事都能改变结果，单看语料文件的扩展名分不出来。</p>
+<h2 id="六、为什么许多成绩仍能一起变好">六、为什么许多成绩仍能一起变好</h2>
+<p>到这里，还有访谈里的另一半疑问。既然训练预算会让任务争位置，为什么换一代规模更大的模型时，又常常能看到许多任务一起进步？</p>
+<p>图 9 的两个模型都读了 4000 亿 token。也可以保持参数个数不变，接着训练同一份权重，让它多读一批数据。还有一种做法，是从头训练一个参数更多的模型。这三件事可以分开做，也可以同时发生。Kaplan 等人用不同训练配置测量语言模型预测留出文本的平均交叉熵，发现在考察的范围和相应资源条件下，损失随参数量、数据量或有效利用的训练算力呈现出可拟合的幂律趋势。这个纵轴很具体，衡量的是模型平均为真实 token 的预测付出了多少损失。<sup class="cite"><a href="#ref-13">[13]</a></sup></p>
+<div class="v-figure v-chart-scroll"><p class="v-scroll-hint">左右滑动查看完整图表；键盘聚焦后可用方向键。</p><div class="v-chart-viewport" tabindex="0" role="region" aria-label="An illustrative power law for excess pretraining loss（可横向滚动）"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 283" role="img" aria-label="An illustrative power law for excess pretraining loss" style="min-width:0;max-width:560px;margin-inline:auto;font-variant-numeric:tabular-nums" font-family="system-ui, sans-serif">
+  <title>An illustrative power law for excess pretraining loss</title>
+  <desc>On logarithmic axes, E/E0 = (C/C0) to the power −1/4 is a straight line. Sixteen times the training compute halves excess loss in this drawing. The exponent and points are illustrative.</desc>
+  <!-- Illustrative mathematical function. E(C) = L(C) − L∞. Background: Kaplan et al. (2020), https://arxiv.org/abs/2001.08361 . -->
+  <text x="8" y="26" font-size="20" font-weight="620" text-anchor="start" fill="var(--heading, #102b56)">Relative excess loss   E / E₀</text>
+  <path d="M 49 55 L 458 55" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="39" y="61" font-size="18" font-weight="480" text-anchor="end" fill="var(--muted, #526071)">1</text>
+  <path d="M 49 135 L 458 135" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="39" y="141" font-size="18" font-weight="480" text-anchor="end" fill="var(--muted, #526071)">½</text>
+  <path d="M 49 215 L 458 215" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1.5" opacity="1"></path>
+  <text x="39" y="221" font-size="18" font-weight="480" text-anchor="end" fill="var(--muted, #526071)">¼</text>
+  <path d="M 49 55 L 49 215" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1" opacity="0.8" stroke-dasharray="3 4"></path>
+  <text x="49" y="240" font-size="18" font-weight="480" text-anchor="middle" fill="var(--muted, #526071)">1×</text>
+  <path d="M 185.33 55 L 185.33 215" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1" opacity="0.8" stroke-dasharray="3 4"></path>
+  <text x="185.33" y="240" font-size="18" font-weight="480" text-anchor="middle" fill="var(--muted, #526071)">4×</text>
+  <path d="M 321.67 55 L 321.67 215" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1" opacity="0.8" stroke-dasharray="3 4"></path>
+  <text x="321.67" y="240" font-size="18" font-weight="480" text-anchor="middle" fill="var(--muted, #526071)">16×</text>
+  <path d="M 458 55 L 458 215" fill="none" stroke="var(--line, #dce2e9)" stroke-width="1" opacity="0.8" stroke-dasharray="3 4"></path>
+  <text x="458" y="240" font-size="18" font-weight="480" text-anchor="middle" fill="var(--muted, #526071)">64×</text>
+  <path d="M 49 55 L 458 175" fill="none" stroke="var(--chart-teal, #2b7975)" stroke-width="3.5" opacity="1"></path>
+  <circle cx="49" cy="55" r="5" fill="var(--chart-teal, #2b7975)" stroke="var(--paper, #fff)" stroke-width="1.4"></circle>
+  <circle cx="321.67" cy="135" r="5" fill="var(--chart-teal, #2b7975)" stroke="var(--paper, #fff)" stroke-width="1.4"></circle>
+  <text x="164" y="69" font-size="18" font-weight="540" text-anchor="start" fill="var(--ink, #293441)">Assumed exponent  −¼</text>
+  <text x="245" y="276" font-size="19" font-weight="620" text-anchor="middle" fill="var(--heading, #102b56)">Relative training compute   C / C₀</text>
+</svg></div><p class="v-caption">图 11｜横轴是训练计算量相对起点的倍数，纵轴是扣掉一个假定损失下限后的相对值。两轴均为对数刻度。示例取指数 −¼，算力乘 16 时纵轴减半。这个指数为讲解而选，图上没有实测数据。幂律的经验依据见 <a href="#ref-13">[13]</a>。</p></div>
+<p>在相同训练算力下，参数也并非越多越合算。Hoffmann 等人的 Chinchilla 有 700 亿参数，只有 Gopher 的四分之一，却读了约四倍的训练数据。在相近的训练计算预算下，它在不少下游评测上超过 Gopher。这是参数容量和训练量怎样分配的问题。给同一个已训练模型更多作答时间、让它在上下文里列出中间结果，则只改变这一次解题能用的计算，权重不随之更新。<sup class="cite"><a href="#ref-14">[14]</a></sup></p>
+<p>为什么平均损失和许多任务成绩有时会同向？如果一份更大的训练集同时提供了更多事件、程序和解答，模型又有容量保留其中可复用的关系，读懂指代、跟踪条件这样一项改进，就可能在好几种题上用得着。GPT-3 的实验里，同一组冻结的权重只靠提示中的几个示例，就能在翻译、问答等不同任务间切换。换到 ANLI，题目要判断第二句话是由第一句推出、与它矛盾，还是两者相容但无法确定。在这道三选一任务上，论文中较小的模型即使拿到几个示例，也大多徘徊在随机猜测的约 33%。最大的 1750 亿参数模型才在第三轮测试上拉开了一些距离。哪怕只看一道二选一的题，模型给正确选项的概率从 30% 提到 45%，预测损失已经下降，选概率较高的答案却仍然会答错。自然不能从一条平滑的损失曲线，推出每项能力会在什么时候涨分。<sup class="cite"><a href="#ref-15">[15]</a></sup></p>
+<p>回到那 6 件货。读一段订单处理程序，给了模型一次练习“条件没满足，原值要留下”的机会。统一的续写训练让这次练习能改到回答文字题时使用的参数，Transformer 又使模型有机会在足够多、足够不同的上下文里反复碰到它。至于某个模型是否真的学会了这一点，我愿意先改一条规则试试：把“不够就<strong>跳过</strong>”换成“不够就<strong>停止</strong>”。数字一个没动，第三位顾客却再也轮不到了。这回该剩下 2 件。</p>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><span id="ref-1" class="ref-anchor"></span>Dai &amp; Le. <a target="_blank" rel="noopener" href="https://research.google/pubs/semi-supervised-sequence-learning/">Semi-supervised Sequence Learning</a>. NeurIPS 2015。循环网络的无监督预训练与分类迁移。</li>
+<li><span id="ref-2" class="ref-anchor"></span>Luong et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.06114">Multi-task Sequence to Sequence Learning</a>. ICLR 2016。不同任务共用编码器的设计。</li>
+<li><span id="ref-3" class="ref-anchor"></span>Radford, Jozefowicz &amp; Sutskever. <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1704.01444">Learning to Generate Reviews and Discovering Sentiment</a>. 2017 年技术预印本。IMDb 阈值分类与受控生成，表 2、5。</li>
+<li><span id="ref-4" class="ref-anchor"></span>Li et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.13382">Emergent World Representations: Exploring a Sequence Model Trained on a Synthetic Task</a>. ICLR 2023。黑白棋探针与激活干预，第 3、4 节。</li>
+<li><span id="ref-5" class="ref-anchor"></span>Vaswani et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>. NeurIPS 2017。因果遮蔽及各层的序列依赖，第 3、4 节、表 1。</li>
+<li><span id="ref-6" class="ref-anchor"></span>Dao et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.14135">FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</a>. NeurIPS 2022。片上分块与显存访问。</li>
+<li><span id="ref-7" class="ref-anchor"></span>Yu et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.06782">Gradient Surgery for Multi-Task Learning</a>. NeurIPS 2020。共享参数上的梯度冲突。</li>
+<li><span id="ref-8" class="ref-anchor"></span>Fan, Pagliardini &amp; Jaggi. <a target="_blank" rel="noopener" href="https://proceedings.mlr.press/v235/fan24e.html">DoGE: Domain Reweighting with Generalization Estimation</a>. ICML 2024。在代理模型上估计跨域更新的效果。</li>
+<li><span id="ref-9" class="ref-anchor"></span>Petty, van Steenkiste &amp; Linzen. <a target="_blank" rel="noopener" href="https://research.google/pubs/how-does-code-pretraining-affect-language-model-task-performance/">How Does Code Pretraining Affect Language Model Task Performance?</a>. TMLR 2025。图 1 的两类预算对照，图 2–5 的泛化和算术评测。</li>
+<li><span id="ref-10" class="ref-anchor"></span>Aryabumi et al. <a target="_blank" rel="noopener" href="https://proceedings.iclr.cc/paper_files/paper/2025/file/c513d1786f85531fac7050947736265f-Paper-Conference.pdf#page=25">To Code, or Not To Code? Exploring Impact of Code in Pre-training</a>. ICLR 2025。图 9 取自表 2 的 TEXT-ONLY、BALANCED-ONLY 预训练行。</li>
+<li><span id="ref-11" class="ref-anchor"></span>Waheed et al. <a target="_blank" rel="noopener" href="https://proceedings.iclr.cc/paper_files/paper/2026/hash/f39cbd56877419229aef90dbe463c182-Abstract-Conference.html">On Code-Induced Reasoning in LLMs</a>. ICLR 2026。指令数据的扰动、伪代码与流程图。</li>
+<li><span id="ref-12" class="ref-anchor"></span>Zhao et al. <a target="_blank" rel="noopener" href="https://proceedings.mlr.press/v306/zhao26k.html">What Really Improves Mathematical Reasoning: Structured Reasoning Signals Beyond Pure Code</a>. ICML 2026。语料移除与结构化解答重采样。<a target="_blank" rel="noopener" href="https://arxiv.org/html/2605.19762v1#A1.SS7">附录 A.7 的逐项结果</a>。</li>
+<li><span id="ref-13" class="ref-anchor"></span>Kaplan et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.08361">Scaling Laws for Neural Language Models</a>. 2020 年预印本。语言模型损失随规模变化的经验拟合。</li>
+<li><span id="ref-14" class="ref-anchor"></span>Hoffmann et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.15556">Training Compute-Optimal Large Language Models</a>. NeurIPS 2022。固定计算量时，参数和训练数据的分配。</li>
+<li><span id="ref-15" class="ref-anchor"></span>Brown et al. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2005.14165">Language Models are Few-Shot Learners</a>. NeurIPS 2020。上下文少样本评测与 第 3.8 节 的自然语言推断结果。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<nav class="post-exit-nav" aria-label="Article navigation">
+  <a class="post-exit-nav__item post-exit-nav__home" href="/">
+    <span aria-hidden="true">←</span>
+    <span>Back Home</span>
+  </a>
+  <a class="post-exit-nav__item post-exit-nav__category" href="/categories/Silicon-Circuits/">
+    <span>More in Silicon &amp; Circuits</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</nav>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者: </strong>LEEcDiang
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接:</strong>
+      <a href="https://leecdiang.com/2026/11/27/code-training-and-reasoning/" title="读代码能让大模型更会做推理题吗？">https://leecdiang.com/2026/11/27/code-training-and-reasoning/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明: </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" rel="tag"># 计算机体系结构</a>
+              <a href="/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/" rel="tag"># 大语言模型</a>
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+              <a href="/tags/%E9%A2%84%E8%AE%AD%E7%BB%83/" rel="tag"># 预训练</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+  </div></div>
+
+
+</main>
+  <footer class="studio-footer"><span>© 2026 LEEcDiang</span><div><a href="/links/">Links</a><a href="mailto:simonlee820@gmail.com">Email ↗</a><a href="https://github.com/leecdiang" target="_blank" rel="noopener">GitHub ↗</a></div></footer>
+
+</body></html>
